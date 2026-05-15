@@ -1,0 +1,26 @@
+{
+  "name": "Favorite",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "description": "User who favorited"
+    },
+    "favorited_profile_id": {
+      "type": "string",
+      "description": "The MemberProfile id that was favorited"
+    },
+    "favorited_user_name": {
+      "type": "string",
+      "description": "Display name of favorited member"
+    },
+    "favorited_user_photo": {
+      "type": "string",
+      "description": "Photo URL of favorited member"
+    }
+  },
+  "required": [
+    "user_id",
+    "favorited_profile_id"
+  ]
+}

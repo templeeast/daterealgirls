@@ -1,0 +1,152 @@
+import React, { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { Heart, MessageCircle, User, Search, Menu, X, Star, Shield, LogOut, Settings } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import useSiteConfig from '@/hooks/useSiteConfig';
+import useMyProfile from '@/hooks/useMyProfile';
+import { base44 } from '@/api/base44Client';
+
+const navItems = [
+  { path: '/browse', label: 'Browse', icon: Search },
+  { path: '/messages', label: 'Messages', icon: MessageCircle },
+  { path: '/favorites', label: 'Favorites', icon: Star },
+  { path: '/my-profile', label: 'Profile', icon: User },
+];
+
+export default function Navbar() {
+  const { config } = useSiteConfig();
+  const { user, profile } = useMyProfile();
+  const location = useLocation();
+  const [open, setOpen] = useState(false);
+
+  const isAdmin = user?.role === 'admin';
+
+  return (
+    <nav className="sticky top-0 z-50 bg-card/80 backdrop-blur-xl border-b">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo */}
+          <Link to="/" className="flex items-center gap-2">
+            {config.logo_url ? (
+              <img src={config.logo_url} alt={config.site_name} className="h-8 w-auto" />
+            ) : (
+              <Heart className="w-7 h-7 text-primary fill-primary" />
+            )}
+            <span className="font-heading text-lg font-semibold hidden sm:block">
+              {config.site_name}
+            </span>
+          </Link>
+
+          {/* Desktop Nav */}
+          <div className="hidden md:flex items-center gap-1">
+            {navItems.map(({ path, label, icon: Icon }) => (
+              <Link key={path} to={path}>
+                <Button
+                  variant={location.pathname === path ? 'default' : 'ghost'}
+                  size="sm"
+                  className="gap-2"
+                >
+                  <Icon className="w-4 h-4" />
+                  {label}
+                </Button>
+              </Link>
+            ))}
+            {isAdmin && (
+              <Link to="/admin">
+                <Button
+                  variant={location.pathname.startsWith('/admin') ? 'default' : 'ghost'}
+                  size="sm"
+                  className="gap-2"
+                >
+                  <Shield className="w-4 h-4" />
+                  Admin
+                </Button>
+              </Link>
+            )}
+          </div>
+
+          {/* Right side */}
+          <div className="flex items-center gap-2">
+            {profile?.verification_status === 'verified' && (
+              <div className="hidden sm:flex items-center gap-1 text-xs text-primary bg-accent px-2 py-1 rounded-full">
+                <Shield className="w-3 h-3" />
+                Verified
+              </div>
+            )}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="hidden md:flex"
+              onClick={() => base44.auth.logout()}
+            >
+              <LogOut className="w-4 h-4" />
+            </Button>
+
+            {/* Mobile menu */}
+            <Sheet open={open} onOpenChange={setOpen}>
+              <SheetTrigger asChild className="md:hidden">
+                <Button variant="ghost" size="icon">
+                  <Menu className="w-5 h-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-72">
+                <div className="flex flex-col gap-2 mt-8">
+                  {profile && (
+                    <div className="flex items-center gap-3 mb-4 p-3 bg-muted rounded-lg">
+                      {profile.photo_1 ? (
+                        <img src={profile.photo_1} className="w-10 h-10 rounded-full object-cover" alt="" />
+                      ) : (
+                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                          <User className="w-5 h-5 text-primary" />
+                        </div>
+                      )}
+                      <div>
+                        <p className="font-medium text-sm">{profile.display_name}</p>
+                        <p className="text-xs text-muted-foreground">{user?.email}</p>
+                      </div>
+                    </div>
+                  )}
+                  {navItems.map(({ path, label, icon: Icon }) => (
+                    <Link key={path} to={path} onClick={() => setOpen(false)}>
+                      <Button
+                        variant={location.pathname === path ? 'default' : 'ghost'}
+                        className="w-full justify-start gap-3"
+                      >
+                        <Icon className="w-4 h-4" />
+                        {label}
+                      </Button>
+                    </Link>
+                  ))}
+                  <Link to="/support" onClick={() => setOpen(false)}>
+                    <Button variant="ghost" className="w-full justify-start gap-3">
+                      <Settings className="w-4 h-4" />
+                      Support
+                    </Button>
+                  </Link>
+                  {isAdmin && (
+                    <Link to="/admin" onClick={() => setOpen(false)}>
+                      <Button variant="ghost" className="w-full justify-start gap-3">
+                        <Shield className="w-4 h-4" />
+                        Admin
+                      </Button>
+                    </Link>
+                  )}
+                  <div className="border-t my-2" />
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start gap-3 text-destructive"
+                    onClick={() => base44.auth.logout()}
+                  >
+                    <LogOut className="w-4 h-4" />
+                    Log Out
+                  </Button>
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
+        </div>
+      </div>
+    </nav>
+  );
+}

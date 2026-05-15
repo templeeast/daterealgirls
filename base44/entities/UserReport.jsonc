@@ -1,0 +1,64 @@
+{
+  "name": "UserReport",
+  "type": "object",
+  "properties": {
+    "reporter_id": {
+      "type": "string",
+      "description": "User ID who filed the report"
+    },
+    "reported_profile_id": {
+      "type": "string",
+      "description": "MemberProfile ID being reported"
+    },
+    "reported_user_name": {
+      "type": "string",
+      "description": "Name of reported user"
+    },
+    "reason": {
+      "type": "string",
+      "enum": [
+        "fake_profile",
+        "harassment",
+        "inappropriate_content",
+        "underage",
+        "spam",
+        "other"
+      ],
+      "description": "Reason for report"
+    },
+    "details": {
+      "type": "string",
+      "description": "Additional details about the report"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "reviewing",
+        "resolved",
+        "dismissed"
+      ],
+      "default": "pending",
+      "description": "Report status"
+    },
+    "admin_notes": {
+      "type": "string",
+      "description": "Admin notes on the report"
+    },
+    "action_taken": {
+      "type": "string",
+      "enum": [
+        "none",
+        "warning",
+        "suspension",
+        "ban"
+      ],
+      "description": "Action taken by admin"
+    }
+  },
+  "required": [
+    "reporter_id",
+    "reported_profile_id",
+    "reason"
+  ]
+}

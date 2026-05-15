@@ -1,0 +1,53 @@
+{
+  "name": "Conversation",
+  "type": "object",
+  "properties": {
+    "participant_1_id": {
+      "type": "string",
+      "description": "User ID of first participant"
+    },
+    "participant_2_id": {
+      "type": "string",
+      "description": "User ID of second participant"
+    },
+    "participant_1_name": {
+      "type": "string",
+      "description": "Display name of first participant"
+    },
+    "participant_2_name": {
+      "type": "string",
+      "description": "Display name of second participant"
+    },
+    "participant_1_photo": {
+      "type": "string",
+      "description": "Photo URL of first participant"
+    },
+    "participant_2_photo": {
+      "type": "string",
+      "description": "Photo URL of second participant"
+    },
+    "last_message": {
+      "type": "string",
+      "description": "Preview of last message"
+    },
+    "last_message_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp of last message"
+    },
+    "unread_count_1": {
+      "type": "number",
+      "default": 0,
+      "description": "Unread count for participant 1"
+    },
+    "unread_count_2": {
+      "type": "number",
+      "default": 0,
+      "description": "Unread count for participant 2"
+    }
+  },
+  "required": [
+    "participant_1_id",
+    "participant_2_id"
+  ]
+}

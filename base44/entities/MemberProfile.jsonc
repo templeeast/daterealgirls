@@ -1,0 +1,149 @@
+{
+  "name": "MemberProfile",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "description": "Reference to the User entity id"
+    },
+    "display_name": {
+      "type": "string",
+      "description": "Display name on the platform"
+    },
+    "gender": {
+      "type": "string",
+      "enum": [
+        "female",
+        "male"
+      ],
+      "description": "Gender of the member"
+    },
+    "age": {
+      "type": "number",
+      "description": "Age of the member (must be 18+)"
+    },
+    "date_of_birth": {
+      "type": "string",
+      "format": "date",
+      "description": "Date of birth for age verification"
+    },
+    "location_city": {
+      "type": "string",
+      "description": "City"
+    },
+    "location_country": {
+      "type": "string",
+      "description": "Country"
+    },
+    "bio": {
+      "type": "string",
+      "description": "Profile bio (max 500 chars)"
+    },
+    "photo_1": {
+      "type": "string",
+      "description": "Primary profile photo URL"
+    },
+    "photo_2": {
+      "type": "string",
+      "description": "Second photo URL"
+    },
+    "photo_3": {
+      "type": "string",
+      "description": "Third photo URL"
+    },
+    "instagram": {
+      "type": "string",
+      "description": "Instagram username"
+    },
+    "facebook": {
+      "type": "string",
+      "description": "Facebook profile link"
+    },
+    "tiktok": {
+      "type": "string",
+      "description": "TikTok username"
+    },
+    "verification_status": {
+      "type": "string",
+      "enum": [
+        "unverified",
+        "pending",
+        "verified",
+        "rejected"
+      ],
+      "default": "unverified",
+      "description": "ID verification status"
+    },
+    "id_document_url": {
+      "type": "string",
+      "description": "Uploaded ID document URL (private)"
+    },
+    "selfie_url": {
+      "type": "string",
+      "description": "Selfie for facial matching URL"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether the profile is active/visible"
+    },
+    "is_suspended": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether the profile is suspended by admin"
+    },
+    "suspension_reason": {
+      "type": "string",
+      "description": "Reason for suspension"
+    },
+    "subscription_status": {
+      "type": "string",
+      "enum": [
+        "free",
+        "trial",
+        "active",
+        "expired",
+        "cancelled"
+      ],
+      "default": "free",
+      "description": "Subscription status (relevant for male users)"
+    },
+    "trial_start_date": {
+      "type": "string",
+      "format": "date",
+      "description": "When the trial started"
+    },
+    "trial_end_date": {
+      "type": "string",
+      "format": "date",
+      "description": "When the trial ends"
+    },
+    "interests": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of interests/hobbies"
+    },
+    "looking_for": {
+      "type": "string",
+      "enum": [
+        "relationship",
+        "friendship",
+        "casual",
+        "marriage"
+      ],
+      "description": "What the member is looking for"
+    },
+    "profile_complete": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether the profile setup is complete"
+    }
+  },
+  "required": [
+    "user_id",
+    "display_name",
+    "gender"
+  ]
+}

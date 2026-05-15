@@ -5,7 +5,18 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
-// Add page imports here
+import Landing from '@/pages/Landing';
+import Onboarding from '@/pages/Onboarding';
+import Browse from '@/pages/Browse';
+import ViewProfile from '@/pages/ViewProfile';
+import MyProfile from '@/pages/MyProfile';
+import Messages from '@/pages/Messages';
+import Chat from '@/pages/Chat';
+import Favorites from '@/pages/Favorites';
+import Support from '@/pages/Support';
+import ReportProfile from '@/pages/ReportProfile';
+import AdminDashboard from '@/pages/admin/AdminDashboard';
+import AppLayout from '@/components/layout/AppLayout';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -33,7 +44,19 @@ const AuthenticatedApp = () => {
   // Render the main app
   return (
     <Routes>
-      {/* Add your page Route elements here */}
+      <Route path="/" element={<Landing />} />
+      <Route path="/onboarding" element={<Onboarding />} />
+      <Route element={<AppLayout />}>
+        <Route path="/browse" element={<Browse />} />
+        <Route path="/profile/:id" element={<ViewProfile />} />
+        <Route path="/my-profile" element={<MyProfile />} />
+        <Route path="/messages" element={<Messages />} />
+        <Route path="/chat/:id" element={<Chat />} />
+        <Route path="/favorites" element={<Favorites />} />
+        <Route path="/support" element={<Support />} />
+        <Route path="/report/:id" element={<ReportProfile />} />
+        <Route path="/admin" element={<AdminDashboard />} />
+      </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );

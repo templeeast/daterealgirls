@@ -1,0 +1,49 @@
+{
+  "name": "SiteConfig",
+  "type": "object",
+  "properties": {
+    "site_name": {
+      "type": "string",
+      "description": "Name of the site (e.g. DateRealGirls.com)"
+    },
+    "logo_url": {
+      "type": "string",
+      "description": "URL of the site logo"
+    },
+    "tagline": {
+      "type": "string",
+      "description": "Site tagline shown on landing page"
+    },
+    "subscription_price": {
+      "type": "number",
+      "default": 5,
+      "description": "Monthly subscription price in USD for men"
+    },
+    "trial_duration_months": {
+      "type": "number",
+      "default": 3,
+      "description": "Free trial duration in months for men"
+    },
+    "max_photos": {
+      "type": "number",
+      "default": 3,
+      "description": "Maximum photos per profile"
+    },
+    "bio_max_length": {
+      "type": "number",
+      "default": 500,
+      "description": "Maximum character length for bio"
+    },
+    "primary_color": {
+      "type": "string",
+      "description": "Primary brand color hex code"
+    },
+    "target_audience": {
+      "type": "string",
+      "description": "Description of target audience"
+    }
+  },
+  "required": [
+    "site_name"
+  ]
+}

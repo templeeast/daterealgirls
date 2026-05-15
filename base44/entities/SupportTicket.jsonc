@@ -1,0 +1,70 @@
+{
+  "name": "SupportTicket",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "description": "User who submitted the ticket"
+    },
+    "user_email": {
+      "type": "string",
+      "description": "Email of the user"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "account_access",
+        "payment_billing",
+        "verification",
+        "technical",
+        "harassment_abuse",
+        "general"
+      ],
+      "description": "Issue category"
+    },
+    "subject": {
+      "type": "string",
+      "description": "Ticket subject"
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed description of the issue"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "in_progress",
+        "resolved",
+        "closed"
+      ],
+      "default": "open",
+      "description": "Ticket status"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "urgent"
+      ],
+      "default": "medium",
+      "description": "Ticket priority"
+    },
+    "admin_response": {
+      "type": "string",
+      "description": "Response from admin/support"
+    },
+    "attachment_url": {
+      "type": "string",
+      "description": "Optional attachment"
+    }
+  },
+  "required": [
+    "user_id",
+    "category",
+    "subject",
+    "description"
+  ]
+}
