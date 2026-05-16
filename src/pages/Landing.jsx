@@ -63,7 +63,7 @@ export default function Landing() {
               {config.target_audience || t('target_audience')}
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center pointer-events-auto relative z-10">
               <Link to="/browse">
                 <Button size="lg" className="text-lg px-8 py-6 gap-2 rounded-full">
                   {t('btn_browse')}
@@ -80,8 +80,8 @@ export default function Landing() {
         </div>
 
         {/* Decorative elements */}
-        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-10 right-10 w-96 h-96 bg-accent/40 rounded-full blur-3xl" />
+        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-10 right-10 w-96 h-96 bg-accent/40 rounded-full blur-3xl pointer-events-none" />
       </section>
 
       {/* Scrolling profiles banner */}
