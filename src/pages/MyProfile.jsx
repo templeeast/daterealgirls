@@ -143,7 +143,7 @@ export default function MyProfile() {
               <div className="mt-4 space-y-3">
                 <div className="flex items-start gap-2 text-xs text-muted-foreground bg-muted rounded-lg p-3">
                   <Shield className="w-3.5 h-3.5 shrink-0 mt-0.5 text-primary" />
-                  <span>Your government ID is encrypted and stored securely. It is only used for identity verification purposes and is never shared with other members or third parties.</span>
+                  <span>Please upload a <strong className="text-foreground">government-issued photo ID</strong> (e.g. passport, driver's license, or national ID card). Your ID is encrypted and stored securely, used only for verification, and never shared with other members or third parties.</span>
                 </div>
                 <label className="block">
                   <Button variant="outline" className="gap-2" asChild>
