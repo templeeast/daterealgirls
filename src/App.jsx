@@ -17,6 +17,7 @@ import Support from '@/pages/Support';
 import ReportProfile from '@/pages/ReportProfile';
 import AdminDashboard from '@/pages/admin/AdminDashboard';
 import AppLayout from '@/components/layout/AppLayout';
+import ProfileCompleteGuard from '@/components/layout/ProfileCompleteGuard';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -47,14 +48,14 @@ const AuthenticatedApp = () => {
       <Route path="/" element={<Landing />} />
       <Route path="/onboarding" element={<Onboarding />} />
       <Route element={<AppLayout />}>
-        <Route path="/browse" element={<Browse />} />
-        <Route path="/profile/:id" element={<ViewProfile />} />
+        <Route path="/browse" element={<ProfileCompleteGuard><Browse /></ProfileCompleteGuard>} />
+        <Route path="/profile/:id" element={<ProfileCompleteGuard><ViewProfile /></ProfileCompleteGuard>} />
         <Route path="/my-profile" element={<MyProfile />} />
-        <Route path="/messages" element={<Messages />} />
-        <Route path="/chat/:id" element={<Chat />} />
-        <Route path="/favorites" element={<Favorites />} />
+        <Route path="/messages" element={<ProfileCompleteGuard><Messages /></ProfileCompleteGuard>} />
+        <Route path="/chat/:id" element={<ProfileCompleteGuard><Chat /></ProfileCompleteGuard>} />
+        <Route path="/favorites" element={<ProfileCompleteGuard><Favorites /></ProfileCompleteGuard>} />
         <Route path="/support" element={<Support />} />
-        <Route path="/report/:id" element={<ReportProfile />} />
+        <Route path="/report/:id" element={<ProfileCompleteGuard><ReportProfile /></ProfileCompleteGuard>} />
         <Route path="/admin" element={<AdminDashboard />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />

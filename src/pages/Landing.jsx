@@ -1,10 +1,11 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Heart, Shield, Users, Star, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import useSiteConfig from '@/hooks/useSiteConfig';
 import ProfileScrollBanner from '@/components/landing/ProfileScrollBanner';
+import { useAuth } from '@/lib/AuthContext';
 
 const features = [
   { icon: Shield, title: 'ID Verified', desc: 'Every member is verified with government ID — no fakes, no bots.' },
@@ -15,6 +16,14 @@ const features = [
 
 export default function Landing() {
   const { config } = useSiteConfig();
+  const { isAuthenticated, isLoadingAuth } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isLoadingAuth && isAuthenticated) {
+      navigate('/browse', { replace: true });
+    }
+  }, [isAuthenticated, isLoadingAuth, navigate]);
 
   return (
     <div className="min-h-screen bg-background">
