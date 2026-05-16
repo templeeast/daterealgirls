@@ -1,6 +1,7 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import Navbar from './Navbar';
+import StripeIdentityGate from './StripeIdentityGate';
 
 export default function AppLayout() {
   return (
@@ -9,6 +10,7 @@ export default function AppLayout() {
       <main className="pb-20 md:pb-8">
         <Outlet />
       </main>
+      <StripeIdentityGate />
     </div>
   );
 }
