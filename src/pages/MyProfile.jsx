@@ -140,14 +140,20 @@ export default function MyProfile() {
               </Badge>
             </div>
             {(profile.verification_status === 'unverified' || profile.verification_status === 'rejected') && (
-              <label className="mt-4 block">
-                <Button variant="outline" className="gap-2" asChild>
-                  <span>
-                    <Upload className="w-4 h-4" /> Upload Government ID
-                  </span>
-                </Button>
-                <input type="file" accept="image/*,.pdf" className="hidden" onChange={handleIdUpload} />
-              </label>
+              <div className="mt-4 space-y-3">
+                <div className="flex items-start gap-2 text-xs text-muted-foreground bg-muted rounded-lg p-3">
+                  <Shield className="w-3.5 h-3.5 shrink-0 mt-0.5 text-primary" />
+                  <span>Your government ID is encrypted and stored securely. It is only used for identity verification purposes and is never shared with other members or third parties.</span>
+                </div>
+                <label className="block">
+                  <Button variant="outline" className="gap-2" asChild>
+                    <span>
+                      <Upload className="w-4 h-4" /> Upload Government ID
+                    </span>
+                  </Button>
+                  <input type="file" accept="image/*,.pdf" className="hidden" onChange={handleIdUpload} />
+                </label>
+              </div>
             )}
           </CardContent>
         </Card>
