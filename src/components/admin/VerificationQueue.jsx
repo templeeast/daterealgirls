@@ -1,13 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle, XCircle, User, ExternalLink } from 'lucide-react';
+import { CheckCircle, XCircle, User, ExternalLink, Loader2 } from 'lucide-react';
 
 export default function VerificationQueue() {
   const queryClient = useQueryClient();
+  const [loadingIdFor, setLoadingIdFor] = useState(null);
+
+  const viewIdDocument = async (profileId, fileUri) => {
+    setLoadingIdFor(profileId);
+    const { signed_url } = await base44.integrations.Core.CreateFileSignedUrl({ file_uri: fileUri });
+    setLoadingIdFor(null);
+    window.open(signed_url, '_blank');
+  };
 
   const { data: pending, isLoading } = useQuery({
     queryKey: ['pendingVerifications'],
@@ -55,9 +63,16 @@ export default function VerificationQueue() {
                 <h3 className="font-medium">{p.display_name}, {p.age}</h3>
                 <p className="text-sm text-muted-foreground capitalize">{p.gender} · {[p.location_city, p.location_country].filter(Boolean).join(', ')}</p>
                 {p.id_document_url && (
-                  <a href={p.id_document_url} target="_blank" rel="noopener noreferrer" className="text-sm text-primary flex items-center gap-1 mt-2 hover:underline">
-                    <ExternalLink className="w-3 h-3" /> View ID Document
-                  </a>
+                  <button
+                    onClick={() => viewIdDocument(p.id, p.id_document_url)}
+                    disabled={loadingIdFor === p.id}
+                    className="text-sm text-primary flex items-center gap-1 mt-2 hover:underline disabled:opacity-50"
+                  >
+                    {loadingIdFor === p.id
+                      ? <><Loader2 className="w-3 h-3 animate-spin" /> Loading...</>
+                      : <><ExternalLink className="w-3 h-3" /> View ID Document</>
+                    }
+                  </button>
                 )}
               </div>
               <div className="flex gap-2">

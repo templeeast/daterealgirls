@@ -76,9 +76,9 @@ export default function MyProfile() {
   const handleIdUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    const { file_uri } = await base44.integrations.Core.UploadPrivateFile({ file });
     await base44.entities.MemberProfile.update(profile.id, {
-      id_document_url: file_url,
+      id_document_url: file_uri,
       verification_status: 'pending',
     });
     toast({ title: t('id_submitted') });
