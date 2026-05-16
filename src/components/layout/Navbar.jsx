@@ -6,21 +6,24 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import useSiteConfig from '@/hooks/useSiteConfig';
 import useMyProfile from '@/hooks/useMyProfile';
 import { base44 } from '@/api/base44Client';
-
-const navItems = [
-  { path: '/browse', label: 'Browse', icon: Search },
-  { path: '/messages', label: 'Messages', icon: MessageCircle },
-  { path: '/favorites', label: 'Favorites', icon: Star },
-  { path: '/my-profile', label: 'Profile', icon: User },
-];
+import { useTranslation } from 'react-i18next';
+import LanguageSelector from '@/components/layout/LanguageSelector';
 
 export default function Navbar() {
   const { config } = useSiteConfig();
   const { user, profile } = useMyProfile();
   const location = useLocation();
   const [open, setOpen] = useState(false);
+  const { t } = useTranslation();
 
   const isAdmin = user?.role === 'admin';
+
+  const navItems = [
+    { path: '/browse', label: t('nav_browse'), icon: Search },
+    { path: '/messages', label: t('nav_messages'), icon: MessageCircle },
+    { path: '/favorites', label: t('nav_favorites'), icon: Star },
+    { path: '/my-profile', label: t('nav_profile'), icon: User },
+  ];
 
   return (
     <nav className="sticky top-0 z-50 bg-card/80 backdrop-blur-xl border-b">
@@ -71,9 +74,10 @@ export default function Navbar() {
             {profile?.verification_status === 'verified' && (
               <div className="hidden sm:flex items-center gap-1 text-xs text-primary bg-accent px-2 py-1 rounded-full">
                 <Shield className="w-3 h-3" />
-                Verified
+                {t('verified_badge')}
               </div>
             )}
+            <LanguageSelector />
             <Button
               variant="ghost"
               size="icon"
@@ -121,14 +125,14 @@ export default function Navbar() {
                   <Link to="/support" onClick={() => setOpen(false)}>
                     <Button variant="ghost" className="w-full justify-start gap-3">
                       <Settings className="w-4 h-4" />
-                      Support
+                      {t('nav_support')}
                     </Button>
                   </Link>
                   {isAdmin && (
                     <Link to="/admin" onClick={() => setOpen(false)}>
                       <Button variant="ghost" className="w-full justify-start gap-3">
                         <Shield className="w-4 h-4" />
-                        Admin
+                        {t('nav_admin')}
                       </Button>
                     </Link>
                   )}
@@ -139,7 +143,7 @@ export default function Navbar() {
                     onClick={() => base44.auth.logout()}
                   >
                     <LogOut className="w-4 h-4" />
-                    Log Out
+                    {t('nav_logout')}
                   </Button>
                 </div>
               </SheetContent>
