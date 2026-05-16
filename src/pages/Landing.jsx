@@ -40,7 +40,7 @@ export default function Landing() {
         {/* Bikini women beach overlay */}
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=1600&q=80')", opacity: 0.65 }}
+          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1476041800959-2f6bb412c8ce?w=1600&q=80')", opacity: 0.65 }}
         />
         {/* Dark gradient overlay to keep text readable */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/35 to-background" />
