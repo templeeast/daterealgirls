@@ -19,7 +19,18 @@ export default function Landing() {
     <div className="min-h-screen bg-background">
       {/* Hero */}
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-accent/30" />
+        {/* Background photo collage */}
+        <div className="absolute inset-0 grid grid-cols-4 grid-rows-2 gap-0 opacity-30">
+          <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80" className="w-full h-full object-cover" alt="" />
+          <img src="https://images.unsplash.com/photo-1530268729831-4b0b9e170218?w=600&q=80" className="w-full h-full object-cover" alt="" />
+          <img src="https://images.unsplash.com/photo-1519046904884-53103b34b206?w=600&q=80" className="w-full h-full object-cover" alt="" />
+          <img src="https://images.unsplash.com/photo-1473496169904-658ba7574b0d?w=600&q=80" className="w-full h-full object-cover" alt="" />
+          <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=600&q=80" className="w-full h-full object-cover" alt="" />
+          <img src="https://images.unsplash.com/photo-1566479179817-e97e8f9f8aa7?w=600&q=80" className="w-full h-full object-cover" alt="" />
+          <img src="https://images.unsplash.com/photo-1500917293891-ef795e70e1f6?w=600&q=80" className="w-full h-full object-cover" alt="" />
+          <img src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=600&q=80" className="w-full h-full object-cover" alt="" />
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/75 to-background" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-32">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -53,9 +64,7 @@ export default function Landing() {
           </motion.div>
         </div>
 
-        {/* Decorative elements */}
-        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-10 right-10 w-96 h-96 bg-accent/40 rounded-full blur-3xl" />
+
       </section>
 
       {/* Features */}
