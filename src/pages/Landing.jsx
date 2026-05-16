@@ -32,18 +32,18 @@ export default function Landing() {
     <div className="min-h-screen bg-background">
       {/* Hero */}
       <section className="relative overflow-hidden">
-        {/* Background photo */}
+        {/* Background photo - beach/ocean */}
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{ backgroundImage: "url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1600&q=80')" }}
         />
-        {/* Girls at pool overlay image */}
+        {/* Bikini women beach overlay */}
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1520637836862-4d197d17c93a?w=1600&q=80')", opacity: 0.55 }}
+          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1570976447640-ac859083963f?w=1600&q=80')", opacity: 0.65 }}
         />
         {/* Dark gradient overlay to keep text readable */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-background" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/35 to-background" />
 
         {/* Language selector top-right */}
         <div className="absolute top-4 right-4 z-10">
