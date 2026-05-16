@@ -4,7 +4,6 @@ import { Heart, Shield, Users, Star, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import useSiteConfig from '@/hooks/useSiteConfig';
-import ProfileScrollBanner from '@/components/landing/ProfileScrollBanner';
 import ProfilesBelowHero from '@/components/landing/ProfilesBelowHero';
 import { useAuth } from '@/lib/AuthContext';
 import { useTranslation } from 'react-i18next';
@@ -63,7 +62,6 @@ export default function Landing() {
             <p className="text-lg sm:text-xl text-white/80 mb-10 max-w-2xl mx-auto leading-relaxed">
               {config.target_audience || t('target_audience')}
             </p>
-            <ProfileScrollBanner />
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/browse">
