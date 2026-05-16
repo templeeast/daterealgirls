@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import useSiteConfig from '@/hooks/useSiteConfig';
 import ProfileScrollBanner from '@/components/landing/ProfileScrollBanner';
+import ProfilesBelowHero from '@/components/landing/ProfilesBelowHero';
 import { useAuth } from '@/lib/AuthContext';
 import { useTranslation } from 'react-i18next';
 import LanguageSelector from '@/components/layout/LanguageSelector';
@@ -84,6 +85,9 @@ export default function Landing() {
         <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />
         <div className="absolute bottom-10 right-10 w-96 h-96 bg-accent/40 rounded-full blur-3xl" />
       </section>
+
+      {/* Scrolling profiles banner */}
+      <ProfilesBelowHero />
 
       {/* Features */}
       <section className="py-24 bg-card">
