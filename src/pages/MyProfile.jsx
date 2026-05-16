@@ -9,11 +9,12 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Heart, Upload, Shield, Camera, Save, AlertTriangle } from 'lucide-react';
+import { Upload, Shield, Camera, Save } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
 import useMyProfile from '@/hooks/useMyProfile';
 import useSiteConfig from '@/hooks/useSiteConfig';
+import StripeIdentityCard from '@/components/profile/StripeIdentityCard';
 
 const INTERESTS = [
   'Travel', 'Music', 'Movies', 'Cooking', 'Fitness', 'Reading',
@@ -112,37 +113,45 @@ export default function MyProfile() {
       <h1 className="font-heading text-3xl font-bold mb-6">My Profile</h1>
 
       {/* Verification Status */}
-      <Card className="mb-6">
-        <CardContent className="pt-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="font-heading text-lg font-semibold flex items-center gap-2">
-                <Shield className="w-5 h-5 text-primary" />
-                ID Verification
-              </h3>
-              <p className="text-sm text-muted-foreground mt-1">
-                {profile.verification_status === 'unverified' && 'Upload your government ID to get verified'}
-                {profile.verification_status === 'pending' && 'Your ID is being reviewed by our team'}
-                {profile.verification_status === 'verified' && 'Your identity has been verified'}
-                {profile.verification_status === 'rejected' && 'Your verification was rejected. Please try again.'}
-              </p>
+      {config.require_stripe_identity ? (
+        <StripeIdentityCard
+          profile={profile}
+          publishableKey={config.stripe_identity_publishable_key}
+          onRefetch={refetch}
+        />
+      ) : (
+        <Card className="mb-6">
+          <CardContent className="pt-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="font-heading text-lg font-semibold flex items-center gap-2">
+                  <Shield className="w-5 h-5 text-primary" />
+                  ID Verification
+                </h3>
+                <p className="text-sm text-muted-foreground mt-1">
+                  {profile.verification_status === 'unverified' && 'Upload your government ID to get verified'}
+                  {profile.verification_status === 'pending' && 'Your ID is being reviewed by our team'}
+                  {profile.verification_status === 'verified' && 'Your identity has been verified'}
+                  {profile.verification_status === 'rejected' && 'Your verification was rejected. Please try again.'}
+                </p>
+              </div>
+              <Badge className={verificationColors[profile.verification_status]}>
+                {profile.verification_status}
+              </Badge>
             </div>
-            <Badge className={verificationColors[profile.verification_status]}>
-              {profile.verification_status}
-            </Badge>
-          </div>
-          {(profile.verification_status === 'unverified' || profile.verification_status === 'rejected') && (
-            <label className="mt-4 block">
-              <Button variant="outline" className="gap-2" asChild>
-                <span>
-                  <Upload className="w-4 h-4" /> Upload Government ID
-                </span>
-              </Button>
-              <input type="file" accept="image/*,.pdf" className="hidden" onChange={handleIdUpload} />
-            </label>
-          )}
-        </CardContent>
-      </Card>
+            {(profile.verification_status === 'unverified' || profile.verification_status === 'rejected') && (
+              <label className="mt-4 block">
+                <Button variant="outline" className="gap-2" asChild>
+                  <span>
+                    <Upload className="w-4 h-4" /> Upload Government ID
+                  </span>
+                </Button>
+                <input type="file" accept="image/*,.pdf" className="hidden" onChange={handleIdUpload} />
+              </label>
+            )}
+          </CardContent>
+        </Card>
+      )}
 
       {/* Subscription Info (for men) */}
       {profile.gender === 'male' && (
