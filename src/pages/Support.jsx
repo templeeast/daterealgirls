@@ -11,14 +11,15 @@ import { Badge } from '@/components/ui/badge';
 import { HelpCircle, Send, Clock, CheckCircle } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import useMyProfile from '@/hooks/useMyProfile';
+import { useTranslation } from 'react-i18next';
 
-const CATEGORIES = [
-  { value: 'account_access', label: 'Account Access' },
-  { value: 'payment_billing', label: 'Payment & Billing' },
-  { value: 'verification', label: 'Profile Verification' },
-  { value: 'technical', label: 'Technical Support' },
-  { value: 'harassment_abuse', label: 'Report Harassment/Abuse' },
-  { value: 'general', label: 'General Inquiry' },
+const CATEGORY_KEYS = [
+  { value: 'account_access', key: 'cat_account_access' },
+  { value: 'payment_billing', key: 'cat_payment_billing' },
+  { value: 'verification', key: 'cat_verification' },
+  { value: 'technical', key: 'cat_technical' },
+  { value: 'harassment_abuse', key: 'cat_harassment' },
+  { value: 'general', key: 'cat_general' },
 ];
 
 const statusColors = {
@@ -30,6 +31,7 @@ const statusColors = {
 
 export default function Support() {
   const { user } = useMyProfile();
+  const { t } = useTranslation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [showForm, setShowForm] = useState(false);
@@ -52,52 +54,52 @@ export default function Support() {
       queryClient.invalidateQueries({ queryKey: ['myTickets'] });
       setShowForm(false);
       setForm({ category: '', subject: '', description: '' });
-      toast({ title: 'Support ticket submitted' });
+      toast({ title: t('ticket_submitted') });
     },
   });
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="font-heading text-3xl font-bold">Support</h1>
+        <h1 className="font-heading text-3xl font-bold">{t('support_title')}</h1>
         <Button className="gap-2 rounded-full" onClick={() => setShowForm(!showForm)}>
           <HelpCircle className="w-4 h-4" />
-          New Ticket
+          {t('new_ticket_btn')}
         </Button>
       </div>
 
       {showForm && (
         <Card className="mb-8">
           <CardHeader>
-            <CardTitle className="font-heading text-lg">Submit a Ticket</CardTitle>
-            <CardDescription>We'll get back to you as soon as possible.</CardDescription>
+            <CardTitle className="font-heading text-lg">{t('submit_ticket_title')}</CardTitle>
+            <CardDescription>{t('submit_ticket_desc')}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label>Category</Label>
+              <Label>{t('category_label')}</Label>
               <Select value={form.category} onValueChange={v => setForm(p => ({ ...p, category: v }))}>
-                <SelectTrigger><SelectValue placeholder="Select category" /></SelectTrigger>
+                <SelectTrigger><SelectValue placeholder={t('select_category')} /></SelectTrigger>
                 <SelectContent>
-                  {CATEGORIES.map(c => <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>)}
+                  {CATEGORY_KEYS.map(c => <SelectItem key={c.value} value={c.value}>{t(c.key)}</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
             <div className="space-y-2">
-              <Label>Subject</Label>
-              <Input value={form.subject} onChange={e => setForm(p => ({ ...p, subject: e.target.value }))} placeholder="Brief summary" />
+              <Label>{t('subject_label')}</Label>
+              <Input value={form.subject} onChange={e => setForm(p => ({ ...p, subject: e.target.value }))} placeholder={t('subject_placeholder')} />
             </div>
             <div className="space-y-2">
-              <Label>Description</Label>
-              <Textarea value={form.description} onChange={e => setForm(p => ({ ...p, description: e.target.value }))} placeholder="Describe your issue in detail..." className="h-32" />
+              <Label>{t('description_label')}</Label>
+              <Textarea value={form.description} onChange={e => setForm(p => ({ ...p, description: e.target.value }))} placeholder={t('description_placeholder')} className="h-32" />
             </div>
             <div className="flex justify-end gap-3">
-              <Button variant="outline" onClick={() => setShowForm(false)}>Cancel</Button>
+              <Button variant="outline" onClick={() => setShowForm(false)}>{t('cancel_btn')}</Button>
               <Button
                 className="gap-2"
                 onClick={() => createMutation.mutate(form)}
                 disabled={!form.category || !form.subject || !form.description}
               >
-                <Send className="w-4 h-4" /> Submit
+                <Send className="w-4 h-4" /> {t('submit_btn')}
               </Button>
             </div>
           </CardContent>
@@ -109,7 +111,7 @@ export default function Support() {
         {tickets.length === 0 && !isLoading ? (
           <div className="text-center py-16">
             <HelpCircle className="w-12 h-12 text-muted-foreground/30 mx-auto mb-4" />
-            <p className="text-muted-foreground">No support tickets yet.</p>
+            <p className="text-muted-foreground">{t('no_tickets')}</p>
           </div>
         ) : (
           tickets.map(ticket => (
@@ -119,7 +121,7 @@ export default function Support() {
                   <div>
                     <h3 className="font-medium">{ticket.subject}</h3>
                     <p className="text-sm text-muted-foreground">
-                      {CATEGORIES.find(c => c.value === ticket.category)?.label}
+                      {t(CATEGORY_KEYS.find(c => c.value === ticket.category)?.key || '')}
                     </p>
                   </div>
                   <Badge className={statusColors[ticket.status]}>{ticket.status.replace('_', ' ')}</Badge>
@@ -127,7 +129,7 @@ export default function Support() {
                 <p className="text-sm text-muted-foreground mt-2">{ticket.description}</p>
                 {ticket.admin_response && (
                   <div className="mt-4 p-3 bg-muted rounded-lg">
-                    <p className="text-xs font-medium text-muted-foreground mb-1">Admin Response</p>
+                    <p className="text-xs font-medium text-muted-foreground mb-1">{t('admin_response_label')}</p>
                     <p className="text-sm">{ticket.admin_response}</p>
                   </div>
                 )}

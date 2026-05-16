@@ -8,11 +8,13 @@ import { ArrowLeft, Send, User, Image as ImageIcon } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import useMyProfile from '@/hooks/useMyProfile';
 import { format } from 'date-fns';
+import { useTranslation } from 'react-i18next';
 
 export default function Chat() {
   const conversationId = window.location.pathname.split('/chat/')[1];
   const navigate = useNavigate();
   const { user } = useMyProfile();
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [text, setText] = useState('');
   const messagesEndRef = useRef(null);
@@ -130,7 +132,7 @@ export default function Chat() {
           ))
         ) : messages.length === 0 ? (
           <div className="text-center py-12 text-muted-foreground">
-            <p>No messages yet. Say hello!</p>
+            <p>{t('chat_no_messages')}</p>
           </div>
         ) : (
           messages.map(msg => {
@@ -169,7 +171,7 @@ export default function Chat() {
             <input type="file" accept="image/*" className="hidden" onChange={handleImageSend} />
           </label>
           <Input
-            placeholder="Type a message..."
+            placeholder={t('type_message')}
             value={text}
             onChange={e => setText(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && handleSend()}

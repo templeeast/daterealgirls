@@ -8,9 +8,11 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import ProfileCard from '@/components/browse/ProfileCard';
 import useMyProfile from '@/hooks/useMyProfile';
+import { useTranslation } from 'react-i18next';
 
 export default function Browse() {
   const { user } = useMyProfile();
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [search, setSearch] = useState('');
   const [genderFilter, setGenderFilter] = useState('all');
@@ -69,12 +71,12 @@ export default function Browse() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Search & Filters */}
       <div className="mb-8">
-        <h1 className="font-heading text-3xl font-bold mb-6">Discover People</h1>
+        <h1 className="font-heading text-3xl font-bold mb-6">{t('browse_title')}</h1>
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
-              placeholder="Search by name, city, country..."
+              placeholder={t('browse_search_placeholder')}
               className="pl-10"
               value={search}
               onChange={e => setSearch(e.target.value)}
@@ -86,27 +88,27 @@ export default function Browse() {
             onClick={() => setShowFilters(!showFilters)}
           >
             <SlidersHorizontal className="w-4 h-4" />
-            Filters
+            {t('browse_filters')}
           </Button>
         </div>
         {showFilters && (
           <div className="flex flex-wrap gap-3 mt-4 p-4 bg-card rounded-xl border">
             <Select value={genderFilter} onValueChange={setGenderFilter}>
-              <SelectTrigger className="w-40"><SelectValue placeholder="Gender" /></SelectTrigger>
+              <SelectTrigger className="w-40"><SelectValue placeholder={t('browse_gender')} /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Genders</SelectItem>
-                <SelectItem value="female">Women</SelectItem>
-                <SelectItem value="male">Men</SelectItem>
+                <SelectItem value="all">{t('browse_all_genders')}</SelectItem>
+                <SelectItem value="female">{t('browse_women')}</SelectItem>
+                <SelectItem value="male">{t('browse_men')}</SelectItem>
               </SelectContent>
             </Select>
             <Select value={lookingForFilter} onValueChange={setLookingForFilter}>
-              <SelectTrigger className="w-44"><SelectValue placeholder="Looking for" /></SelectTrigger>
+              <SelectTrigger className="w-44"><SelectValue placeholder={t('browse_looking_for')} /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All</SelectItem>
-                <SelectItem value="relationship">Relationship</SelectItem>
-                <SelectItem value="friendship">Friendship</SelectItem>
-                <SelectItem value="casual">Casual</SelectItem>
-                <SelectItem value="marriage">Marriage</SelectItem>
+                <SelectItem value="all">{t('browse_all')}</SelectItem>
+                <SelectItem value="relationship">{t('browse_relationship')}</SelectItem>
+                <SelectItem value="friendship">{t('browse_friendship')}</SelectItem>
+                <SelectItem value="casual">{t('browse_casual')}</SelectItem>
+                <SelectItem value="marriage">{t('browse_marriage')}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -125,7 +127,7 @@ export default function Browse() {
         </div>
       ) : filtered.length === 0 ? (
         <div className="text-center py-20">
-          <p className="text-muted-foreground text-lg">No profiles found matching your criteria.</p>
+          <p className="text-muted-foreground text-lg">{t('browse_no_results')}</p>
         </div>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">

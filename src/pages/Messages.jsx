@@ -7,9 +7,11 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import useMyProfile from '@/hooks/useMyProfile';
 import { formatDistanceToNow } from 'date-fns';
+import { useTranslation } from 'react-i18next';
 
 export default function Messages() {
   const { user } = useMyProfile();
+  const { t } = useTranslation();
 
   const { data: conversations, isLoading } = useQuery({
     queryKey: ['conversations', user?.id],
@@ -39,7 +41,7 @@ export default function Messages() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
-      <h1 className="font-heading text-3xl font-bold mb-6">Messages</h1>
+      <h1 className="font-heading text-3xl font-bold mb-6">{t('messages_title')}</h1>
 
       {isLoading ? (
         <div className="space-y-3">
@@ -56,8 +58,8 @@ export default function Messages() {
       ) : conversations.length === 0 ? (
         <div className="text-center py-20">
           <MessageCircle className="w-12 h-12 text-muted-foreground/30 mx-auto mb-4" />
-          <p className="text-muted-foreground text-lg">No conversations yet</p>
-          <p className="text-sm text-muted-foreground mt-1">Start by messaging someone from their profile!</p>
+          <p className="text-muted-foreground text-lg">{t('messages_empty')}</p>
+          <p className="text-sm text-muted-foreground mt-1">{t('messages_empty_sub')}</p>
         </div>
       ) : (
         <div className="space-y-1">
@@ -84,7 +86,7 @@ export default function Messages() {
                     </div>
                     <div className="flex items-center justify-between mt-0.5">
                       <p className="text-sm text-muted-foreground truncate">
-                        {convo.last_message || 'Start chatting...'}
+                        {convo.last_message || t('start_chatting')}
                       </p>
                       {other.unread > 0 && (
                         <Badge className="bg-primary text-primary-foreground ml-2 shrink-0 text-xs h-5 min-w-[20px] flex items-center justify-center rounded-full">

@@ -9,6 +9,7 @@ import { MapPin, Shield, Star, MessageCircle, Flag, Heart, ArrowLeft, Instagram,
 import { Skeleton } from '@/components/ui/skeleton';
 import useMyProfile from '@/hooks/useMyProfile';
 import { useToast } from '@/components/ui/use-toast';
+import { useTranslation } from 'react-i18next';
 
 export default function ViewProfile() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -16,6 +17,7 @@ export default function ViewProfile() {
   const navigate = useNavigate();
   const { user } = useMyProfile();
   const { toast } = useToast();
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
 
   const { data: profile, isLoading } = useQuery({
@@ -93,21 +95,26 @@ export default function ViewProfile() {
   if (!profile) {
     return (
       <div className="text-center py-20">
-        <p className="text-muted-foreground text-lg">Profile not found.</p>
+        <p className="text-muted-foreground text-lg">{t('profile_not_found')}</p>
         <Button variant="ghost" className="mt-4" onClick={() => navigate('/browse')}>
-          <ArrowLeft className="w-4 h-4 mr-2" /> Back to Browse
+          <ArrowLeft className="w-4 h-4 mr-2" /> {t('back_to_browse')}
         </Button>
       </div>
     );
   }
 
   const photos = [profile.photo_1, profile.photo_2, profile.photo_3].filter(Boolean);
-  const lookingForLabels = { relationship: 'Relationship', friendship: 'Friendship', casual: 'Casual', marriage: 'Marriage' };
+  const lookingForLabels = {
+    relationship: t('vp_relationship'),
+    friendship: t('vp_friendship'),
+    casual: t('vp_casual'),
+    marriage: t('vp_marriage'),
+  };
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
       <Button variant="ghost" className="mb-4" onClick={() => navigate(-1)}>
-        <ArrowLeft className="w-4 h-4 mr-2" /> Back
+        <ArrowLeft className="w-4 h-4 mr-2" /> {t('back')}
       </Button>
 
       {/* Photos */}
@@ -132,7 +139,7 @@ export default function ViewProfile() {
             <h1 className="font-heading text-3xl font-bold">{profile.display_name}, {profile.age}</h1>
             {profile.verification_status === 'verified' && (
               <Badge className="bg-primary/10 text-primary border-primary/20 gap-1">
-                <Shield className="w-3 h-3" /> Verified
+                <Shield className="w-3 h-3" /> {t('vp_verified')}
               </Badge>
             )}
           </div>
@@ -148,11 +155,11 @@ export default function ViewProfile() {
       {/* Action buttons */}
       <div className="flex gap-3 mb-8">
         <Button className="gap-2 rounded-full" onClick={handleMessage}>
-          <MessageCircle className="w-4 h-4" /> Message
+          <MessageCircle className="w-4 h-4" /> {t('message_btn')}
         </Button>
         <Button variant="outline" className="gap-2 rounded-full" onClick={() => favMutation.mutate()}>
           <Star className={`w-4 h-4 ${isFavorited ? 'fill-primary text-primary' : ''}`} />
-          {isFavorited ? 'Favorited' : 'Favorite'}
+          {isFavorited ? t('favorited_btn') : t('favorite_btn')}
         </Button>
         <Button variant="ghost" size="icon" className="rounded-full text-muted-foreground" onClick={handleReport}>
           <Flag className="w-4 h-4" />
@@ -163,7 +170,7 @@ export default function ViewProfile() {
       {profile.bio && (
         <Card className="mb-6">
           <CardContent className="pt-6">
-            <h3 className="font-heading text-lg font-semibold mb-2">About</h3>
+            <h3 className="font-heading text-lg font-semibold mb-2">{t('about_section')}</h3>
             <p className="text-muted-foreground leading-relaxed">{profile.bio}</p>
           </CardContent>
         </Card>
@@ -172,17 +179,17 @@ export default function ViewProfile() {
       {/* Details */}
       <Card className="mb-6">
         <CardContent className="pt-6">
-          <h3 className="font-heading text-lg font-semibold mb-3">Details</h3>
+          <h3 className="font-heading text-lg font-semibold mb-3">{t('details_section')}</h3>
           <div className="grid grid-cols-2 gap-4">
             {profile.looking_for && (
               <div>
-                <p className="text-sm text-muted-foreground">Looking for</p>
+                <p className="text-sm text-muted-foreground">{t('looking_for_detail')}</p>
                 <p className="font-medium">{lookingForLabels[profile.looking_for]}</p>
               </div>
             )}
             {profile.interests?.length > 0 && (
               <div className="col-span-2">
-                <p className="text-sm text-muted-foreground mb-2">Interests</p>
+                <p className="text-sm text-muted-foreground mb-2">{t('interests_detail')}</p>
                 <div className="flex flex-wrap gap-2">
                   {profile.interests.map(i => (
                     <Badge key={i} variant="secondary">{i}</Badge>
@@ -198,7 +205,7 @@ export default function ViewProfile() {
       {(profile.instagram || profile.facebook || profile.tiktok) && (
         <Card>
           <CardContent className="pt-6">
-            <h3 className="font-heading text-lg font-semibold mb-3">Social Media</h3>
+            <h3 className="font-heading text-lg font-semibold mb-3">{t('social_section')}</h3>
             <div className="flex gap-3">
               {profile.instagram && (
                 <a href={`https://instagram.com/${profile.instagram}`} target="_blank" rel="noopener noreferrer">

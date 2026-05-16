@@ -14,6 +14,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
 import useMyProfile from '@/hooks/useMyProfile';
 import useSiteConfig from '@/hooks/useSiteConfig';
+import { useTranslation } from 'react-i18next';
 import StripeIdentityCard from '@/components/profile/StripeIdentityCard';
 
 const INTERESTS = [
@@ -27,6 +28,7 @@ export default function MyProfile() {
   const { user, profile, isLoading, refetch } = useMyProfile();
   const { config } = useSiteConfig();
   const { toast } = useToast();
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState(null);
@@ -79,7 +81,7 @@ export default function MyProfile() {
       id_document_url: file_url,
       verification_status: 'pending',
     });
-    toast({ title: 'ID submitted for verification' });
+    toast({ title: t('id_submitted') });
     refetch();
   };
 
@@ -87,7 +89,7 @@ export default function MyProfile() {
     setSaving(true);
     await base44.entities.MemberProfile.update(profile.id, form);
     queryClient.invalidateQueries({ queryKey: ['myProfile'] });
-    toast({ title: 'Profile updated!' });
+    toast({ title: t('profile_updated') });
     setSaving(false);
   };
 
@@ -110,7 +112,7 @@ export default function MyProfile() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
-      <h1 className="font-heading text-3xl font-bold mb-6">My Profile</h1>
+      <h1 className="font-heading text-3xl font-bold mb-6">{t('my_profile_title')}</h1>
 
       {/* Verification Status */}
       {config.require_stripe_identity ? (
@@ -126,13 +128,13 @@ export default function MyProfile() {
               <div>
                 <h3 className="font-heading text-lg font-semibold flex items-center gap-2">
                   <Shield className="w-5 h-5 text-primary" />
-                  ID Verification
+                  {t('id_verification_title')}
                 </h3>
                 <p className="text-sm text-muted-foreground mt-1">
-                  {profile.verification_status === 'unverified' && 'Upload your government ID to get verified'}
-                  {profile.verification_status === 'pending' && 'Your ID is being reviewed by our team'}
-                  {profile.verification_status === 'verified' && 'Your identity has been verified'}
-                  {profile.verification_status === 'rejected' && 'Your verification was rejected. Please try again.'}
+                  {profile.verification_status === 'unverified' && t('id_verification_unverified')}
+                  {profile.verification_status === 'pending' && t('id_verification_pending')}
+                  {profile.verification_status === 'verified' && t('id_verification_verified')}
+                  {profile.verification_status === 'rejected' && t('id_verification_rejected')}
                 </p>
               </div>
               <Badge className={verificationColors[profile.verification_status]}>
@@ -143,12 +145,12 @@ export default function MyProfile() {
               <div className="mt-4 space-y-3">
                 <div className="flex items-start gap-2 text-xs text-muted-foreground bg-muted rounded-lg p-3">
                   <Shield className="w-3.5 h-3.5 shrink-0 mt-0.5 text-primary" />
-                  <span>Please upload a <strong className="text-foreground">government-issued photo ID</strong> (e.g. passport, driver's license, or national ID card). Your ID is encrypted and stored securely, used only for verification, and never shared with other members or third parties.</span>
+                  <span>{t('id_upload_notice')}</span>
                 </div>
                 <label className="block">
                   <Button variant="outline" className="gap-2" asChild>
                     <span>
-                      <Upload className="w-4 h-4" /> Upload Government ID
+                      <Upload className="w-4 h-4" /> {t('upload_govt_id')}
                     </span>
                   </Button>
                   <input type="file" accept="image/*,.pdf" className="hidden" onChange={handleIdUpload} />
@@ -163,11 +165,11 @@ export default function MyProfile() {
       {profile.gender === 'male' && (
         <Card className="mb-6">
           <CardContent className="pt-6">
-            <h3 className="font-heading text-lg font-semibold mb-2">Subscription</h3>
+            <h3 className="font-heading text-lg font-semibold mb-2">{t('subscription_title')}</h3>
             <div className="flex items-center gap-3">
               <Badge variant="secondary" className="capitalize">{profile.subscription_status}</Badge>
               {profile.trial_end_date && profile.subscription_status === 'trial' && (
-                <span className="text-sm text-muted-foreground">Trial ends: {profile.trial_end_date}</span>
+                <span className="text-sm text-muted-foreground">{t('trial_ends')} {profile.trial_end_date}</span>
               )}
             </div>
           </CardContent>
@@ -178,9 +180,9 @@ export default function MyProfile() {
       <Card className="mb-6">
         <CardHeader>
           <CardTitle className="font-heading text-lg flex items-center gap-2">
-            <Camera className="w-5 h-5" /> Photos
+            <Camera className="w-5 h-5" /> {t('photos_title')}
           </CardTitle>
-          <CardDescription>Upload up to {config.max_photos || 3} photos</CardDescription>
+          <CardDescription>{t('photos_upload_desc', { n: config.max_photos || 3 })}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-3 gap-4">
@@ -192,7 +194,7 @@ export default function MyProfile() {
                   ) : (
                     <div className="text-center p-2">
                       <Upload className="w-6 h-6 mx-auto text-muted-foreground mb-1" />
-                      <span className="text-xs text-muted-foreground">Photo {i + 1}</span>
+                      <span className="text-xs text-muted-foreground">{t('photo_label', { n: i + 1 })}</span>
                     </div>
                   )}
                 </div>
@@ -206,46 +208,46 @@ export default function MyProfile() {
       {/* Profile Info */}
       <Card className="mb-6">
         <CardHeader>
-          <CardTitle className="font-heading text-lg">Profile Information</CardTitle>
+          <CardTitle className="font-heading text-lg">{t('profile_info_title')}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label>Display Name</Label>
+            <Label>{t('display_name_label')}</Label>
             <Input value={form.display_name} onChange={e => updateField('display_name', e.target.value)} />
           </div>
           <div className="space-y-2">
-            <Label>Bio <span className="text-muted-foreground text-xs">({form.bio.length}/{config.bio_max_length || 500})</span></Label>
+            <Label>{t('bio_label')} <span className="text-muted-foreground text-xs">({form.bio.length}/{config.bio_max_length || 500})</span></Label>
             <Textarea
               value={form.bio}
               onChange={e => updateField('bio', e.target.value.slice(0, config.bio_max_length || 500))}
               className="h-32"
-              placeholder="Tell people about yourself..."
+              placeholder={t('bio_placeholder')}
             />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>City</Label>
+              <Label>{t('city_label')}</Label>
               <Input value={form.location_city} onChange={e => updateField('location_city', e.target.value)} />
             </div>
             <div className="space-y-2">
-              <Label>Country</Label>
+              <Label>{t('country_label')}</Label>
               <Input value={form.location_country} onChange={e => updateField('location_country', e.target.value)} />
             </div>
           </div>
           <div className="space-y-2">
-            <Label>Looking For</Label>
+            <Label>{t('looking_for_label')}</Label>
             <Select value={form.looking_for} onValueChange={v => updateField('looking_for', v)}>
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="relationship">Relationship</SelectItem>
-                <SelectItem value="friendship">Friendship</SelectItem>
-                <SelectItem value="casual">Casual</SelectItem>
-                <SelectItem value="marriage">Marriage</SelectItem>
+                <SelectItem value="relationship">{t('browse_relationship')}</SelectItem>
+                <SelectItem value="friendship">{t('browse_friendship')}</SelectItem>
+                <SelectItem value="casual">{t('browse_casual')}</SelectItem>
+                <SelectItem value="marriage">{t('browse_marriage')}</SelectItem>
               </SelectContent>
             </Select>
           </div>
           <div className="space-y-2">
-            <Label>Interests</Label>
+            <Label>{t('interests_label')}</Label>
             <div className="flex flex-wrap gap-2">
               {INTERESTS.map(interest => (
                 <button
@@ -269,20 +271,20 @@ export default function MyProfile() {
       {/* Social */}
       <Card className="mb-6">
         <CardHeader>
-          <CardTitle className="font-heading text-lg">Social Media</CardTitle>
+          <CardTitle className="font-heading text-lg">{t('social_media_title')}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label>Instagram</Label>
-            <Input placeholder="username" value={form.instagram} onChange={e => updateField('instagram', e.target.value)} />
+            <Label>{t('instagram_label')}</Label>
+            <Input placeholder={t('username_placeholder')} value={form.instagram} onChange={e => updateField('instagram', e.target.value)} />
           </div>
           <div className="space-y-2">
-            <Label>Facebook</Label>
-            <Input placeholder="Profile link" value={form.facebook} onChange={e => updateField('facebook', e.target.value)} />
+            <Label>{t('facebook_label')}</Label>
+            <Input placeholder={t('facebook_placeholder')} value={form.facebook} onChange={e => updateField('facebook', e.target.value)} />
           </div>
           <div className="space-y-2">
-            <Label>TikTok</Label>
-            <Input placeholder="username" value={form.tiktok} onChange={e => updateField('tiktok', e.target.value)} />
+            <Label>{t('tiktok_label')}</Label>
+            <Input placeholder={t('username_placeholder')} value={form.tiktok} onChange={e => updateField('tiktok', e.target.value)} />
           </div>
         </CardContent>
       </Card>
@@ -290,7 +292,7 @@ export default function MyProfile() {
       {/* Save */}
       <Button className="w-full gap-2 rounded-full" size="lg" onClick={handleSave} disabled={saving}>
         <Save className="w-4 h-4" />
-        {saving ? 'Saving...' : 'Save Profile'}
+        {saving ? t('saving') : t('save_profile')}
       </Button>
     </div>
   );

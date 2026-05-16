@@ -6,9 +6,11 @@ import { Star, User, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import useMyProfile from '@/hooks/useMyProfile';
+import { useTranslation } from 'react-i18next';
 
 export default function Favorites() {
   const { user } = useMyProfile();
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
 
   const { data: favorites, isLoading } = useQuery({
@@ -25,7 +27,7 @@ export default function Favorites() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
-      <h1 className="font-heading text-3xl font-bold mb-6">Favorites</h1>
+      <h1 className="font-heading text-3xl font-bold mb-6">{t('favorites_title')}</h1>
 
       {isLoading ? (
         <div className="space-y-3">
@@ -36,12 +38,12 @@ export default function Favorites() {
       ) : favorites.length === 0 ? (
         <div className="text-center py-20">
           <Star className="w-12 h-12 text-muted-foreground/30 mx-auto mb-4" />
-          <p className="text-muted-foreground text-lg">No favorites yet</p>
+          <p className="text-muted-foreground text-lg">{t('favorites_empty')}</p>
           <p className="text-sm text-muted-foreground mt-1">
-            Browse profiles and star the ones you like!
+            {t('favorites_empty_sub')}
           </p>
           <Link to="/browse">
-            <Button className="mt-4 rounded-full">Browse Profiles</Button>
+            <Button className="mt-4 rounded-full">{t('browse_profiles_btn')}</Button>
           </Link>
         </div>
       ) : (
@@ -58,7 +60,7 @@ export default function Favorites() {
                 )}
                 <div className="min-w-0">
                   <h3 className="font-medium truncate">{fav.favorited_user_name || 'User'}</h3>
-                  <p className="text-sm text-muted-foreground">View profile</p>
+                  <p className="text-sm text-muted-foreground">{t('view_profile')}</p>
                 </div>
               </Link>
               <Button

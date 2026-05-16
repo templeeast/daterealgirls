@@ -11,6 +11,7 @@ import { Heart, Upload, User, ChevronRight, ChevronLeft } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import useSiteConfig from '@/hooks/useSiteConfig';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { addMonths, format } from 'date-fns';
 import StripeIdentityStep from '@/components/onboarding/StripeIdentityStep';
 
@@ -24,6 +25,7 @@ export default function Onboarding() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { config } = useSiteConfig();
+  const { t } = useTranslation();
   const [step, setStep] = useState(0);
   const [saving, setSaving] = useState(false);
   const [identityVerified, setIdentityVerified] = useState(false);
@@ -74,7 +76,7 @@ export default function Onboarding() {
   const handleSubmit = async () => {
     const age = calculateAge(form.date_of_birth);
     if (age < 18) {
-      toast({ title: 'You must be 18 or older to join', variant: 'destructive' });
+      toast({ title: t('age_error'), variant: 'destructive' });
       return;
     }
 
@@ -96,7 +98,7 @@ export default function Onboarding() {
       trial_end_date: form.gender === 'male' ? format(trialEnd, 'yyyy-MM-dd') : undefined,
     });
 
-    toast({ title: 'Profile created! Welcome to ' + config.site_name });
+    toast({ title: t('profile_created', { siteName: config.site_name }) });
     navigate('/browse');
   };
 
@@ -106,32 +108,32 @@ export default function Onboarding() {
     // Step 0: Basic Info
     <div key="basic" className="space-y-4">
       <div className="space-y-2">
-        <Label>Display Name</Label>
-        <Input placeholder="How should others see you?" value={form.display_name} onChange={e => updateField('display_name', e.target.value)} />
+        <Label>{t('display_name_label')}</Label>
+        <Input placeholder={t('display_name_placeholder')} value={form.display_name} onChange={e => updateField('display_name', e.target.value)} />
       </div>
       <div className="space-y-2">
-        <Label>Gender</Label>
+        <Label>{t('gender_label')}</Label>
         <Select value={form.gender} onValueChange={v => updateField('gender', v)}>
-          <SelectTrigger><SelectValue placeholder="Select gender" /></SelectTrigger>
+          <SelectTrigger><SelectValue placeholder={t('select_gender')} /></SelectTrigger>
           <SelectContent>
-            <SelectItem value="female">Woman</SelectItem>
-            <SelectItem value="male">Man</SelectItem>
+            <SelectItem value="female">{t('gender_woman')}</SelectItem>
+            <SelectItem value="male">{t('gender_man')}</SelectItem>
           </SelectContent>
         </Select>
       </div>
       <div className="space-y-2">
-        <Label>Date of Birth</Label>
+        <Label>{t('dob_label')}</Label>
         <Input type="date" value={form.date_of_birth} onChange={e => updateField('date_of_birth', e.target.value)} />
-        <p className="text-xs text-muted-foreground">You must be 18+ to join</p>
+        <p className="text-xs text-muted-foreground">{t('dob_notice')}</p>
       </div>
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label>City</Label>
-          <Input placeholder="Your city" value={form.location_city} onChange={e => updateField('location_city', e.target.value)} />
+          <Label>{t('city_label')}</Label>
+          <Input placeholder={t('city_placeholder')} value={form.location_city} onChange={e => updateField('location_city', e.target.value)} />
         </div>
         <div className="space-y-2">
-          <Label>Country</Label>
-          <Input placeholder="Your country" value={form.location_country} onChange={e => updateField('location_country', e.target.value)} />
+          <Label>{t('country_label')}</Label>
+          <Input placeholder={t('country_placeholder')} value={form.location_country} onChange={e => updateField('location_country', e.target.value)} />
         </div>
       </div>
     </div>,
@@ -139,28 +141,28 @@ export default function Onboarding() {
     // Step 1: About You
     <div key="about" className="space-y-4">
       <div className="space-y-2">
-        <Label>Bio <span className="text-muted-foreground">({form.bio.length}/{config.bio_max_length || 500})</span></Label>
+        <Label>{t('bio_label')} <span className="text-muted-foreground">({form.bio.length}/{config.bio_max_length || 500})</span></Label>
         <Textarea
-          placeholder="Tell people about yourself..."
+          placeholder={t('bio_placeholder')}
           value={form.bio}
           onChange={e => updateField('bio', e.target.value.slice(0, config.bio_max_length || 500))}
           className="h-32"
         />
       </div>
       <div className="space-y-2">
-        <Label>Looking For</Label>
+        <Label>{t('looking_for_label')}</Label>
         <Select value={form.looking_for} onValueChange={v => updateField('looking_for', v)}>
-          <SelectTrigger><SelectValue placeholder="What are you looking for?" /></SelectTrigger>
+          <SelectTrigger><SelectValue placeholder={t('bio_looking_placeholder')} /></SelectTrigger>
           <SelectContent>
-            <SelectItem value="relationship">Relationship</SelectItem>
-            <SelectItem value="friendship">Friendship</SelectItem>
-            <SelectItem value="casual">Casual</SelectItem>
-            <SelectItem value="marriage">Marriage</SelectItem>
+            <SelectItem value="relationship">{t('browse_relationship')}</SelectItem>
+            <SelectItem value="friendship">{t('browse_friendship')}</SelectItem>
+            <SelectItem value="casual">{t('browse_casual')}</SelectItem>
+            <SelectItem value="marriage">{t('browse_marriage')}</SelectItem>
           </SelectContent>
         </Select>
       </div>
       <div className="space-y-2">
-        <Label>Interests</Label>
+        <Label>{t('interests_label')}</Label>
         <div className="flex flex-wrap gap-2">
           {INTERESTS.map(interest => (
             <button
@@ -193,7 +195,7 @@ export default function Onboarding() {
     // Step 3: Photos & Social
     <div key="photos" className="space-y-6">
       <div className="space-y-2">
-        <Label>Photos (up to {config.max_photos || 3})</Label>
+        <Label>{t('photos_label', { n: config.max_photos || 3 })}</Label>
         <div className="grid grid-cols-3 gap-4">
           {['photo_1', 'photo_2', 'photo_3'].map((field, i) => (
             <label key={field} className="cursor-pointer">
@@ -203,7 +205,7 @@ export default function Onboarding() {
                 ) : (
                   <div className="text-center p-2">
                     <Upload className="w-6 h-6 mx-auto text-muted-foreground mb-1" />
-                    <span className="text-xs text-muted-foreground">Photo {i + 1}</span>
+                    <span className="text-xs text-muted-foreground">{t('photo_label', { n: i + 1 })}</span>
                   </div>
                 )}
               </div>
@@ -213,19 +215,19 @@ export default function Onboarding() {
         </div>
       </div>
       <div className="space-y-4">
-        <Label>Social Media (optional)</Label>
-        <Input placeholder="Instagram username" value={form.instagram} onChange={e => updateField('instagram', e.target.value)} />
-        <Input placeholder="Facebook profile link" value={form.facebook} onChange={e => updateField('facebook', e.target.value)} />
-        <Input placeholder="TikTok username" value={form.tiktok} onChange={e => updateField('tiktok', e.target.value)} />
+        <Label>{t('social_optional')}</Label>
+        <Input placeholder={t('instagram_placeholder')} value={form.instagram} onChange={e => updateField('instagram', e.target.value)} />
+        <Input placeholder={t('facebook_profile_placeholder')} value={form.facebook} onChange={e => updateField('facebook', e.target.value)} />
+        <Input placeholder={t('tiktok_placeholder')} value={form.tiktok} onChange={e => updateField('tiktok', e.target.value)} />
       </div>
     </div>,
   ];
 
   const stepTitles = [
-    'Basic Information',
-    'About You',
-    ...(requireStripeIdentity ? ['Identity Verification'] : []),
-    'Photos & Social',
+    t('step_basic'),
+    t('step_about'),
+    ...(requireStripeIdentity ? [t('step_identity')] : []),
+    t('step_photos'),
   ];
   const canProceed = step === 0 ? form.display_name && form.gender && form.date_of_birth : true;
 
@@ -234,8 +236,8 @@ export default function Onboarding() {
       <Card className="w-full max-w-lg">
         <CardHeader className="text-center">
           <Heart className="w-8 h-8 text-primary fill-primary mx-auto mb-2" />
-          <CardTitle className="font-heading text-2xl">Create Your Profile</CardTitle>
-          <CardDescription>Step {step + 1} of {steps.length} — {stepTitles[step]}</CardDescription>
+          <CardTitle className="font-heading text-2xl">{t('onboarding_title')}</CardTitle>
+          <CardDescription>{t('onboarding_step', { current: step + 1, total: steps.length, title: stepTitles[step] })}</CardDescription>
           {/* Progress */}
           <div className="flex gap-2 mt-4">
             {steps.map((_, i) => (
@@ -258,15 +260,15 @@ export default function Onboarding() {
           {!(requireStripeIdentity && step === 2) && (
             <div className="flex justify-between mt-8">
               <Button variant="ghost" onClick={() => setStep(s => s - 1)} disabled={step === 0}>
-                <ChevronLeft className="w-4 h-4 mr-1" /> Back
+                <ChevronLeft className="w-4 h-4 mr-1" /> {t('back_btn')}
               </Button>
               {step < steps.length - 1 ? (
                 <Button onClick={() => setStep(s => s + 1)} disabled={!canProceed}>
-                  Next <ChevronRight className="w-4 h-4 ml-1" />
+                  {t('next_btn')} <ChevronRight className="w-4 h-4 ml-1" />
                 </Button>
               ) : (
                 <Button onClick={handleSubmit} disabled={saving || !canProceed}>
-                  {saving ? 'Creating...' : 'Complete Profile'}
+                  {saving ? t('creating') : t('complete_profile_btn')}
                 </Button>
               )}
             </div>
