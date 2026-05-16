@@ -12,6 +12,7 @@ import { useToast } from '@/components/ui/use-toast';
 import useSiteConfig from '@/hooks/useSiteConfig';
 import { motion, AnimatePresence } from 'framer-motion';
 import { addMonths, format } from 'date-fns';
+import StripeIdentityStep from '@/components/onboarding/StripeIdentityStep';
 
 const INTERESTS = [
   'Travel', 'Music', 'Movies', 'Cooking', 'Fitness', 'Reading',
@@ -25,6 +26,7 @@ export default function Onboarding() {
   const { config } = useSiteConfig();
   const [step, setStep] = useState(0);
   const [saving, setSaving] = useState(false);
+  const [identityVerified, setIdentityVerified] = useState(false);
   const [form, setForm] = useState({
     display_name: '',
     gender: '',
@@ -85,7 +87,7 @@ export default function Onboarding() {
       ...form,
       user_id: me.id,
       age,
-      verification_status: 'unverified',
+      verification_status: identityVerified ? 'pending' : 'unverified',
       is_active: true,
       is_suspended: false,
       profile_complete: true,
@@ -97,6 +99,8 @@ export default function Onboarding() {
     toast({ title: 'Profile created! Welcome to ' + config.site_name });
     navigate('/browse');
   };
+
+  const requireStripeIdentity = config.require_stripe_identity === true;
 
   const steps = [
     // Step 0: Basic Info
@@ -176,7 +180,17 @@ export default function Onboarding() {
       </div>
     </div>,
 
-    // Step 2: Photos & Social
+    // Step 2: Identity Verification (conditional)
+    ...(requireStripeIdentity ? [
+      <StripeIdentityStep
+        key="identity"
+        publishableKey={config.stripe_identity_publishable_key}
+        onVerified={() => { setIdentityVerified(true); setStep(s => s + 1); }}
+        onSkip={() => setStep(s => s + 1)}
+      />
+    ] : []),
+
+    // Step 3: Photos & Social
     <div key="photos" className="space-y-6">
       <div className="space-y-2">
         <Label>Photos (up to {config.max_photos || 3})</Label>
@@ -207,7 +221,12 @@ export default function Onboarding() {
     </div>,
   ];
 
-  const stepTitles = ['Basic Information', 'About You', 'Photos & Social'];
+  const stepTitles = [
+    'Basic Information',
+    'About You',
+    ...(requireStripeIdentity ? ['Identity Verification'] : []),
+    'Photos & Social',
+  ];
   const canProceed = step === 0 ? form.display_name && form.gender && form.date_of_birth : true;
 
   return (
@@ -236,20 +255,22 @@ export default function Onboarding() {
               {steps[step]}
             </motion.div>
           </AnimatePresence>
-          <div className="flex justify-between mt-8">
-            <Button variant="ghost" onClick={() => setStep(s => s - 1)} disabled={step === 0}>
-              <ChevronLeft className="w-4 h-4 mr-1" /> Back
-            </Button>
-            {step < steps.length - 1 ? (
-              <Button onClick={() => setStep(s => s + 1)} disabled={!canProceed}>
-                Next <ChevronRight className="w-4 h-4 ml-1" />
+          {!(requireStripeIdentity && step === 2) && (
+            <div className="flex justify-between mt-8">
+              <Button variant="ghost" onClick={() => setStep(s => s - 1)} disabled={step === 0}>
+                <ChevronLeft className="w-4 h-4 mr-1" /> Back
               </Button>
-            ) : (
-              <Button onClick={handleSubmit} disabled={saving || !canProceed}>
-                {saving ? 'Creating...' : 'Complete Profile'}
-              </Button>
-            )}
-          </div>
+              {step < steps.length - 1 ? (
+                <Button onClick={() => setStep(s => s + 1)} disabled={!canProceed}>
+                  Next <ChevronRight className="w-4 h-4 ml-1" />
+                </Button>
+              ) : (
+                <Button onClick={handleSubmit} disabled={saving || !canProceed}>
+                  {saving ? 'Creating...' : 'Complete Profile'}
+                </Button>
+              )}
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

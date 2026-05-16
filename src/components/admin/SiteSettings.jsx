@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Upload, Save } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
+import { Switch } from '@/components/ui/switch';
 
 export default function SiteSettings() {
   const { toast } = useToast();
@@ -32,6 +33,8 @@ export default function SiteSettings() {
     max_photos: 3,
     bio_max_length: 500,
     primary_color: '',
+    require_stripe_identity: false,
+    stripe_identity_publishable_key: '',
   });
 
   useEffect(() => {
@@ -46,6 +49,8 @@ export default function SiteSettings() {
         max_photos: existingConfig.max_photos || 3,
         bio_max_length: existingConfig.bio_max_length || 500,
         primary_color: existingConfig.primary_color || '',
+        require_stripe_identity: existingConfig.require_stripe_identity || false,
+        stripe_identity_publishable_key: existingConfig.stripe_identity_publishable_key || '',
       });
     }
   }, [existingConfig]);
@@ -138,6 +143,37 @@ export default function SiteSettings() {
               <Input type="number" value={form.bio_max_length} onChange={e => updateField('bio_max_length', Number(e.target.value))} />
             </div>
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Stripe Identity */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="font-heading text-lg">Identity Verification</CardTitle>
+          <CardDescription>Require new users to verify their identity with Stripe during onboarding.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="font-medium text-sm">Require Stripe Identity Verification</p>
+              <p className="text-xs text-muted-foreground mt-0.5">When enabled, a verification step is added to the onboarding flow for all new members.</p>
+            </div>
+            <Switch
+              checked={form.require_stripe_identity}
+              onCheckedChange={v => updateField('require_stripe_identity', v)}
+            />
+          </div>
+          {form.require_stripe_identity && (
+            <div className="space-y-2 pt-2 border-t">
+              <Label>Stripe Publishable Key</Label>
+              <Input
+                value={form.stripe_identity_publishable_key}
+                onChange={e => updateField('stripe_identity_publishable_key', e.target.value)}
+                placeholder="pk_live_..."
+              />
+              <p className="text-xs text-muted-foreground">Found in your Stripe dashboard under Developers → API keys.</p>
+            </div>
+          )}
         </CardContent>
       </Card>
 

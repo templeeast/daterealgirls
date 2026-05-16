@@ -41,6 +41,15 @@
     "target_audience": {
       "type": "string",
       "description": "Description of target audience"
+    },
+    "require_stripe_identity": {
+      "type": "boolean",
+      "default": false,
+      "description": "If true, all new users must complete Stripe Identity verification during onboarding"
+    },
+    "stripe_identity_publishable_key": {
+      "type": "string",
+      "description": "Stripe publishable key for Identity verification"
     }
   },
   "required": [
