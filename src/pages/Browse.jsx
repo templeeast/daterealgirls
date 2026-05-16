@@ -8,10 +8,12 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import ProfileCard from '@/components/browse/ProfileCard';
 import useMyProfile from '@/hooks/useMyProfile';
+import { useAuth } from '@/lib/AuthContext';
 import { useTranslation } from 'react-i18next';
 
 export default function Browse() {
   const { user } = useMyProfile();
+  const { isAuthenticated } = useAuth();
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [search, setSearch] = useState('');
@@ -23,6 +25,7 @@ export default function Browse() {
     queryKey: ['profiles'],
     queryFn: () => base44.entities.MemberProfile.filter({ is_active: true, is_suspended: false, profile_complete: true }),
     initialData: [],
+    enabled: isAuthenticated,
   });
 
   const { data: myFavorites } = useQuery({
