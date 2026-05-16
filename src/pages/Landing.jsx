@@ -19,7 +19,18 @@ export default function Landing() {
     <div className="min-h-screen bg-background">
       {/* Hero */}
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-accent/30" />
+        {/* Background photo */}
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1600&q=80')" }}
+        />
+        {/* Girls at pool overlay image */}
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1520637836862-4d197d17c93a?w=1600&q=80')", opacity: 0.55 }}
+        />
+        {/* Dark gradient overlay to keep text readable */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-background" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-32">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -27,14 +38,14 @@ export default function Landing() {
             transition={{ duration: 0.8 }}
             className="text-center max-w-3xl mx-auto"
           >
-            <div className="inline-flex items-center gap-2 bg-accent text-accent-foreground px-4 py-2 rounded-full text-sm font-medium mb-8">
+            <div className="inline-flex items-center gap-2 bg-white/20 text-white backdrop-blur-sm border border-white/30 px-4 py-2 rounded-full text-sm font-medium mb-8">
               <Shield className="w-4 h-4" />
               100% ID Verified Members
             </div>
-            <h1 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight mb-6">
+            <h1 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight mb-6 text-white drop-shadow-lg">
               {config.tagline || 'Where Real Connections Begin'}
             </h1>
-            <p className="text-lg sm:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-lg sm:text-xl text-white/80 mb-10 max-w-2xl mx-auto leading-relaxed">
               {config.target_audience || 'Join a community of verified, authentic people looking for meaningful connections. No bots, no fakes — just real people.'}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
