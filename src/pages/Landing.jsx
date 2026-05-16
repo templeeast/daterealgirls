@@ -4,6 +4,7 @@ import { Heart, Shield, Users, Star, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import useSiteConfig from '@/hooks/useSiteConfig';
+import ProfileScrollBanner from '@/components/landing/ProfileScrollBanner';
 
 const features = [
   { icon: Shield, title: 'ID Verified', desc: 'Every member is verified with government ID — no fakes, no bots.' },
@@ -48,6 +49,8 @@ export default function Landing() {
             <p className="text-lg sm:text-xl text-white/80 mb-10 max-w-2xl mx-auto leading-relaxed">
               {config.target_audience || 'Join a community of verified, authentic people looking for meaningful connections. No bots, no fakes — just real people.'}
             </p>
+            <ProfileScrollBanner />
+
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/browse">
                 <Button size="lg" className="text-lg px-8 py-6 gap-2 rounded-full">
