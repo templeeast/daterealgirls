@@ -147,6 +147,10 @@ export default function MyProfile() {
                   <Shield className="w-3.5 h-3.5 shrink-0 mt-0.5 text-primary" />
                   <span>{t('id_upload_notice')}</span>
                 </div>
+                <div className="flex items-start gap-2 text-xs text-muted-foreground bg-muted rounded-lg p-3">
+                  <Shield className="w-3.5 h-3.5 shrink-0 mt-0.5 text-primary" />
+                  <span>Your ID is stored in a private, encrypted location and is only accessible to our admin team for verification purposes. It will be permanently deleted once your review is complete.</span>
+                </div>
                 <label className="block">
                   <Button variant="outline" className="gap-2" asChild>
                     <span>
