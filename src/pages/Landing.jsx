@@ -50,8 +50,7 @@ export default function Landing() {
       <section className="relative overflow-hidden">
         {/* Background photo — bikini women on beach */}
         <div
-          className="absolute inset-0 bg-cover bg-no-repeat"
-          style={{ backgroundPosition: 'center 30%' }}
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{ backgroundImage: "url('https://media.base44.com/images/public/6a075fa1d43a688621123d26/79fc46786_image.png')" }}
         />
         {/* Dark gradient overlay to keep text readable */}
