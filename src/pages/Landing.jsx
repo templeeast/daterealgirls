@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Heart, Shield, Users, Star, ChevronRight } from 'lucide-react';
+import { Heart, Shield, Users, Star, ChevronRight, LogIn, UserCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import useSiteConfig from '@/hooks/useSiteConfig';
@@ -8,12 +8,22 @@ import ProfilesBelowHero from '@/components/landing/ProfilesBelowHero';
 import { useAuth } from '@/lib/AuthContext';
 import { useTranslation } from 'react-i18next';
 import LanguageSelector from '@/components/layout/LanguageSelector';
+import useMyProfile from '@/hooks/useMyProfile';
 
 export default function Landing() {
   const { config } = useSiteConfig();
-  const { isAuthenticated, isLoadingAuth } = useAuth();
+  const { isAuthenticated, isLoadingAuth, navigateToLogin } = useAuth();
+  const { profile } = useMyProfile();
   const navigate = useNavigate();
   const { t } = useTranslation();
+
+  const handleCTAClick = (path) => {
+    if (isAuthenticated) {
+      navigate(path);
+    } else {
+      navigateToLogin();
+    }
+  };
 
   const features = [
     { icon: Shield, title: t('feature_id_verified_title'), desc: t('feature_id_verified_desc') },
@@ -40,9 +50,26 @@ export default function Landing() {
         {/* Dark gradient overlay to keep text readable */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-background" />
 
-        {/* Language selector top-right */}
-        <div className="absolute top-4 right-4 z-10">
+        {/* Top-right controls */}
+        <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
           <LanguageSelector />
+          {isAuthenticated ? (
+            <Link to="/my-profile">
+              <Button size="sm" variant="outline" className="bg-white/20 border-white/40 text-white hover:bg-white/30 backdrop-blur-sm gap-2">
+                {profile?.photo_1 ? (
+                  <img src={profile.photo_1} alt="" className="w-5 h-5 rounded-full object-cover" />
+                ) : (
+                  <UserCircle className="w-4 h-4" />
+                )}
+                {profile?.display_name || t('my_profile') || 'My Profile'}
+              </Button>
+            </Link>
+          ) : (
+            <Button size="sm" variant="outline" onClick={navigateToLogin} className="bg-white/20 border-white/40 text-white hover:bg-white/30 backdrop-blur-sm gap-2">
+              <LogIn className="w-4 h-4" />
+              Login
+            </Button>
+          )}
         </div>
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-32">
@@ -64,17 +91,13 @@ export default function Landing() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center pointer-events-auto relative z-10">
-              <Link to="/browse">
-                <Button size="lg" className="text-lg px-8 py-6 gap-2 rounded-full">
-                  {t('btn_browse')}
-                  <ChevronRight className="w-5 h-5" />
-                </Button>
-              </Link>
-              <Link to="/my-profile">
-                <Button size="lg" variant="outline" className="text-lg px-8 py-6 rounded-full">
-                  {t('btn_complete_profile')}
-                </Button>
-              </Link>
+              <Button size="lg" className="text-lg px-8 py-6 gap-2 rounded-full" onClick={() => handleCTAClick('/browse')}>
+                {t('btn_browse')}
+                <ChevronRight className="w-5 h-5" />
+              </Button>
+              <Button size="lg" variant="outline" className="text-lg px-8 py-6 rounded-full bg-white/10 border-white/40 text-white hover:bg-white/20" onClick={() => handleCTAClick('/my-profile')}>
+                {t('btn_complete_profile')}
+              </Button>
             </div>
           </motion.div>
         </div>
@@ -138,9 +161,7 @@ export default function Landing() {
                 <li className="flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> {t('browse_search')}</li>
                 <li className="flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> {t('id_verification')}</li>
               </ul>
-              <Link to="/my-profile">
-                <Button className="w-full rounded-full" size="lg">{t('get_started')}</Button>
-              </Link>
+              <Button className="w-full rounded-full" size="lg" onClick={() => handleCTAClick('/my-profile')}>{t('get_started')}</Button>
             </div>
             {/* Men */}
             <div className="bg-card border-2 border-primary rounded-2xl p-8 text-center relative">
@@ -158,9 +179,7 @@ export default function Landing() {
                 <li className="flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> {t('browse_search')}</li>
                 <li className="flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> {t('id_verification')}</li>
               </ul>
-              <Link to="/my-profile">
-                <Button className="w-full rounded-full" size="lg">{t('start_trial')}</Button>
-              </Link>
+              <Button className="w-full rounded-full" size="lg" onClick={() => handleCTAClick('/my-profile')}>{t('start_trial')}</Button>
             </div>
           </div>
         </div>
@@ -180,8 +199,8 @@ export default function Landing() {
             </div>
             <div className="flex gap-6 text-sm text-muted-foreground">
               <Link to="/support" className="hover:text-foreground transition-colors">{t('support')}</Link>
-              <span>{t('privacy')}</span>
-              <span>{t('terms')}</span>
+              <button onClick={navigateToLogin} className="hover:text-foreground transition-colors">{t('privacy')}</button>
+              <button onClick={navigateToLogin} className="hover:text-foreground transition-colors">{t('terms')}</button>
             </div>
             <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} {config.site_name}</p>
           </div>
