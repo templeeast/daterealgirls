@@ -1,9 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
+import { useAuth } from '@/lib/AuthContext';
 
 export default function useMyProfile() {
+  const { isAuthenticated } = useAuth();
+
   const { data, isLoading, refetch } = useQuery({
     queryKey: ['myProfile'],
+    enabled: isAuthenticated,
     queryFn: async () => {
       const me = await base44.auth.me();
       const profiles = await base44.entities.MemberProfile.filter({ user_id: me.id });
