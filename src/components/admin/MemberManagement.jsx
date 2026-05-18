@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
-import { Search, Ban, Eye, RotateCcw } from 'lucide-react';
+import { Search, Ban, Eye, RotateCcw, X, Instagram, Facebook, MapPin, Calendar, User } from 'lucide-react';
 
 export default function MemberManagement() {
   const queryClient = useQueryClient();
@@ -16,6 +16,7 @@ export default function MemberManagement() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [suspendDialog, setSuspendDialog] = useState(null);
   const [suspendReason, setSuspendReason] = useState('');
+  const [detailMember, setDetailMember] = useState(null);
 
   const { data: profiles, isLoading } = useQuery({
     queryKey: ['allProfiles'],
@@ -84,7 +85,7 @@ export default function MemberManagement() {
           </TableHeader>
           <TableBody>
             {filtered.map(p => (
-              <TableRow key={p.id} className={p.is_suspended ? 'opacity-60' : ''}>
+              <TableRow key={p.id} className={`cursor-pointer hover:bg-muted/50 ${p.is_suspended ? 'opacity-60' : ''}`} onClick={() => setDetailMember(p)}>
                 <TableCell>
                   <div className="flex items-center gap-3">
                     {p.photo_1 ? (
@@ -113,7 +114,7 @@ export default function MemberManagement() {
                   )}
                 </TableCell>
                 <TableCell>
-                  <div className="flex gap-1">
+                  <div className="flex gap-1" onClick={e => e.stopPropagation()}>
                     {p.is_suspended ? (
                       <Button size="sm" variant="ghost" className="text-xs gap-1" onClick={() => suspendMutation.mutate({ id: p.id, suspend: false })}>
                         <RotateCcw className="w-3 h-3" /> Restore
@@ -130,6 +131,100 @@ export default function MemberManagement() {
           </TableBody>
         </Table>
       </div>
+
+      {/* Member Detail Dialog */}
+      <Dialog open={!!detailMember} onOpenChange={() => setDetailMember(null)}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-3">
+              {detailMember?.photo_1 ? (
+                <img src={detailMember.photo_1} className="w-10 h-10 rounded-full object-cover" alt="" />
+              ) : (
+                <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center"><User className="w-5 h-5 text-muted-foreground" /></div>
+              )}
+              {detailMember?.display_name}
+            </DialogTitle>
+          </DialogHeader>
+
+          {detailMember && (
+            <div className="space-y-5">
+              {/* Photos */}
+              <div className="flex gap-2">
+                {[detailMember.photo_1, detailMember.photo_2, detailMember.photo_3].filter(Boolean).map((url, i) => (
+                  <img key={i} src={url} className="w-24 h-24 rounded-lg object-cover border" alt="" />
+                ))}
+              </div>
+
+              {/* Core Info */}
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                <div className="flex items-center gap-2 text-muted-foreground"><User className="w-4 h-4" /> <span className="font-medium text-foreground capitalize">{detailMember.gender}</span></div>
+                <div className="flex items-center gap-2 text-muted-foreground"><Calendar className="w-4 h-4" /> Age: <span className="font-medium text-foreground">{detailMember.age || '—'}</span></div>
+                <div className="flex items-center gap-2 text-muted-foreground col-span-2"><MapPin className="w-4 h-4" /> <span className="font-medium text-foreground">{[detailMember.location_city, detailMember.location_country].filter(Boolean).join(', ') || '—'}</span></div>
+              </div>
+
+              {/* Bio */}
+              {detailMember.bio && (
+                <div>
+                  <p className="text-xs font-semibold uppercase text-muted-foreground mb-1">Bio</p>
+                  <p className="text-sm">{detailMember.bio}</p>
+                </div>
+              )}
+
+              {/* Interests */}
+              {detailMember.interests?.length > 0 && (
+                <div>
+                  <p className="text-xs font-semibold uppercase text-muted-foreground mb-1">Interests</p>
+                  <div className="flex flex-wrap gap-1">
+                    {detailMember.interests.map(i => (
+                      <Badge key={i} variant="secondary" className="text-xs">{i}</Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Social */}
+              {(detailMember.instagram || detailMember.facebook || detailMember.tiktok) && (
+                <div>
+                  <p className="text-xs font-semibold uppercase text-muted-foreground mb-1">Social Media</p>
+                  <div className="flex flex-col gap-1 text-sm">
+                    {detailMember.instagram && <span>📸 Instagram: @{detailMember.instagram}</span>}
+                    {detailMember.facebook && <span>📘 Facebook: {detailMember.facebook}</span>}
+                    {detailMember.tiktok && <span>🎵 TikTok: @{detailMember.tiktok}</span>}
+                  </div>
+                </div>
+              )}
+
+              {/* Status Badges */}
+              <div className="flex flex-wrap gap-2">
+                <Badge className={verificationColors[detailMember.verification_status]}>
+                  Verification: {detailMember.verification_status}
+                </Badge>
+                <Badge variant={detailMember.is_suspended ? 'destructive' : 'secondary'}>
+                  {detailMember.is_suspended ? 'Suspended' : 'Active'}
+                </Badge>
+                {detailMember.subscription_status && (
+                  <Badge variant="outline">Sub: {detailMember.subscription_status}</Badge>
+                )}
+                {detailMember.looking_for && (
+                  <Badge variant="outline">Looking for: {detailMember.looking_for}</Badge>
+                )}
+              </div>
+
+              {/* Suspension Reason */}
+              {detailMember.is_suspended && detailMember.suspension_reason && (
+                <div className="rounded-lg bg-destructive/10 p-3 text-sm text-destructive">
+                  <strong>Suspension reason:</strong> {detailMember.suspension_reason}
+                </div>
+              )}
+
+              {/* Joined */}
+              <p className="text-xs text-muted-foreground">
+                Joined: {new Date(detailMember.created_date).toLocaleDateString()}
+              </p>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
 
       {/* Suspend Dialog */}
       <Dialog open={!!suspendDialog} onOpenChange={() => setSuspendDialog(null)}>
