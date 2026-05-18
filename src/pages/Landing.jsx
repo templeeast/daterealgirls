@@ -51,7 +51,7 @@ export default function Landing() {
         {/* Background photo — bikini women on beach */}
         <div
           className="absolute inset-0 bg-cover bg-no-repeat"
-          style={{ backgroundPosition: 'center top' }}
+          style={{ backgroundPosition: 'center 30%' }}
           style={{ backgroundImage: "url('https://media.base44.com/images/public/6a075fa1d43a688621123d26/79fc46786_image.png')" }}
         />
         {/* Dark gradient overlay to keep text readable */}
