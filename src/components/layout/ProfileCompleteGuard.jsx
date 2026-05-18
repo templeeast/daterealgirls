@@ -13,6 +13,12 @@ export default function ProfileCompleteGuard({ children }) {
 
   const isExempt = EXEMPT_PATHS.some(path => location.pathname.startsWith(path));
 
+  // No profile at all → send to onboarding
+  if (!isExempt && !profile) {
+    return <Navigate to="/onboarding" replace />;
+  }
+
+  // Profile exists but incomplete → send to my-profile to finish
   if (!isExempt && profile && !profile.profile_complete) {
     return <Navigate to="/my-profile" replace />;
   }

@@ -13,7 +13,7 @@ import useMyProfile from '@/hooks/useMyProfile';
 export default function Landing() {
   const { config } = useSiteConfig();
   const { isAuthenticated, isLoadingAuth, navigateToLogin } = useAuth();
-  const { profile } = useMyProfile();
+  const { profile, isLoading: isLoadingProfile } = useMyProfile();
   const navigate = useNavigate();
   const { t } = useTranslation();
 
@@ -33,10 +33,16 @@ export default function Landing() {
   ];
 
   useEffect(() => {
-    if (!isLoadingAuth && isAuthenticated) {
-      navigate('/browse', { replace: true });
+    if (!isLoadingAuth && !isLoadingProfile && isAuthenticated) {
+      if (!profile) {
+        navigate('/onboarding', { replace: true });
+      } else if (!profile.profile_complete) {
+        navigate('/my-profile', { replace: true });
+      } else {
+        navigate('/browse', { replace: true });
+      }
     }
-  }, [isAuthenticated, isLoadingAuth, navigate]);
+  }, [isAuthenticated, isLoadingAuth, isLoadingProfile, profile, navigate]);
 
   return (
     <div className="min-h-screen bg-background">
