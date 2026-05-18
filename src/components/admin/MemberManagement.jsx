@@ -217,12 +217,33 @@ export default function MemberManagement() {
                 </div>
               )}
 
+              {/* Email */}
+              {detailMember.created_by && (
+                <div>
+                  <p className="text-xs font-semibold uppercase text-muted-foreground mb-1">Email</p>
+                  <p className="text-sm">{detailMember.created_by}</p>
+                </div>
+              )}
+
               {/* Joined */}
               <p className="text-xs text-muted-foreground">
                 Joined: {new Date(detailMember.created_date).toLocaleDateString()}
               </p>
             </div>
           )}
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDetailMember(null)}>Close</Button>
+            {detailMember?.is_suspended ? (
+              <Button variant="secondary" onClick={() => { suspendMutation.mutate({ id: detailMember.id, suspend: false }); setDetailMember(null); }}>
+                <RotateCcw className="w-4 h-4 mr-1" /> Restore Member
+              </Button>
+            ) : (
+              <Button variant="destructive" onClick={() => { setDetailMember(null); setSuspendDialog(detailMember); }}>
+                <Ban className="w-4 h-4 mr-1" /> Suspend Member
+              </Button>
+            )}
+          </DialogFooter>
         </DialogContent>
       </Dialog>
 
