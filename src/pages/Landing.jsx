@@ -85,14 +85,13 @@ export default function Landing() {
             className="text-center max-w-3xl mx-auto"
           >
             <div className="inline-flex items-center gap-2 bg-white/20 text-white backdrop-blur-sm border border-white/30 px-4 py-2 rounded-full text-sm font-medium mb-8">
-              <Shield className="w-4 h-4" />
               {t('badge_verified')}
             </div>
             <h1 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight mb-6 text-white drop-shadow-lg">
-              {config.tagline || t('tagline')}
+              {t('tagline')}
             </h1>
             <p className="text-lg sm:text-xl text-white/80 mb-10 max-w-2xl mx-auto leading-relaxed">
-              {config.target_audience || t('target_audience')}
+              {t('hero_subtitle')}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center pointer-events-auto relative z-10">
