@@ -112,10 +112,7 @@ export default function Landing() {
         <div className="absolute bottom-10 right-10 w-96 h-96 bg-accent/40 rounded-full blur-3xl pointer-events-none" />
       </section>
 
-      {/* Scrolling profiles banner (real members) */}
-      <ProfilesBelowHero />
-
-      {/* Stock profiles showcase banner */}
+      {/* Scrolling profiles banner */}
       <StockProfilesBanner />
 
       {/* Features */}
