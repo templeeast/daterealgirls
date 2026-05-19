@@ -12,7 +12,7 @@ import { useToast } from '@/components/ui/use-toast';
 import useSiteConfig from '@/hooks/useSiteConfig';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { addMonths, format } from 'date-fns';
+
 import StripeIdentityStep from '@/components/onboarding/StripeIdentityStep';
 
 const INTERESTS = [
@@ -82,9 +82,6 @@ export default function Onboarding() {
 
     setSaving(true);
     const me = await base44.auth.me();
-    const now = new Date();
-    const trialEnd = addMonths(now, config.trial_duration_months || 3);
-
     await base44.entities.MemberProfile.create({
       ...form,
       user_id: me.id,
@@ -93,9 +90,7 @@ export default function Onboarding() {
       is_active: true,
       is_suspended: false,
       profile_complete: true,
-      subscription_status: form.gender === 'female' ? 'free' : 'trial',
-      trial_start_date: form.gender === 'male' ? format(now, 'yyyy-MM-dd') : undefined,
-      trial_end_date: form.gender === 'male' ? format(trialEnd, 'yyyy-MM-dd') : undefined,
+      subscription_status: 'free',
     });
 
     toast({ title: t('profile_created', { siteName: config.site_name }) });

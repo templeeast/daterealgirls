@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import useSiteConfig from '@/hooks/useSiteConfig';
 import ProfilesBelowHero from '@/components/landing/ProfilesBelowHero';
+import StockProfilesBanner from '@/components/landing/StockProfilesBanner';
 import { useAuth } from '@/lib/AuthContext';
 import { useTranslation } from 'react-i18next';
 import LanguageSelector from '@/components/layout/LanguageSelector';
@@ -113,8 +114,11 @@ export default function Landing() {
         <div className="absolute bottom-10 right-10 w-96 h-96 bg-accent/40 rounded-full blur-3xl pointer-events-none" />
       </section>
 
-      {/* Scrolling profiles banner */}
+      {/* Scrolling profiles banner (real members) */}
       <ProfilesBelowHero />
+
+      {/* Stock profiles showcase banner */}
+      <StockProfilesBanner />
 
       {/* Features */}
       <section className="py-24 bg-card">
@@ -153,9 +157,9 @@ export default function Landing() {
             <h2 className="font-heading text-3xl sm:text-4xl font-bold mb-4">{t('pricing_title')}</h2>
             <p className="text-muted-foreground text-lg">{t('pricing_subtitle')}</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
-            {/* Women */}
-            <div className="bg-card border rounded-2xl p-8 text-center">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+            {/* Women — always free */}
+            <div className="bg-card border rounded-2xl p-8 text-center md:col-span-1">
               <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium mb-4">
                 {t('for_women')}
               </div>
@@ -169,23 +173,40 @@ export default function Landing() {
               </ul>
               <Button className="w-full rounded-full" size="lg" onClick={() => handleCTAClick('/my-profile')}>{t('get_started')}</Button>
             </div>
-            {/* Men */}
+
+            {/* Men — Free tier */}
+            <div className="bg-card border rounded-2xl p-8 text-center">
+              <div className="inline-flex items-center gap-2 bg-muted text-muted-foreground px-3 py-1 rounded-full text-sm font-medium mb-4">
+                Men — Free
+              </div>
+              <div className="font-heading text-5xl font-bold mb-2">$0</div>
+              <p className="text-muted-foreground mb-6">Basic access, always free</p>
+              <ul className="text-sm text-left space-y-3 mb-8">
+                <li className="flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> Create a profile</li>
+                <li className="flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> Browse up to {config.free_tier_browse_limit || 5} profiles</li>
+                <li className="flex items-center gap-2 text-muted-foreground line-through"><Heart className="w-4 h-4" /> Messaging</li>
+                <li className="flex items-center gap-2 text-muted-foreground line-through"><Heart className="w-4 h-4" /> Unlimited browsing</li>
+              </ul>
+              <Button variant="outline" className="w-full rounded-full" size="lg" onClick={() => handleCTAClick('/my-profile')}>{t('get_started')}</Button>
+            </div>
+
+            {/* Men — Premium */}
             <div className="bg-card border-2 border-primary rounded-2xl p-8 text-center relative">
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground px-4 py-1 rounded-full text-sm font-medium">
-                {t('months_free', { n: config.trial_duration_months })}
+                Most Popular
               </div>
               <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium mb-4 mt-2">
-                {t('for_men')}
+                Men — Premium
               </div>
-              <div className="font-heading text-5xl font-bold mb-2">${config.subscription_price}<span className="text-lg font-normal text-muted-foreground">/mo</span></div>
-              <p className="text-muted-foreground mb-6">{t('after_trial', { n: config.trial_duration_months })}</p>
+              <div className="font-heading text-5xl font-bold mb-2">${config.subscription_price || 9.99}<span className="text-lg font-normal text-muted-foreground">/mo</span></div>
+              <p className="text-muted-foreground mb-6">Full access, cancel anytime</p>
               <ul className="text-sm text-left space-y-3 mb-8">
                 <li className="flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> {t('full_profile')}</li>
                 <li className="flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> {t('unlimited_msg')}</li>
                 <li className="flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> {t('browse_search')}</li>
                 <li className="flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> {t('id_verification')}</li>
               </ul>
-              <Button className="w-full rounded-full" size="lg" onClick={() => handleCTAClick('/my-profile')}>{t('start_trial')}</Button>
+              <Button className="w-full rounded-full" size="lg" onClick={() => handleCTAClick('/my-profile')}>Get Premium</Button>
             </div>
           </div>
         </div>

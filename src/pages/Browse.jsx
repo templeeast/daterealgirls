@@ -10,12 +10,19 @@ import ProfileCard from '@/components/browse/ProfileCard';
 import useMyProfile from '@/hooks/useMyProfile';
 import { useAuth } from '@/lib/AuthContext';
 import { useTranslation } from 'react-i18next';
+import UpgradePrompt from '@/components/subscription/UpgradePrompt';
+import useSiteConfig from '@/hooks/useSiteConfig';
 
 export default function Browse() {
-  const { user } = useMyProfile();
+  const { user, profile } = useMyProfile();
   const { isAuthenticated } = useAuth();
   const { t } = useTranslation();
+  const { config } = useSiteConfig();
   const queryClient = useQueryClient();
+
+  // Is this a free-tier male user?
+  const isFreeMale = profile?.gender === 'male' && (!profile?.subscription_status || profile?.subscription_status === 'free');
+  const browseLimit = config?.free_tier_browse_limit ?? 5;
   const [search, setSearch] = useState('');
   const [genderFilter, setGenderFilter] = useState('all');
   const [lookingForFilter, setLookingForFilter] = useState('all');
@@ -70,8 +77,18 @@ export default function Browse() {
     return true;
   });
 
+  const visibleProfiles = isFreeMale ? filtered.slice(0, browseLimit) : filtered;
+  const hasLockedProfiles = isFreeMale && filtered.length > browseLimit;
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Free tier banner for men */}
+      {isFreeMale && (
+        <div className="mb-6">
+          <UpgradePrompt price={config?.subscription_price ?? 9.99} inline />
+        </div>
+      )}
+
       {/* Search & Filters */}
       <div className="mb-8">
         <h1 className="font-heading text-3xl font-bold mb-6">{t('browse_title')}</h1>
@@ -133,16 +150,34 @@ export default function Browse() {
           <p className="text-muted-foreground text-lg">{t('browse_no_results')}</p>
         </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-          {filtered.map(profile => (
-            <ProfileCard
-              key={profile.id}
-              profile={profile}
-              isFavorited={favoritedIds.has(profile.id)}
-              onFavorite={() => favMutation.mutate(profile)}
-            />
-          ))}
-        </div>
+        <>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+            {visibleProfiles.map(p => (
+              <ProfileCard
+                key={p.id}
+                profile={p}
+                isFavorited={favoritedIds.has(p.id)}
+                onFavorite={() => favMutation.mutate(p)}
+              />
+            ))}
+            {/* Blurred locked cards for free-tier males */}
+            {isFreeMale && filtered.slice(browseLimit).map((p, i) => (
+              <div key={`locked-${i}`} className="relative rounded-2xl overflow-hidden border">
+                <div className="aspect-[3/4] bg-gradient-to-br from-primary/10 to-accent blur-sm scale-105" />
+                <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/40">
+                  <div className="bg-white/90 rounded-xl px-4 py-3 text-center shadow-lg">
+                    <p className="text-xs font-semibold text-foreground">🔒 Premium Only</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          {hasLockedProfiles && (
+            <div className="mt-10 max-w-md mx-auto">
+              <UpgradePrompt price={config?.subscription_price ?? 9.99} />
+            </div>
+          )}
+        </>
       )}
     </div>
   );

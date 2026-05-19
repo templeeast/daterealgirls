@@ -100,23 +100,22 @@
       "type": "string",
       "enum": [
         "free",
-        "trial",
         "active",
         "expired",
         "cancelled"
       ],
       "default": "free",
-      "description": "Subscription status (relevant for male users)"
+      "description": "Subscription status (relevant for male users). free = free tier, active = paid tier."
     },
-    "trial_start_date": {
+    "subscription_start_date": {
       "type": "string",
       "format": "date",
-      "description": "When the trial started"
+      "description": "When the paid subscription started"
     },
-    "trial_end_date": {
+    "subscription_end_date": {
       "type": "string",
       "format": "date",
-      "description": "When the trial ends"
+      "description": "When the paid subscription expires"
     },
     "interests": {
       "type": "array",

@@ -4,7 +4,7 @@
   "properties": {
     "site_name": {
       "type": "string",
-      "description": "Name of the site (e.g. DateRealGirls.com)"
+      "description": "Name of the site"
     },
     "logo_url": {
       "type": "string",
@@ -16,13 +16,8 @@
     },
     "subscription_price": {
       "type": "number",
-      "default": 5,
-      "description": "Monthly subscription price in USD for men"
-    },
-    "trial_duration_months": {
-      "type": "number",
-      "default": 3,
-      "description": "Free trial duration in months for men"
+      "default": 9.99,
+      "description": "Monthly subscription price in USD for men (paid tier)"
     },
     "max_photos": {
       "type": "number",
@@ -50,6 +45,11 @@
     "stripe_identity_publishable_key": {
       "type": "string",
       "description": "Stripe publishable key for Identity verification"
+    },
+    "free_tier_browse_limit": {
+      "type": "number",
+      "default": 5,
+      "description": "Number of profiles free-tier men can see before being prompted to upgrade"
     }
   },
   "required": [

@@ -167,15 +167,30 @@ export default function MyProfile() {
 
       {/* Subscription Info (for men) */}
       {profile.gender === 'male' && (
-        <Card className="mb-6">
+        <Card className={`mb-6 ${profile.subscription_status !== 'active' ? 'border-2 border-primary/30' : ''}`}>
           <CardContent className="pt-6">
-            <h3 className="font-heading text-lg font-semibold mb-2">{t('subscription_title')}</h3>
-            <div className="flex items-center gap-3">
-              <Badge variant="secondary" className="capitalize">{profile.subscription_status}</Badge>
-              {profile.trial_end_date && profile.subscription_status === 'trial' && (
-                <span className="text-sm text-muted-foreground">{t('trial_ends')} {profile.trial_end_date}</span>
-              )}
+            <div className="flex items-start justify-between">
+              <div>
+                <h3 className="font-heading text-lg font-semibold mb-1">{t('subscription_title')}</h3>
+                {profile.subscription_status === 'active' ? (
+                  <p className="text-sm text-muted-foreground">
+                    Premium active{profile.subscription_end_date ? ` · renews ${profile.subscription_end_date}` : ''}
+                  </p>
+                ) : (
+                  <p className="text-sm text-muted-foreground">You're on the free tier. Upgrade to unlock messaging & full browsing.</p>
+                )}
+              </div>
+              <Badge
+                className={profile.subscription_status === 'active' ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'}
+              >
+                {profile.subscription_status === 'active' ? '✦ Premium' : 'Free'}
+              </Badge>
             </div>
+            {profile.subscription_status !== 'active' && (
+              <div className="mt-4 p-4 bg-accent/50 rounded-xl text-sm text-foreground">
+                <strong className="text-primary">Upgrade to Premium</strong> for just ${config.subscription_price || 9.99}/mo to unlock unlimited browsing, messaging, and more. Contact support to upgrade.
+              </div>
+            )}
           </CardContent>
         </Card>
       )}
