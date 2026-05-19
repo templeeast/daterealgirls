@@ -39,8 +39,6 @@ export default function Landing() {
         navigate('/onboarding', { replace: true });
       } else if (!profile.profile_complete) {
         navigate('/my-profile', { replace: true });
-      } else {
-        navigate('/browse', { replace: true });
       }
     }
   }, [isAuthenticated, isLoadingAuth, isLoadingProfile, profile, navigate]);
