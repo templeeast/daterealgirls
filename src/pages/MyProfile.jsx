@@ -48,6 +48,7 @@ export default function MyProfile() {
         photo_1: profile.photo_1 || '',
         photo_2: profile.photo_2 || '',
         photo_3: profile.photo_3 || '',
+        photo_1_visible: profile.photo_1_visible !== false,
         photo_2_visible: profile.photo_2_visible !== false,
         photo_3_visible: profile.photo_3_visible !== false,
         instagram: profile.instagram || '',
@@ -216,7 +217,7 @@ export default function MyProfile() {
             {['photo_1', 'photo_2', 'photo_3'].map((field, i) => {
               const isFirst = i === 0;
               const visibleKey = `${field}_visible`;
-              const isVisible = isFirst ? true : form[visibleKey] !== false;
+              const isVisible = form[visibleKey] !== false;
 
               return (
                 <div key={field} className="flex flex-col gap-1">
@@ -239,8 +240,8 @@ export default function MyProfile() {
                     <input type="file" accept="image/*" className="hidden" onChange={e => handlePhotoUpload(e, field)} />
                   </label>
 
-                  {/* Controls for photos 2 & 3 */}
-                  {!isFirst && form[field] && (
+                  {/* Visibility toggle for all photos; delete only for 2 & 3 */}
+                  {form[field] && (
                     <div className="flex gap-1">
                       <button
                         type="button"
@@ -251,14 +252,16 @@ export default function MyProfile() {
                         {isVisible ? <Eye className="w-3 h-3" /> : <EyeOff className="w-3 h-3 text-muted-foreground" />}
                         <span className="text-muted-foreground">{isVisible ? t('photo_visible') : t('photo_hidden')}</span>
                       </button>
-                      <button
-                        type="button"
-                        onClick={() => { updateField(field, ''); updateField(visibleKey, true); }}
-                        className="flex items-center justify-center p-1 rounded-md bg-destructive/10 hover:bg-destructive/20 text-destructive transition-colors"
-                        title={t('photo_delete')}
-                      >
-                        <Trash2 className="w-3 h-3" />
-                      </button>
+                      {!isFirst && (
+                        <button
+                          type="button"
+                          onClick={() => { updateField(field, ''); updateField(visibleKey, true); }}
+                          className="flex items-center justify-center p-1 rounded-md bg-destructive/10 hover:bg-destructive/20 text-destructive transition-colors"
+                          title={t('photo_delete')}
+                        >
+                          <Trash2 className="w-3 h-3" />
+                        </button>
+                      )}
                     </div>
                   )}
                 </div>

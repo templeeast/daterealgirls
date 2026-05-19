@@ -51,6 +51,11 @@
       "type": "string",
       "description": "Third photo URL"
     },
+    "photo_1_visible": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether photo 1 is visible on the profile"
+    },
     "photo_2_visible": {
       "type": "boolean",
       "default": true,
@@ -115,7 +120,7 @@
         "cancelled"
       ],
       "default": "free",
-      "description": "Subscription status (relevant for male users). free = free tier, active = paid tier."
+      "description": "Subscription status (relevant for male users)."
     },
     "subscription_start_date": {
       "type": "string",

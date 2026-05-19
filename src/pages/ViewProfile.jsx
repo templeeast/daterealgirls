@@ -117,7 +117,7 @@ export default function ViewProfile() {
   }
 
   const photos = [
-    profile.photo_1,
+    profile.photo_1_visible !== false ? profile.photo_1 : null,
     profile.photo_2_visible !== false ? profile.photo_2 : null,
     profile.photo_3_visible !== false ? profile.photo_3 : null,
   ].filter(Boolean);
