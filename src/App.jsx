@@ -38,8 +38,12 @@ const AuthenticatedApp = () => {
     if (authError.type === 'user_not_registered') {
       return <UserNotRegisteredError />;
     } else if (authError.type === 'auth_required') {
-      // Show landing page for unauthenticated visitors
-      return <Landing />;
+      // Allow public routes to render for unauthenticated visitors
+      const publicPaths = ['/', '/privacy', '/terms', '/support'];
+      const isPublicPath = publicPaths.some(p => window.location.pathname === p || window.location.pathname.startsWith(p + '/'));
+      if (!isPublicPath) {
+        return <Landing />;
+      }
     }
   }
 
