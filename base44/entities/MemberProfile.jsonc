@@ -41,7 +41,7 @@
     },
     "photo_1": {
       "type": "string",
-      "description": "Primary profile photo URL"
+      "description": "Primary profile photo URL (identity photo, cannot be deleted)"
     },
     "photo_2": {
       "type": "string",
@@ -50,6 +50,16 @@
     "photo_3": {
       "type": "string",
       "description": "Third photo URL"
+    },
+    "photo_2_visible": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether photo 2 is visible on the profile"
+    },
+    "photo_3_visible": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether photo 3 is visible on the profile"
     },
     "instagram": {
       "type": "string",

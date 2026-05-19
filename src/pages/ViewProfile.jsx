@@ -116,7 +116,11 @@ export default function ViewProfile() {
     );
   }
 
-  const photos = [profile.photo_1, profile.photo_2, profile.photo_3].filter(Boolean);
+  const photos = [
+    profile.photo_1,
+    profile.photo_2_visible !== false ? profile.photo_2 : null,
+    profile.photo_3_visible !== false ? profile.photo_3 : null,
+  ].filter(Boolean);
   const lookingForLabels = {
     relationship: t('vp_relationship'),
     friendship: t('vp_friendship'),

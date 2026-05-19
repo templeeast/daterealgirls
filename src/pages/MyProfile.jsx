@@ -9,7 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Upload, Shield, Camera, Save } from 'lucide-react';
+import { Upload, Shield, Camera, Save, Trash2, Eye, EyeOff, Lock } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
 import useMyProfile from '@/hooks/useMyProfile';
@@ -48,6 +48,8 @@ export default function MyProfile() {
         photo_1: profile.photo_1 || '',
         photo_2: profile.photo_2 || '',
         photo_3: profile.photo_3 || '',
+        photo_2_visible: profile.photo_2_visible !== false,
+        photo_3_visible: profile.photo_3_visible !== false,
         instagram: profile.instagram || '',
         facebook: profile.facebook || '',
         tiktok: profile.tiktok || '',
@@ -204,22 +206,64 @@ export default function MyProfile() {
           <CardDescription>{t('photos_upload_desc', { n: config.max_photos || 3 })}</CardDescription>
         </CardHeader>
         <CardContent>
+          {/* Identity photo notice */}
+          <div className="flex items-start gap-2 text-xs text-muted-foreground bg-muted rounded-lg p-3 mb-4">
+            <Lock className="w-3.5 h-3.5 shrink-0 mt-0.5 text-primary" />
+            <span>{t('photo_1_locked')}</span>
+          </div>
+
           <div className="grid grid-cols-3 gap-4">
-            {['photo_1', 'photo_2', 'photo_3'].map((field, i) => (
-              <label key={field} className="cursor-pointer">
-                <div className={`aspect-square rounded-xl border-2 border-dashed flex items-center justify-center overflow-hidden transition-colors ${form[field] ? 'border-primary' : 'border-muted-foreground/30 hover:border-primary/50'}`}>
-                  {form[field] ? (
-                    <img src={form[field]} className="w-full h-full object-cover" alt="" />
-                  ) : (
-                    <div className="text-center p-2">
-                      <Upload className="w-6 h-6 mx-auto text-muted-foreground mb-1" />
-                      <span className="text-xs text-muted-foreground">{t('photo_label', { n: i + 1 })}</span>
+            {['photo_1', 'photo_2', 'photo_3'].map((field, i) => {
+              const isFirst = i === 0;
+              const visibleKey = `${field}_visible`;
+              const isVisible = isFirst ? true : form[visibleKey] !== false;
+
+              return (
+                <div key={field} className="flex flex-col gap-1">
+                  <label className="cursor-pointer">
+                    <div className={`aspect-square rounded-xl border-2 border-dashed flex items-center justify-center overflow-hidden transition-colors relative ${form[field] ? 'border-primary' : 'border-muted-foreground/30 hover:border-primary/50'} ${!isVisible && form[field] ? 'opacity-50' : ''}`}>
+                      {form[field] ? (
+                        <img src={form[field]} className="w-full h-full object-cover" alt="" />
+                      ) : (
+                        <div className="text-center p-2">
+                          <Upload className="w-6 h-6 mx-auto text-muted-foreground mb-1" />
+                          <span className="text-xs text-muted-foreground">{t('photo_label', { n: i + 1 })}</span>
+                        </div>
+                      )}
+                      {isFirst && (
+                        <div className="absolute top-1 right-1 bg-primary/80 rounded-full p-0.5">
+                          <Lock className="w-3 h-3 text-white" />
+                        </div>
+                      )}
+                    </div>
+                    <input type="file" accept="image/*" className="hidden" onChange={e => handlePhotoUpload(e, field)} />
+                  </label>
+
+                  {/* Controls for photos 2 & 3 */}
+                  {!isFirst && form[field] && (
+                    <div className="flex gap-1">
+                      <button
+                        type="button"
+                        onClick={() => updateField(visibleKey, !isVisible)}
+                        className="flex-1 flex items-center justify-center gap-1 text-xs py-1 rounded-md bg-muted hover:bg-muted/80 transition-colors"
+                        title={isVisible ? t('photo_hidden') : t('photo_visible')}
+                      >
+                        {isVisible ? <Eye className="w-3 h-3" /> : <EyeOff className="w-3 h-3 text-muted-foreground" />}
+                        <span className="text-muted-foreground">{isVisible ? t('photo_visible') : t('photo_hidden')}</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => { updateField(field, ''); updateField(visibleKey, true); }}
+                        className="flex items-center justify-center p-1 rounded-md bg-destructive/10 hover:bg-destructive/20 text-destructive transition-colors"
+                        title={t('photo_delete')}
+                      >
+                        <Trash2 className="w-3 h-3" />
+                      </button>
                     </div>
                   )}
                 </div>
-                <input type="file" accept="image/*" className="hidden" onChange={e => handlePhotoUpload(e, field)} />
-              </label>
-            ))}
+              );
+            })}
           </div>
         </CardContent>
       </Card>
