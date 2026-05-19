@@ -226,8 +226,8 @@ export default function Landing() {
             </div>
             <div className="flex gap-6 text-sm text-muted-foreground">
               <Link to="/support" className="hover:text-foreground transition-colors">{t('support')}</Link>
-              <button onClick={navigateToLogin} className="hover:text-foreground transition-colors">{t('privacy')}</button>
-              <button onClick={navigateToLogin} className="hover:text-foreground transition-colors">{t('terms')}</button>
+              <Link to="/privacy" className="hover:text-foreground transition-colors">{t('privacy')}</Link>
+              <Link to="/terms" className="hover:text-foreground transition-colors">{t('terms')}</Link>
             </div>
             <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} {config.site_name}</p>
           </div>

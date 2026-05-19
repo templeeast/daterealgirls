@@ -18,6 +18,8 @@ import ReportProfile from '@/pages/ReportProfile';
 import AdminDashboard from '@/pages/admin/AdminDashboard';
 import AppLayout from '@/components/layout/AppLayout';
 import ProfileCompleteGuard from '@/components/layout/ProfileCompleteGuard';
+import Privacy from '@/pages/Privacy';
+import Terms from '@/pages/Terms';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -57,6 +59,8 @@ const AuthenticatedApp = () => {
         <Route path="/report/:id" element={<ProfileCompleteGuard><ReportProfile /></ProfileCompleteGuard>} />
         <Route path="/admin" element={<AdminDashboard />} />
       </Route>
+      <Route path="/privacy" element={<Privacy />} />
+      <Route path="/terms" element={<Terms />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
