@@ -16,8 +16,12 @@ export default function useSiteConfig() {
   const { data, isLoading } = useQuery({
     queryKey: ['siteConfig'],
     queryFn: async () => {
-      const configs = await base44.entities.SiteConfig.list();
-      return configs.length > 0 ? { ...DEFAULT_CONFIG, ...configs[0] } : DEFAULT_CONFIG;
+      try {
+        const configs = await base44.entities.SiteConfig.list();
+        return configs.length > 0 ? { ...DEFAULT_CONFIG, ...configs[0] } : DEFAULT_CONFIG;
+      } catch {
+        return DEFAULT_CONFIG;
+      }
     },
     staleTime: 5 * 60 * 1000,
   });

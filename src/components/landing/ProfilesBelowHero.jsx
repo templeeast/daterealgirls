@@ -7,7 +7,8 @@ export default function ProfilesBelowHero() {
 
   useEffect(() => {
     base44.entities.MemberProfile.filter({ gender: 'female', is_active: true }, '-created_date', 24)
-      .then(data => setProfiles(data.filter(p => p.photo_1)));
+      .then(data => setProfiles(data.filter(p => p.photo_1)))
+      .catch(() => {});
   }, []);
 
   if (profiles.length === 0) return null;
