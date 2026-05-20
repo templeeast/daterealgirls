@@ -36,8 +36,11 @@ export default function ViewProfile() {
   const { data: profile, isLoading } = useQuery({
     queryKey: ['profile', profileId],
     queryFn: async () => {
-      const profiles = await base44.entities.MemberProfile.filter({ id: profileId });
-      return profiles[0] || null;
+      // Try by MemberProfile id first, then fall back to user_id
+      const byId = await base44.entities.MemberProfile.filter({ id: profileId });
+      if (byId[0]) return byId[0];
+      const byUserId = await base44.entities.MemberProfile.filter({ user_id: profileId });
+      return byUserId[0] || null;
     },
     enabled: !!profileId,
   });
