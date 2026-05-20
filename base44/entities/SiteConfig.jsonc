@@ -50,6 +50,11 @@
       "type": "number",
       "default": 5,
       "description": "Number of profiles free-tier men can see before being prompted to upgrade"
+    },
+    "banner_show_women_only": {
+      "type": "boolean",
+      "default": true,
+      "description": "If true, the scrolling profiles banner on the landing page shows only female profiles. If false, shows all genders."
     }
   },
   "required": [
