@@ -2,9 +2,9 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
 const en = {
-  // Landing
-  tagline: 'Meet Beautiful Women. For Real.',
-  hero_subtitle: 'Thousands of stunning, verified women are waiting to connect with you right now. No bots. No fakes. Just real, breathtaking women.',
+   // Landing
+   tagline: 'Meet Beautiful Women. For Real.',
+   hero_subtitle: 'Stunning verified women are waiting to connect with you right now. No bots. No fakes. Just real, breathtaking women.',
   badge_verified: '✓ Every Woman Is ID Verified',
   btn_browse: 'Start Browsing',
   btn_complete_profile: 'Complete Your Profile',
@@ -196,8 +196,8 @@ const en = {
 };
 
 const es = {
-  tagline: 'Conoce Mujeres Hermosas. De Verdad.',
-  hero_subtitle: 'Miles de mujeres impresionantes y verificadas están esperando conectar contigo ahora mismo. Sin bots. Sin falsas. Solo mujeres reales y deslumbrantes.',
+   tagline: 'Conoce Mujeres Hermosas. De Verdad.',
+   hero_subtitle: 'Mujeres impresionantes y verificadas están esperando conectar contigo ahora mismo. Sin bots. Sin falsas. Solo mujeres reales y deslumbrantes.',
   badge_verified: '✓ Cada Mujer Tiene ID Verificado',
   btn_browse: 'Explorar Perfiles',
   btn_complete_profile: 'Completa tu Perfil',
@@ -379,8 +379,8 @@ const es = {
 };
 
 const th = {
-  tagline: 'พบกับผู้หญิงสวยจริงๆ ไม่ใช่ปลอม',
-  hero_subtitle: 'ผู้หญิงสวยงามและยืนยันตัวตนแล้วหลายพันคนกำลังรอพบคุณอยู่ตอนนี้ ไม่มีบอท ไม่มีปลอม — มีแต่ผู้หญิงจริงๆ',
+   tagline: 'พบกับผู้หญิงสวยจริงๆ ไม่ใช่ปลอม',
+   hero_subtitle: 'ผู้หญิงสวยงามและยืนยันตัวตนแล้วกำลังรอพบคุณอยู่ตอนนี้ ไม่มีบอท ไม่มีปลอม — มีแต่ผู้หญิงจริงๆ',
   badge_verified: '✓ ผู้หญิงทุกคนยืนยัน ID แล้ว',
   btn_browse: 'เริ่มเลือกดู',
   btn_complete_profile: 'ทำโปรไฟล์ให้สมบูรณ์',
@@ -562,8 +562,8 @@ const th = {
 };
 
 const zh = {
-  tagline: '遇见真实美丽的女性',
-  hero_subtitle: '数千位经过验证的迷人女性正在等待与你连接。没有机器人，没有假冒 — 只有真实、令人心动的女性。',
+   tagline: '遇见真实美丽的女性',
+   hero_subtitle: '经过验证的迷人女性正在等待与你连接。没有机器人，没有假冒 — 只有真实、令人心动的女性。',
   badge_verified: '✓ 每位女性均已实名认证',
   btn_browse: '开始浏览',
   btn_complete_profile: '完善个人资料',
@@ -745,8 +745,8 @@ const zh = {
 };
 
 const de = {
-  tagline: 'Triff echte wunderschöne Frauen.',
-  hero_subtitle: 'Tausende atemberaubende, verifizierte Frauen warten darauf, dich jetzt kennenzulernen. Keine Bots. Keine Fakes. Nur echte, bezaubernde Frauen.',
+   tagline: 'Triff echte wunderschöne Frauen.',
+   hero_subtitle: 'Atemberaubende, verifizierte Frauen warten darauf, dich jetzt kennenzulernen. Keine Bots. Keine Fakes. Nur echte, bezaubernde Frauen.',
   badge_verified: '✓ Jede Frau ist ID-verifiziert',
   btn_browse: 'Jetzt stöbern',
   btn_complete_profile: 'Profil vervollständigen',
@@ -928,8 +928,8 @@ const de = {
 };
 
 const vi = {
-  tagline: 'Gặp Gỡ Những Phụ Nữ Đẹp Thật Sự.',
-  hero_subtitle: 'Hàng nghìn phụ nữ quyến rũ đã được xác minh đang chờ kết nối với bạn ngay bây giờ. Không có bot. Không có giả mạo. Chỉ có những phụ nữ thật sự tuyệt vời.',
+   tagline: 'Gặp Gỡ Những Phụ Nữ Đẹp Thật Sự.',
+   hero_subtitle: 'Những phụ nữ quyến rũ đã được xác minh đang chờ kết nối với bạn ngay bây giờ. Không có bot. Không có giả mạo. Chỉ có những phụ nữ thật sự tuyệt vời.',
   badge_verified: '✓ Mỗi Phụ Nữ Đã Được Xác Minh ID',
   btn_browse: 'Bắt Đầu Duyệt',
   btn_complete_profile: 'Hoàn Thiện Hồ Sơ',
@@ -1111,8 +1111,8 @@ const vi = {
 };
 
 const pt = {
-  tagline: 'Conheça Mulheres Lindas de Verdade.',
-  hero_subtitle: 'Milhares de mulheres deslumbrantes e verificadas estão esperando para se conectar com você agora. Sem bots. Sem falsas. Apenas mulheres reais e encantadoras.',
+   tagline: 'Conheça Mulheres Lindas de Verdade.',
+   hero_subtitle: 'Mulheres deslumbrantes e verificadas estão esperando para se conectar com você agora. Sem bots. Sem falsas. Apenas mulheres reais e encantadoras.',
   badge_verified: '✓ Cada Mulher Tem ID Verificado',
   btn_browse: 'Começar a Explorar',
   btn_complete_profile: 'Complete Seu Perfil',
