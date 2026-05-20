@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
@@ -104,6 +104,7 @@ export default function Chat() {
   const isP1 = conversation.participant_1_id === user?.id;
   const otherName = isP1 ? conversation.participant_2_name : conversation.participant_1_name;
   const otherPhoto = isP1 ? conversation.participant_2_photo : conversation.participant_1_photo;
+  const otherId = isP1 ? conversation.participant_2_id : conversation.participant_1_id;
 
   return (
     <div className="flex flex-col h-[calc(100vh-4rem)]">
@@ -112,14 +113,16 @@ export default function Chat() {
         <Button variant="ghost" size="icon" onClick={() => navigate('/messages')}>
           <ArrowLeft className="w-5 h-5" />
         </Button>
-        {otherPhoto ? (
-          <img src={otherPhoto} className="w-9 h-9 rounded-full object-cover" alt="" />
-        ) : (
-          <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center">
-            <User className="w-4 h-4 text-primary" />
-          </div>
-        )}
-        <h2 className="font-medium">{otherName || 'User'}</h2>
+        <Link to={`/profile/${otherId}`} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+          {otherPhoto ? (
+            <img src={otherPhoto} className="w-9 h-9 rounded-full object-cover" alt="" />
+          ) : (
+            <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center">
+              <User className="w-4 h-4 text-primary" />
+            </div>
+          )}
+          <h2 className="font-medium">{otherName || 'User'}</h2>
+        </Link>
       </div>
 
       {/* Messages */}
