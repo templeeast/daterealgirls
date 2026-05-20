@@ -26,6 +26,8 @@ export default function Browse() {
   const [search, setSearch] = useState('');
   const [genderFilter, setGenderFilter] = useState('all');
   const [lookingForFilter, setLookingForFilter] = useState('all');
+  const [ageMin, setAgeMin] = useState('');
+  const [ageMax, setAgeMax] = useState('');
   const [showFilters, setShowFilters] = useState(false);
 
   const { data: profiles, isLoading } = useQuery({
@@ -65,6 +67,8 @@ export default function Browse() {
     if (user && p.user_id === user.id) return false;
     if (genderFilter !== 'all' && p.gender !== genderFilter) return false;
     if (lookingForFilter !== 'all' && p.looking_for !== lookingForFilter) return false;
+    if (ageMin !== '' && (p.age == null || p.age < parseInt(ageMin))) return false;
+    if (ageMax !== '' && (p.age == null || p.age > parseInt(ageMax))) return false;
     if (search) {
       const s = search.toLowerCase();
       return (
@@ -131,6 +135,27 @@ export default function Browse() {
                 <SelectItem value="marriage">{t('browse_marriage')}</SelectItem>
               </SelectContent>
             </Select>
+            <div className="flex items-center gap-2">
+              <Input
+                type="number"
+                placeholder={t('browse_age_min')}
+                className="w-24"
+                value={ageMin}
+                min={18}
+                max={99}
+                onChange={e => setAgeMin(e.target.value)}
+              />
+              <span className="text-muted-foreground text-sm">–</span>
+              <Input
+                type="number"
+                placeholder={t('browse_age_max')}
+                className="w-24"
+                value={ageMax}
+                min={18}
+                max={99}
+                onChange={e => setAgeMax(e.target.value)}
+              />
+            </div>
           </div>
         )}
       </div>
