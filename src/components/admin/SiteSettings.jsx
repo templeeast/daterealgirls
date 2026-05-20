@@ -6,14 +6,17 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import { Upload, Save } from 'lucide-react';
+import { Upload, Save, AlertTriangle } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { Switch } from '@/components/ui/switch';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export default function SiteSettings() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [saving, setSaving] = useState(false);
+  const [migrating, setMigrating] = useState(false);
+  const [migrateResult, setMigrateResult] = useState(null);
 
   const { data: configs } = useQuery({
     queryKey: ['siteConfigAdmin'],
@@ -29,12 +32,18 @@ export default function SiteSettings() {
     target_audience: '',
     logo_url: '',
     subscription_price: 5,
-    trial_duration_months: 3,
     max_photos: 3,
     bio_max_length: 500,
     primary_color: '',
     require_stripe_identity: false,
     stripe_identity_publishable_key: '',
+    banner_show_women_only: true,
+    payment_processor: 'stripe',
+    stripe_publishable_key: '',
+    stripe_secret_key: '',
+    stripe_price_id: '',
+    paymentnerds_api_key: '',
+    paymentnerds_merchant_id: '',
   });
 
   useEffect(() => {
@@ -45,12 +54,18 @@ export default function SiteSettings() {
         target_audience: existingConfig.target_audience || '',
         logo_url: existingConfig.logo_url || '',
         subscription_price: existingConfig.subscription_price || 5,
-        trial_duration_months: existingConfig.trial_duration_months || 3,
         max_photos: existingConfig.max_photos || 3,
         bio_max_length: existingConfig.bio_max_length || 500,
         primary_color: existingConfig.primary_color || '',
         require_stripe_identity: existingConfig.require_stripe_identity || false,
         stripe_identity_publishable_key: existingConfig.stripe_identity_publishable_key || '',
+        banner_show_women_only: existingConfig.banner_show_women_only !== false,
+        payment_processor: existingConfig.payment_processor || 'stripe',
+        stripe_publishable_key: existingConfig.stripe_publishable_key || '',
+        stripe_secret_key: existingConfig.stripe_secret_key || '',
+        stripe_price_id: existingConfig.stripe_price_id || '',
+        paymentnerds_api_key: existingConfig.paymentnerds_api_key || '',
+        paymentnerds_merchant_id: existingConfig.paymentnerds_merchant_id || '',
       });
     }
   }, [existingConfig]);
@@ -119,6 +134,26 @@ export default function SiteSettings() {
         </CardContent>
       </Card>
 
+      {/* Landing Page */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="font-heading text-lg">Landing Page</CardTitle>
+          <CardDescription>Control what visitors see on the public landing page.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="font-medium text-sm">Show Women Only in Scrolling Banner</p>
+              <p className="text-xs text-muted-foreground mt-0.5">When enabled, only female profiles appear in the animated banner. When off, all genders are shown.</p>
+            </div>
+            <Switch
+              checked={form.banner_show_women_only}
+              onCheckedChange={v => updateField('banner_show_women_only', v)}
+            />
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Pricing */}
       <Card>
         <CardHeader>
@@ -129,10 +164,6 @@ export default function SiteSettings() {
             <div className="space-y-2">
               <Label>Subscription Price ($/month)</Label>
               <Input type="number" value={form.subscription_price} onChange={e => updateField('subscription_price', Number(e.target.value))} />
-            </div>
-            <div className="space-y-2">
-              <Label>Trial Duration (months)</Label>
-              <Input type="number" value={form.trial_duration_months} onChange={e => updateField('trial_duration_months', Number(e.target.value))} />
             </div>
             <div className="space-y-2">
               <Label>Max Photos Per Profile</Label>
@@ -146,7 +177,7 @@ export default function SiteSettings() {
         </CardContent>
       </Card>
 
-      {/* Stripe Identity */}
+      {/* Identity Verification */}
       <Card>
         <CardHeader>
           <CardTitle className="font-heading text-lg">Identity Verification</CardTitle>
@@ -174,6 +205,90 @@ export default function SiteSettings() {
               <p className="text-xs text-muted-foreground">Found in your Stripe dashboard under Developers → API keys.</p>
             </div>
           )}
+        </CardContent>
+      </Card>
+
+      {/* Payment Processor */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="font-heading text-lg">Payment Processor</CardTitle>
+          <CardDescription>Configure which payment processor handles subscriptions. Switch to PaymentNerds if your Stripe account is terminated, then run migration.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label>Active Processor</Label>
+            <Select value={form.payment_processor} onValueChange={v => updateField('payment_processor', v)}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="stripe">Stripe</SelectItem>
+                <SelectItem value="paymentnerds">PaymentNerds</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Stripe Keys */}
+          <div className="space-y-3 border rounded-lg p-4">
+            <p className="text-sm font-medium">Stripe Configuration</p>
+            <div className="space-y-2">
+              <Label>Publishable Key (pk_live_...)</Label>
+              <Input value={form.stripe_publishable_key} onChange={e => updateField('stripe_publishable_key', e.target.value)} placeholder="pk_live_..." />
+            </div>
+            <div className="space-y-2">
+              <Label>Secret Key (sk_live_...)</Label>
+              <Input value={form.stripe_secret_key} onChange={e => updateField('stripe_secret_key', e.target.value)} placeholder="sk_live_..." type="password" />
+              <p className="text-xs text-muted-foreground">Stored securely, only used server-side.</p>
+            </div>
+            <div className="space-y-2">
+              <Label>Price ID (price_...)</Label>
+              <Input value={form.stripe_price_id} onChange={e => updateField('stripe_price_id', e.target.value)} placeholder="price_..." />
+              <p className="text-xs text-muted-foreground">Create a recurring monthly price in your Stripe dashboard and paste the ID here.</p>
+            </div>
+          </div>
+
+          {/* PaymentNerds Keys */}
+          <div className="space-y-3 border rounded-lg p-4">
+            <p className="text-sm font-medium">PaymentNerds Configuration</p>
+            <div className="space-y-2">
+              <Label>API Key</Label>
+              <Input value={form.paymentnerds_api_key} onChange={e => updateField('paymentnerds_api_key', e.target.value)} placeholder="pn_live_..." type="password" />
+            </div>
+            <div className="space-y-2">
+              <Label>Merchant ID</Label>
+              <Input value={form.paymentnerds_merchant_id} onChange={e => updateField('paymentnerds_merchant_id', e.target.value)} placeholder="Your PaymentNerds Merchant ID" />
+            </div>
+          </div>
+
+          {/* Migration Tool */}
+          <div className="border border-destructive/30 rounded-lg p-4 bg-destructive/5 space-y-3">
+            <div className="flex items-start gap-2">
+              <AlertTriangle className="w-4 h-4 text-destructive shrink-0 mt-0.5" />
+              <div>
+                <p className="text-sm font-medium text-destructive">Subscription Migration</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Save settings first, then click below to cancel all active subscriptions on the <strong>previous</strong> processor and flag users to re-subscribe on the new one.
+                </p>
+              </div>
+            </div>
+            {migrateResult && (
+              <div className="text-xs bg-background rounded p-2 text-muted-foreground">{migrateResult}</div>
+            )}
+            <Button
+              variant="destructive"
+              size="sm"
+              disabled={migrating}
+              onClick={async () => {
+                setMigrating(true);
+                setMigrateResult(null);
+                const res = await base44.functions.invoke('migrateSubscriptions', {});
+                setMigrateResult(res.data?.message || 'Migration complete.');
+                setMigrating(false);
+              }}
+            >
+              {migrating ? 'Migrating…' : 'Run Subscription Migration'}
+            </Button>
+          </div>
         </CardContent>
       </Card>
 
