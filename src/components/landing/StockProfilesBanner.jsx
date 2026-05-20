@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
+import useSiteConfig from '@/hooks/useSiteConfig';
 
 const STOCK_PROFILES = [
   { id: 's1', display_name: 'Valentina', location_city: 'Miami', photo: 'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=400&h=600&fit=crop&crop=face' },
@@ -25,9 +26,13 @@ export default function StockProfilesBanner() {
   const [profiles, setProfiles] = useState([]);
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const { config } = useSiteConfig();
 
   useEffect(() => {
-    base44.entities.MemberProfile.filter({ gender: 'female', is_active: true, profile_complete: true }, '-created_date', 20)
+    const filterQuery = config.banner_show_women_only === false
+      ? { is_active: true, profile_complete: true }
+      : { gender: 'female', is_active: true, profile_complete: true };
+    base44.entities.MemberProfile.filter(filterQuery, '-created_date', 20)
       .then(data => {
         const real = data.filter(p => p.photo_1).map(p => ({
           id: p.id,
@@ -41,7 +46,7 @@ export default function StockProfilesBanner() {
         setProfiles(combined);
       })
       .catch(() => setProfiles(STOCK_PROFILES));
-  }, []);
+  }, [config.banner_show_women_only]);
 
   const items = [...profiles, ...profiles, ...profiles];
 

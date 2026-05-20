@@ -1,15 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
+import useSiteConfig from '@/hooks/useSiteConfig';
 
 export default function ProfilesBelowHero() {
   const [profiles, setProfiles] = useState([]);
+  const { config } = useSiteConfig();
 
   useEffect(() => {
-    base44.entities.MemberProfile.filter({ gender: 'female', is_active: true }, '-created_date', 24)
+    const filterQuery = config.banner_show_women_only === false
+      ? { is_active: true }
+      : { gender: 'female', is_active: true };
+    base44.entities.MemberProfile.filter(filterQuery, '-created_date', 24)
       .then(data => setProfiles(data.filter(p => p.photo_1)))
       .catch(() => {});
-  }, []);
+  }, [config.banner_show_women_only]);
 
   if (profiles.length === 0) return null;
 
