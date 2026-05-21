@@ -5,7 +5,7 @@ const en = {
    // Landing
    tagline: 'Meet Beautiful Women. For Real.',
    hero_subtitle: 'Stunning verified women are waiting to connect with you right now. No bots. No fakes. Just real, breathtaking women.',
-  badge_verified: '✓ Every Woman Is ID Verified',
+  badge_verified: 'ID Verification Status Displayed',
   btn_browse: 'Start Browsing',
   btn_complete_profile: 'Complete Your Profile',
   why_title: 'Why {{siteName}}?',
@@ -201,7 +201,7 @@ const en = {
 const es = {
    tagline: 'Conoce Mujeres Hermosas. De Verdad.',
    hero_subtitle: 'Mujeres impresionantes y verificadas están esperando conectar contigo ahora mismo. Sin bots. Sin falsas. Solo mujeres reales y deslumbrantes.',
-  badge_verified: '✓ Cada Mujer Tiene ID Verificado',
+  badge_verified: 'Estado de Verificación de ID Mostrado',
   btn_browse: 'Explorar Perfiles',
   btn_complete_profile: 'Completa tu Perfil',
   why_title: '¿Por qué {{siteName}}?',
@@ -387,7 +387,7 @@ const es = {
 const th = {
    tagline: 'พบกับผู้หญิงสวยจริงๆ ไม่ใช่ปลอม',
    hero_subtitle: 'ผู้หญิงสวยงามและยืนยันตัวตนแล้วกำลังรอพบคุณอยู่ตอนนี้ ไม่มีบอท ไม่มีปลอม — มีแต่ผู้หญิงจริงๆ',
-  badge_verified: '✓ ผู้หญิงทุกคนยืนยัน ID แล้ว',
+  badge_verified: 'สถานะการยืนยัน ID ถูกแสดง',
   btn_browse: 'เริ่มเลือกดู',
   btn_complete_profile: 'ทำโปรไฟล์ให้สมบูรณ์',
   why_title: 'ทำไมต้อง {{siteName}}?',
@@ -573,7 +573,7 @@ const th = {
 const zh = {
    tagline: '遇见真实美丽的女性',
    hero_subtitle: '经过验证的迷人女性正在等待与你连接。没有机器人，没有假冒 — 只有真实、令人心动的女性。',
-  badge_verified: '✓ 每位女性均已实名认证',
+  badge_verified: '身份验证状态已显示',
   btn_browse: '开始浏览',
   btn_complete_profile: '完善个人资料',
   why_title: '为什么选择 {{siteName}}？',
@@ -759,7 +759,7 @@ const zh = {
 const de = {
    tagline: 'Triff echte wunderschöne Frauen.',
    hero_subtitle: 'Atemberaubende, verifizierte Frauen warten darauf, dich jetzt kennenzulernen. Keine Bots. Keine Fakes. Nur echte, bezaubernde Frauen.',
-  badge_verified: '✓ Jede Frau ist ID-verifiziert',
+  badge_verified: 'Verifizierungsstatus wird angezeigt',
   btn_browse: 'Jetzt stöbern',
   btn_complete_profile: 'Profil vervollständigen',
   why_title: 'Warum {{siteName}}?',
@@ -945,7 +945,7 @@ const de = {
 const vi = {
    tagline: 'Gặp Gỡ Những Phụ Nữ Đẹp Thật Sự.',
    hero_subtitle: 'Những phụ nữ quyến rũ đã được xác minh đang chờ kết nối với bạn ngay bây giờ. Không có bot. Không có giả mạo. Chỉ có những phụ nữ thật sự tuyệt vời.',
-  badge_verified: '✓ Mỗi Phụ Nữ Đã Được Xác Minh ID',
+  badge_verified: 'Trạng Thái Xác Minh ID Được Hiển Thị',
   btn_browse: 'Bắt Đầu Duyệt',
   btn_complete_profile: 'Hoàn Thiện Hồ Sơ',
   why_title: 'Tại Sao {{siteName}}?',
@@ -1131,7 +1131,7 @@ const vi = {
 const pt = {
    tagline: 'Conheça Mulheres Lindas de Verdade.',
    hero_subtitle: 'Mulheres deslumbrantes e verificadas estão esperando para se conectar com você agora. Sem bots. Sem falsas. Apenas mulheres reais e encantadoras.',
-  badge_verified: '✓ Cada Mulher Tem ID Verificado',
+  badge_verified: 'Estado de Verificação de ID Exibido',
   btn_browse: 'Começar a Explorar',
   btn_complete_profile: 'Complete Seu Perfil',
   why_title: 'Por Que {{siteName}}?',
