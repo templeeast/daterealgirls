@@ -94,7 +94,7 @@ export default function Onboarding() {
     });
 
     toast({ title: t('profile_created', { siteName: config.site_name }) });
-    navigate('/browse');
+    navigate('/');
   };
 
   const requireStripeIdentity = config.require_stripe_identity === true;
