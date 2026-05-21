@@ -42,8 +42,9 @@ export default function SiteSettings() {
     stripe_publishable_key: '',
     stripe_secret_key: '',
     stripe_price_id: '',
-    paymentnerds_api_key: '',
-    paymentnerds_merchant_id: '',
+    lemonsqueezy_api_key: '',
+    lemonsqueezy_store_id: '',
+    lemonsqueezy_variant_id: '',
   });
 
   useEffect(() => {
@@ -64,8 +65,9 @@ export default function SiteSettings() {
         stripe_publishable_key: existingConfig.stripe_publishable_key || '',
         stripe_secret_key: existingConfig.stripe_secret_key || '',
         stripe_price_id: existingConfig.stripe_price_id || '',
-        paymentnerds_api_key: existingConfig.paymentnerds_api_key || '',
-        paymentnerds_merchant_id: existingConfig.paymentnerds_merchant_id || '',
+        lemonsqueezy_api_key: existingConfig.lemonsqueezy_api_key || '',
+        lemonsqueezy_store_id: existingConfig.lemonsqueezy_store_id || '',
+        lemonsqueezy_variant_id: existingConfig.lemonsqueezy_variant_id || '',
       });
     }
   }, [existingConfig]);
@@ -212,7 +214,7 @@ export default function SiteSettings() {
       <Card>
         <CardHeader>
           <CardTitle className="font-heading text-lg">Payment Processor</CardTitle>
-          <CardDescription>Configure which payment processor handles subscriptions. Switch to PaymentNerds if your Stripe account is terminated, then run migration.</CardDescription>
+          <CardDescription>Configure which payment processor handles subscriptions. Switch to LemonSqueezy if your Stripe account is terminated, then run migration.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
@@ -223,7 +225,7 @@ export default function SiteSettings() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="stripe">Stripe</SelectItem>
-                <SelectItem value="paymentnerds">PaymentNerds</SelectItem>
+                <SelectItem value="lemonsqueezy">LemonSqueezy</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -247,16 +249,21 @@ export default function SiteSettings() {
             </div>
           </div>
 
-          {/* PaymentNerds Keys */}
+          {/* LemonSqueezy Keys */}
           <div className="space-y-3 border rounded-lg p-4">
-            <p className="text-sm font-medium">PaymentNerds Configuration</p>
+            <p className="text-sm font-medium">LemonSqueezy Configuration</p>
             <div className="space-y-2">
               <Label>API Key</Label>
-              <Input value={form.paymentnerds_api_key} onChange={e => updateField('paymentnerds_api_key', e.target.value)} placeholder="pn_live_..." type="password" />
+              <Input value={form.lemonsqueezy_api_key} onChange={e => updateField('lemonsqueezy_api_key', e.target.value)} placeholder="Your LemonSqueezy API key" type="password" />
             </div>
             <div className="space-y-2">
-              <Label>Merchant ID</Label>
-              <Input value={form.paymentnerds_merchant_id} onChange={e => updateField('paymentnerds_merchant_id', e.target.value)} placeholder="Your PaymentNerds Merchant ID" />
+              <Label>Store ID</Label>
+              <Input value={form.lemonsqueezy_store_id} onChange={e => updateField('lemonsqueezy_store_id', e.target.value)} placeholder="Your LemonSqueezy Store ID" />
+            </div>
+            <div className="space-y-2">
+              <Label>Variant ID</Label>
+              <Input value={form.lemonsqueezy_variant_id} onChange={e => updateField('lemonsqueezy_variant_id', e.target.value)} placeholder="Monthly subscription variant ID" />
+              <p className="text-xs text-muted-foreground">Found in your LemonSqueezy dashboard under your product's variants.</p>
             </div>
           </div>
 

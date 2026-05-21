@@ -55,6 +55,39 @@
       "type": "boolean",
       "default": true,
       "description": "If true, the scrolling profiles banner on the landing page shows only female profiles. If false, shows all genders."
+    },
+    "payment_processor": {
+      "type": "string",
+      "enum": [
+        "stripe",
+        "lemonsqueezy"
+      ],
+      "default": "stripe",
+      "description": "Active payment processor. Switch to lemonsqueezy if Stripe account is terminated."
+    },
+    "stripe_publishable_key": {
+      "type": "string",
+      "description": "Stripe publishable key for checkout (pk_live_... or pk_test_...)"
+    },
+    "stripe_secret_key": {
+      "type": "string",
+      "description": "Stripe secret key (sk_live_... or sk_test_...) \u2014 stored here for admin convenience; used server-side only"
+    },
+    "stripe_price_id": {
+      "type": "string",
+      "description": "Stripe Price ID for the monthly subscription product (price_...)"
+    },
+    "lemonsqueezy_api_key": {
+      "type": "string",
+      "description": "LemonSqueezy API key"
+    },
+    "lemonsqueezy_store_id": {
+      "type": "string",
+      "description": "LemonSqueezy Store ID"
+    },
+    "lemonsqueezy_variant_id": {
+      "type": "string",
+      "description": "LemonSqueezy Variant ID for the monthly subscription product"
     }
   },
   "required": [
