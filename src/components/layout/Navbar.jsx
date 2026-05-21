@@ -17,12 +17,13 @@ export default function Navbar() {
   const { t } = useTranslation();
 
   const isAdmin = user?.role === 'admin';
+  const profileComplete = profile?.profile_complete && profile?.selfie_url;
 
   const navItems = [
-    { path: '/browse', label: t('nav_browse'), icon: Search },
-    { path: '/messages', label: t('nav_messages'), icon: MessageCircle },
-    { path: '/favorites', label: t('nav_favorites'), icon: Star },
-    { path: '/my-profile', label: t('nav_profile'), icon: User },
+    { path: '/browse', label: t('nav_browse'), icon: Search, restricted: true },
+    { path: '/messages', label: t('nav_messages'), icon: MessageCircle, restricted: true },
+    { path: '/favorites', label: t('nav_favorites'), icon: Star, restricted: true },
+    { path: '/my-profile', label: t('nav_profile'), icon: User, restricted: false },
   ];
 
   return (
@@ -43,18 +44,26 @@ export default function Navbar() {
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-1">
-            {navItems.map(({ path, label, icon: Icon }) => (
-              <Link key={path} to={path}>
-                <Button
-                  variant={location.pathname === path ? 'default' : 'ghost'}
-                  size="sm"
-                  className="gap-2"
-                >
+            {navItems.map(({ path, label, icon: Icon, restricted }) => {
+              const disabled = restricted && !profileComplete;
+              return disabled ? (
+                <Button key={path} variant="ghost" size="sm" className="gap-2 opacity-40 cursor-not-allowed" disabled>
                   <Icon className="w-4 h-4" />
                   {label}
                 </Button>
-              </Link>
-            ))}
+              ) : (
+                <Link key={path} to={path}>
+                  <Button
+                    variant={location.pathname === path ? 'default' : 'ghost'}
+                    size="sm"
+                    className="gap-2"
+                  >
+                    <Icon className="w-4 h-4" />
+                    {label}
+                  </Button>
+                </Link>
+              );
+            })}
             {isAdmin && (
               <Link to="/admin">
                 <Button
@@ -111,17 +120,25 @@ export default function Navbar() {
                       </div>
                     </div>
                   )}
-                  {navItems.map(({ path, label, icon: Icon }) => (
-                    <Link key={path} to={path} onClick={() => setOpen(false)}>
-                      <Button
-                        variant={location.pathname === path ? 'default' : 'ghost'}
-                        className="w-full justify-start gap-3"
-                      >
+                  {navItems.map(({ path, label, icon: Icon, restricted }) => {
+                    const disabled = restricted && !profileComplete;
+                    return disabled ? (
+                      <Button key={path} variant="ghost" className="w-full justify-start gap-3 opacity-40 cursor-not-allowed" disabled>
                         <Icon className="w-4 h-4" />
                         {label}
                       </Button>
-                    </Link>
-                  ))}
+                    ) : (
+                      <Link key={path} to={path} onClick={() => setOpen(false)}>
+                        <Button
+                          variant={location.pathname === path ? 'default' : 'ghost'}
+                          className="w-full justify-start gap-3"
+                        >
+                          <Icon className="w-4 h-4" />
+                          {label}
+                        </Button>
+                      </Link>
+                    );
+                  })}
                   <Link to="/support" onClick={() => setOpen(false)}>
                     <Button variant="ghost" className="w-full justify-start gap-3">
                       <Settings className="w-4 h-4" />

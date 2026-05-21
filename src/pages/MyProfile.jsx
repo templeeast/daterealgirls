@@ -9,7 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Upload, Shield, Camera, Save, Trash2, Eye, EyeOff } from 'lucide-react';
+import { Upload, Shield, Camera, Save, Trash2, Eye, EyeOff, AlertTriangle } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
 import useMyProfile from '@/hooks/useMyProfile';
@@ -127,6 +127,17 @@ export default function MyProfile() {
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
       <h1 className="font-heading text-3xl font-bold mb-6">{t('my_profile_title')}</h1>
+
+      {/* Incomplete profile banner */}
+      {(!profile.profile_complete || !profile.selfie_url) && (
+        <div className="mb-6 flex items-start gap-3 bg-amber-50 border border-amber-200 text-amber-800 rounded-xl p-4">
+          <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5 text-amber-500" />
+          <div>
+            <p className="font-semibold text-sm">{t('profile_incomplete_title')}</p>
+            <p className="text-sm mt-0.5">{t('profile_incomplete_desc')}</p>
+          </div>
+        </div>
+      )}
 
       {/* Verification Status */}
       {config.require_stripe_identity ? (
