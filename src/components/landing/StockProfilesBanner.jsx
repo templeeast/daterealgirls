@@ -3,7 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
 import useSiteConfig from '@/hooks/useSiteConfig';
-import { Check } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 
 const STOCK_PROFILES = [
   { id: 's1', display_name: 'Valentina', location_city: 'Miami', photo: 'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=400&h=600&fit=crop&crop=face', verified: Math.random() > 0.5 },
@@ -79,14 +79,18 @@ export default function StockProfilesBanner() {
               alt={p.display_name}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             />
-            <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/70 to-transparent px-3 py-2">
-              <div className="flex items-center gap-1">
-                <p className="text-white text-sm font-semibold truncate flex-1">{p.display_name}</p>
-                {p.verified && <Check className="w-4 h-4 text-primary flex-shrink-0" />}
+            <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 to-transparent px-3 py-2">
+              <p className="text-white text-sm font-semibold truncate mb-1">{p.display_name}</p>
+              <div className="flex items-center justify-between">
+                {p.location_city && (
+                  <p className="text-white/70 text-xs truncate">{p.location_city}</p>
+                )}
+                {p.verified && (
+                  <Badge className="bg-primary text-primary-foreground text-xs px-2 py-0.5 ml-auto">
+                    ID Verified
+                  </Badge>
+                )}
               </div>
-              {p.location_city && (
-                <p className="text-white/70 text-xs truncate">{p.location_city}</p>
-              )}
             </div>
           </button>
         ))}
