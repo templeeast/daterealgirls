@@ -225,21 +225,21 @@ export default function MyProfile() {
                 <h3 className="font-heading text-lg font-semibold mb-1">{t('subscription_title')}</h3>
                 {profile.subscription_status === 'active' ? (
                   <p className="text-sm text-muted-foreground">
-                    Premium active{profile.subscription_end_date ? ` · renews ${profile.subscription_end_date}` : ''}
+                    {profile.subscription_end_date ? t('subscription_active_renews', { date: profile.subscription_end_date }) : t('subscription_active')}
                   </p>
                 ) : (
-                  <p className="text-sm text-muted-foreground">You're on the free tier. Upgrade to unlock messaging & full browsing.</p>
+                  <p className="text-sm text-muted-foreground">{t('subscription_free_desc')}</p>
                 )}
               </div>
               <Badge
                 className={profile.subscription_status === 'active' ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'}
               >
-                {profile.subscription_status === 'active' ? '✦ Premium' : 'Free'}
+                {profile.subscription_status === 'active' ? t('subscription_premium_badge') : t('subscription_free_badge')}
               </Badge>
             </div>
             {profile.subscription_status !== 'active' && (
               <div className="mt-4 p-4 bg-accent/50 rounded-xl text-sm text-foreground">
-                <strong className="text-primary">Upgrade to Premium</strong> for just ${config.subscription_price || 9.99}/mo to unlock unlimited browsing, messaging, and more. Contact support to upgrade.
+                <strong className="text-primary">{t('subscription_upgrade_cta')}</strong> {t('subscription_upgrade_desc', { price: config.subscription_price || 9.99 })}
               </div>
             )}
           </CardContent>
