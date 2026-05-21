@@ -9,7 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Upload, Shield, Camera, Save, Trash2, Eye, EyeOff, Lock } from 'lucide-react';
+import { Upload, Shield, Camera, Save, Trash2, Eye, EyeOff } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
 import useMyProfile from '@/hooks/useMyProfile';
@@ -88,6 +88,17 @@ export default function MyProfile() {
     refetch();
   };
 
+  const handleSelfieUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const { file_uri } = await base44.integrations.Core.UploadPrivateFile({ file });
+    await base44.entities.MemberProfile.update(profile.id, {
+      selfie_url: file_uri,
+    });
+    toast({ title: 'Verification selfie uploaded successfully.' });
+    refetch();
+  };
+
   const handleSave = async () => {
     setSaving(true);
     await base44.entities.MemberProfile.update(profile.id, form);
@@ -145,23 +156,54 @@ export default function MyProfile() {
               </Badge>
             </div>
             {(profile.verification_status === 'unverified' || profile.verification_status === 'rejected') && (
-              <div className="mt-4 space-y-3">
+              <div className="mt-4 space-y-4">
                 <div className="flex items-start gap-2 text-xs text-muted-foreground bg-muted rounded-lg p-3">
                   <Shield className="w-3.5 h-3.5 shrink-0 mt-0.5 text-primary" />
-                  <span>{t('id_upload_notice')}</span>
+                  <span>Your documents are stored in a private, encrypted location and only accessible to our admin team for verification. They will be permanently deleted once your review is complete.</span>
                 </div>
-                <div className="flex items-start gap-2 text-xs text-muted-foreground bg-muted rounded-lg p-3">
-                  <Shield className="w-3.5 h-3.5 shrink-0 mt-0.5 text-primary" />
-                  <span>Your ID is stored in a private, encrypted location and is only accessible to our admin team for verification purposes. It will be permanently deleted once your review is complete.</span>
+
+                {/* Selfie upload */}
+                <div className="border rounded-xl p-4 space-y-2">
+                  <p className="text-sm font-medium">Step 1 — Verification Selfie</p>
+                  <p className="text-xs text-muted-foreground">
+                    Upload a clear selfie of your face. This photo is used <strong>only for identity verification</strong> by our admin team and will <strong>never</strong> appear on your public profile.
+                  </p>
+                  <div className="flex items-center gap-3">
+                    {profile.selfie_url && (
+                      <span className="text-xs text-primary font-medium">✓ Selfie on file</span>
+                    )}
+                    <label>
+                      <Button variant="outline" size="sm" className="gap-2" asChild>
+                        <span>
+                          <Camera className="w-4 h-4" />
+                          {profile.selfie_url ? 'Replace Selfie' : 'Upload Selfie'}
+                        </span>
+                      </Button>
+                      <input type="file" accept="image/*" className="hidden" onChange={handleSelfieUpload} />
+                    </label>
+                  </div>
                 </div>
-                <label className="block">
-                  <Button variant="outline" className="gap-2" asChild>
-                    <span>
-                      <Upload className="w-4 h-4" /> {t('upload_govt_id')}
-                    </span>
-                  </Button>
-                  <input type="file" accept="image/*,.pdf" className="hidden" onChange={handleIdUpload} />
-                </label>
+
+                {/* Govt ID upload */}
+                <div className="border rounded-xl p-4 space-y-2">
+                  <p className="text-sm font-medium">Step 2 — Government-Issued ID</p>
+                  <p className="text-xs text-muted-foreground">
+                    Upload a photo or scan of a valid government-issued ID (passport, driver's license, national ID). Used for age and identity verification only — never shown publicly.
+                  </p>
+                  <div className="flex items-center gap-3">
+                    {profile.id_document_url && (
+                      <span className="text-xs text-primary font-medium">✓ ID on file</span>
+                    )}
+                    <label>
+                      <Button variant="outline" size="sm" className="gap-2" asChild>
+                        <span>
+                          <Upload className="w-4 h-4" /> {t('upload_govt_id')}
+                        </span>
+                      </Button>
+                      <input type="file" accept="image/*,.pdf" className="hidden" onChange={handleIdUpload} />
+                    </label>
+                  </div>
+                </div>
               </div>
             )}
           </CardContent>
@@ -207,15 +249,8 @@ export default function MyProfile() {
           <CardDescription>{t('photos_upload_desc', { n: config.max_photos || 3 })}</CardDescription>
         </CardHeader>
         <CardContent>
-          {/* Identity photo notice */}
-          <div className="flex items-start gap-2 text-xs text-muted-foreground bg-muted rounded-lg p-3 mb-4">
-            <Lock className="w-3.5 h-3.5 shrink-0 mt-0.5 text-primary" />
-            <span>{t('photo_1_locked')}</span>
-          </div>
-
           <div className="grid grid-cols-3 gap-4">
             {['photo_1', 'photo_2', 'photo_3'].map((field, i) => {
-              const isFirst = i === 0;
               const visibleKey = `${field}_visible`;
               const isVisible = form[visibleKey] !== false;
 
@@ -231,16 +266,10 @@ export default function MyProfile() {
                           <span className="text-xs text-muted-foreground">{t('photo_label', { n: i + 1 })}</span>
                         </div>
                       )}
-                      {isFirst && (
-                        <div className="absolute top-1 right-1 bg-primary/80 rounded-full p-0.5">
-                          <Lock className="w-3 h-3 text-white" />
-                        </div>
-                      )}
                     </div>
                     <input type="file" accept="image/*" className="hidden" onChange={e => handlePhotoUpload(e, field)} />
                   </label>
 
-                  {/* Visibility toggle for all photos; delete only for 2 & 3 */}
                   {form[field] && (
                     <div className="flex gap-1">
                       <button
@@ -252,16 +281,14 @@ export default function MyProfile() {
                         {isVisible ? <Eye className="w-3 h-3" /> : <EyeOff className="w-3 h-3 text-muted-foreground" />}
                         <span className="text-muted-foreground">{isVisible ? t('photo_visible') : t('photo_hidden')}</span>
                       </button>
-                      {!isFirst && (
-                        <button
-                          type="button"
-                          onClick={() => { updateField(field, ''); updateField(visibleKey, true); }}
-                          className="flex items-center justify-center p-1 rounded-md bg-destructive/10 hover:bg-destructive/20 text-destructive transition-colors"
-                          title={t('photo_delete')}
-                        >
-                          <Trash2 className="w-3 h-3" />
-                        </button>
-                      )}
+                      <button
+                        type="button"
+                        onClick={() => { updateField(field, ''); updateField(visibleKey, true); }}
+                        className="flex items-center justify-center p-1 rounded-md bg-destructive/10 hover:bg-destructive/20 text-destructive transition-colors"
+                        title={t('photo_delete')}
+                      >
+                        <Trash2 className="w-3 h-3" />
+                      </button>
                     </div>
                   )}
                 </div>
