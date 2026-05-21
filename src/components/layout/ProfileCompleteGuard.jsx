@@ -23,5 +23,10 @@ export default function ProfileCompleteGuard({ children }) {
     return <Navigate to="/my-profile" replace />;
   }
 
+  // Profile complete but selfie not yet uploaded → send to my-profile to upload
+  if (!isExempt && profile && profile.profile_complete && !profile.selfie_url) {
+    return <Navigate to="/my-profile" replace />;
+  }
+
   return children;
 }
