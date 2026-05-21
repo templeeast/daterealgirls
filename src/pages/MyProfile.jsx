@@ -159,27 +159,25 @@ export default function MyProfile() {
               <div className="mt-4 space-y-4">
                 <div className="flex items-start gap-2 text-xs text-muted-foreground bg-muted rounded-lg p-3">
                   <Shield className="w-3.5 h-3.5 shrink-0 mt-0.5 text-primary" />
-                  <span>Your documents are stored in a private, encrypted location and only accessible to our admin team for verification. They will be permanently deleted once your review is complete.</span>
+                  <span>{t('id_docs_privacy_notice')}</span>
                 </div>
 
                 {/* Selfie upload — MANDATORY */}
                 <div className={`border-2 rounded-xl p-4 space-y-2 ${!profile.selfie_url ? 'border-primary/60 bg-accent/30' : 'border-border'}`}>
                   <div className="flex items-center gap-2">
-                    <p className="text-sm font-medium">Step 1 — Verification Selfie</p>
-                    <Badge className="bg-primary text-primary-foreground text-xs px-2 py-0.5">Required</Badge>
+                    <p className="text-sm font-medium">{t('selfie_step_title')}</p>
+                    <Badge className="bg-primary text-primary-foreground text-xs px-2 py-0.5">{t('required_badge')}</Badge>
                   </div>
-                  <p className="text-xs text-muted-foreground">
-                    A clear selfie of your face is <strong>required to use the site</strong>. It is used <strong>only for identity verification</strong> by our admin team and will <strong>never</strong> appear on your public profile.
-                  </p>
+                  <p className="text-xs text-muted-foreground" dangerouslySetInnerHTML={{ __html: t('selfie_step_desc') }} />
                   <div className="flex items-center gap-3">
                     {profile.selfie_url && (
-                      <span className="text-xs text-primary font-medium">✓ Selfie on file</span>
+                      <span className="text-xs text-primary font-medium">{t('selfie_on_file')}</span>
                     )}
                     <label>
                       <Button variant={profile.selfie_url ? 'outline' : 'default'} size="sm" className="gap-2" asChild>
                         <span>
                           <Camera className="w-4 h-4" />
-                          {profile.selfie_url ? 'Replace Selfie' : 'Upload Selfie'}
+                          {profile.selfie_url ? t('replace_selfie') : t('upload_selfie')}
                         </span>
                       </Button>
                       <input type="file" accept="image/*" className="hidden" onChange={handleSelfieUpload} />
@@ -190,12 +188,10 @@ export default function MyProfile() {
                 {/* Govt ID upload — OPTIONAL but needed for verified badge */}
                 <div className="border rounded-xl p-4 space-y-2">
                   <div className="flex items-center gap-2">
-                    <p className="text-sm font-medium">Step 2 — Government-Issued ID</p>
-                    <Badge variant="outline" className="text-xs px-2 py-0.5">Optional</Badge>
+                    <p className="text-sm font-medium">{t('govtid_step_title')}</p>
+                    <Badge variant="outline" className="text-xs px-2 py-0.5">{t('optional_badge')}</Badge>
                   </div>
-                  <p className="text-xs text-muted-foreground">
-                    Uploading a government-issued ID (passport, driver's license, national ID) is <strong>not mandatory</strong>, but is required to obtain the <strong>Verified</strong> badge on your profile. Never shown publicly.
-                  </p>
+                  <p className="text-xs text-muted-foreground" dangerouslySetInnerHTML={{ __html: t('govtid_step_desc') }} />
                   <div className="flex items-center gap-3">
                     {profile.id_document_url && (
                       <span className="text-xs text-primary font-medium">✓ ID on file</span>
