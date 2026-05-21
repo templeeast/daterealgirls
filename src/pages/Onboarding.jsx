@@ -14,6 +14,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 
 import StripeIdentityStep from '@/components/onboarding/StripeIdentityStep';
+import OnboardingVerificationStep from '@/components/onboarding/OnboardingVerificationStep.jsx';
 
 const INTERESTS = [
   'Travel', 'Music', 'Movies', 'Cooking', 'Fitness', 'Reading',
@@ -29,6 +30,8 @@ export default function Onboarding() {
   const [step, setStep] = useState(0);
   const [saving, setSaving] = useState(false);
   const [identityVerified, setIdentityVerified] = useState(false);
+  const [selfieUri, setSelfieUri] = useState('');
+  const [idDocUri, setIdDocUri] = useState('');
   const [form, setForm] = useState({
     display_name: '',
     gender: '',
@@ -86,7 +89,9 @@ export default function Onboarding() {
       ...form,
       user_id: me.id,
       age,
-      verification_status: identityVerified ? 'pending' : 'unverified',
+      selfie_url: selfieUri || undefined,
+      id_document_url: idDocUri || undefined,
+      verification_status: identityVerified ? 'pending' : (selfieUri || idDocUri ? 'pending' : 'unverified'),
       is_active: true,
       is_suspended: false,
       profile_complete: true,
@@ -177,7 +182,7 @@ export default function Onboarding() {
       </div>
     </div>,
 
-    // Step 2: Identity Verification (conditional)
+    // Step 2: Identity Verification
     ...(requireStripeIdentity ? [
       <StripeIdentityStep
         key="identity"
@@ -185,7 +190,15 @@ export default function Onboarding() {
         onVerified={() => { setIdentityVerified(true); setStep(s => s + 1); }}
         onSkip={() => setStep(s => s + 1)}
       />
-    ] : []),
+    ] : [
+      <OnboardingVerificationStep
+        key="verify"
+        selfieUploaded={!!selfieUri}
+        idUploaded={!!idDocUri}
+        onSelfieUploaded={setSelfieUri}
+        onIdUploaded={setIdDocUri}
+      />
+    ]),
 
     // Step 3: Photos & Social
     <div key="photos" className="space-y-6">
@@ -221,10 +234,15 @@ export default function Onboarding() {
   const stepTitles = [
     t('step_basic'),
     t('step_about'),
-    ...(requireStripeIdentity ? [t('step_identity')] : []),
+    t('step_identity'),
     t('step_photos'),
   ];
-  const canProceed = step === 0 ? form.display_name && form.gender && form.date_of_birth : true;
+  const verifyStepIndex = 2;
+  const canProceed = step === 0
+    ? form.display_name && form.gender && form.date_of_birth
+    : step === verifyStepIndex && !requireStripeIdentity
+      ? !!selfieUri
+      : true;
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
