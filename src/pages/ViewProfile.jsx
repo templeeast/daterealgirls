@@ -36,11 +36,11 @@ export default function ViewProfile() {
   const { data: profile, isLoading } = useQuery({
     queryKey: ['profile', profileId],
     queryFn: async () => {
-      // Try by MemberProfile id first, then fall back to user_id
-      const byId = await base44.entities.MemberProfile.filter({ id: profileId });
-      if (byId[0]) return byId[0];
+      // Try by user_id first (used when navigating from chat), then by MemberProfile id
       const byUserId = await base44.entities.MemberProfile.filter({ user_id: profileId });
-      return byUserId[0] || null;
+      if (byUserId[0]) return byUserId[0];
+      const byId = await base44.entities.MemberProfile.filter({ id: profileId });
+      return byId[0] || null;
     },
     enabled: !!profileId,
   });
