@@ -69,15 +69,13 @@ export default function Messages() {
             return (
               <Link key={convo.id} to={`/chat/${convo.id}`}>
                 <div className="flex items-center gap-3 p-4 rounded-xl hover:bg-muted transition-colors cursor-pointer">
-                  <Link to={`/profile/${other.id}`} onClick={e => e.stopPropagation()}>
-                    {other.photo ? (
-                      <img src={other.photo} className="w-12 h-12 rounded-full object-cover hover:opacity-80 transition-opacity" alt="" />
-                    ) : (
-                      <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center hover:bg-primary/20 transition-colors">
-                        <User className="w-6 h-6 text-primary" />
-                      </div>
-                    )}
-                  </Link>
+                  {other.photo ? (
+                    <img src={other.photo} className="w-12 h-12 rounded-full object-cover" alt="" />
+                  ) : (
+                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                      <User className="w-6 h-6 text-primary" />
+                    </div>
+                  )}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between">
                       <h3 className="font-medium truncate">{other.name || 'User'}</h3>
