@@ -5,6 +5,8 @@ const en = {
    // Landing
    tagline: 'Meet Beautiful Women. For Real.',
    hero_subtitle: 'Stunning verified women are waiting to connect with you right now. No bots. No fakes. Just real, breathtaking women.',
+   banner_title: 'Meet Our Members',
+   banner_subtitle: 'Verified, real people looking for genuine connections',
   badge_verified: 'Govt. ID Verification',
   btn_browse: 'Start Browsing',
   btn_complete_profile: 'Complete Your Profile',
@@ -220,6 +222,8 @@ const en = {
 const es = {
    tagline: 'Conoce Mujeres Hermosas. De Verdad.',
    hero_subtitle: 'Mujeres impresionantes y verificadas están esperando conectar contigo ahora mismo. Sin bots. Sin falsas. Solo mujeres reales y deslumbrantes.',
+  banner_title: 'Conoce a Nuestros Miembros',
+  banner_subtitle: 'Personas reales y verificadas buscando conexiones genuinas',
   badge_verified: 'Verificación de ID Gubernamental',
   btn_browse: 'Explorar Perfiles',
   btn_complete_profile: 'Completa tu Perfil',
@@ -425,6 +429,8 @@ const es = {
 const th = {
    tagline: 'พบกับผู้หญิงสวยจริงๆ ไม่ใช่ปลอม',
    hero_subtitle: 'ผู้หญิงสวยงามและยืนยันตัวตนแล้วกำลังรอพบคุณอยู่ตอนนี้ ไม่มีบอท ไม่มีปลอม — มีแต่ผู้หญิงจริงๆ',
+  banner_title: 'พบกับสมาชิกของเรา',
+  banner_subtitle: 'คนจริงและยืนยันตัวตนแล้วที่มองหาการเชื่อมต่อที่แท้จริง',
   badge_verified: 'การยืนยัน ID รัฐบาล',
   btn_browse: 'เริ่มเลือกดู',
   btn_complete_profile: 'ทำโปรไฟล์ให้สมบูรณ์',
@@ -630,6 +636,8 @@ const th = {
 const zh = {
    tagline: '遇见真实美丽的女性',
    hero_subtitle: '经过验证的迷人女性正在等待与你连接。没有机器人，没有假冒 — 只有真实、令人心动的女性。',
+  banner_title: '认识我们的成员',
+  banner_subtitle: '经验证的真人寻找真实的连接',
   badge_verified: '政府身份证验证',
   btn_browse: '开始浏览',
   btn_complete_profile: '完善个人资料',
@@ -835,6 +843,8 @@ const zh = {
 const de = {
    tagline: 'Triff echte wunderschöne Frauen.',
    hero_subtitle: 'Atemberaubende, verifizierte Frauen warten darauf, dich jetzt kennenzulernen. Keine Bots. Keine Fakes. Nur echte, bezaubernde Frauen.',
+  banner_title: 'Treffen Sie unsere Mitglieder',
+  banner_subtitle: 'Verifizierte, echte Menschen auf der Suche nach echten Verbindungen',
   badge_verified: 'Regierungs-ID-Verifizierung',
   btn_browse: 'Jetzt stöbern',
   btn_complete_profile: 'Profil vervollständigen',
@@ -1040,6 +1050,8 @@ const de = {
 const vi = {
    tagline: 'Gặp Gỡ Những Phụ Nữ Đẹp Thật Sự.',
    hero_subtitle: 'Những phụ nữ quyến rũ đã được xác minh đang chờ kết nối với bạn ngay bây giờ. Không có bot. Không có giả mạo. Chỉ có những phụ nữ thật sự tuyệt vời.',
+  banner_title: 'Gặp Gỡ Các Thành Viên Của Chúng Tôi',
+  banner_subtitle: 'Những người thật sự đã được xác minh đang tìm kiếm các kết nối chân thực',
   badge_verified: 'Xác Minh ID Chính Phủ',
   btn_browse: 'Bắt Đầu Duyệt',
   btn_complete_profile: 'Hoàn Thiện Hồ Sơ',
@@ -1245,6 +1257,8 @@ const vi = {
 const pt = {
    tagline: 'Conheça Mulheres Lindas de Verdade.',
    hero_subtitle: 'Mulheres deslumbrantes e verificadas estão esperando para se conectar com você agora. Sem bots. Sem falsas. Apenas mulheres reais e encantadoras.',
+  banner_title: 'Conheça Nossos Membros',
+  banner_subtitle: 'Pessoas reais e verificadas procurando conexões genuínas',
   badge_verified: 'Verificação de ID Governamental',
   btn_browse: 'Começar a Explorar',
   btn_complete_profile: 'Complete Seu Perfil',

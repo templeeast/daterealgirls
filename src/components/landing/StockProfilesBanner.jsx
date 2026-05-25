@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
 import useSiteConfig from '@/hooks/useSiteConfig';
 import { Badge } from '@/components/ui/badge';
+import { useTranslation } from 'react-i18next';
 
 const STOCK_PROFILES = [
   { id: 's1', display_name: 'Valentina', location_city: 'Miami', photo: 'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=400&h=600&fit=crop&crop=face', verified: Math.random() > 0.5 },
@@ -28,6 +29,7 @@ export default function StockProfilesBanner() {
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const { config } = useSiteConfig();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const filterQuery = config.banner_show_women_only === false
@@ -61,8 +63,8 @@ export default function StockProfilesBanner() {
   return (
     <section className="py-12 bg-secondary/30 overflow-hidden border-y border-border">
       <div className="text-center mb-6 px-4">
-        <h2 className="font-heading text-2xl font-bold mb-1">Meet Our Members</h2>
-        <p className="text-muted-foreground text-sm">Verified, real people looking for genuine connections</p>
+        <h2 className="font-heading text-2xl font-bold mb-1">{t('banner_title')}</h2>
+        <p className="text-muted-foreground text-sm">{t('banner_subtitle')}</p>
       </div>
       <div
         className="flex gap-4 stock-banner-scroll"
