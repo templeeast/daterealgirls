@@ -85,13 +85,21 @@ export default function CodaPayButton({ price, onSuccess }) {
     setLoading(true);
     const option = COUNTRY_OPTIONS.find(o => String(o.country) === selectedCountry);
 
-    const res = await base44.functions.invoke('codapayInitPayment', {
-      country: option.country,
-      currency: option.currency,
-      price: price,
-      itemName: 'Premium Subscription (1 month)',
-      useSandbox: USE_SANDBOX,
-    });
+    let res;
+    try {
+      res = await base44.functions.invoke('codapayInitPayment', {
+        country: option.country,
+        currency: option.currency,
+        price: price,
+        itemName: 'Premium Subscription (1 month)',
+        useSandbox: USE_SANDBOX,
+      });
+    } catch (err) {
+      setLoading(false);
+      const errMsg = err?.response?.data?.error || 'Payment initiation failed. Please try again.';
+      toast({ title: errMsg, variant: 'destructive' });
+      return;
+    }
 
     setLoading(false);
 
