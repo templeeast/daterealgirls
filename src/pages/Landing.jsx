@@ -193,7 +193,12 @@ export default function Landing() {
                 Men — Premium
               </div>
               <div className="font-heading text-5xl font-bold mb-2">${config.subscription_price || 9.99}<span className="text-lg font-normal text-muted-foreground">/mo</span></div>
-              <p className="text-muted-foreground mb-6">Full access, cancel anytime</p>
+              <div className="mb-6">
+                <p className="text-muted-foreground mb-2">Full access, cancel anytime</p>
+                <p className="text-sm bg-accent/60 text-accent-foreground px-3 py-2 rounded-lg font-medium">
+                  Try free for 1 month — no payment required to start
+                </p>
+              </div>
               <ul className="text-sm text-left space-y-3 mb-8">
                 <li className="flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> {t('full_profile')}</li>
                 <li className="flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> {t('unlimited_msg')}</li>
