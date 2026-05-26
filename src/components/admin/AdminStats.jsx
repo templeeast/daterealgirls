@@ -23,11 +23,11 @@ export default function AdminStats() {
     initialData: [],
   });
 
-  const pendingVerifications = profiles.filter(p => p.verification_status === 'pending').length;
+  const pendingVerifications = profiles.filter(p => p.verification_status === 'pending' || p.verification_status === 'unverified').length;
 
   const stats = [
     { label: 'Total Members', value: profiles.length, icon: Users, color: 'text-primary' },
-    { label: 'Pending Verifications', value: pendingVerifications, icon: Shield, color: 'text-accent-foreground' },
+    { label: 'Unverified Members', value: pendingVerifications, icon: Shield, color: 'text-accent-foreground' },
     { label: 'Open Reports', value: reports.length, icon: Flag, color: 'text-destructive' },
     { label: 'Open Tickets', value: tickets.length, icon: HelpCircle, color: 'text-muted-foreground' },
   ];
