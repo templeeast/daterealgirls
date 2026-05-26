@@ -17,6 +17,7 @@ const languages = [
   { code: 'de', label: 'Deutsch', flag: '🇩🇪' },
   { code: 'vi', label: 'Tiếng Việt', flag: '🇻🇳' },
   { code: 'pt', label: 'Português', flag: '🇧🇷' },
+  { code: 'tl', label: 'Filipino', flag: '🇵🇭' },
 ];
 
 export default function LanguageSelector() {
