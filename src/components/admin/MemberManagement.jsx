@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
-import { Search, Ban, Eye, RotateCcw, X, Instagram, Facebook, MapPin, Calendar, User } from 'lucide-react';
+import { Search, Ban, Eye, RotateCcw, X, Instagram, Facebook, MapPin, Calendar, User, ExternalLink } from 'lucide-react';
 
 export default function MemberManagement() {
   const queryClient = useQueryClient();
@@ -17,6 +17,16 @@ export default function MemberManagement() {
   const [suspendDialog, setSuspendDialog] = useState(null);
   const [suspendReason, setSuspendReason] = useState('');
   const [detailMember, setDetailMember] = useState(null);
+  const [selfieSignedUrl, setSelfieSignedUrl] = useState(null);
+
+  const openDetailMember = async (p) => {
+    setDetailMember(p);
+    setSelfieSignedUrl(null);
+    if (p.selfie_url) {
+      const { signed_url } = await base44.integrations.Core.CreateFileSignedUrl({ file_uri: p.selfie_url });
+      setSelfieSignedUrl(signed_url);
+    }
+  };
 
   const { data: profiles, isLoading } = useQuery({
     queryKey: ['allProfiles'],
@@ -85,7 +95,7 @@ export default function MemberManagement() {
           </TableHeader>
           <TableBody>
             {filtered.map(p => (
-              <TableRow key={p.id} className={`cursor-pointer hover:bg-muted/50 ${p.is_suspended ? 'opacity-60' : ''}`} onClick={() => setDetailMember(p)}>
+              <TableRow key={p.id} className={`cursor-pointer hover:bg-muted/50 ${p.is_suspended ? 'opacity-60' : ''}`} onClick={() => openDetailMember(p)}>
                 <TableCell>
                   <div className="flex items-center gap-3">
                     {p.photo_1 ? (
@@ -149,11 +159,19 @@ export default function MemberManagement() {
           {detailMember && (
             <div className="space-y-5">
               {/* Photos */}
-              <div className="flex gap-2">
+              <div className="flex gap-2 flex-wrap">
                 {[detailMember.photo_1, detailMember.photo_2, detailMember.photo_3].filter(Boolean).map((url, i) => (
                   <img key={i} src={url} className="w-24 h-24 rounded-lg object-cover border" alt="" />
                 ))}
               </div>
+
+              {/* Selfie */}
+              {selfieSignedUrl && (
+                <div>
+                  <p className="text-xs font-semibold uppercase text-muted-foreground mb-2">Selfie (ID Verification)</p>
+                  <img src={selfieSignedUrl} className="w-32 h-32 rounded-lg object-cover border" alt="Selfie" />
+                </div>
+              )}
 
               {/* Core Info */}
               <div className="grid grid-cols-2 gap-3 text-sm">

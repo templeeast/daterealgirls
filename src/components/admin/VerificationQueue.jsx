@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent } from '@/components/ui/card';
@@ -9,6 +9,7 @@ import { CheckCircle, XCircle, User, ExternalLink, Loader2 } from 'lucide-react'
 export default function VerificationQueue() {
   const queryClient = useQueryClient();
   const [loadingIdFor, setLoadingIdFor] = useState(null);
+  const [selfieUrls, setSelfieUrls] = useState({});
 
   const viewIdDocument = async (profileId, fileUri) => {
     setLoadingIdFor(profileId);
@@ -22,6 +23,15 @@ export default function VerificationQueue() {
     queryFn: () => base44.entities.MemberProfile.filter({ verification_status: 'pending' }),
     initialData: [],
   });
+
+  useEffect(() => {
+    pending.forEach(async (p) => {
+      if (p.selfie_url && !selfieUrls[p.id]) {
+        const { signed_url } = await base44.integrations.Core.CreateFileSignedUrl({ file_uri: p.selfie_url });
+        setSelfieUrls(prev => ({ ...prev, [p.id]: signed_url }));
+      }
+    });
+  }, [pending]);
 
   const verifyMutation = useMutation({
     mutationFn: ({ id, status }) =>
@@ -55,8 +65,8 @@ export default function VerificationQueue() {
                     <User className="w-6 h-6 text-muted-foreground" />
                   </div>
                 )}
-                {p.selfie_url && (
-                  <img src={p.selfie_url} className="w-16 h-16 rounded-xl object-cover" alt="Selfie" />
+                {p.selfie_url && selfieUrls[p.id] && (
+                  <img src={selfieUrls[p.id]} className="w-16 h-16 rounded-xl object-cover" alt="Selfie" />
                 )}
               </div>
               <div className="flex-1">
