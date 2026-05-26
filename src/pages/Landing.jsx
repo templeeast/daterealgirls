@@ -187,7 +187,7 @@ export default function Landing() {
             {/* Men — Premium */}
             <div className="bg-card border-2 border-primary rounded-2xl p-8 text-center relative">
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground px-4 py-1 rounded-full text-sm font-medium">
-                Most Popular
+                {t('most_popular')}
               </div>
               <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium mb-4 mt-2">
                 Men — Premium
@@ -196,7 +196,7 @@ export default function Landing() {
               <div className="mb-6">
                 <p className="text-muted-foreground mb-2">Full access, cancel anytime</p>
                 <p className="text-sm bg-accent/60 text-accent-foreground px-3 py-2 rounded-lg font-medium">
-                  Try free for 1 month — no payment required to start
+                  {t('try_free_1_month')}
                 </p>
               </div>
               <ul className="text-sm text-left space-y-3 mb-8">
@@ -205,7 +205,7 @@ export default function Landing() {
                 <li className="flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> {t('browse_search')}</li>
                 <li className="flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> {t('id_verification')}</li>
               </ul>
-              <Button className="w-full rounded-full" size="lg" onClick={() => handleCTAClick('/my-profile')}>Get Premium</Button>
+              <Button className="w-full rounded-full" size="lg" onClick={() => handleCTAClick('/my-profile')}>{t('get_premium')}</Button>
             </div>
           </div>
         </div>
