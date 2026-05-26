@@ -16,6 +16,7 @@ import useMyProfile from '@/hooks/useMyProfile';
 import useSiteConfig from '@/hooks/useSiteConfig';
 import { useTranslation } from 'react-i18next';
 import StripeIdentityCard from '@/components/profile/StripeIdentityCard';
+import CodaPayButton from '@/components/subscription/CodaPayButton';
 
 const INTERESTS = [
   'Travel', 'Music', 'Movies', 'Cooking', 'Fitness', 'Reading',
@@ -245,8 +246,15 @@ export default function MyProfile() {
               </Badge>
             </div>
             {profile.subscription_status !== 'active' && (
-              <div className="mt-4 p-4 bg-accent/50 rounded-xl text-sm text-foreground">
-                <strong className="text-primary">{t('subscription_upgrade_cta')}</strong> {t('subscription_upgrade_desc', { price: config.subscription_price || 9.99 })}
+              <div className="mt-4 space-y-4">
+                <div className="p-4 bg-accent/50 rounded-xl text-sm text-foreground">
+                  <strong className="text-primary">{t('subscription_upgrade_cta')}</strong>{' '}
+                  Unlock unlimited browsing, messaging, and more for just ${config.subscription_price || 9.99}/month.
+                </div>
+                <CodaPayButton
+                  price={config.subscription_price || 9.99}
+                  onSuccess={refetch}
+                />
               </div>
             )}
           </CardContent>
