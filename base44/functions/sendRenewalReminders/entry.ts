@@ -18,6 +18,7 @@ Deno.serve(async (req) => {
     });
 
     const expiringSoon = active.filter(p => p.subscription_end_date === target);
+    const isFreeTrialExpiry = (p) => p.free_trial_claimed && p.free_trial_start_date && !p.paymentnerds_subscription_id && !p.stripe_subscription_id;
 
     // Get site config for site name
     const configs = await base44.asServiceRole.entities.SiteConfig.list();
@@ -31,10 +32,18 @@ Deno.serve(async (req) => {
       const memberUser = users[0];
       if (!memberUser?.email) continue;
 
+      const isTrial = isFreeTrialExpiry(profile);
+      const subject = isTrial
+        ? `Your free trial on ${siteName} expires in 3 days`
+        : `Your ${siteName} subscription expires in 3 days`;
+      const body = isTrial
+        ? `Hi ${profile.display_name || 'there'},\n\nYour free 1-month trial on ${siteName} expires on ${profile.subscription_end_date}.\n\nWe hope you've enjoyed unlimited browsing and messaging! To keep your Premium access, subscribe for just $${price}/month.\n\nLog in and visit your profile page to subscribe:\nhttps://your-app-url.com/my-profile\n\nThank you for trying ${siteName}!\n\nThe ${siteName} Team`
+        : `Hi ${profile.display_name || 'there'},\n\nYour Premium subscription on ${siteName} expires on ${profile.subscription_end_date}.\n\nTo keep enjoying unlimited browsing and messaging, please renew your subscription for just $${price}/month.\n\nLog in and visit your profile page to renew:\nhttps://your-app-url.com/my-profile\n\nThank you for being a member!\n\nThe ${siteName} Team`;
+
       await base44.asServiceRole.integrations.Core.SendEmail({
         to: memberUser.email,
-        subject: `Your ${siteName} subscription expires in 3 days`,
-        body: `Hi ${profile.display_name || 'there'},\n\nYour Premium subscription on ${siteName} expires on ${profile.subscription_end_date}.\n\nTo keep enjoying unlimited browsing and messaging, please renew your subscription for just $${price}/month.\n\nLog in and visit your profile page to renew:\nhttps://your-app-url.com/my-profile\n\nThank you for being a member!\n\nThe ${siteName} Team`,
+        subject,
+        body,
       });
       count++;
     }

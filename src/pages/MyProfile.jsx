@@ -17,6 +17,7 @@ import useSiteConfig from '@/hooks/useSiteConfig';
 import { useTranslation } from 'react-i18next';
 import StripeIdentityCard from '@/components/profile/StripeIdentityCard';
 import CodaPayButton from '@/components/subscription/CodaPayButton';
+import FreeTrialButton from '@/components/subscription/FreeTrialButton';
 
 const INTERESTS = [
   'Travel', 'Music', 'Movies', 'Cooking', 'Fitness', 'Reading',
@@ -251,10 +252,22 @@ export default function MyProfile() {
                   <strong className="text-primary">{t('subscription_upgrade_cta')}</strong>{' '}
                   Unlock unlimited browsing, messaging, and more for just ${config.subscription_price || 9.99}/month.
                 </div>
-                <CodaPayButton
-                  price={config.subscription_price || 9.99}
-                  onSuccess={refetch}
-                />
+                <FreeTrialButton profile={profile} onSuccess={refetch} />
+                {profile.free_trial_claimed && (
+                  <CodaPayButton
+                    price={config.subscription_price || 9.99}
+                    onSuccess={refetch}
+                  />
+                )}
+                {!profile.free_trial_claimed && (
+                  <p className="text-xs text-center text-muted-foreground">— or skip the trial and subscribe now —</p>
+                )}
+                {!profile.free_trial_claimed && (
+                  <CodaPayButton
+                    price={config.subscription_price || 9.99}
+                    onSuccess={refetch}
+                  />
+                )}
               </div>
             )}
           </CardContent>

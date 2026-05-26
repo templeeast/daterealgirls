@@ -117,10 +117,11 @@
         "free",
         "active",
         "expired",
-        "cancelled"
+        "cancelled",
+        "migrating"
       ],
       "default": "free",
-      "description": "Subscription status (relevant for male users)."
+      "description": "Subscription status. 'migrating' means the old subscription was cancelled and the user needs to re-subscribe on the new processor."
     },
     "subscription_start_date": {
       "type": "string",
@@ -131,6 +132,28 @@
       "type": "string",
       "format": "date",
       "description": "When the paid subscription expires"
+    },
+    "free_trial_claimed": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether the male member has already claimed their free month trial"
+    },
+    "free_trial_start_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date the free trial was activated"
+    },
+    "stripe_customer_id": {
+      "type": "string",
+      "description": "Stripe Customer ID (cus_...)"
+    },
+    "stripe_subscription_id": {
+      "type": "string",
+      "description": "Stripe Subscription ID (sub_...)"
+    },
+    "paymentnerds_subscription_id": {
+      "type": "string",
+      "description": "PaymentNerds subscription or transaction ID"
     },
     "interests": {
       "type": "array",
