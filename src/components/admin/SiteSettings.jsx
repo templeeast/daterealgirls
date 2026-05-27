@@ -38,13 +38,7 @@ export default function SiteSettings() {
     require_stripe_identity: false,
     stripe_identity_publishable_key: '',
     banner_show_women_only: true,
-    payment_processor: 'stripe',
-    stripe_publishable_key: '',
-    stripe_secret_key: '',
-    stripe_price_id: '',
-    lemonsqueezy_api_key: '',
-    lemonsqueezy_store_id: '',
-    lemonsqueezy_variant_id: '',
+    payment_processor: 'authorizenet',
   });
 
   useEffect(() => {
@@ -61,13 +55,7 @@ export default function SiteSettings() {
         require_stripe_identity: existingConfig.require_stripe_identity || false,
         stripe_identity_publishable_key: existingConfig.stripe_identity_publishable_key || '',
         banner_show_women_only: existingConfig.banner_show_women_only !== false,
-        payment_processor: existingConfig.payment_processor || 'stripe',
-        stripe_publishable_key: existingConfig.stripe_publishable_key || '',
-        stripe_secret_key: existingConfig.stripe_secret_key || '',
-        stripe_price_id: existingConfig.stripe_price_id || '',
-        lemonsqueezy_api_key: existingConfig.lemonsqueezy_api_key || '',
-        lemonsqueezy_store_id: existingConfig.lemonsqueezy_store_id || '',
-        lemonsqueezy_variant_id: existingConfig.lemonsqueezy_variant_id || '',
+        payment_processor: existingConfig.payment_processor || 'authorizenet',
       });
     }
   }, [existingConfig]);
@@ -213,57 +201,57 @@ export default function SiteSettings() {
       {/* Payment Processor */}
       <Card>
         <CardHeader>
-          <CardTitle className="font-heading text-lg">Payment Processor</CardTitle>
-          <CardDescription>Configure which payment processor handles subscriptions. Switch to LemonSqueezy if your Stripe account is terminated, then run migration.</CardDescription>
+          <CardTitle className="font-heading text-lg">Payment Processors</CardTitle>
+          <CardDescription>
+            <strong>Authorize.net (via PaymentCloud)</strong> is the primary processor for credit/debit card payments.
+            <strong> CodaPay</strong> is the secondary processor for Southeast Asian and local payment methods.
+            Use the migration tool to move users from CodaPay to Authorize.net.
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label>Active Processor</Label>
+            <Label>Active Primary Processor</Label>
             <Select value={form.payment_processor} onValueChange={v => updateField('payment_processor', v)}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="stripe">Stripe</SelectItem>
-                <SelectItem value="lemonsqueezy">LemonSqueezy</SelectItem>
+                <SelectItem value="authorizenet">Authorize.net (PaymentCloud) — Primary</SelectItem>
+                <SelectItem value="codapay">CodaPay — Secondary (Asia / Local)</SelectItem>
               </SelectContent>
             </Select>
+            <p className="text-xs text-muted-foreground">This controls which processor is shown first to users on the subscription page.</p>
           </div>
 
-          {/* Stripe Keys */}
-          <div className="space-y-3 border rounded-lg p-4">
-            <p className="text-sm font-medium">Stripe Configuration</p>
-            <div className="space-y-2">
-              <Label>Publishable Key (pk_live_...)</Label>
-              <Input value={form.stripe_publishable_key} onChange={e => updateField('stripe_publishable_key', e.target.value)} placeholder="pk_live_..." />
+          {/* Authorize.net Info */}
+          <div className="space-y-3 border-2 border-primary/20 rounded-lg p-4 bg-primary/5">
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-semibold">Authorize.net / PaymentCloud</span>
+              <span className="text-xs bg-primary text-primary-foreground px-2 py-0.5 rounded-full">Primary</span>
             </div>
-            <div className="space-y-2">
-              <Label>Secret Key (sk_live_...)</Label>
-              <Input value={form.stripe_secret_key} onChange={e => updateField('stripe_secret_key', e.target.value)} placeholder="sk_live_..." type="password" />
-              <p className="text-xs text-muted-foreground">Stored securely, only used server-side.</p>
-            </div>
-            <div className="space-y-2">
-              <Label>Price ID (price_...)</Label>
-              <Input value={form.stripe_price_id} onChange={e => updateField('stripe_price_id', e.target.value)} placeholder="price_..." />
-              <p className="text-xs text-muted-foreground">Create a recurring monthly price in your Stripe dashboard and paste the ID here.</p>
+            <p className="text-xs text-muted-foreground">
+              Credentials are stored as server-side environment secrets (<code className="bg-muted px-1 rounded">AUTHORIZENET_API_LOGIN_ID</code> and <code className="bg-muted px-1 rounded">AUTHORIZENET_TRANSACTION_KEY</code>).
+              Update them in <strong>Dashboard → Settings → Secrets</strong> if they change.
+            </p>
+            <div className="text-xs text-muted-foreground space-y-1">
+              <p>• Sandbox endpoint: <code className="bg-muted px-1 rounded">apitest.authorize.net</code></p>
+              <p>• Production endpoint: <code className="bg-muted px-1 rounded">api.authorize.net</code></p>
+              <p>• Toggle sandbox/production in <code className="bg-muted px-1 rounded">components/subscription/AuthorizeNetButton.jsx</code> and <code className="bg-muted px-1 rounded">functions/authorizeNetCharge.js</code></p>
             </div>
           </div>
 
-          {/* LemonSqueezy Keys */}
+          {/* CodaPay Info */}
           <div className="space-y-3 border rounded-lg p-4">
-            <p className="text-sm font-medium">LemonSqueezy Configuration</p>
-            <div className="space-y-2">
-              <Label>API Key</Label>
-              <Input value={form.lemonsqueezy_api_key} onChange={e => updateField('lemonsqueezy_api_key', e.target.value)} placeholder="Your LemonSqueezy API key" type="password" />
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-semibold">CodaPay</span>
+              <span className="text-xs bg-muted text-muted-foreground px-2 py-0.5 rounded-full">Secondary</span>
             </div>
-            <div className="space-y-2">
-              <Label>Store ID</Label>
-              <Input value={form.lemonsqueezy_store_id} onChange={e => updateField('lemonsqueezy_store_id', e.target.value)} placeholder="Your LemonSqueezy Store ID" />
-            </div>
-            <div className="space-y-2">
-              <Label>Variant ID</Label>
-              <Input value={form.lemonsqueezy_variant_id} onChange={e => updateField('lemonsqueezy_variant_id', e.target.value)} placeholder="Monthly subscription variant ID" />
-              <p className="text-xs text-muted-foreground">Found in your LemonSqueezy dashboard under your product's variants.</p>
+            <p className="text-xs text-muted-foreground">
+              Credentials are stored as server-side secrets (<code className="bg-muted px-1 rounded">CODAPAY_PROJECT_ID</code>, <code className="bg-muted px-1 rounded">CODAPAY_SANDBOX_API_KEY</code>, <code className="bg-muted px-1 rounded">CODAPAY_PRODUCTION_API_KEY</code>).
+              Supports payments across Southeast Asia (PHP, THB, IDR, MYR, VND, SGD, TWD, USD).
+            </p>
+            <div className="text-xs text-muted-foreground space-y-1">
+              <p>• Toggle sandbox/production in <code className="bg-muted px-1 rounded">components/subscription/CodaPayButton.jsx</code></p>
             </div>
           </div>
 
@@ -272,9 +260,9 @@ export default function SiteSettings() {
             <div className="flex items-start gap-2">
               <AlertTriangle className="w-4 h-4 text-destructive shrink-0 mt-0.5" />
               <div>
-                <p className="text-sm font-medium text-destructive">Subscription Migration</p>
+                <p className="text-sm font-medium text-destructive">CodaPay → Authorize.net Migration</p>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Save settings first, then click below to cancel all active subscriptions on the <strong>previous</strong> processor and flag users to re-subscribe on the new one.
+                  Flags all users who subscribed via CodaPay as <strong>migrating</strong>, prompting them to re-subscribe using Authorize.net on their next login. Save settings first before running.
                 </p>
               </div>
             </div>
@@ -288,12 +276,16 @@ export default function SiteSettings() {
               onClick={async () => {
                 setMigrating(true);
                 setMigrateResult(null);
-                const res = await base44.functions.invoke('migrateSubscriptions', {});
-                setMigrateResult(res.data?.message || 'Migration complete.');
+                try {
+                  const res = await base44.functions.invoke('migrateSubscriptions', {});
+                  setMigrateResult(res.data?.message || 'Migration complete.');
+                } catch (err) {
+                  setMigrateResult('Migration failed: ' + (err?.response?.data?.error || err.message));
+                }
                 setMigrating(false);
               }}
             >
-              {migrating ? 'Migrating…' : 'Run Subscription Migration'}
+              {migrating ? 'Migrating…' : 'Run CodaPay → Authorize.net Migration'}
             </Button>
           </div>
         </CardContent>
