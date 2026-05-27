@@ -260,9 +260,9 @@ export default function SiteSettings() {
             <div className="flex items-start gap-2">
               <AlertTriangle className="w-4 h-4 text-destructive shrink-0 mt-0.5" />
               <div>
-                <p className="text-sm font-medium text-destructive">CodaPay → Authorize.net Migration</p>
+                <p className="text-sm font-medium text-destructive">Authorize.net → CodaPay Migration</p>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Flags all users who subscribed via CodaPay as <strong>migrating</strong>, prompting them to re-subscribe using Authorize.net on their next login. Save settings first before running.
+                  Flags all users who subscribed via Authorize.net as <strong>migrating</strong>, prompting them to re-subscribe using CodaPay on their next login. Save settings first before running.
                 </p>
               </div>
             </div>
@@ -285,7 +285,7 @@ export default function SiteSettings() {
                 setMigrating(false);
               }}
             >
-              {migrating ? 'Migrating…' : 'Run CodaPay → Authorize.net Migration'}
+              {migrating ? 'Migrating…' : 'Run Authorize.net → CodaPay Migration'}
             </Button>
           </div>
         </CardContent>
