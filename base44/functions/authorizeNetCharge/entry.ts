@@ -72,6 +72,21 @@ Deno.serve(async (req) => {
       return Response.json({ error: errMsg }, { status: 400 });
     }
 
+    // Update the member's subscription status
+    const profiles = await base44.entities.MemberProfile.filter({ user_id: user.id });
+    if (profiles.length > 0) {
+      const profile = profiles[0];
+      const startDate = new Date();
+      const endDate = new Date(startDate);
+      endDate.setMonth(endDate.getMonth() + 1);
+      await base44.entities.MemberProfile.update(profile.id, {
+        subscription_status: 'active',
+        subscription_start_date: startDate.toISOString().split('T')[0],
+        subscription_end_date: endDate.toISOString().split('T')[0],
+        paymentnerds_subscription_id: txResponse.transId,
+      });
+    }
+
     return Response.json({
       success: true,
       transactionId: txResponse.transId,
