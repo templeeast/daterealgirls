@@ -17,6 +17,7 @@ import useSiteConfig from '@/hooks/useSiteConfig';
 import { useTranslation } from 'react-i18next';
 import StripeIdentityCard from '@/components/profile/StripeIdentityCard';
 import CodaPayButton from '@/components/subscription/CodaPayButton';
+import AuthorizeNetButton from '@/components/subscription/AuthorizeNetButton';
 import FreeTrialButton from '@/components/subscription/FreeTrialButton';
 
 const INTERESTS = [
@@ -253,21 +254,25 @@ export default function MyProfile() {
                   Unlock unlimited browsing, messaging, and more for just ${config.subscription_price || 9.99}/month.
                 </div>
                 <FreeTrialButton profile={profile} onSuccess={refetch} />
-                {profile.free_trial_claimed && (
-                  <CodaPayButton
-                    price={config.subscription_price || 9.99}
-                    onSuccess={refetch}
-                  />
-                )}
                 {!profile.free_trial_claimed && (
                   <p className="text-xs text-center text-muted-foreground">— or skip the trial and subscribe now —</p>
                 )}
-                {!profile.free_trial_claimed && (
+                {/* Authorize.net (card payment) */}
+                <div className="border rounded-xl p-4 space-y-2">
+                  <p className="text-sm font-medium">Pay by Credit / Debit Card</p>
+                  <AuthorizeNetButton
+                    price={config.subscription_price || 9.99}
+                    onSuccess={refetch}
+                  />
+                </div>
+                {/* CodaPay (Southeast Asia & other regions) */}
+                <div className="border rounded-xl p-4 space-y-2">
+                  <p className="text-sm font-medium">Pay via CodaPay (Asia / Local Methods)</p>
                   <CodaPayButton
                     price={config.subscription_price || 9.99}
                     onSuccess={refetch}
                   />
-                )}
+                </div>
               </div>
             )}
           </CardContent>
