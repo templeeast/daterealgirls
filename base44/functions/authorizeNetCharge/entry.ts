@@ -73,13 +73,13 @@ Deno.serve(async (req) => {
     }
 
     // Update the member's subscription status
-    const profiles = await base44.entities.MemberProfile.filter({ user_id: user.id });
+    const profiles = await base44.asServiceRole.entities.MemberProfile.filter({ user_id: user.id });
     if (profiles.length > 0) {
       const profile = profiles[0];
       const startDate = new Date();
       const endDate = new Date(startDate);
       endDate.setMonth(endDate.getMonth() + 1);
-      await base44.entities.MemberProfile.update(profile.id, {
+      await base44.asServiceRole.entities.MemberProfile.update(profile.id, {
         subscription_status: 'active',
         subscription_start_date: startDate.toISOString().split('T')[0],
         subscription_end_date: endDate.toISOString().split('T')[0],
