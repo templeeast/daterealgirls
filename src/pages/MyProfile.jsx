@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { useQueryClient } from '@tanstack/react-query';
@@ -72,11 +72,19 @@ export default function MyProfile() {
     }));
   };
 
+  const photoInputRefs = {
+    photo_1: useRef(),
+    photo_2: useRef(),
+    photo_3: useRef(),
+  };
+
   const handlePhotoUpload = async (e, field) => {
     const file = e.target.files?.[0];
     if (!file) return;
     const { file_url } = await base44.integrations.Core.UploadFile({ file });
     updateField(field, file_url);
+    // Reset input so the same file can be re-selected
+    e.target.value = '';
   };
 
   const handleIdUpload = async (e) => {
@@ -104,10 +112,13 @@ export default function MyProfile() {
 
   const handleSave = async () => {
     setSaving(true);
-    await base44.entities.MemberProfile.update(profile.id, form);
-    queryClient.invalidateQueries({ queryKey: ['myProfile'] });
-    toast({ title: t('profile_updated') });
-    setSaving(false);
+    try {
+      await base44.entities.MemberProfile.update(profile.id, form);
+      queryClient.invalidateQueries({ queryKey: ['myProfile'] });
+      toast({ title: t('profile_updated') });
+    } finally {
+      setSaving(false);
+    }
   };
 
   if (isLoading || !form) {
@@ -295,19 +306,20 @@ export default function MyProfile() {
 
               return (
                 <div key={field} className="flex flex-col gap-1">
-                  <label className="cursor-pointer">
-                    <div className={`aspect-square rounded-xl border-2 border-dashed flex items-center justify-center overflow-hidden transition-colors relative ${form[field] ? 'border-primary' : 'border-muted-foreground/30 hover:border-primary/50'} ${!isVisible && form[field] ? 'opacity-50' : ''}`}>
-                      {form[field] ? (
-                        <img src={form[field]} className="w-full h-full object-cover" alt="" />
-                      ) : (
-                        <div className="text-center p-2">
-                          <Upload className="w-6 h-6 mx-auto text-muted-foreground mb-1" />
-                          <span className="text-xs text-muted-foreground">{t('photo_label', { n: i + 1 })}</span>
-                        </div>
-                      )}
-                    </div>
-                    <input type="file" accept="image/*" className="hidden" onChange={e => handlePhotoUpload(e, field)} />
-                  </label>
+                  <div
+                    className={`aspect-square rounded-xl border-2 border-dashed flex items-center justify-center overflow-hidden transition-colors relative cursor-pointer ${form[field] ? 'border-primary' : 'border-muted-foreground/30 hover:border-primary/50'} ${!isVisible && form[field] ? 'opacity-50' : ''}`}
+                    onClick={() => photoInputRefs[field].current?.click()}
+                  >
+                    {form[field] ? (
+                      <img src={form[field]} className="w-full h-full object-cover" alt="" />
+                    ) : (
+                      <div className="text-center p-2">
+                        <Upload className="w-6 h-6 mx-auto text-muted-foreground mb-1" />
+                        <span className="text-xs text-muted-foreground">{t('photo_label', { n: i + 1 })}</span>
+                      </div>
+                    )}
+                  </div>
+                  <input ref={photoInputRefs[field]} type="file" accept="image/*" className="hidden" onChange={e => handlePhotoUpload(e, field)} />
 
                   {form[field] && (
                     <div className="flex gap-1">
