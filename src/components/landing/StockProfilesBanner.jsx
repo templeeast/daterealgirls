@@ -32,9 +32,7 @@ export default function StockProfilesBanner() {
   const { t } = useTranslation();
 
   useEffect(() => {
-    const filterQuery = config.banner_show_women_only === false
-      ? { is_active: true, profile_complete: true }
-      : { gender: 'female', is_active: true, profile_complete: true };
+    const filterQuery = { gender: 'female', is_active: true, profile_complete: true };
     base44.entities.MemberProfile.filter(filterQuery, '-created_date', 20)
       .then(data => {
         const real = data.filter(p => p.photo_1).map(p => ({
