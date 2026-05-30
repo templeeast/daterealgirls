@@ -83,7 +83,7 @@ export default function StockProfilesBanner() {
                 )}
                 {p.verified && (
                   <Badge className="bg-primary text-primary-foreground text-xs px-2 py-0.5 ml-auto">
-                    ID Verified
+                    {t('verified')}
                   </Badge>
                 )}
               </div>
