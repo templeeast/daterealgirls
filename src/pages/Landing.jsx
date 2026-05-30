@@ -45,6 +45,16 @@ export default function Landing() {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Beta Banner */}
+      {config.demo_mode && (
+        <div className="w-full bg-primary text-primary-foreground py-3 px-4 text-center z-50 relative">
+          <div className="flex items-center justify-center gap-2 flex-wrap">
+            <span className="text-base font-semibold">🚀 Beta Mode</span>
+            <span className="text-sm text-primary-foreground/90">This app is currently in Beta — we're launching soon! Stay tuned for the full experience.</span>
+          </div>
+        </div>
+      )}
+
       {/* Hero */}
       <section className="relative overflow-hidden">
         {/* Background photo — bikini women on beach */}

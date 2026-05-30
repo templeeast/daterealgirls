@@ -59,35 +59,34 @@
     "payment_processor": {
       "type": "string",
       "enum": [
-        "stripe",
-        "lemonsqueezy"
+        "authorizenet",
+        "codapay"
       ],
-      "default": "stripe",
-      "description": "Active payment processor. Switch to lemonsqueezy if Stripe account is terminated."
+      "default": "authorizenet",
+      "description": "Active payment processor shown to users."
     },
-    "stripe_publishable_key": {
+    "plaid_client_id": {
       "type": "string",
-      "description": "Stripe publishable key for checkout (pk_live_... or pk_test_...)"
+      "description": "Plaid Client ID"
     },
-    "stripe_secret_key": {
+    "plaid_secret": {
       "type": "string",
-      "description": "Stripe secret key (sk_live_... or sk_test_...) \u2014 stored here for admin convenience; used server-side only"
+      "description": "Plaid Secret key"
     },
-    "stripe_price_id": {
+    "plaid_env": {
       "type": "string",
-      "description": "Stripe Price ID for the monthly subscription product (price_...)"
+      "enum": [
+        "sandbox",
+        "development",
+        "production"
+      ],
+      "default": "sandbox",
+      "description": "Plaid environment"
     },
-    "lemonsqueezy_api_key": {
-      "type": "string",
-      "description": "LemonSqueezy API key"
-    },
-    "lemonsqueezy_store_id": {
-      "type": "string",
-      "description": "LemonSqueezy Store ID"
-    },
-    "lemonsqueezy_variant_id": {
-      "type": "string",
-      "description": "LemonSqueezy Variant ID for the monthly subscription product"
+    "demo_mode": {
+      "type": "boolean",
+      "default": true,
+      "description": "If true, a prominent Beta/coming soon banner is shown on the landing page"
     }
   },
   "required": [

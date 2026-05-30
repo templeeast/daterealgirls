@@ -39,6 +39,7 @@ export default function SiteSettings() {
     stripe_identity_publishable_key: '',
     banner_show_women_only: true,
     payment_processor: 'authorizenet',
+    demo_mode: true,
   });
 
   useEffect(() => {
@@ -56,6 +57,7 @@ export default function SiteSettings() {
         stripe_identity_publishable_key: existingConfig.stripe_identity_publishable_key || '',
         banner_show_women_only: existingConfig.banner_show_women_only !== false,
         payment_processor: existingConfig.payment_processor || 'authorizenet',
+        demo_mode: existingConfig.demo_mode !== false,
       });
     }
   }, [existingConfig]);
@@ -131,6 +133,16 @@ export default function SiteSettings() {
           <CardDescription>Control what visitors see on the public landing page.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="font-medium text-sm">Beta / Demo Mode</p>
+              <p className="text-xs text-muted-foreground mt-0.5">Shows a prominent "Beta Mode — launching soon" banner at the top of the landing page.</p>
+            </div>
+            <Switch
+              checked={form.demo_mode}
+              onCheckedChange={v => updateField('demo_mode', v)}
+            />
+          </div>
           <div className="flex items-center justify-between">
             <div>
               <p className="font-medium text-sm">Show Women Only in Scrolling Banner</p>
