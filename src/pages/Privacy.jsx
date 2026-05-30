@@ -39,27 +39,32 @@ export default function Privacy() {
           </section>
 
           <section>
-            <h2 className="font-heading text-xl font-semibold mb-3">3. Information Sharing</h2>
+            <h2 className="font-heading text-xl font-semibold mb-3">3. Payment Information</h2>
+            <p className="text-muted-foreground leading-relaxed">DateRealGirls does not store any credit card information or other payment data. All payment information is securely transmitted directly to our payment processors (Authorize.Net, CodaPay, or other third-party payment gateways). We never retain payment details on our servers. Only transaction confirmations and subscription status are stored locally.</p>
+          </section>
+
+          <section>
+            <h2 className="font-heading text-xl font-semibold mb-3">4. Information Sharing</h2>
             <p className="text-muted-foreground leading-relaxed">We do not sell, trade, or otherwise transfer your personal information to outside parties. Your profile information is visible to other registered members of the platform as part of the service.</p>
           </section>
 
           <section>
-            <h2 className="font-heading text-xl font-semibold mb-3">4. Data Security</h2>
+            <h2 className="font-heading text-xl font-semibold mb-3">5. Data Security</h2>
             <p className="text-muted-foreground leading-relaxed">We implement appropriate security measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction. However, no method of transmission over the Internet is 100% secure.</p>
           </section>
 
           <section>
-            <h2 className="font-heading text-xl font-semibold mb-3">5. Cookies</h2>
+            <h2 className="font-heading text-xl font-semibold mb-3">6. Cookies</h2>
             <p className="text-muted-foreground leading-relaxed">We use cookies and similar tracking technologies to track activity on our service and hold certain information to improve your experience.</p>
           </section>
 
           <section>
-            <h2 className="font-heading text-xl font-semibold mb-3">6. Your Rights</h2>
+            <h2 className="font-heading text-xl font-semibold mb-3">7. Your Rights</h2>
             <p className="text-muted-foreground leading-relaxed">You have the right to access, update, or delete your personal information at any time through your profile settings. You may also contact our support team for assistance.</p>
           </section>
 
           <section>
-            <h2 className="font-heading text-xl font-semibold mb-3">7. Contact Us</h2>
+            <h2 className="font-heading text-xl font-semibold mb-3">8. Contact Us</h2>
             <p className="text-muted-foreground leading-relaxed">If you have questions about this Privacy Policy, please <Link to="/support" className="text-primary underline underline-offset-4">contact our support team</Link>.</p>
           </section>
         </div>
