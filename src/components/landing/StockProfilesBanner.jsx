@@ -62,10 +62,6 @@ export default function StockProfilesBanner() {
 
   return (
     <section className="py-12 bg-secondary/30 overflow-hidden border-y border-border">
-      <div className="text-center mb-6 px-4">
-        <h2 className="font-heading text-2xl font-bold mb-1">{t('banner_title')}</h2>
-        <p className="text-muted-foreground text-sm">{t('banner_subtitle')}</p>
-      </div>
       <div
         className="flex gap-4 stock-banner-scroll"
         style={{ width: 'max-content' }}
