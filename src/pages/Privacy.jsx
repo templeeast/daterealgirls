@@ -1,17 +1,23 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Heart, ArrowLeft } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import useSiteConfig from '@/hooks/useSiteConfig';
+import LanguageSelector from '@/components/layout/LanguageSelector';
 
 export default function Privacy() {
+  const { t } = useTranslation();
   const { config } = useSiteConfig();
 
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-3xl mx-auto px-4 py-12">
-        <Link to="/" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-8 transition-colors">
-          <ArrowLeft className="w-4 h-4" /> Back to home
-        </Link>
+        <div className="flex items-center justify-between mb-8">
+          <Link to="/" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
+            <ArrowLeft className="w-4 h-4" /> {t('back')}
+          </Link>
+          <LanguageSelector />
+        </div>
 
         <div className="flex items-center gap-2 mb-8">
           <Heart className="w-5 h-5 text-primary fill-primary" />

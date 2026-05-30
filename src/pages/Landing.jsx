@@ -223,10 +223,13 @@ export default function Landing() {
               )}
               <span className="font-heading font-semibold">{config.site_name}</span>
             </div>
-            <div className="flex gap-6 text-sm text-muted-foreground">
+            <div className="flex flex-wrap gap-4 sm:gap-6 text-sm text-muted-foreground justify-center">
               <Link to="/support" className="hover:text-foreground transition-colors">{t('support')}</Link>
+              <Link to="/contact" className="hover:text-foreground transition-colors">{t('contact_us_title')}</Link>
               <Link to="/privacy" className="hover:text-foreground transition-colors">{t('privacy')}</Link>
               <Link to="/terms" className="hover:text-foreground transition-colors">{t('terms')}</Link>
+              <Link to="/refund-policy" className="hover:text-foreground transition-colors">{t('refund_policy_title')}</Link>
+              <Link to="/shipping-policy" className="hover:text-foreground transition-colors">{t('shipping_policy_title')}</Link>
             </div>
             <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} {config.site_name}</p>
           </div>

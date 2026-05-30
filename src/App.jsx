@@ -20,6 +20,9 @@ import AppLayout from '@/components/layout/AppLayout';
 import ProfileCompleteGuard from '@/components/layout/ProfileCompleteGuard';
 import Privacy from '@/pages/Privacy';
 import Terms from '@/pages/Terms';
+import RefundPolicy from '@/pages/RefundPolicy';
+import ShippingPolicy from '@/pages/ShippingPolicy';
+import ContactUs from '@/pages/ContactUs';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -65,6 +68,9 @@ const AuthenticatedApp = () => {
       </Route>
       <Route path="/privacy" element={<Privacy />} />
       <Route path="/terms" element={<Terms />} />
+      <Route path="/refund-policy" element={<RefundPolicy />} />
+      <Route path="/shipping-policy" element={<ShippingPolicy />} />
+      <Route path="/contact" element={<ContactUs />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
