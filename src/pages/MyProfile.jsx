@@ -264,25 +264,37 @@ export default function MyProfile() {
                   <strong className="text-primary">{t('subscription_upgrade_cta')}</strong>{' '}
                   Unlock unlimited browsing, messaging, and more for just ${config.subscription_price || 9.99}/month.
                 </div>
-                <FreeTrialButton profile={profile} onSuccess={refetch} />
+
+                {/* Free Trial — always shown first and most prominently if eligible */}
                 {!profile.free_trial_claimed && (
-                  <p className="text-xs text-center text-muted-foreground">— or skip the trial and subscribe now —</p>
+                  <FreeTrialButton profile={profile} onSuccess={refetch} />
                 )}
-                {/* Authorize.net (card payment) */}
-                <div className="border rounded-xl p-4 space-y-2">
-                  <p className="text-sm font-medium">Pay by Credit / Debit Card</p>
-                  <AuthorizeNetButton
-                    price={config.subscription_price || 9.99}
-                    onSuccess={refetch}
-                  />
-                </div>
-                {/* CodaPay (Southeast Asia & other regions) */}
-                <div className="border rounded-xl p-4 space-y-2">
-                  <p className="text-sm font-medium">Pay via CodaPay (Asia / Local Methods)</p>
-                  <CodaPayButton
-                    price={config.subscription_price || 9.99}
-                    onSuccess={refetch}
-                  />
+
+                {/* Paid option — only show the configured payment processor */}
+                <div className="space-y-2">
+                  {!profile.free_trial_claimed ? (
+                    <p className="text-xs text-center text-muted-foreground">— or subscribe now without the free trial —</p>
+                  ) : (
+                    <p className="text-sm font-medium">Subscribe to Premium</p>
+                  )}
+
+                  {config.payment_processor === 'codapay' ? (
+                    <div className="border rounded-xl p-4 space-y-2">
+                      <p className="text-sm font-medium">Pay via Local Payment Methods</p>
+                      <CodaPayButton
+                        price={config.subscription_price || 9.99}
+                        onSuccess={refetch}
+                      />
+                    </div>
+                  ) : (
+                    <div className="border rounded-xl p-4 space-y-2">
+                      <p className="text-sm font-medium">Pay by Credit / Debit Card</p>
+                      <AuthorizeNetButton
+                        price={config.subscription_price || 9.99}
+                        onSuccess={refetch}
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
             )}

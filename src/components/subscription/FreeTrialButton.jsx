@@ -36,17 +36,18 @@ export default function FreeTrialButton({ profile, onSuccess }) {
   };
 
   return (
-    <div className="mt-4 p-4 bg-primary/5 border border-primary/20 rounded-xl space-y-3">
+    <div className="p-4 bg-primary/5 border-2 border-primary/40 rounded-xl space-y-3">
       <div className="flex items-center gap-2">
         <Gift className="w-5 h-5 text-primary" />
-        <p className="font-semibold text-sm text-primary">Free Month Offer</p>
+        <p className="font-semibold text-sm text-primary">Try Premium FREE for 30 Days</p>
+        <span className="ml-auto text-xs bg-primary text-primary-foreground px-2 py-0.5 rounded-full font-semibold">Best Value</span>
       </div>
       <p className="text-sm text-muted-foreground">
-        Try Premium free for 30 days — unlimited browsing, messaging, and more. No payment required to start.
+        Get full Premium access — unlimited browsing &amp; messaging — for an entire month. <strong>No credit card required.</strong>
       </p>
-      <Button className="w-full gap-2 rounded-full" onClick={handleClaim} disabled={claiming}>
-        <Gift className="w-4 h-4" />
-        {claiming ? 'Activating...' : 'Claim Free Month'}
+      <Button className="w-full gap-2 rounded-full text-base font-semibold" size="lg" onClick={handleClaim} disabled={claiming}>
+        <Gift className="w-5 h-5" />
+        {claiming ? 'Activating...' : '🎁 Claim Your Free Month'}
       </Button>
     </div>
   );
