@@ -40,7 +40,7 @@ export default function Privacy() {
 
           <section>
             <h2 className="font-heading text-xl font-semibold mb-3">3. Payment Information</h2>
-            <p className="text-muted-foreground leading-relaxed">DateRealGirls does not store any credit card information or other payment data. All payment information is securely transmitted directly to our payment processors (Authorize.Net, CodaPay, or other third-party payment gateways). We never retain payment details on our servers. Only transaction confirmations and subscription status are stored locally.</p>
+            <p className="text-muted-foreground leading-relaxed">DateRealGirls does not store any credit card information or other payment data. All payment information is securely transmitted directly to our payment processors (Authorize.Net, PaymentCloud, or other third-party payment gateways). We never retain payment details on our servers. Only transaction confirmations and subscription status are stored locally.</p>
           </section>
 
           <section>
