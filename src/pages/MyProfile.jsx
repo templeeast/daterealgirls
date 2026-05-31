@@ -293,7 +293,7 @@ export default function MyProfile() {
                       {config.authorizenet_use_hosted_page ? (
                         <AuthorizeNetHostedButton
                           price={config.subscription_price || 9.99}
-                          hostedPageUrl={config.authorizenet_hosted_page_url}
+                          onSuccess={refetch}
                         />
                       ) : (
                         <AuthorizeNetButton

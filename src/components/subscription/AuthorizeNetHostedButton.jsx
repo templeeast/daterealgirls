@@ -3,6 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { CreditCard, Loader2, X } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
+import { addMonths, format } from 'date-fns';
 
 const HOSTED_FORM_URL = 'https://test.authorize.net/payment/payment'; // Change to https://accept.authorize.net/payment/payment for production
 
@@ -57,11 +58,27 @@ export default function AuthorizeNetHostedButton({ price, onSuccess }) {
         if (data?.action === 'transactResponse') {
           const response = typeof data.response === 'string' ? JSON.parse(data.response) : data.response;
           if (response?.responseCode === '1') {
-            // Approved
+            // Approved — update subscription in DB
             setShowIframe(false);
             setToken(null);
-            toast({ title: '✓ Payment successful! Your subscription is now active.' });
-            onSuccess?.();
+            (async () => {
+              try {
+                const user = await base44.auth.me();
+                const profiles = await base44.entities.MemberProfile.filter({ user_id: user.id });
+                if (profiles?.[0]) {
+                  const today = new Date();
+                  await base44.entities.MemberProfile.update(profiles[0].id, {
+                    subscription_status: 'active',
+                    subscription_start_date: format(today, 'yyyy-MM-dd'),
+                    subscription_end_date: format(addMonths(today, 1), 'yyyy-MM-dd'),
+                  });
+                }
+              } catch (e) {
+                console.error('Failed to update subscription:', e);
+              }
+              toast({ title: '✓ Payment successful! Your subscription is now active.' });
+              onSuccess?.();
+            })();
           } else {
             const msg = response?.errors?.[0]?.errorText || 'Payment was not completed.';
             toast({ title: msg, variant: 'destructive' });
