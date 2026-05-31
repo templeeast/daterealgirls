@@ -253,15 +253,9 @@ export default function SiteSettings() {
             />
           </div>
           {form.authorizenet_use_hosted_page && (
-            <div className="space-y-2 pt-1 pl-1">
-              <Label>Hosted Payment Page URL</Label>
-              <Input
-                value={form.authorizenet_hosted_page_url}
-                onChange={e => updateField('authorizenet_hosted_page_url', e.target.value)}
-                placeholder="https://accept.authorize.net/payment/payment"
-              />
-              <p className="text-xs text-muted-foreground">The full URL of your Authorize.net hosted payment page. Found in your Authorize.net merchant portal.</p>
-            </div>
+            <p className="text-xs text-muted-foreground pl-1">
+              The hosted payment form will be embedded in a secure modal on the subscription page. Toggle sandbox/production in <code className="bg-muted px-1 rounded">functions/authorizeNetGetHostedToken.js</code> and <code className="bg-muted px-1 rounded">components/subscription/AuthorizeNetHostedButton.jsx</code>.
+            </p>
           )}
 
           {/* Authorize.net Info */}
