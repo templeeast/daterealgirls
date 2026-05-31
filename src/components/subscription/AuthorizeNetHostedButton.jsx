@@ -51,9 +51,15 @@ export default function AuthorizeNetHostedButton({ price, onSuccess }) {
   // Listen for messages from the iframe (Authorize.net communicator)
   useEffect(() => {
     const handleMessage = (event) => {
-      // Authorize.net sends messages as JSON strings
       try {
-        const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
+        // Authorize.net communicator sends query-string format: "action=...&..."
+        let data;
+        if (typeof event.data === 'string' && event.data.includes('action=')) {
+          const params = new URLSearchParams(event.data);
+          data = { action: params.get('action'), response: params.get('response') };
+        } else {
+          data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
+        }
         if (data?.action === 'resizeWindow') return; // ignore resize events
         if (data?.action === 'transactResponse') {
           const response = typeof data.response === 'string' ? JSON.parse(data.response) : data.response;
@@ -127,9 +133,10 @@ export default function AuthorizeNetHostedButton({ price, onSuccess }) {
 
       {/* Iframe modal */}
       {showIframe && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden">
-            <div className="flex items-center justify-between px-5 py-3 border-b">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-2 sm:p-4">
+          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg flex flex-col"
+               style={{ height: 'min(90vh, 700px)', maxHeight: '90vh' }}>
+            <div className="flex items-center justify-between px-5 py-3 border-b flex-shrink-0">
               <span className="font-semibold text-sm">Secure Payment</span>
               <button
                 onClick={handleClose}
@@ -138,14 +145,16 @@ export default function AuthorizeNetHostedButton({ price, onSuccess }) {
                 <X className="w-5 h-5" />
               </button>
             </div>
-            <iframe
-              name="authnet-iframe"
-              width="100%"
-              height="600"
-              frameBorder="0"
-              scrolling="yes"
-              className="block"
-            />
+            <div className="flex-1 overflow-auto">
+              <iframe
+                name="authnet-iframe"
+                width="100%"
+                height="100%"
+                frameBorder="0"
+                scrolling="yes"
+                style={{ minHeight: '500px', display: 'block' }}
+              />
+            </div>
           </div>
         </div>
       )}

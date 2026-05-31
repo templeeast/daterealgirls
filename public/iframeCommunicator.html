@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head><title>IFrame Communicator</title></head>
+<body>
+<script>
+  function callParent(str) {
+    try {
+      var ref = window.parent;
+      if (ref) ref.postMessage(str, '*');
+    } catch(e) {}
+  }
+
+  var queryStr = window.location.search;
+  if (queryStr) {
+    callParent(queryStr.substring(1));
+  }
+
+  window.AuthorizeNetIFrame = window.AuthorizeNetIFrame || {};
+  window.AuthorizeNetIFrame.onReceiveCommunication = function(querystr) {
+    callParent(querystr);
+  };
+</script>
+</body>
+</html>
