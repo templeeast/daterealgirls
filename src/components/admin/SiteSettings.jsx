@@ -39,6 +39,8 @@ export default function SiteSettings() {
     stripe_identity_publishable_key: '',
     banner_show_women_only: true,
     payment_processor: 'authorizenet',
+    authorizenet_use_hosted_page: false,
+    authorizenet_hosted_page_url: '',
     demo_mode: true,
   });
 
@@ -57,6 +59,8 @@ export default function SiteSettings() {
         stripe_identity_publishable_key: existingConfig.stripe_identity_publishable_key || '',
         banner_show_women_only: existingConfig.banner_show_women_only !== false,
         payment_processor: existingConfig.payment_processor || 'authorizenet',
+        authorizenet_use_hosted_page: existingConfig.authorizenet_use_hosted_page || false,
+        authorizenet_hosted_page_url: existingConfig.authorizenet_hosted_page_url || '',
         demo_mode: existingConfig.demo_mode !== false,
       });
     }
@@ -234,6 +238,31 @@ export default function SiteSettings() {
             </Select>
             <p className="text-xs text-muted-foreground">This controls which processor is shown first to users on the subscription page.</p>
           </div>
+
+          {/* Authorize.net Hosted Page Toggle */}
+          <div className="flex items-center justify-between pt-2">
+            <div>
+              <p className="font-medium text-sm">Use Hosted Payment Page (Authorize.net)</p>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                When enabled, users are redirected to the Authorize.net hosted payment page instead of filling out the inline card form.
+              </p>
+            </div>
+            <Switch
+              checked={form.authorizenet_use_hosted_page}
+              onCheckedChange={v => updateField('authorizenet_use_hosted_page', v)}
+            />
+          </div>
+          {form.authorizenet_use_hosted_page && (
+            <div className="space-y-2 pt-1 pl-1">
+              <Label>Hosted Payment Page URL</Label>
+              <Input
+                value={form.authorizenet_hosted_page_url}
+                onChange={e => updateField('authorizenet_hosted_page_url', e.target.value)}
+                placeholder="https://accept.authorize.net/payment/payment"
+              />
+              <p className="text-xs text-muted-foreground">The full URL of your Authorize.net hosted payment page. Found in your Authorize.net merchant portal.</p>
+            </div>
+          )}
 
           {/* Authorize.net Info */}
           <div className="space-y-3 border-2 border-primary/20 rounded-lg p-4 bg-primary/5">

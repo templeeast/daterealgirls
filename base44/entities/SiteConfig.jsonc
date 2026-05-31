@@ -65,6 +65,15 @@
       "default": "authorizenet",
       "description": "Active payment processor shown to users."
     },
+    "authorizenet_use_hosted_page": {
+      "type": "boolean",
+      "default": false,
+      "description": "If true, clicking Pay redirects users to the Authorize.net hosted payment page instead of showing the inline card form."
+    },
+    "authorizenet_hosted_page_url": {
+      "type": "string",
+      "description": "The full URL of your Authorize.net hosted payment page (e.g. https://accept.authorize.net/payment/payment)."
+    },
     "plaid_client_id": {
       "type": "string",
       "description": "Plaid Client ID"

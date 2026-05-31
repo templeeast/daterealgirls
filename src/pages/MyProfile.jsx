@@ -18,6 +18,7 @@ import { useTranslation } from 'react-i18next';
 import StripeIdentityCard from '@/components/profile/StripeIdentityCard';
 import CodaPayButton from '@/components/subscription/CodaPayButton';
 import AuthorizeNetButton from '@/components/subscription/AuthorizeNetButton';
+import AuthorizeNetHostedButton from '@/components/subscription/AuthorizeNetHostedButton';
 import FreeTrialButton from '@/components/subscription/FreeTrialButton';
 
 const INTERESTS = [
@@ -289,10 +290,17 @@ export default function MyProfile() {
                   ) : (
                     <div className="border rounded-xl p-4 space-y-2">
                       <p className="text-sm font-medium">Pay by Credit / Debit Card</p>
-                      <AuthorizeNetButton
-                        price={config.subscription_price || 9.99}
-                        onSuccess={refetch}
-                      />
+                      {config.authorizenet_use_hosted_page ? (
+                        <AuthorizeNetHostedButton
+                          price={config.subscription_price || 9.99}
+                          hostedPageUrl={config.authorizenet_hosted_page_url}
+                        />
+                      ) : (
+                        <AuthorizeNetButton
+                          price={config.subscription_price || 9.99}
+                          onSuccess={refetch}
+                        />
+                      )}
                     </div>
                   )}
                 </div>
