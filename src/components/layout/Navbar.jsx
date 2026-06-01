@@ -91,7 +91,7 @@ export default function Navbar() {
               variant="ghost"
               size="icon"
               className="hidden md:flex"
-              onClick={() => base44.auth.logout()}
+              onClick={() => base44.auth.logout('/')}
             >
               <LogOut className="w-4 h-4" />
             </Button>
@@ -157,7 +157,7 @@ export default function Navbar() {
                   <Button
                     variant="ghost"
                     className="w-full justify-start gap-3 text-destructive"
-                    onClick={() => base44.auth.logout()}
+                    onClick={() => base44.auth.logout('/')}
                   >
                     <LogOut className="w-4 h-4" />
                     {t('nav_logout')}
