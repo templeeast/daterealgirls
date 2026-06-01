@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
@@ -29,6 +29,26 @@ export default function Onboarding() {
   const { t } = useTranslation();
   const [step, setStep] = useState(0);
   const [saving, setSaving] = useState(false);
+  const [checkingProfile, setCheckingProfile] = useState(true);
+
+  // If user already has a profile, redirect them away from onboarding
+  useEffect(() => {
+    (async () => {
+      try {
+        const me = await base44.auth.me();
+        if (me) {
+          const profiles = await base44.entities.MemberProfile.filter({ user_id: me.id });
+          if (profiles?.length > 0) {
+            navigate('/browse', { replace: true });
+            return;
+          }
+        }
+      } catch {
+        // not authenticated, let onboarding render normally
+      }
+      setCheckingProfile(false);
+    })();
+  }, [navigate]);
   const [identityVerified, setIdentityVerified] = useState(false);
   const [selfieUri, setSelfieUri] = useState('');
   const [idDocUri, setIdDocUri] = useState('');
@@ -243,6 +263,14 @@ export default function Onboarding() {
     : step === verifyStepIndex && !requireStripeIdentity
       ? !!selfieUri
       : true;
+
+  if (checkingProfile) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-slate-200 border-t-primary rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
