@@ -16,6 +16,7 @@ import useMyProfile from '@/hooks/useMyProfile';
 import useSiteConfig from '@/hooks/useSiteConfig';
 import { useTranslation } from 'react-i18next';
 import StripeIdentityCard from '@/components/profile/StripeIdentityCard';
+import CountryCitySelector from '@/components/shared/CountryCitySelector';
 import CodaPayButton from '@/components/subscription/CodaPayButton';
 import AuthorizeNetButton from '@/components/subscription/AuthorizeNetButton';
 import AuthorizeNetHostedButton from '@/components/subscription/AuthorizeNetHostedButton';
@@ -388,16 +389,12 @@ export default function MyProfile() {
               placeholder={t('bio_placeholder')}
             />
           </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>{t('city_label')}</Label>
-              <Input value={form.location_city} onChange={e => updateField('location_city', e.target.value)} />
-            </div>
-            <div className="space-y-2">
-              <Label>{t('country_label')}</Label>
-              <Input value={form.location_country} onChange={e => updateField('location_country', e.target.value)} />
-            </div>
-          </div>
+          <CountryCitySelector
+            country={form.location_country}
+            city={form.location_city}
+            onCountryChange={v => updateField('location_country', v)}
+            onCityChange={v => updateField('location_city', v)}
+          />
           <div className="space-y-2">
             <Label>{t('looking_for_label')}</Label>
             <Select value={form.looking_for} onValueChange={v => updateField('looking_for', v)}>

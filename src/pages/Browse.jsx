@@ -12,6 +12,7 @@ import { useAuth } from '@/lib/AuthContext';
 import { useTranslation } from 'react-i18next';
 import UpgradePrompt from '@/components/subscription/UpgradePrompt';
 import useSiteConfig from '@/hooks/useSiteConfig';
+import CountryCitySelector from '@/components/shared/CountryCitySelector';
 
 export default function Browse() {
   const { user, profile } = useMyProfile();
@@ -29,6 +30,8 @@ export default function Browse() {
   const [ageMin, setAgeMin] = useState('');
   const [ageMax, setAgeMax] = useState('');
   const [showFilters, setShowFilters] = useState(false);
+  const [countryFilter, setCountryFilter] = useState('');
+  const [cityFilter, setCityFilter] = useState('');
 
   const { data: profiles, isLoading } = useQuery({
     queryKey: ['profiles'],
@@ -69,6 +72,8 @@ export default function Browse() {
     if (lookingForFilter !== 'all' && p.looking_for !== lookingForFilter) return false;
     if (ageMin !== '' && (p.age == null || p.age < parseInt(ageMin))) return false;
     if (ageMax !== '' && (p.age == null || p.age > parseInt(ageMax))) return false;
+    if (countryFilter && p.location_country !== countryFilter) return false;
+    if (cityFilter && p.location_city !== cityFilter) return false;
     if (search) {
       const s = search.toLowerCase();
       return (
@@ -135,6 +140,13 @@ export default function Browse() {
                 <SelectItem value="marriage">{t('browse_marriage')}</SelectItem>
               </SelectContent>
             </Select>
+            <CountryCitySelector
+              country={countryFilter}
+              city={cityFilter}
+              onCountryChange={v => { setCountryFilter(v); setCityFilter(''); }}
+              onCityChange={setCityFilter}
+              showLabels={false}
+            />
             <div className="flex items-center gap-2">
               <Input
                 type="number"
