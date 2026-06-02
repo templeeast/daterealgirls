@@ -9,7 +9,9 @@ const DEFAULT_CONFIG = {
   max_photos: 3,
   bio_max_length: 500,
   logo_url: '',
-  target_audience: 'Connect with verified, authentic people'
+  target_audience: 'Connect with verified, authentic people',
+  authorizenet_use_hosted_page: false,
+  payment_processor: 'authorizenet'
 };
 
 export default function useSiteConfig() {
@@ -23,7 +25,7 @@ export default function useSiteConfig() {
         return DEFAULT_CONFIG;
       }
     },
-    staleTime: 5 * 60 * 1000,
+    staleTime: 0,
   });
 
   return {
