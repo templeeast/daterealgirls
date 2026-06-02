@@ -6,7 +6,8 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/components/ui/use-toast';
 import { CreditCard, Loader2, Lock } from 'lucide-react';
 
-const USE_SANDBOX = true; // Toggle to false for production
+// Sandbox toggle — set to false for production
+const USE_SANDBOX = true;
 
 function formatCardNumber(value) {
   return value.replace(/\D/g, '').slice(0, 16).replace(/(.{4})/g, '$1 ').trim();
@@ -34,7 +35,7 @@ export default function AuthorizeNetButton({ price, onSuccess }) {
 
     setLoading(true);
     try {
-      const res = await base44.functions.invoke('authorizeNetCharge', {
+      const res = await base44.functions.invoke('authorizeNetCreateSubscription', {
         cardNumber: cardNumber.replace(/\s/g, ''),
         cardExpiry,
         cardCvv,
@@ -47,10 +48,10 @@ export default function AuthorizeNetButton({ price, onSuccess }) {
         return;
       }
 
-      toast({ title: '✓ Payment successful! Your subscription is now active.' });
+      toast({ title: '✓ Subscription activated! You now have Premium access.' });
       onSuccess?.();
     } catch (err) {
-      const errMsg = err?.response?.data?.error || 'Payment failed. Please try again.';
+      const errMsg = err?.response?.data?.error || 'Subscription failed. Please try again.';
       toast({ title: errMsg, variant: 'destructive' });
     } finally {
       setLoading(false);
@@ -101,11 +102,11 @@ export default function AuthorizeNetButton({ price, onSuccess }) {
         {loading ? (
           <><Loader2 className="w-4 h-4 animate-spin" /> Processing...</>
         ) : (
-          <><CreditCard className="w-4 h-4" /> Pay ${price}/month</>
+          <><CreditCard className="w-4 h-4" /> Subscribe ${price}/month</>
         )}
       </Button>
       <p className="text-xs text-center text-muted-foreground flex items-center justify-center gap-1">
-        <Lock className="w-3 h-3" /> Secured by Authorize.net
+        <Lock className="w-3 h-3" /> Recurring billing via Authorize.net · Cancel anytime
       </p>
     </form>
   );

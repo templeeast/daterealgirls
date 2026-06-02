@@ -9,7 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Upload, Shield, Camera, Save, Trash2, Eye, EyeOff, AlertTriangle } from 'lucide-react';
+import { Upload, Shield, Camera, Save, Trash2, Eye, EyeOff, AlertTriangle, XCircle } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
 import useMyProfile from '@/hooks/useMyProfile';
@@ -36,6 +36,7 @@ export default function MyProfile() {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [saving, setSaving] = useState(false);
+  const [cancellingSubscription, setCancellingSubscription] = useState(false);
   const [form, setForm] = useState(null);
 
   useEffect(() => {
@@ -110,6 +111,25 @@ export default function MyProfile() {
     });
     toast({ title: 'Verification selfie uploaded successfully.' });
     refetch();
+  };
+
+  const handleCancelArbSubscription = async () => {
+    if (!window.confirm('Are you sure you want to cancel your subscription? Your access will remain until the end of the current billing period.')) return;
+    setCancellingSubscription(true);
+    try {
+      const useSandbox = true; // match the same flag used when subscribing
+      const res = await base44.functions.invoke('authorizeNetCancelSubscription', { useSandbox });
+      if (res.data?.error) {
+        toast({ title: res.data.error, variant: 'destructive' });
+        return;
+      }
+      toast({ title: 'Subscription cancelled. You keep access until the end of your billing period.' });
+      refetch();
+    } catch (err) {
+      toast({ title: err?.response?.data?.error || 'Cancellation failed. Please contact support.', variant: 'destructive' });
+    } finally {
+      setCancellingSubscription(false);
+    }
   };
 
   const handleSave = async () => {
@@ -249,6 +269,9 @@ export default function MyProfile() {
                 {profile.subscription_status === 'active' ? (
                   <p className="text-sm text-muted-foreground">
                     {profile.subscription_end_date ? t('subscription_active_renews', { date: profile.subscription_end_date }) : t('subscription_active')}
+                    {profile.paymentnerds_subscription_id && config.payment_processor !== 'codapay' && (
+                      <span className="ml-1 text-xs text-primary">(Auto-renews monthly)</span>
+                    )}
                   </p>
                 ) : (
                   <p className="text-sm text-muted-foreground">{t('subscription_free_desc')}</p>
@@ -260,6 +283,24 @@ export default function MyProfile() {
                 {profile.subscription_status === 'active' ? t('subscription_premium_badge') : t('subscription_free_badge')}
               </Badge>
             </div>
+            {/* Cancel ARB subscription button */}
+            {profile.subscription_status === 'active' &&
+              profile.paymentnerds_subscription_id &&
+              config.payment_processor !== 'codapay' && (
+              <div className="mt-4 pt-4 border-t">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-muted-foreground hover:text-destructive gap-2"
+                  onClick={handleCancelArbSubscription}
+                  disabled={cancellingSubscription}
+                >
+                  <XCircle className="w-4 h-4" />
+                  {cancellingSubscription ? 'Cancelling...' : 'Cancel Subscription'}
+                </Button>
+              </div>
+            )}
+
             {profile.subscription_status !== 'active' && (
               <div className="mt-4 space-y-4">
                 <div className="p-4 bg-accent/50 rounded-xl text-sm text-foreground">
