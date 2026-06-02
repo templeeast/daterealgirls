@@ -48,7 +48,7 @@ export default function AuthorizeNetButton({ price, onSuccess }) {
         return;
       }
 
-      toast({ title: '✓ Subscription activated! You now have Premium access.' });
+      toast({ title: '✓ Free trial started! Your first month is free, then $' + price + '/month after that.' });
       onSuccess?.();
     } catch (err) {
       const errMsg = err?.response?.data?.error || 'Subscription failed. Please try again.';
@@ -102,11 +102,11 @@ export default function AuthorizeNetButton({ price, onSuccess }) {
         {loading ? (
           <><Loader2 className="w-4 h-4 animate-spin" /> Processing...</>
         ) : (
-          <><CreditCard className="w-4 h-4" /> Subscribe ${price}/month</>
+          <><CreditCard className="w-4 h-4" /> Start Free Trial</>
         )}
       </Button>
       <p className="text-xs text-center text-muted-foreground flex items-center justify-center gap-1">
-        <Lock className="w-3 h-3" /> Recurring billing via Authorize.net · Cancel anytime
+        <Lock className="w-3 h-3" /> First month free, then ${price}/month · Cancel anytime
       </p>
     </form>
   );

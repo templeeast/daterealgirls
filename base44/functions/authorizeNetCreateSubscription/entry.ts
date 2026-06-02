@@ -44,7 +44,7 @@ Deno.serve(async (req) => {
             },
             startDate: startDateStr,
             totalOccurrences: '9999', // indefinite
-            trialOccurrences: '0',
+            trialOccurrences: '1',
           },
           amount: String(Number(amount).toFixed(2)),
           trialAmount: '0.00',
@@ -85,18 +85,20 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'No subscription ID returned from Authorize.net.' }, { status: 400 });
     }
 
-    // Update MemberProfile with active subscription
+    // Update MemberProfile with active subscription (first month is free trial via ARB)
     const profiles = await base44.asServiceRole.entities.MemberProfile.filter({ user_id: user.id });
     if (profiles.length > 0) {
       const profile = profiles[0];
       const today = new Date();
-      const endDate = new Date(today);
-      endDate.setMonth(endDate.getMonth() + 1);
+      const trialEndDate = new Date(today);
+      trialEndDate.setDate(trialEndDate.getDate() + 30);
       await base44.asServiceRole.entities.MemberProfile.update(profile.id, {
         subscription_status: 'active',
         subscription_start_date: today.toISOString().split('T')[0],
-        subscription_end_date: endDate.toISOString().split('T')[0],
-        paymentnerds_subscription_id: subscriptionId, // reusing this field for ARB sub ID
+        subscription_end_date: trialEndDate.toISOString().split('T')[0],
+        free_trial_claimed: true,
+        free_trial_start_date: today.toISOString().split('T')[0],
+        paymentnerds_subscription_id: subscriptionId,
       });
     }
 

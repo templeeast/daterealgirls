@@ -305,19 +305,12 @@ export default function MyProfile() {
               <div className="mt-4 space-y-4">
                 <div className="p-4 bg-accent/50 rounded-xl text-sm text-foreground">
                   <strong className="text-primary">{t('subscription_upgrade_cta')}</strong>{' '}
-                  Unlock unlimited browsing, messaging, and more for just ${config.subscription_price || 9.99}/month.
+                  Try Premium FREE for 30 days, then just ${config.subscription_price || 9.99}/month. Cancel anytime.
                 </div>
-
-                {/* Free Trial — always shown first and most prominently if eligible */}
-                {!profile.free_trial_claimed && (
-                  <FreeTrialButton profile={profile} onSuccess={refetch} />
-                )}
 
                 {/* Paid option — only show the configured payment processor */}
                 <div className="space-y-2">
-                  {!profile.free_trial_claimed ? (
-                    <p className="text-xs text-center text-muted-foreground">— or subscribe now without the free trial —</p>
-                  ) : (
+                  {true && (
                     <p className="text-sm font-medium">Subscribe to Premium</p>
                   )}
 
