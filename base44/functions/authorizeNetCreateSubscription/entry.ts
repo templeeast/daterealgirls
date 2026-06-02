@@ -6,7 +6,7 @@ Deno.serve(async (req) => {
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const { cardNumber, cardExpiry, cardCvv, amount, useSandbox } = await req.json();
+    const { cardNumber, cardExpiry, cardCvv, amount, useSandbox, firstName, lastName, address, city, state, zip, country } = await req.json();
 
     if (!cardNumber || !cardExpiry || !cardCvv || !amount) {
       return Response.json({ error: 'Missing required payment fields.' }, { status: 400 });
@@ -59,8 +59,13 @@ Deno.serve(async (req) => {
             email: user.email,
           },
           billTo: {
-            firstName: (user.full_name || '').split(' ')[0] || 'Customer',
-            lastName: (user.full_name || '').split(' ').slice(1).join(' ') || 'Member',
+            firstName: firstName || (user.full_name || '').split(' ')[0] || 'Customer',
+            lastName: lastName || (user.full_name || '').split(' ').slice(1).join(' ') || 'Member',
+            address: address || '',
+            city: city || '',
+            state: state || '',
+            zip: zip || '',
+            country: country || 'US',
           },
         },
       },

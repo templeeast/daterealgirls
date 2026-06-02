@@ -25,11 +25,18 @@ export default function AuthorizeNetButton({ price, onSuccess }) {
   const [cardNumber, setCardNumber] = useState('');
   const [cardExpiry, setCardExpiry] = useState('');
   const [cardCvv, setCardCvv] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [address, setAddress] = useState('');
+  const [city, setCity] = useState('');
+  const [state, setState] = useState('');
+  const [zip, setZip] = useState('');
+  const [country, setCountry] = useState('US');
 
   const handlePay = async (e) => {
     e.preventDefault();
-    if (!cardNumber || !cardExpiry || !cardCvv) {
-      toast({ title: 'Please fill in all card details.', variant: 'destructive' });
+    if (!cardNumber || !cardExpiry || !cardCvv || !firstName || !lastName || !address || !city || !state || !zip) {
+      toast({ title: 'Please fill in all required fields.', variant: 'destructive' });
       return;
     }
 
@@ -41,6 +48,13 @@ export default function AuthorizeNetButton({ price, onSuccess }) {
         cardCvv,
         amount: price,
         useSandbox: USE_SANDBOX,
+        firstName,
+        lastName,
+        address,
+        city,
+        state,
+        zip,
+        country,
       });
 
       if (res.data?.error) {
@@ -60,6 +74,30 @@ export default function AuthorizeNetButton({ price, onSuccess }) {
 
   return (
     <form onSubmit={handlePay} className="space-y-3">
+
+      {/* Cardholder Name */}
+      <div className="grid grid-cols-2 gap-3">
+        <div className="space-y-1.5">
+          <Label className="text-sm">First Name</Label>
+          <Input
+            placeholder="John"
+            value={firstName}
+            onChange={e => setFirstName(e.target.value)}
+            autoComplete="given-name"
+          />
+        </div>
+        <div className="space-y-1.5">
+          <Label className="text-sm">Last Name</Label>
+          <Input
+            placeholder="Doe"
+            value={lastName}
+            onChange={e => setLastName(e.target.value)}
+            autoComplete="family-name"
+          />
+        </div>
+      </div>
+
+      {/* Card Details */}
       <div className="space-y-1.5">
         <Label className="text-sm">Card Number</Label>
         <Input
@@ -93,6 +131,64 @@ export default function AuthorizeNetButton({ price, onSuccess }) {
           />
         </div>
       </div>
+
+      {/* Billing Address */}
+      <div className="pt-1">
+        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Billing Address</p>
+        <div className="space-y-3">
+          <div className="space-y-1.5">
+            <Label className="text-sm">Street Address</Label>
+            <Input
+              placeholder="123 Main St"
+              value={address}
+              onChange={e => setAddress(e.target.value)}
+              autoComplete="billing street-address"
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-1.5">
+              <Label className="text-sm">City</Label>
+              <Input
+                placeholder="New York"
+                value={city}
+                onChange={e => setCity(e.target.value)}
+                autoComplete="billing address-level2"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-sm">State / Province</Label>
+              <Input
+                placeholder="NY"
+                value={state}
+                onChange={e => setState(e.target.value)}
+                autoComplete="billing address-level1"
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-1.5">
+              <Label className="text-sm">ZIP / Postal Code</Label>
+              <Input
+                placeholder="10001"
+                value={zip}
+                onChange={e => setZip(e.target.value)}
+                autoComplete="billing postal-code"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-sm">Country</Label>
+              <Input
+                placeholder="US"
+                value={country}
+                onChange={e => setCountry(e.target.value.toUpperCase().slice(0, 2))}
+                maxLength={2}
+                autoComplete="billing country"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
       <Button
         type="submit"
         className="w-full gap-2 rounded-full"
