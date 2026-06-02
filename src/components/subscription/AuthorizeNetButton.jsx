@@ -204,6 +204,9 @@ export default function AuthorizeNetButton({ price, onSuccess }) {
       <p className="text-xs text-center text-muted-foreground flex items-center justify-center gap-1">
         <Lock className="w-3 h-3" /> First month free, then ${price}/month · Cancel anytime
       </p>
+      <p className="text-xs text-center text-muted-foreground">
+        Your payment details are transmitted directly to Authorize.Net's secure gateway and are never stored on our servers.
+      </p>
     </form>
   );
 }
