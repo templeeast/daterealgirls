@@ -78,15 +78,10 @@ export default function StockProfilesBanner() {
             <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 to-transparent px-3 py-2">
               <p className="text-white text-sm font-semibold truncate mb-1">{p.display_name}</p>
               <div className="flex items-center justify-between">
-                {p.location_city && (
-                  <p className="text-white/70 text-xs truncate">{p.location_city}</p>
-                )}
-                {p.verified && (
-                  <Badge className="bg-primary text-primary-foreground text-xs px-2 py-0.5 ml-auto">
-                    {t('verified')}
-                  </Badge>
-                )}
-              </div>
+                 {p.location_city && (
+                   <p className="text-white/70 text-xs truncate">{p.location_city}</p>
+                 )}
+               </div>
             </div>
           </button>
         ))}
