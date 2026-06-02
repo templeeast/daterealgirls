@@ -77,17 +77,52 @@ Deno.serve(async (req) => {
       body: JSON.stringify(body),
     });
 
-    const data = await response.json();
-    const messages = data?.ARBCreateSubscriptionResponse?.messages;
+    const rawText = await response.text();
+    // Strip BOM if present
+    const cleanText = rawText.replace(/^\uFEFF/, '');
+    let data;
+    try {
+      data = JSON.parse(cleanText);
+    } catch (parseErr) {
+      return Response.json({ error: 'Invalid response from Authorize.net: ' + cleanText.slice(0, 200) }, { status: 500 });
+    }
+    // Authorize.net may return the response with or without the wrapper key
+    const arbResponse = data?.ARBCreateSubscriptionResponse ?? data;
+    const messages = arbResponse?.messages;
 
-    if (messages?.resultCode === 'Error') {
-      const errMsg = messages?.message?.[0]?.text || 'Subscription creation failed.';
+    if (!messages || messages?.resultCode !== 'Ok') {
+      const errCode = messages?.message?.[0]?.code || 'UNKNOWN';
+      const errMsg = messages?.message?.[0]?.text || `Subscription creation failed (${errCode}).`;
+      // E00012 = duplicate subscription — treat as success and extract existing sub ID
+      const dupMatch = errMsg.match(/Subscription (\d+)/);
+      if (errCode === 'E00012' && dupMatch) {
+        const subscriptionId = dupMatch[1];
+        // Update profile with the existing subscription ID
+        const profiles = await base44.asServiceRole.entities.MemberProfile.filter({ user_id: user.id });
+        if (profiles.length > 0) {
+          const profile = profiles[0];
+          const today = new Date();
+          const trialEndDate = new Date(today);
+          trialEndDate.setDate(trialEndDate.getDate() + 30);
+          await base44.asServiceRole.entities.MemberProfile.update(profile.id, {
+            subscription_status: 'active',
+            subscription_start_date: today.toISOString().split('T')[0],
+            subscription_end_date: trialEndDate.toISOString().split('T')[0],
+            free_trial_claimed: true,
+            free_trial_start_date: today.toISOString().split('T')[0],
+            paymentnerds_subscription_id: subscriptionId,
+          });
+        }
+        return Response.json({ success: true, subscriptionId });
+      }
+
       return Response.json({ error: errMsg }, { status: 400 });
     }
 
-    const subscriptionId = data?.ARBCreateSubscriptionResponse?.subscriptionId;
+    const subscriptionId = arbResponse?.subscriptionId;
     if (!subscriptionId) {
-      return Response.json({ error: 'No subscription ID returned from Authorize.net.' }, { status: 400 });
+      const fallbackMsg = arbResponse?.messages?.message?.[0]?.text || 'Subscription creation failed.';
+      return Response.json({ error: fallbackMsg }, { status: 400 });
     }
 
     // Update MemberProfile with active subscription (first month is free trial via ARB)
