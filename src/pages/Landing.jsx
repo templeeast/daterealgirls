@@ -94,9 +94,7 @@ export default function Landing() {
             transition={{ duration: 0.8 }}
             className="text-center max-w-3xl mx-auto"
           >
-            <div className="inline-flex items-center gap-2 bg-white/20 text-white backdrop-blur-sm border border-white/30 px-4 py-2 rounded-full text-sm font-medium mb-8">
-              {t('badge_verified')}
-            </div>
+
             <h1 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight mb-6 text-white drop-shadow-lg">
               {t('tagline')}
             </h1>
