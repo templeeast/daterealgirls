@@ -21,6 +21,7 @@ import CodaPayButton from '@/components/subscription/CodaPayButton';
 import AuthorizeNetButton from '@/components/subscription/AuthorizeNetButton';
 import AuthorizeNetHostedButton from '@/components/subscription/AuthorizeNetHostedButton';
 import FreeTrialButton from '@/components/subscription/FreeTrialButton';
+import CancelSubscriptionDialog from '@/components/dialogs/CancelSubscriptionDialog';
 
 const INTERESTS = [
   'Travel', 'Music', 'Movies', 'Cooking', 'Fitness', 'Reading',
@@ -37,6 +38,7 @@ export default function MyProfile() {
   const queryClient = useQueryClient();
   const [saving, setSaving] = useState(false);
   const [cancellingSubscription, setCancellingSubscription] = useState(false);
+  const [showCancelDialog, setShowCancelDialog] = useState(false);
   const [form, setForm] = useState(null);
 
   useEffect(() => {
@@ -113,8 +115,11 @@ export default function MyProfile() {
     refetch();
   };
 
-  const handleCancelArbSubscription = async () => {
-    if (!window.confirm('Are you sure you want to cancel your subscription? Your access will remain until the end of the current billing period.')) return;
+  const handleCancelArbSubscription = () => {
+    setShowCancelDialog(true);
+  };
+
+  const handleConfirmCancel = async () => {
     setCancellingSubscription(true);
     try {
       const useSandbox = true; // match the same flag used when subscribing
@@ -124,6 +129,7 @@ export default function MyProfile() {
         return;
       }
       toast({ title: 'Subscription cancelled. You keep access until the end of your billing period.' });
+      setShowCancelDialog(false);
       refetch();
     } catch (err) {
       toast({ title: err?.response?.data?.error || 'Cancellation failed. Please contact support.', variant: 'destructive' });
@@ -162,6 +168,12 @@ export default function MyProfile() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
+      <CancelSubscriptionDialog
+        open={showCancelDialog}
+        onOpenChange={setShowCancelDialog}
+        onConfirm={handleConfirmCancel}
+        loading={cancellingSubscription}
+      />
       <h1 className="font-heading text-3xl font-bold mb-6">{t('my_profile_title')}</h1>
 
       {/* Incomplete profile banner */}
