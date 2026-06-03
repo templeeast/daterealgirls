@@ -215,7 +215,7 @@ export default function MyProfile() {
                 {profile.verification_status}
               </Badge>
             </div>
-            {(profile.verification_status === 'unverified' || profile.verification_status === 'rejected') && (
+            {(profile.verification_status === 'unverified' || profile.verification_status === 'rejected' || profile.verification_status === 'pending') && (
               <div className="mt-4 space-y-4">
                 <div className="flex items-start gap-2 text-xs text-muted-foreground bg-muted rounded-lg p-3">
                   <Shield className="w-3.5 h-3.5 shrink-0 mt-0.5 text-primary" />
@@ -223,43 +223,51 @@ export default function MyProfile() {
                 </div>
 
                 {/* Selfie upload — MANDATORY */}
-                <div className={`border-2 rounded-xl p-4 space-y-2 ${!profile.selfie_url ? 'border-primary/60 bg-accent/30' : 'border-border'}`}>
-                  <div className="flex items-center gap-2">
-                    <p className="text-sm font-medium">{t('selfie_step_title')}</p>
-                    <Badge className="bg-primary text-primary-foreground text-xs px-2 py-0.5">{t('required_badge')}</Badge>
+                {(profile.verification_status === 'unverified' || profile.verification_status === 'rejected') && (
+                  <div className={`border-2 rounded-xl p-4 space-y-2 ${!profile.selfie_url ? 'border-primary/60 bg-accent/30' : 'border-border'}`}>
+                    <div className="flex items-center gap-2">
+                      <p className="text-sm font-medium">{t('selfie_step_title')}</p>
+                      <Badge className="bg-primary text-primary-foreground text-xs px-2 py-0.5">{t('required_badge')}</Badge>
+                    </div>
+                    <p className="text-xs text-muted-foreground" dangerouslySetInnerHTML={{ __html: t('selfie_step_desc') }} />
+                    <div className="flex items-center gap-3">
+                      {profile.selfie_url && (
+                        <span className="text-xs text-primary font-medium">{t('selfie_on_file')}</span>
+                      )}
+                      <label>
+                        <Button variant={profile.selfie_url ? 'outline' : 'default'} size="sm" className="gap-2" asChild>
+                          <span>
+                            <Camera className="w-4 h-4" />
+                            {profile.selfie_url ? t('replace_selfie') : t('upload_selfie')}
+                          </span>
+                        </Button>
+                        <input type="file" accept="image/*" className="hidden" onChange={handleSelfieUpload} />
+                      </label>
+                    </div>
                   </div>
-                  <p className="text-xs text-muted-foreground" dangerouslySetInnerHTML={{ __html: t('selfie_step_desc') }} />
-                  <div className="flex items-center gap-3">
-                    {profile.selfie_url && (
-                      <span className="text-xs text-primary font-medium">{t('selfie_on_file')}</span>
-                    )}
-                    <label>
-                      <Button variant={profile.selfie_url ? 'outline' : 'default'} size="sm" className="gap-2" asChild>
-                        <span>
-                          <Camera className="w-4 h-4" />
-                          {profile.selfie_url ? t('replace_selfie') : t('upload_selfie')}
-                        </span>
-                      </Button>
-                      <input type="file" accept="image/*" className="hidden" onChange={handleSelfieUpload} />
-                    </label>
-                  </div>
-                </div>
+                )}
 
                 {/* Govt ID upload — OPTIONAL but needed for verified badge */}
-                <div className="border rounded-xl p-4 space-y-2">
+                <div className={`border rounded-xl p-4 space-y-2 ${!profile.id_document_url ? 'border-amber-300 bg-amber-50' : 'border-border'}`}>
                   <div className="flex items-center gap-2">
                     <p className="text-sm font-medium">{t('govtid_step_title')}</p>
                     <Badge variant="outline" className="text-xs px-2 py-0.5">{t('optional_badge')}</Badge>
                   </div>
-                  <p className="text-xs text-muted-foreground" dangerouslySetInnerHTML={{ __html: t('govtid_step_desc') }} />
+                  {!profile.id_document_url ? (
+                    <p className="text-xs text-amber-700 font-medium">
+                      You haven't uploaded a Govt. ID yet. This is not required to subscribe, but without it you won't receive a "Verified" badge on your profile.
+                    </p>
+                  ) : (
+                    <p className="text-xs text-muted-foreground" dangerouslySetInnerHTML={{ __html: t('govtid_step_desc') }} />
+                  )}
                   <div className="flex items-center gap-3">
                     {profile.id_document_url && (
                       <span className="text-xs text-primary font-medium">✓ ID on file</span>
                     )}
                     <label>
-                      <Button variant="outline" size="sm" className="gap-2" asChild>
+                      <Button variant={profile.id_document_url ? 'outline' : 'secondary'} size="sm" className="gap-2" asChild>
                         <span>
-                          <Upload className="w-4 h-4" /> {t('upload_govt_id')}
+                          <Upload className="w-4 h-4" /> {profile.id_document_url ? t('upload_govt_id') : 'Upload Govt. ID (Optional)'}
                         </span>
                       </Button>
                       <input type="file" accept="image/*,.pdf" className="hidden" onChange={handleIdUpload} />
