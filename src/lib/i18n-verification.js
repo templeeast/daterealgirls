@@ -1,6 +1,10 @@
 // New verification section translations (MyProfile ID verification UI)
 export const verificationTranslations = {
   en: {
+    verif_status_unverified: 'Unverified',
+    verif_status_pending: 'Pending',
+    verif_status_verified: 'Verified',
+    verif_status_rejected: 'Rejected',
     verif_eligibility_both_required: 'To receive a Verified badge, you must upload <em>both</em> a selfie and a Govt. ID.',
     verif_eligibility_no_id_needed: 'Subscribing does <strong>not</strong> require a Govt. ID — but you won\'t be marked Verified without one.',
     verif_eligibility_reset_warning: '⚠ Re-uploading either document will reset your verification status and require a new admin review.',
@@ -20,6 +24,10 @@ export const verificationTranslations = {
     verif_id_updated_tag: '⚠ Updated ID on file (pending review)',
   },
   es: {
+    verif_status_unverified: 'No verificado',
+    verif_status_pending: 'Pendiente',
+    verif_status_verified: 'Verificado',
+    verif_status_rejected: 'Rechazado',
     verif_eligibility_both_required: 'Para recibir una insignia Verificado, debes subir <em>tanto</em> una selfie como un ID gubernamental.',
     verif_eligibility_no_id_needed: 'Suscribirse <strong>no</strong> requiere un ID gubernamental — pero no serás marcado como Verificado sin uno.',
     verif_eligibility_reset_warning: '⚠ Volver a subir cualquier documento restablecerá tu estado de verificación y requerirá una nueva revisión del administrador.',
@@ -39,6 +47,10 @@ export const verificationTranslations = {
     verif_id_updated_tag: '⚠ ID actualizada en archivo (pendiente de revisión)',
   },
   th: {
+    verif_status_unverified: 'ยังไม่ยืนยัน',
+    verif_status_pending: 'รอตรวจสอบ',
+    verif_status_verified: 'ยืนยันแล้ว',
+    verif_status_rejected: 'ถูกปฏิเสธ',
     verif_eligibility_both_required: 'เพื่อรับป้าย Verified คุณต้องอัพโหลด<em>ทั้ง</em>เซลฟี่และบัตรประชาชน/หนังสือเดินทาง',
     verif_eligibility_no_id_needed: 'การสมัครสมาชิก<strong>ไม่</strong>จำเป็นต้องใช้บัตรประชาชน — แต่คุณจะไม่ได้รับป้าย Verified โดยไม่มีบัตร',
     verif_eligibility_reset_warning: '⚠ การอัพโหลดเอกสารใหม่จะรีเซ็ตสถานะการยืนยันของคุณและต้องผ่านการตรวจสอบใหม่',
@@ -58,6 +70,10 @@ export const verificationTranslations = {
     verif_id_updated_tag: '⚠ มีบัตรใหม่ในระบบ (รอการตรวจสอบ)',
   },
   zh: {
+    verif_status_unverified: '未验证',
+    verif_status_pending: '待审核',
+    verif_status_verified: '已验证',
+    verif_status_rejected: '已拒绝',
     verif_eligibility_both_required: '要获得已验证徽章，您必须上传<em>自拍照和政府ID两者</em>。',
     verif_eligibility_no_id_needed: '订阅<strong>不</strong>需要政府ID — 但没有ID您不会被标记为已验证。',
     verif_eligibility_reset_warning: '⚠ 重新上传任何文件将重置您的验证状态并需要新的管理员审核。',
@@ -77,6 +93,10 @@ export const verificationTranslations = {
     verif_id_updated_tag: '⚠ 已上传新ID（等待审核）',
   },
   de: {
+    verif_status_unverified: 'Nicht verifiziert',
+    verif_status_pending: 'Ausstehend',
+    verif_status_verified: 'Verifiziert',
+    verif_status_rejected: 'Abgelehnt',
     verif_eligibility_both_required: 'Um das Verifiziert-Abzeichen zu erhalten, musst du <em>sowohl</em> ein Selfie als auch einen Regierungsausweis hochladen.',
     verif_eligibility_no_id_needed: 'Für ein Abonnement ist <strong>kein</strong> Regierungsausweis erforderlich — ohne ihn wirst du aber nicht als Verifiziert markiert.',
     verif_eligibility_reset_warning: '⚠ Das erneute Hochladen eines Dokuments setzt deinen Verifizierungsstatus zurück und erfordert eine neue Admin-Prüfung.',
@@ -96,6 +116,10 @@ export const verificationTranslations = {
     verif_id_updated_tag: '⚠ Neuer Ausweis hochgeladen (ausstehende Prüfung)',
   },
   vi: {
+    verif_status_unverified: 'Chưa xác minh',
+    verif_status_pending: 'Đang xem xét',
+    verif_status_verified: 'Đã xác minh',
+    verif_status_rejected: 'Bị từ chối',
     verif_eligibility_both_required: 'Để nhận huy hiệu Đã Xác Minh, bạn phải tải lên <em>cả hai</em> ảnh selfie và giấy tờ tùy thân.',
     verif_eligibility_no_id_needed: 'Đăng ký <strong>không</strong> yêu cầu giấy tờ tùy thân — nhưng bạn sẽ không được đánh dấu Đã Xác Minh nếu thiếu.',
     verif_eligibility_reset_warning: '⚠ Tải lại bất kỳ tài liệu nào sẽ đặt lại trạng thái xác minh và yêu cầu xem xét lại từ quản trị viên.',
@@ -115,6 +139,10 @@ export const verificationTranslations = {
     verif_id_updated_tag: '⚠ Giấy tờ cập nhật đã có (chờ xem xét)',
   },
   pt: {
+    verif_status_unverified: 'Não verificado',
+    verif_status_pending: 'Pendente',
+    verif_status_verified: 'Verificado',
+    verif_status_rejected: 'Rejeitado',
     verif_eligibility_both_required: 'Para receber o selo Verificado, você deve enviar <em>tanto</em> uma selfie quanto um documento de identidade governamental.',
     verif_eligibility_no_id_needed: 'Assinar <strong>não</strong> requer documento governamental — mas você não será marcado como Verificado sem um.',
     verif_eligibility_reset_warning: '⚠ Reenviar qualquer documento irá redefinir seu status de verificação e exigirá uma nova revisão do administrador.',
@@ -134,6 +162,10 @@ export const verificationTranslations = {
     verif_id_updated_tag: '⚠ Documento atualizado em arquivo (aguardando revisão)',
   },
   tl: {
+    verif_status_unverified: 'Hindi pa na-verify',
+    verif_status_pending: 'Naghihintay',
+    verif_status_verified: 'Na-verify na',
+    verif_status_rejected: 'Tinanggihan',
     verif_eligibility_both_required: 'Para makakuha ng Verified badge, kailangan mong mag-upload ng <em>parehong</em> selfie at Government ID.',
     verif_eligibility_no_id_needed: '<strong>Hindi</strong> kailangan ng Government ID para mag-subscribe — ngunit hindi ka mamarkang Verified nang wala ito.',
     verif_eligibility_reset_warning: '⚠ Ang pag-upload ulit ng anumang dokumento ay magre-reset ng iyong verification status at mangangailangan ng bagong admin review.',

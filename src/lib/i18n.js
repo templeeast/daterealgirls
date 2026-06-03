@@ -1,6 +1,7 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import { verificationTranslations } from './i18n-verification';
+import { paymentInterestsTranslations } from './i18n-payment-interests';
 
 const en = {
    // Landing
@@ -844,7 +845,7 @@ const zh = {
   id_verification_rejected: '您的验证被拒绝，请重试。',
   id_upload_notice: '请上传政府颁发的带照片的ID（如护照、驾照或身份证）。您的ID经过加密安全存储，仅用于验证，不与其他成员或第三方共享。',
   upload_govt_id: '上传政府ID',
-  id_docs_privacy_notice: '您的文件存储在私密加密位置，仅供我们的管理团队用于验证。审核完成后将被永久删除。',
+  id_docs_privacy_notice: '您的文件存储在私密加密位置，仅供我们的管理团队用于验证，不与其他成员共享。',
   selfie_step_title: '第一步 — 验证自拍',
   required_badge: '必填',
   selfie_step_desc: '您的清晰正面自拍<strong>是使用本网站的必要条件</strong>。它仅由我们的管理团队用于<strong>身份验证</strong>，<strong>绝不</strong>会出现在您的公开资料中。',
@@ -1972,14 +1973,14 @@ const tl = {
 };
 
 const resources = {
-  en: { translation: { ...en, ...verificationTranslations.en } },
-  es: { translation: { ...es, ...verificationTranslations.es } },
-  th: { translation: { ...th, ...verificationTranslations.th } },
-  zh: { translation: { ...zh, ...verificationTranslations.zh } },
-  de: { translation: { ...de, ...verificationTranslations.de } },
-  vi: { translation: { ...vi, ...verificationTranslations.vi } },
-  pt: { translation: { ...pt, ...verificationTranslations.pt } },
-  tl: { translation: { ...tl, ...verificationTranslations.tl } },
+  en: { translation: { ...en, ...verificationTranslations.en, ...paymentInterestsTranslations.en } },
+  es: { translation: { ...es, ...verificationTranslations.es, ...paymentInterestsTranslations.es } },
+  th: { translation: { ...th, ...verificationTranslations.th, ...paymentInterestsTranslations.th } },
+  zh: { translation: { ...zh, ...verificationTranslations.zh, ...paymentInterestsTranslations.zh } },
+  de: { translation: { ...de, ...verificationTranslations.de, ...paymentInterestsTranslations.de } },
+  vi: { translation: { ...vi, ...verificationTranslations.vi, ...paymentInterestsTranslations.vi } },
+  pt: { translation: { ...pt, ...verificationTranslations.pt, ...paymentInterestsTranslations.pt } },
+  tl: { translation: { ...tl, ...verificationTranslations.tl, ...paymentInterestsTranslations.tl } },
 };
 
 i18n

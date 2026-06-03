@@ -24,9 +24,24 @@ import FreeTrialButton from '@/components/subscription/FreeTrialButton';
 import CancelSubscriptionDialog from '@/components/dialogs/CancelSubscriptionDialog';
 
 const INTERESTS = [
-  'Travel', 'Music', 'Movies', 'Cooking', 'Fitness', 'Reading',
-  'Art', 'Photography', 'Gaming', 'Hiking', 'Dancing', 'Sports',
-  'Yoga', 'Beach', 'Food', 'Nightlife', 'Animals', 'Fashion'
+  { key: 'Travel', tKey: 'interest_travel' },
+  { key: 'Music', tKey: 'interest_music' },
+  { key: 'Movies', tKey: 'interest_movies' },
+  { key: 'Cooking', tKey: 'interest_cooking' },
+  { key: 'Fitness', tKey: 'interest_fitness' },
+  { key: 'Reading', tKey: 'interest_reading' },
+  { key: 'Art', tKey: 'interest_art' },
+  { key: 'Photography', tKey: 'interest_photography' },
+  { key: 'Gaming', tKey: 'interest_gaming' },
+  { key: 'Hiking', tKey: 'interest_hiking' },
+  { key: 'Dancing', tKey: 'interest_dancing' },
+  { key: 'Sports', tKey: 'interest_sports' },
+  { key: 'Yoga', tKey: 'interest_yoga' },
+  { key: 'Beach', tKey: 'interest_beach' },
+  { key: 'Food', tKey: 'interest_food' },
+  { key: 'Nightlife', tKey: 'interest_nightlife' },
+  { key: 'Animals', tKey: 'interest_animals' },
+  { key: 'Fashion', tKey: 'interest_fashion' },
 ];
 
 export default function MyProfile() {
@@ -221,7 +236,7 @@ export default function MyProfile() {
                 </p>
               </div>
               <Badge className={verificationColors[profile.verification_status]}>
-                {profile.verification_status}
+                {t(`verif_status_${profile.verification_status}`)}
               </Badge>
             </div>
             {(profile.verification_status === 'unverified' || profile.verification_status === 'rejected' || profile.verification_status === 'pending') && (
@@ -347,7 +362,7 @@ export default function MyProfile() {
                 {/* Paid option — only show the configured payment processor */}
                 <div className="space-y-2">
                   {true && (
-                    <p className="text-sm font-medium">Subscribe to Premium</p>
+                    <p className="text-sm font-medium">{t('subscribe_to_premium')}</p>
                   )}
 
                   {config.payment_processor === 'codapay' ? (
@@ -360,7 +375,7 @@ export default function MyProfile() {
                     </div>
                   ) : (
                     <div className="border rounded-xl p-4 space-y-2">
-                      <p className="text-sm font-medium">Pay by Credit / Debit Card</p>
+                      <p className="text-sm font-medium">{t('pay_by_card')}</p>
                       {config.authorizenet_use_hosted_page ? (
                         <AuthorizeNetHostedButton
                           price={config.subscription_price || 9.99}
@@ -480,18 +495,18 @@ export default function MyProfile() {
           <div className="space-y-2">
             <Label>{t('interests_label')}</Label>
             <div className="flex flex-wrap gap-2">
-              {INTERESTS.map(interest => (
+              {INTERESTS.map(({ key, tKey }) => (
                 <button
-                  key={interest}
+                  key={key}
                   type="button"
-                  onClick={() => toggleInterest(interest)}
+                  onClick={() => toggleInterest(key)}
                   className={`px-3 py-1.5 rounded-full text-sm transition-all ${
-                    form.interests.includes(interest)
+                    form.interests.includes(key)
                       ? 'bg-primary text-primary-foreground'
                       : 'bg-muted text-muted-foreground hover:bg-muted/80'
                   }`}
                 >
-                  {interest}
+                  {t(tKey)}
                 </button>
               ))}
             </div>

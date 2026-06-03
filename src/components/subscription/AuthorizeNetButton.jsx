@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/components/ui/use-toast';
 import { CreditCard, Loader2, Lock } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 // Sandbox toggle — set to false for production
 const USE_SANDBOX = true;
@@ -21,6 +22,7 @@ function formatExpiry(value) {
 
 export default function AuthorizeNetButton({ price, onSuccess }) {
   const { toast } = useToast();
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [cardNumber, setCardNumber] = useState('');
   const [cardExpiry, setCardExpiry] = useState('');
@@ -78,7 +80,7 @@ export default function AuthorizeNetButton({ price, onSuccess }) {
       {/* Cardholder Name */}
       <div className="grid grid-cols-2 gap-3">
         <div className="space-y-1.5">
-          <Label className="text-sm">First Name</Label>
+          <Label className="text-sm">{t('card_first_name')}</Label>
           <Input
             placeholder="John"
             value={firstName}
@@ -87,7 +89,7 @@ export default function AuthorizeNetButton({ price, onSuccess }) {
           />
         </div>
         <div className="space-y-1.5">
-          <Label className="text-sm">Last Name</Label>
+          <Label className="text-sm">{t('card_last_name')}</Label>
           <Input
             placeholder="Doe"
             value={lastName}
@@ -99,7 +101,7 @@ export default function AuthorizeNetButton({ price, onSuccess }) {
 
       {/* Card Details */}
       <div className="space-y-1.5">
-        <Label className="text-sm">Card Number</Label>
+        <Label className="text-sm">{t('card_number')}</Label>
         <Input
           placeholder="1234 5678 9012 3456"
           value={cardNumber}
@@ -110,7 +112,7 @@ export default function AuthorizeNetButton({ price, onSuccess }) {
       </div>
       <div className="grid grid-cols-2 gap-3">
         <div className="space-y-1.5">
-          <Label className="text-sm">Expiry (MM/YY)</Label>
+          <Label className="text-sm">{t('card_expiry')}</Label>
           <Input
             placeholder="MM/YY"
             value={cardExpiry}
@@ -120,7 +122,7 @@ export default function AuthorizeNetButton({ price, onSuccess }) {
           />
         </div>
         <div className="space-y-1.5">
-          <Label className="text-sm">CVV</Label>
+          <Label className="text-sm">{t('card_cvv')}</Label>
           <Input
             placeholder="123"
             value={cardCvv}
@@ -134,10 +136,10 @@ export default function AuthorizeNetButton({ price, onSuccess }) {
 
       {/* Billing Address */}
       <div className="pt-1">
-        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Billing Address</p>
+        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">{t('billing_address')}</p>
         <div className="space-y-3">
           <div className="space-y-1.5">
-            <Label className="text-sm">Street Address</Label>
+            <Label className="text-sm">{t('billing_street')}</Label>
             <Input
               placeholder="123 Main St"
               value={address}
@@ -147,7 +149,7 @@ export default function AuthorizeNetButton({ price, onSuccess }) {
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <Label className="text-sm">City</Label>
+              <Label className="text-sm">{t('billing_city')}</Label>
               <Input
                 placeholder="New York"
                 value={city}
@@ -156,7 +158,7 @@ export default function AuthorizeNetButton({ price, onSuccess }) {
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-sm">State / Province</Label>
+              <Label className="text-sm">{t('billing_state')}</Label>
               <Input
                 placeholder="NY"
                 value={state}
@@ -167,7 +169,7 @@ export default function AuthorizeNetButton({ price, onSuccess }) {
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <Label className="text-sm">ZIP / Postal Code</Label>
+              <Label className="text-sm">{t('billing_zip')}</Label>
               <Input
                 placeholder="10001"
                 value={zip}
@@ -176,7 +178,7 @@ export default function AuthorizeNetButton({ price, onSuccess }) {
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-sm">Country</Label>
+              <Label className="text-sm">{t('billing_country')}</Label>
               <Input
                 placeholder="US"
                 value={country}
@@ -196,16 +198,16 @@ export default function AuthorizeNetButton({ price, onSuccess }) {
         disabled={loading}
       >
         {loading ? (
-          <><Loader2 className="w-4 h-4 animate-spin" /> Processing...</>
+          <><Loader2 className="w-4 h-4 animate-spin" /> {t('card_btn_processing')}</>
         ) : (
-          <><CreditCard className="w-4 h-4" /> Start Free Trial</>
+          <><CreditCard className="w-4 h-4" /> {t('card_btn_start_trial')}</>
         )}
       </Button>
       <p className="text-xs text-center text-muted-foreground flex items-center justify-center gap-1">
-        <Lock className="w-3 h-3" /> First month free, then ${price}/month · Cancel anytime
+        <Lock className="w-3 h-3" /> {t('card_footnote_price', { price })}
       </p>
       <p className="text-xs text-center text-muted-foreground">
-        Your payment details are transmitted directly to Authorize.Net's secure gateway and are never stored on our servers.
+        {t('card_footnote_security')}
       </p>
     </form>
   );
