@@ -24,48 +24,48 @@ export default function Privacy() {
           <span className="font-heading font-semibold">{config.site_name}</span>
         </div>
 
-        <h1 className="font-heading text-4xl font-bold mb-2">Privacy Policy</h1>
-        <p className="text-muted-foreground mb-10">Last updated: {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+        <h1 className="font-heading text-4xl font-bold mb-2">{t('privacy')}</h1>
+        <p className="text-muted-foreground mb-10">{t('last_updated')}: {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
 
         <div className="prose prose-sm max-w-none space-y-8 text-foreground">
           <section>
-            <h2 className="font-heading text-xl font-semibold mb-3">1. Information We Collect</h2>
-            <p className="text-muted-foreground leading-relaxed">We collect information you provide directly to us, such as when you create an account, complete your profile, or contact us for support. This includes your name, email address, date of birth, location, photos, and any other information you choose to provide.</p>
+            <h2 className="font-heading text-xl font-semibold mb-3">{t('privacy_info_collect_title')}</h2>
+            <p className="text-muted-foreground leading-relaxed">{t('privacy_info_collect_desc')}</p>
           </section>
 
           <section>
-            <h2 className="font-heading text-xl font-semibold mb-3">2. How We Use Your Information</h2>
-            <p className="text-muted-foreground leading-relaxed">We use the information we collect to provide, maintain, and improve our services, to process transactions, to send you technical notices and support messages, and to respond to your comments and questions.</p>
+            <h2 className="font-heading text-xl font-semibold mb-3">{t('privacy_how_use_title')}</h2>
+            <p className="text-muted-foreground leading-relaxed">{t('privacy_how_use_desc')}</p>
           </section>
 
           <section>
-            <h2 className="font-heading text-xl font-semibold mb-3">3. Payment Information</h2>
-            <p className="text-muted-foreground leading-relaxed">DateRealGirls does not store any credit card information or other payment data. All payment information is securely transmitted directly to our payment processors (Authorize.Net, PaymentCloud, or other third-party payment gateways). We never retain payment details on our servers. Only transaction confirmations and subscription status are stored locally.</p>
+            <h2 className="font-heading text-xl font-semibold mb-3">{t('privacy_payment_title')}</h2>
+            <p className="text-muted-foreground leading-relaxed">{t('privacy_payment_desc', { siteName: config.site_name })}</p>
           </section>
 
           <section>
-            <h2 className="font-heading text-xl font-semibold mb-3">4. Information Sharing</h2>
-            <p className="text-muted-foreground leading-relaxed">We do not sell, trade, or otherwise transfer your personal information to outside parties. Your profile information is visible to other registered members of the platform as part of the service.</p>
+            <h2 className="font-heading text-xl font-semibold mb-3">{t('privacy_sharing_title')}</h2>
+            <p className="text-muted-foreground leading-relaxed">{t('privacy_sharing_desc')}</p>
           </section>
 
           <section>
-            <h2 className="font-heading text-xl font-semibold mb-3">5. Data Security</h2>
-            <p className="text-muted-foreground leading-relaxed">We implement appropriate security measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction. However, no method of transmission over the Internet is 100% secure.</p>
+            <h2 className="font-heading text-xl font-semibold mb-3">{t('privacy_security_title')}</h2>
+            <p className="text-muted-foreground leading-relaxed">{t('privacy_security_desc')}</p>
           </section>
 
           <section>
-            <h2 className="font-heading text-xl font-semibold mb-3">6. Cookies</h2>
-            <p className="text-muted-foreground leading-relaxed">We use cookies and similar tracking technologies to track activity on our service and hold certain information to improve your experience.</p>
+            <h2 className="font-heading text-xl font-semibold mb-3">{t('privacy_cookies_title')}</h2>
+            <p className="text-muted-foreground leading-relaxed">{t('privacy_cookies_desc')}</p>
           </section>
 
           <section>
-            <h2 className="font-heading text-xl font-semibold mb-3">7. Your Rights</h2>
-            <p className="text-muted-foreground leading-relaxed">You have the right to access, update, or delete your personal information at any time through your profile settings. You may also contact our support team for assistance.</p>
+            <h2 className="font-heading text-xl font-semibold mb-3">{t('privacy_rights_title')}</h2>
+            <p className="text-muted-foreground leading-relaxed">{t('privacy_rights_desc')}</p>
           </section>
 
           <section>
-            <h2 className="font-heading text-xl font-semibold mb-3">8. Contact Us</h2>
-            <p className="text-muted-foreground leading-relaxed">If you have questions about this Privacy Policy, please <Link to="/support" className="text-primary underline underline-offset-4">contact our support team</Link>.</p>
+            <h2 className="font-heading text-xl font-semibold mb-3">{t('privacy_contact_title')}</h2>
+            <p className="text-muted-foreground leading-relaxed">{t('privacy_contact_desc')} <Link to="/support" className="text-primary underline underline-offset-4">{t('contact_support')}</Link>.</p>
           </section>
         </div>
       </div>
