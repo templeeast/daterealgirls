@@ -1,5 +1,6 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
+import { verificationTranslations } from './i18n-verification';
 
 const en = {
    // Landing
@@ -123,6 +124,23 @@ const en = {
   saving: 'Saving...',
   profile_updated: 'Profile updated!',
   id_submitted: 'ID submitted for verification',
+  verif_eligibility_both_required: 'To receive a Verified badge, you must upload <em>both</em> a selfie and a Govt. ID.',
+  verif_eligibility_no_id_needed: 'Subscribing does <strong>not</strong> require a Govt. ID — but you won\'t be marked Verified without one.',
+  verif_eligibility_reset_warning: '⚠ Re-uploading either document will reset your verification status and require a new admin review.',
+  verif_selfie_title: 'Selfie / Face Photo',
+  verif_selfie_badge: 'Required for verification',
+  verif_selfie_on_file: '✓ Original selfie on file. You may upload a new selfie below — your original will be kept for comparison by our admin team.',
+  verif_selfie_no_file: 'Upload a clear photo of your face. This will be your permanent identity reference.',
+  verif_selfie_reupload_btn: 'Re-upload Selfie',
+  verif_selfie_upload_btn: 'Upload Selfie',
+  verif_selfie_updated_tag: '⚠ Updated selfie on file (pending review)',
+  verif_id_title: 'Government-Issued ID',
+  verif_id_badge: 'Required for Verified badge',
+  verif_id_on_file: '✓ Original Govt. ID on file. You may upload a new ID below — your original will be kept for comparison by our admin team.',
+  verif_id_no_file: 'No Govt. ID uploaded yet. Upload one to become eligible for a Verified badge. Not required to subscribe.',
+  verif_id_reupload_btn: 'Re-upload Govt. ID',
+  verif_id_upload_btn: 'Upload Govt. ID (Optional)',
+  verif_id_updated_tag: '⚠ Updated ID on file (pending review)',
   // Messages
   messages_title: 'Messages',
   messages_empty: 'No conversations yet',
@@ -1954,14 +1972,14 @@ const tl = {
 };
 
 const resources = {
-  en: { translation: en },
-  es: { translation: es },
-  th: { translation: th },
-  zh: { translation: zh },
-  de: { translation: de },
-  vi: { translation: vi },
-  pt: { translation: pt },
-  tl: { translation: tl },
+  en: { translation: { ...en, ...verificationTranslations.en } },
+  es: { translation: { ...es, ...verificationTranslations.es } },
+  th: { translation: { ...th, ...verificationTranslations.th } },
+  zh: { translation: { ...zh, ...verificationTranslations.zh } },
+  de: { translation: { ...de, ...verificationTranslations.de } },
+  vi: { translation: { ...vi, ...verificationTranslations.vi } },
+  pt: { translation: { ...pt, ...verificationTranslations.pt } },
+  tl: { translation: { ...tl, ...verificationTranslations.tl } },
 };
 
 i18n

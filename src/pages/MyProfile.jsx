@@ -233,36 +233,32 @@ export default function MyProfile() {
 
                 {/* Eligibility notice */}
                 <div className="text-xs text-muted-foreground bg-muted rounded-lg p-3 space-y-1">
-                  <p className="font-semibold text-foreground">To receive a Verified badge, you must upload <em>both</em> a selfie and a Govt. ID.</p>
-                  <p>Subscribing does <strong>not</strong> require a Govt. ID — but you won't be marked Verified without one.</p>
-                  <p className="text-amber-700 font-medium">⚠ Re-uploading either document will reset your verification status and require a new admin review.</p>
+                  <p className="font-semibold text-foreground" dangerouslySetInnerHTML={{ __html: t('verif_eligibility_both_required') }} />
+                  <p dangerouslySetInnerHTML={{ __html: t('verif_eligibility_no_id_needed') }} />
+                  <p className="text-amber-700 font-medium">{t('verif_eligibility_reset_warning')}</p>
                 </div>
 
                 {/* Selfie upload */}
                 <div className={`border-2 rounded-xl p-4 space-y-2 ${!profile.selfie_url ? 'border-primary/60 bg-accent/30' : 'border-border'}`}>
                   <div className="flex items-center gap-2">
-                    <p className="text-sm font-medium">Selfie / Face Photo</p>
-                    <Badge className="bg-primary text-primary-foreground text-xs px-2 py-0.5">Required for verification</Badge>
+                    <p className="text-sm font-medium">{t('verif_selfie_title')}</p>
+                    <Badge className="bg-primary text-primary-foreground text-xs px-2 py-0.5">{t('verif_selfie_badge')}</Badge>
                   </div>
-                  {profile.selfie_url ? (
-                    <p className="text-xs text-muted-foreground">
-                      ✓ Original selfie on file. You may upload a new selfie below — your original will be kept for comparison by our admin team.
-                    </p>
-                  ) : (
-                    <p className="text-xs text-muted-foreground">Upload a clear photo of your face. This will be your permanent identity reference.</p>
-                  )}
+                  <p className="text-xs text-muted-foreground">
+                    {profile.selfie_url ? t('verif_selfie_on_file') : t('verif_selfie_no_file')}
+                  </p>
                   <div className="flex items-center gap-3">
                     <label>
                       <Button variant={profile.selfie_url ? 'outline' : 'default'} size="sm" className="gap-2" asChild>
                         <span>
                           <Camera className="w-4 h-4" />
-                          {profile.selfie_url ? 'Re-upload Selfie' : 'Upload Selfie'}
+                          {profile.selfie_url ? t('verif_selfie_reupload_btn') : t('verif_selfie_upload_btn')}
                         </span>
                       </Button>
                       <input type="file" accept="image/*" className="hidden" onChange={handleSelfieUpload} />
                     </label>
                     {profile.selfie_url_2 && (
-                      <span className="text-xs text-amber-600 font-medium">⚠ Updated selfie on file (pending review)</span>
+                      <span className="text-xs text-amber-600 font-medium">{t('verif_selfie_updated_tag')}</span>
                     )}
                   </div>
                 </div>
@@ -270,30 +266,26 @@ export default function MyProfile() {
                 {/* Govt ID upload */}
                 <div className={`border-2 rounded-xl p-4 space-y-2 ${!profile.id_document_url ? 'border-amber-300 bg-amber-50' : 'border-border'}`}>
                   <div className="flex items-center gap-2">
-                    <p className="text-sm font-medium">Government-Issued ID</p>
-                    <Badge variant="outline" className="text-xs px-2 py-0.5">Required for Verified badge</Badge>
+                    <p className="text-sm font-medium">{t('verif_id_title')}</p>
+                    <Badge variant="outline" className="text-xs px-2 py-0.5">{t('verif_id_badge')}</Badge>
                   </div>
                   {profile.id_document_url ? (
-                    <p className="text-xs text-muted-foreground">
-                      ✓ Original Govt. ID on file. You may upload a new ID below — your original will be kept for comparison by our admin team.
-                    </p>
+                    <p className="text-xs text-muted-foreground">{t('verif_id_on_file')}</p>
                   ) : (
-                    <p className="text-xs text-amber-700 font-medium">
-                      No Govt. ID uploaded yet. Upload one to become eligible for a Verified badge. Not required to subscribe.
-                    </p>
+                    <p className="text-xs text-amber-700 font-medium">{t('verif_id_no_file')}</p>
                   )}
                   <div className="flex items-center gap-3">
                     <label>
                       <Button variant={profile.id_document_url ? 'outline' : 'secondary'} size="sm" className="gap-2" asChild>
                         <span>
                           <Upload className="w-4 h-4" />
-                          {profile.id_document_url ? 'Re-upload Govt. ID' : 'Upload Govt. ID (Optional)'}
+                          {profile.id_document_url ? t('verif_id_reupload_btn') : t('verif_id_upload_btn')}
                         </span>
                       </Button>
                       <input type="file" accept="image/*,.pdf" className="hidden" onChange={handleIdUpload} />
                     </label>
                     {profile.id_document_url_2 && (
-                      <span className="text-xs text-amber-600 font-medium">⚠ Updated ID on file (pending review)</span>
+                      <span className="text-xs text-amber-600 font-medium">{t('verif_id_updated_tag')}</span>
                     )}
                   </div>
                 </div>
