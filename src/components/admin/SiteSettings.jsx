@@ -34,6 +34,7 @@ export default function SiteSettings() {
     subscription_price: 4.99,
     max_photos: 3,
     bio_max_length: 500,
+    free_tier_browse_limit: 25,
     primary_color: '',
     require_stripe_identity: false,
     stripe_identity_publishable_key: '',
@@ -57,6 +58,7 @@ export default function SiteSettings() {
         subscription_price: existingConfig.subscription_price || 4.99,
         max_photos: existingConfig.max_photos || 3,
         bio_max_length: existingConfig.bio_max_length || 500,
+        free_tier_browse_limit: existingConfig.free_tier_browse_limit ?? 25,
         primary_color: existingConfig.primary_color || '',
         require_stripe_identity: existingConfig.require_stripe_identity || false,
         stripe_identity_publishable_key: existingConfig.stripe_identity_publishable_key || '',
@@ -194,6 +196,11 @@ export default function SiteSettings() {
             <div className="space-y-2">
               <Label>Max Bio Length (characters)</Label>
               <Input type="number" value={form.bio_max_length} onChange={e => updateField('bio_max_length', Number(e.target.value))} />
+            </div>
+            <div className="space-y-2">
+              <Label>Free Tier Browse Limit (profiles)</Label>
+              <Input type="number" value={form.free_tier_browse_limit} onChange={e => updateField('free_tier_browse_limit', Number(e.target.value))} />
+              <p className="text-xs text-muted-foreground">Number of profiles free-tier male members can see before being prompted to upgrade.</p>
             </div>
           </div>
         </CardContent>

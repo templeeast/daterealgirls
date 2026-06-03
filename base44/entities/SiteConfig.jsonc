@@ -48,8 +48,8 @@
     },
     "free_tier_browse_limit": {
       "type": "number",
-      "default": 5,
-      "description": "Number of profiles free-tier men can see before being prompted to upgrade"
+      "default": 25,
+      "description": "Number of profiles free-tier men can browse before being prompted to upgrade"
     },
     "banner_show_women_only": {
       "type": "boolean",
@@ -60,9 +60,11 @@
       "type": "string",
       "enum": [
         "authorizenet",
-        "codapay"
+        "codapay",
+        "whop",
+        "segpay"
       ],
-      "default": "authorizenet",
+      "default": "whop",
       "description": "Active payment processor shown to users."
     },
     "authorizenet_use_hosted_page": {
@@ -72,30 +74,25 @@
     },
     "authorizenet_hosted_page_url": {
       "type": "string",
-      "description": "The full URL of your Authorize.net hosted payment page (e.g. https://accept.authorize.net/payment/payment)."
-    },
-    "plaid_client_id": {
-      "type": "string",
-      "description": "Plaid Client ID"
-    },
-    "plaid_secret": {
-      "type": "string",
-      "description": "Plaid Secret key"
-    },
-    "plaid_env": {
-      "type": "string",
-      "enum": [
-        "sandbox",
-        "development",
-        "production"
-      ],
-      "default": "sandbox",
-      "description": "Plaid environment"
+      "description": "The full URL of your Authorize.net hosted payment page."
     },
     "demo_mode": {
       "type": "boolean",
       "default": true,
       "description": "If true, a prominent Beta/coming soon banner is shown on the landing page"
+    },
+    "dev_mode": {
+      "type": "boolean",
+      "default": true,
+      "description": "If true, sandbox/dev API keys are used and a DEV MODE banner is shown"
+    },
+    "whop_men_plan_id": {
+      "type": "string",
+      "description": "Whop Plan ID for the men's paid subscription"
+    },
+    "whop_women_plan_id": {
+      "type": "string",
+      "description": "Whop Plan ID for the women's free plan"
     }
   },
   "required": [
