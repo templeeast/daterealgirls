@@ -17,15 +17,20 @@ export default function MemberManagement() {
   const [suspendDialog, setSuspendDialog] = useState(null);
   const [suspendReason, setSuspendReason] = useState('');
   const [detailMember, setDetailMember] = useState(null);
-  const [selfieSignedUrl, setSelfieSignedUrl] = useState(null);
+  const [signedUrls, setSignedUrls] = useState({});
 
   const openDetailMember = async (p) => {
     setDetailMember(p);
-    setSelfieSignedUrl(null);
-    if (p.selfie_url) {
-      const { signed_url } = await base44.integrations.Core.CreateFileSignedUrl({ file_uri: p.selfie_url });
-      setSelfieSignedUrl(signed_url);
-    }
+    setSignedUrls({});
+    const fields = ['selfie_url', 'selfie_url_2', 'id_document_url', 'id_document_url_2'];
+    const results = await Promise.all(
+      fields.map(async (field) => {
+        if (!p[field]) return [field, null];
+        const { signed_url } = await base44.integrations.Core.CreateFileSignedUrl({ file_uri: p[field] });
+        return [field, signed_url];
+      })
+    );
+    setSignedUrls(Object.fromEntries(results.filter(([, v]) => v)));
   };
 
   const { data: profiles, isLoading } = useQuery({
@@ -165,11 +170,44 @@ export default function MemberManagement() {
                 ))}
               </div>
 
-              {/* Selfie */}
-              {selfieSignedUrl && (
+              {/* ID Verification Documents */}
+              {(signedUrls.selfie_url || signedUrls.selfie_url_2 || signedUrls.id_document_url || signedUrls.id_document_url_2) && (
                 <div>
-                  <p className="text-xs font-semibold uppercase text-muted-foreground mb-2">Selfie (ID Verification)</p>
-                  <img src={selfieSignedUrl} className="w-32 h-32 rounded-lg object-cover border" alt="Selfie" />
+                  <p className="text-xs font-semibold uppercase text-muted-foreground mb-2">ID Verification Documents</p>
+                  <div className="grid grid-cols-2 gap-3">
+                    {signedUrls.selfie_url && (
+                      <div>
+                        <p className="text-xs text-muted-foreground mb-1">Selfie (original)</p>
+                        <a href={signedUrls.selfie_url} target="_blank" rel="noreferrer">
+                          <img src={signedUrls.selfie_url} className="w-full h-36 rounded-lg object-cover border hover:opacity-80 transition-opacity" alt="Selfie" />
+                        </a>
+                      </div>
+                    )}
+                    {signedUrls.selfie_url_2 && (
+                      <div>
+                        <p className="text-xs text-muted-foreground mb-1">Selfie (re-upload)</p>
+                        <a href={signedUrls.selfie_url_2} target="_blank" rel="noreferrer">
+                          <img src={signedUrls.selfie_url_2} className="w-full h-36 rounded-lg object-cover border hover:opacity-80 transition-opacity" alt="Selfie 2" />
+                        </a>
+                      </div>
+                    )}
+                    {signedUrls.id_document_url && (
+                      <div>
+                        <p className="text-xs text-muted-foreground mb-1">Govt ID (original)</p>
+                        <a href={signedUrls.id_document_url} target="_blank" rel="noreferrer">
+                          <img src={signedUrls.id_document_url} className="w-full h-36 rounded-lg object-cover border hover:opacity-80 transition-opacity" alt="Govt ID" />
+                        </a>
+                      </div>
+                    )}
+                    {signedUrls.id_document_url_2 && (
+                      <div>
+                        <p className="text-xs text-muted-foreground mb-1">Govt ID (re-upload)</p>
+                        <a href={signedUrls.id_document_url_2} target="_blank" rel="noreferrer">
+                          <img src={signedUrls.id_document_url_2} className="w-full h-36 rounded-lg object-cover border hover:opacity-80 transition-opacity" alt="Govt ID 2" />
+                        </a>
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
 
