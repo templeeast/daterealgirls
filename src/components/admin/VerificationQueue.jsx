@@ -6,17 +6,15 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { CheckCircle, XCircle, User, ExternalLink, Loader2 } from 'lucide-react';
 
+async function getSignedUrl(fileUri) {
+  const { signed_url } = await base44.integrations.Core.CreateFileSignedUrl({ file_uri: fileUri });
+  return signed_url;
+}
+
 export default function VerificationQueue() {
   const queryClient = useQueryClient();
-  const [loadingIdFor, setLoadingIdFor] = useState(null);
-  const [selfieUrls, setSelfieUrls] = useState({});
-
-  const viewIdDocument = async (profileId, fileUri) => {
-    setLoadingIdFor(profileId);
-    const { signed_url } = await base44.integrations.Core.CreateFileSignedUrl({ file_uri: fileUri });
-    setLoadingIdFor(null);
-    window.open(signed_url, '_blank');
-  };
+  const [loadingDoc, setLoadingDoc] = useState(null);
+  const [selfieUrls, setSelfieUrls] = useState({});     // { [profileId]: { orig, updated } }
 
   const { data: pending, isLoading } = useQuery({
     queryKey: ['pendingVerifications'],
@@ -24,14 +22,24 @@ export default function VerificationQueue() {
     initialData: [],
   });
 
+  // Generate signed URLs for all private selfie/id images
   useEffect(() => {
     pending.forEach(async (p) => {
-      if (p.selfie_url && !selfieUrls[p.id]) {
-        const { signed_url } = await base44.integrations.Core.CreateFileSignedUrl({ file_uri: p.selfie_url });
-        setSelfieUrls(prev => ({ ...prev, [p.id]: signed_url }));
-      }
+      if (selfieUrls[p.id]) return; // already loaded
+      const urls = {};
+      if (p.selfie_url)       urls.selfie      = await getSignedUrl(p.selfie_url).catch(() => null);
+      if (p.selfie_url_2)     urls.selfie2     = await getSignedUrl(p.selfie_url_2).catch(() => null);
+      setSelfieUrls(prev => ({ ...prev, [p.id]: urls }));
     });
   }, [pending]);
+
+  const openDoc = async (profileId, key, fileUri) => {
+    const docKey = `${profileId}-${key}`;
+    setLoadingDoc(docKey);
+    const url = await getSignedUrl(fileUri).catch(() => null);
+    setLoadingDoc(null);
+    if (url) window.open(url, '_blank');
+  };
 
   const verifyMutation = useMutation({
     mutationFn: ({ id, status }) =>
@@ -41,6 +49,8 @@ export default function VerificationQueue() {
       queryClient.invalidateQueries({ queryKey: ['allProfiles'] });
     },
   });
+
+  if (isLoading) return <div className="text-center py-16"><Loader2 className="w-8 h-8 animate-spin mx-auto text-muted-foreground" /></div>;
 
   if (pending.length === 0) {
     return (
@@ -52,62 +62,115 @@ export default function VerificationQueue() {
   }
 
   return (
-    <div className="space-y-4">
-      {pending.map(p => (
-        <Card key={p.id}>
-          <CardContent className="pt-6">
-            <div className="flex items-start gap-4">
-              <div className="flex gap-3">
-                {p.photo_1 ? (
-                  <img src={p.photo_1} className="w-16 h-16 rounded-xl object-cover" alt="" />
-                ) : (
-                  <div className="w-16 h-16 rounded-xl bg-muted flex items-center justify-center">
-                    <User className="w-6 h-6 text-muted-foreground" />
-                  </div>
-                )}
-                {p.selfie_url && selfieUrls[p.id] && (
-                  <img src={selfieUrls[p.id]} className="w-16 h-16 rounded-xl object-cover" alt="Selfie" />
-                )}
+    <div className="space-y-6">
+      {pending.map(p => {
+        const urls = selfieUrls[p.id] || {};
+        return (
+          <Card key={p.id}>
+            <CardContent className="pt-6 space-y-4">
+              {/* Header row */}
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <h3 className="font-medium text-base">{p.display_name}, {p.age}</h3>
+                  <p className="text-sm text-muted-foreground capitalize">{p.gender} · {[p.location_city, p.location_country].filter(Boolean).join(', ')}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{p.email || ''}</p>
+                </div>
+                <div className="flex gap-2 shrink-0">
+                  <Button size="sm" className="gap-1" onClick={() => verifyMutation.mutate({ id: p.id, status: 'verified' })}>
+                    <CheckCircle className="w-4 h-4" /> Approve
+                  </Button>
+                  <Button size="sm" variant="outline" className="gap-1 text-destructive" onClick={() => verifyMutation.mutate({ id: p.id, status: 'rejected' })}>
+                    <XCircle className="w-4 h-4" /> Reject
+                  </Button>
+                </div>
               </div>
-              <div className="flex-1">
-                <h3 className="font-medium">{p.display_name}, {p.age}</h3>
-                <p className="text-sm text-muted-foreground capitalize">{p.gender} · {[p.location_city, p.location_country].filter(Boolean).join(', ')}</p>
-                {p.id_document_url ? (
-                  <button
-                    onClick={() => viewIdDocument(p.id, p.id_document_url)}
-                    disabled={loadingIdFor === p.id}
-                    className="text-sm text-primary flex items-center gap-1 mt-2 hover:underline disabled:opacity-50"
-                  >
-                    {loadingIdFor === p.id
-                      ? <><Loader2 className="w-3 h-3 animate-spin" /> Loading...</>
-                      : <><ExternalLink className="w-3 h-3" /> View Govt. ID Document</>
-                    }
-                  </button>
-                ) : (
-                  <p className="text-xs text-muted-foreground mt-2 italic">No govt. ID submitted — selfie only</p>
-                )}
+
+              {/* Documents grid */}
+              <div className="grid grid-cols-2 gap-4">
+
+                {/* Original Selfie */}
+                <div className="space-y-2">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Original Selfie</p>
+                  {urls.selfie ? (
+                    <img src={urls.selfie} className="w-full h-40 object-cover rounded-xl border" alt="Original selfie" />
+                  ) : (
+                    <div className="w-full h-40 rounded-xl bg-muted flex items-center justify-center">
+                      <p className="text-xs text-muted-foreground">Not uploaded</p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Updated Selfie */}
+                <div className="space-y-2">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground flex items-center gap-1">
+                    Re-uploaded Selfie
+                    {urls.selfie2 && <Badge className="bg-amber-100 text-amber-700 text-xs ml-1">New</Badge>}
+                  </p>
+                  {urls.selfie2 ? (
+                    <img src={urls.selfie2} className="w-full h-40 object-cover rounded-xl border border-amber-300" alt="Updated selfie" />
+                  ) : (
+                    <div className="w-full h-40 rounded-xl bg-muted flex items-center justify-center">
+                      <p className="text-xs text-muted-foreground italic">No re-upload</p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Original Govt ID */}
+                <div className="space-y-2">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Original Govt. ID</p>
+                  {p.id_document_url ? (
+                    <button
+                      onClick={() => openDoc(p.id, 'id1', p.id_document_url)}
+                      disabled={loadingDoc === `${p.id}-id1`}
+                      className="w-full h-40 rounded-xl border bg-muted flex flex-col items-center justify-center gap-2 hover:bg-muted/70 transition-colors disabled:opacity-50"
+                    >
+                      {loadingDoc === `${p.id}-id1`
+                        ? <Loader2 className="w-5 h-5 animate-spin" />
+                        : <><ExternalLink className="w-5 h-5 text-primary" /><span className="text-xs text-primary font-medium">View Original ID</span></>
+                      }
+                    </button>
+                  ) : (
+                    <div className="w-full h-40 rounded-xl bg-muted flex items-center justify-center">
+                      <p className="text-xs text-muted-foreground">Not submitted</p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Updated Govt ID */}
+                <div className="space-y-2">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground flex items-center gap-1">
+                    Re-uploaded Govt. ID
+                    {p.id_document_url_2 && <Badge className="bg-amber-100 text-amber-700 text-xs ml-1">New</Badge>}
+                  </p>
+                  {p.id_document_url_2 ? (
+                    <button
+                      onClick={() => openDoc(p.id, 'id2', p.id_document_url_2)}
+                      disabled={loadingDoc === `${p.id}-id2`}
+                      className="w-full h-40 rounded-xl border border-amber-300 bg-amber-50 flex flex-col items-center justify-center gap-2 hover:bg-amber-100 transition-colors disabled:opacity-50"
+                    >
+                      {loadingDoc === `${p.id}-id2`
+                        ? <Loader2 className="w-5 h-5 animate-spin" />
+                        : <><ExternalLink className="w-5 h-5 text-amber-700" /><span className="text-xs text-amber-700 font-medium">View New ID</span></>
+                      }
+                    </button>
+                  ) : (
+                    <div className="w-full h-40 rounded-xl bg-muted flex items-center justify-center">
+                      <p className="text-xs text-muted-foreground italic">No re-upload</p>
+                    </div>
+                  )}
+                </div>
               </div>
-              <div className="flex gap-2">
-                <Button
-                  size="sm"
-                  className="gap-1"
-                  onClick={() => verifyMutation.mutate({ id: p.id, status: 'verified' })}
-                >
-                  <CheckCircle className="w-4 h-4" /> Approve
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="gap-1 text-destructive"
-                  onClick={() => verifyMutation.mutate({ id: p.id, status: 'rejected' })}
-                >
-                  <XCircle className="w-4 h-4" /> Reject
-                </Button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
+
+              {/* Warning if re-uploads exist */}
+              {(p.selfie_url_2 || p.id_document_url_2) && (
+                <div className="text-xs bg-amber-50 border border-amber-200 text-amber-800 rounded-lg p-3">
+                  ⚠ This member has re-uploaded one or more documents. Compare originals vs. new uploads to verify identity consistency.
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        );
+      })}
     </div>
   );
 }

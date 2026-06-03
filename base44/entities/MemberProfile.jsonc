@@ -89,13 +89,21 @@
       "default": "unverified",
       "description": "ID verification status"
     },
-    "id_document_url": {
-      "type": "string",
-      "description": "Uploaded ID document URL (private)"
-    },
     "selfie_url": {
       "type": "string",
-      "description": "Selfie for facial matching URL"
+      "description": "ORIGINAL selfie \u2014 set once, never overwritten"
+    },
+    "selfie_url_2": {
+      "type": "string",
+      "description": "Most recent re-upload selfie (overwritten on each re-upload)"
+    },
+    "id_document_url": {
+      "type": "string",
+      "description": "ORIGINAL govt ID document URI (private) \u2014 set once, never overwritten"
+    },
+    "id_document_url_2": {
+      "type": "string",
+      "description": "Most recent re-upload govt ID URI (private, overwritten on each re-upload)"
     },
     "is_active": {
       "type": "boolean",

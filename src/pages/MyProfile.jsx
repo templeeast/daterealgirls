@@ -96,11 +96,15 @@ export default function MyProfile() {
     const file = e.target.files?.[0];
     if (!file) return;
     const { file_uri } = await base44.integrations.Core.UploadPrivateFile({ file });
-    await base44.entities.MemberProfile.update(profile.id, {
-      id_document_url: file_uri,
-      verification_status: 'pending',
-    });
-    toast({ title: t('id_submitted') });
+    const isFirstUpload = !profile.id_document_url;
+    const hasSelfie = !!profile.selfie_url;
+    const updates = isFirstUpload
+      ? { id_document_url: file_uri }
+      : { id_document_url_2: file_uri, verification_status: 'unverified' };
+    // If both docs now on file, set to pending
+    if (hasSelfie) updates.verification_status = isFirstUpload ? 'pending' : 'unverified';
+    await base44.entities.MemberProfile.update(profile.id, updates);
+    toast({ title: isFirstUpload ? 'Govt. ID submitted! You are now pending verification.' : 'New Govt. ID saved. Your verification status has been reset — please re-submit for review.' });
     refetch();
   };
 
@@ -108,11 +112,16 @@ export default function MyProfile() {
     const file = e.target.files?.[0];
     if (!file) return;
     const { file_uri } = await base44.integrations.Core.UploadPrivateFile({ file });
-    await base44.entities.MemberProfile.update(profile.id, {
-      selfie_url: file_uri,
-      ...(profile.verification_status === 'unverified' || profile.verification_status === 'rejected' ? { verification_status: 'pending' } : {}),
-    });
-    toast({ title: 'Verification selfie uploaded successfully.' });
+    const isFirstUpload = !profile.selfie_url;
+    const updates = isFirstUpload
+      ? { selfie_url: file_uri }
+      : { selfie_url_2: file_uri, verification_status: 'unverified' };
+    // If both docs now on file, set to pending
+    const willHaveSelfie = true;
+    const willHaveId = !!profile.id_document_url || !!profile.id_document_url_2;
+    if (willHaveSelfie && willHaveId) updates.verification_status = isFirstUpload ? 'pending' : 'unverified';
+    await base44.entities.MemberProfile.update(profile.id, updates);
+    toast({ title: isFirstUpload ? 'Selfie uploaded! Upload your Govt. ID to complete verification.' : 'New selfie saved. Your verification status has been reset — please re-submit for review.' });
     refetch();
   };
 
@@ -222,56 +231,70 @@ export default function MyProfile() {
                   <span>{t('id_docs_privacy_notice')}</span>
                 </div>
 
-                {/* Selfie upload — MANDATORY */}
-                {(profile.verification_status === 'unverified' || profile.verification_status === 'rejected') && (
-                  <div className={`border-2 rounded-xl p-4 space-y-2 ${!profile.selfie_url ? 'border-primary/60 bg-accent/30' : 'border-border'}`}>
-                    <div className="flex items-center gap-2">
-                      <p className="text-sm font-medium">{t('selfie_step_title')}</p>
-                      <Badge className="bg-primary text-primary-foreground text-xs px-2 py-0.5">{t('required_badge')}</Badge>
-                    </div>
-                    <p className="text-xs text-muted-foreground" dangerouslySetInnerHTML={{ __html: t('selfie_step_desc') }} />
-                    <div className="flex items-center gap-3">
-                      {profile.selfie_url && (
-                        <span className="text-xs text-primary font-medium">{t('selfie_on_file')}</span>
-                      )}
-                      <label>
-                        <Button variant={profile.selfie_url ? 'outline' : 'default'} size="sm" className="gap-2" asChild>
-                          <span>
-                            <Camera className="w-4 h-4" />
-                            {profile.selfie_url ? t('replace_selfie') : t('upload_selfie')}
-                          </span>
-                        </Button>
-                        <input type="file" accept="image/*" className="hidden" onChange={handleSelfieUpload} />
-                      </label>
-                    </div>
-                  </div>
-                )}
+                {/* Eligibility notice */}
+                <div className="text-xs text-muted-foreground bg-muted rounded-lg p-3 space-y-1">
+                  <p className="font-semibold text-foreground">To receive a Verified badge, you must upload <em>both</em> a selfie and a Govt. ID.</p>
+                  <p>Subscribing does <strong>not</strong> require a Govt. ID — but you won't be marked Verified without one.</p>
+                  <p className="text-amber-700 font-medium">⚠ Re-uploading either document will reset your verification status and require a new admin review.</p>
+                </div>
 
-                {/* Govt ID upload — OPTIONAL but needed for verified badge */}
-                <div className={`border rounded-xl p-4 space-y-2 ${!profile.id_document_url ? 'border-amber-300 bg-amber-50' : 'border-border'}`}>
+                {/* Selfie upload */}
+                <div className={`border-2 rounded-xl p-4 space-y-2 ${!profile.selfie_url ? 'border-primary/60 bg-accent/30' : 'border-border'}`}>
                   <div className="flex items-center gap-2">
-                    <p className="text-sm font-medium">{t('govtid_step_title')}</p>
-                    <Badge variant="outline" className="text-xs px-2 py-0.5">{t('optional_badge')}</Badge>
+                    <p className="text-sm font-medium">Selfie / Face Photo</p>
+                    <Badge className="bg-primary text-primary-foreground text-xs px-2 py-0.5">Required for verification</Badge>
                   </div>
-                  {!profile.id_document_url ? (
-                    <p className="text-xs text-amber-700 font-medium">
-                      You haven't uploaded a Govt. ID yet. This is not required to subscribe, but without it you won't receive a "Verified" badge on your profile.
+                  {profile.selfie_url ? (
+                    <p className="text-xs text-muted-foreground">
+                      ✓ Original selfie on file. You may upload a new selfie below — your original will be kept for comparison by our admin team, and your verification status will be reset.
                     </p>
                   ) : (
-                    <p className="text-xs text-muted-foreground" dangerouslySetInnerHTML={{ __html: t('govtid_step_desc') }} />
+                    <p className="text-xs text-muted-foreground">Upload a clear photo of your face. This will be your permanent identity reference.</p>
                   )}
                   <div className="flex items-center gap-3">
-                    {profile.id_document_url && (
-                      <span className="text-xs text-primary font-medium">✓ ID on file</span>
+                    <label>
+                      <Button variant={profile.selfie_url ? 'outline' : 'default'} size="sm" className="gap-2" asChild>
+                        <span>
+                          <Camera className="w-4 h-4" />
+                          {profile.selfie_url ? 'Re-upload Selfie' : 'Upload Selfie'}
+                        </span>
+                      </Button>
+                      <input type="file" accept="image/*" className="hidden" onChange={handleSelfieUpload} />
+                    </label>
+                    {profile.selfie_url_2 && (
+                      <span className="text-xs text-amber-600 font-medium">⚠ Updated selfie on file (pending review)</span>
                     )}
+                  </div>
+                </div>
+
+                {/* Govt ID upload */}
+                <div className={`border-2 rounded-xl p-4 space-y-2 ${!profile.id_document_url ? 'border-amber-300 bg-amber-50' : 'border-border'}`}>
+                  <div className="flex items-center gap-2">
+                    <p className="text-sm font-medium">Government-Issued ID</p>
+                    <Badge variant="outline" className="text-xs px-2 py-0.5">Required for Verified badge</Badge>
+                  </div>
+                  {profile.id_document_url ? (
+                    <p className="text-xs text-muted-foreground">
+                      ✓ Original Govt. ID on file. You may upload a new ID below — your original will be kept for comparison by our admin team, and your verification status will be reset.
+                    </p>
+                  ) : (
+                    <p className="text-xs text-amber-700 font-medium">
+                      No Govt. ID uploaded yet. Upload one to become eligible for a Verified badge. Not required to subscribe.
+                    </p>
+                  )}
+                  <div className="flex items-center gap-3">
                     <label>
                       <Button variant={profile.id_document_url ? 'outline' : 'secondary'} size="sm" className="gap-2" asChild>
                         <span>
-                          <Upload className="w-4 h-4" /> {profile.id_document_url ? t('upload_govt_id') : 'Upload Govt. ID (Optional)'}
+                          <Upload className="w-4 h-4" />
+                          {profile.id_document_url ? 'Re-upload Govt. ID' : 'Upload Govt. ID (Optional)'}
                         </span>
                       </Button>
                       <input type="file" accept="image/*,.pdf" className="hidden" onChange={handleIdUpload} />
                     </label>
+                    {profile.id_document_url_2 && (
+                      <span className="text-xs text-amber-600 font-medium">⚠ Updated ID on file (pending review)</span>
+                    )}
                   </div>
                 </div>
               </div>
