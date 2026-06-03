@@ -246,7 +246,7 @@ export default function MyProfile() {
                   </div>
                   {profile.selfie_url ? (
                     <p className="text-xs text-muted-foreground">
-                      ✓ Original selfie on file. You may upload a new selfie below — your original will be kept for comparison by our admin team, and your verification status will be reset.
+                      ✓ Original selfie on file. You may upload a new selfie below — your original will be kept for comparison by our admin team.
                     </p>
                   ) : (
                     <p className="text-xs text-muted-foreground">Upload a clear photo of your face. This will be your permanent identity reference.</p>
@@ -275,7 +275,7 @@ export default function MyProfile() {
                   </div>
                   {profile.id_document_url ? (
                     <p className="text-xs text-muted-foreground">
-                      ✓ Original Govt. ID on file. You may upload a new ID below — your original will be kept for comparison by our admin team, and your verification status will be reset.
+                      ✓ Original Govt. ID on file. You may upload a new ID below — your original will be kept for comparison by our admin team.
                     </p>
                   ) : (
                     <p className="text-xs text-amber-700 font-medium">
