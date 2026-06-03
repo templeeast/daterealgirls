@@ -110,6 +110,7 @@ export default function MyProfile() {
     const { file_uri } = await base44.integrations.Core.UploadPrivateFile({ file });
     await base44.entities.MemberProfile.update(profile.id, {
       selfie_url: file_uri,
+      ...(profile.verification_status === 'unverified' || profile.verification_status === 'rejected' ? { verification_status: 'pending' } : {}),
     });
     toast({ title: 'Verification selfie uploaded successfully.' });
     refetch();

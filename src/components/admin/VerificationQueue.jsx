@@ -72,7 +72,7 @@ export default function VerificationQueue() {
               <div className="flex-1">
                 <h3 className="font-medium">{p.display_name}, {p.age}</h3>
                 <p className="text-sm text-muted-foreground capitalize">{p.gender} · {[p.location_city, p.location_country].filter(Boolean).join(', ')}</p>
-                {p.id_document_url && (
+                {p.id_document_url ? (
                   <button
                     onClick={() => viewIdDocument(p.id, p.id_document_url)}
                     disabled={loadingIdFor === p.id}
@@ -80,9 +80,11 @@ export default function VerificationQueue() {
                   >
                     {loadingIdFor === p.id
                       ? <><Loader2 className="w-3 h-3 animate-spin" /> Loading...</>
-                      : <><ExternalLink className="w-3 h-3" /> View ID Document</>
+                      : <><ExternalLink className="w-3 h-3" /> View Govt. ID Document</>
                     }
                   </button>
+                ) : (
+                  <p className="text-xs text-muted-foreground mt-2 italic">No govt. ID submitted — selfie only</p>
                 )}
               </div>
               <div className="flex gap-2">
