@@ -2,6 +2,7 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import { verificationTranslations } from './i18n-verification';
 import { paymentInterestsTranslations } from './i18n-payment-interests';
+import { legalTranslations } from './i18n-legal';
 
 const en = {
    // Landing
@@ -1973,14 +1974,14 @@ const tl = {
 };
 
 const resources = {
-  en: { translation: { ...en, ...verificationTranslations.en, ...paymentInterestsTranslations.en } },
-  es: { translation: { ...es, ...verificationTranslations.es, ...paymentInterestsTranslations.es } },
-  th: { translation: { ...th, ...verificationTranslations.th, ...paymentInterestsTranslations.th } },
-  zh: { translation: { ...zh, ...verificationTranslations.zh, ...paymentInterestsTranslations.zh } },
-  de: { translation: { ...de, ...verificationTranslations.de, ...paymentInterestsTranslations.de } },
-  vi: { translation: { ...vi, ...verificationTranslations.vi, ...paymentInterestsTranslations.vi } },
-  pt: { translation: { ...pt, ...verificationTranslations.pt, ...paymentInterestsTranslations.pt } },
-  tl: { translation: { ...tl, ...verificationTranslations.tl, ...paymentInterestsTranslations.tl } },
+  en: { translation: { ...en, ...verificationTranslations.en, ...paymentInterestsTranslations.en, ...legalTranslations.en } },
+  es: { translation: { ...es, ...verificationTranslations.es, ...paymentInterestsTranslations.es, ...legalTranslations.es } },
+  th: { translation: { ...th, ...verificationTranslations.th, ...paymentInterestsTranslations.th, ...legalTranslations.th } },
+  zh: { translation: { ...zh, ...verificationTranslations.zh, ...paymentInterestsTranslations.zh, ...legalTranslations.zh } },
+  de: { translation: { ...de, ...verificationTranslations.de, ...paymentInterestsTranslations.de, ...legalTranslations.de } },
+  vi: { translation: { ...vi, ...verificationTranslations.vi, ...paymentInterestsTranslations.vi, ...legalTranslations.vi } },
+  pt: { translation: { ...pt, ...verificationTranslations.pt, ...paymentInterestsTranslations.pt, ...legalTranslations.pt } },
+  tl: { translation: { ...tl, ...verificationTranslations.tl, ...paymentInterestsTranslations.tl, ...legalTranslations.tl } },
 };
 
 i18n
