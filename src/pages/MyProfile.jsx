@@ -22,7 +22,7 @@ import AuthorizeNetButton from '@/components/subscription/AuthorizeNetButton';
 import AuthorizeNetHostedButton from '@/components/subscription/AuthorizeNetHostedButton';
 import FreeTrialButton from '@/components/subscription/FreeTrialButton';
 import CancelSubscriptionDialog from '@/components/dialogs/CancelSubscriptionDialog';
-import WhopButton from '@/components/subscription/WhopButton.jsx';
+import WhopButton from '@/components/subscription/WhopButton';
 
 const INTERESTS = [
   { key: 'Travel', tKey: 'interest_travel' },
