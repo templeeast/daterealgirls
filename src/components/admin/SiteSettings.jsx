@@ -31,17 +31,20 @@ export default function SiteSettings() {
     tagline: '',
     target_audience: '',
     logo_url: '',
-    subscription_price: 5,
+    subscription_price: 4.99,
     max_photos: 3,
     bio_max_length: 500,
     primary_color: '',
     require_stripe_identity: false,
     stripe_identity_publishable_key: '',
     banner_show_women_only: true,
-    payment_processor: 'authorizenet',
+    payment_processor: 'whop',
     authorizenet_use_hosted_page: false,
     authorizenet_hosted_page_url: '',
     demo_mode: true,
+    dev_mode: true,
+    whop_men_plan_id: '',
+    whop_women_plan_id: '',
   });
 
   useEffect(() => {
@@ -51,17 +54,20 @@ export default function SiteSettings() {
         tagline: existingConfig.tagline || '',
         target_audience: existingConfig.target_audience || '',
         logo_url: existingConfig.logo_url || '',
-        subscription_price: existingConfig.subscription_price || 5,
+        subscription_price: existingConfig.subscription_price || 4.99,
         max_photos: existingConfig.max_photos || 3,
         bio_max_length: existingConfig.bio_max_length || 500,
         primary_color: existingConfig.primary_color || '',
         require_stripe_identity: existingConfig.require_stripe_identity || false,
         stripe_identity_publishable_key: existingConfig.stripe_identity_publishable_key || '',
         banner_show_women_only: existingConfig.banner_show_women_only !== false,
-        payment_processor: existingConfig.payment_processor || 'authorizenet',
+        payment_processor: existingConfig.payment_processor || 'whop',
         authorizenet_use_hosted_page: existingConfig.authorizenet_use_hosted_page || false,
         authorizenet_hosted_page_url: existingConfig.authorizenet_hosted_page_url || '',
         demo_mode: existingConfig.demo_mode !== false,
+        dev_mode: existingConfig.dev_mode !== false,
+        whop_men_plan_id: existingConfig.whop_men_plan_id || '',
+        whop_women_plan_id: existingConfig.whop_women_plan_id || '',
       });
     }
   }, [existingConfig]);
@@ -147,6 +153,16 @@ export default function SiteSettings() {
               onCheckedChange={v => updateField('demo_mode', v)}
             />
           </div>
+          <div className="flex items-center justify-between border-t pt-4">
+            <div>
+              <p className="font-medium text-sm">🔧 Dev Mode (Sandbox/Test Keys)</p>
+              <p className="text-xs text-muted-foreground mt-0.5">When ON, all payment processors use sandbox/dev API keys. A yellow "DEV MODE" banner is shown on the landing page. Turn OFF for production.</p>
+            </div>
+            <Switch
+              checked={form.dev_mode}
+              onCheckedChange={v => updateField('dev_mode', v)}
+            />
+          </div>
           <div className="flex items-center justify-between">
             <div>
               <p className="font-medium text-sm">Show Women Only in Scrolling Banner</p>
@@ -219,75 +235,101 @@ export default function SiteSettings() {
         <CardHeader>
           <CardTitle className="font-heading text-lg">Payment Processors</CardTitle>
           <CardDescription>
-            <strong>Authorize.net (via PaymentCloud)</strong> is the primary processor for credit/debit card payments.
-            <strong> CodaPay</strong> is the secondary processor for Southeast Asian and local payment methods.
-            Use the migration tool to move users from CodaPay to Authorize.net.
+            <strong>Whop</strong> is the primary processor. <strong>Authorize.net (PaymentCloud)</strong> is secondary. <strong>SegPay</strong> is the third option. <strong>CodaPay</strong> supports Southeast Asian local payment methods.
+            Dev Mode (above) controls which API keys are used across all processors.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label>Active Primary Processor</Label>
+            <Label>Active Processor Shown to Users</Label>
             <Select value={form.payment_processor} onValueChange={v => updateField('payment_processor', v)}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="authorizenet">Authorize.net (PaymentCloud) — Primary</SelectItem>
-                <SelectItem value="codapay">CodaPay — Secondary (Asia / Local)</SelectItem>
+                <SelectItem value="whop">Whop — Primary</SelectItem>
+                <SelectItem value="authorizenet">Authorize.net (PaymentCloud) — Secondary</SelectItem>
+                <SelectItem value="segpay">SegPay — Third</SelectItem>
+                <SelectItem value="codapay">CodaPay — Asia / Local</SelectItem>
               </SelectContent>
             </Select>
-            <p className="text-xs text-muted-foreground">This controls which processor is shown first to users on the subscription page.</p>
+            <p className="text-xs text-muted-foreground">This controls which processor is shown to users on the subscription page.</p>
           </div>
 
-          {/* Authorize.net Hosted Page Toggle */}
-          <div className="flex items-center justify-between pt-2">
-            <div>
-              <p className="font-medium text-sm">Use Hosted Payment Page (Authorize.net)</p>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                When enabled, users are redirected to the Authorize.net hosted payment page instead of filling out the inline card form.
-              </p>
-            </div>
-            <Switch
-              checked={form.authorizenet_use_hosted_page}
-              onCheckedChange={v => updateField('authorizenet_use_hosted_page', v)}
-            />
-          </div>
-          {form.authorizenet_use_hosted_page && (
-            <p className="text-xs text-muted-foreground pl-1">
-              The hosted payment form will be embedded in a secure modal on the subscription page. Toggle sandbox/production in <code className="bg-muted px-1 rounded">functions/authorizeNetGetHostedToken.js</code> and <code className="bg-muted px-1 rounded">components/subscription/AuthorizeNetHostedButton.jsx</code>.
-            </p>
-          )}
-
-          {/* Authorize.net Info */}
+          {/* Whop Config */}
           <div className="space-y-3 border-2 border-primary/20 rounded-lg p-4 bg-primary/5">
             <div className="flex items-center gap-2">
-              <span className="text-sm font-semibold">Authorize.net / PaymentCloud</span>
+              <span className="text-sm font-semibold">Whop</span>
               <span className="text-xs bg-primary text-primary-foreground px-2 py-0.5 rounded-full">Primary</span>
             </div>
             <p className="text-xs text-muted-foreground">
-              Credentials are stored as server-side environment secrets (<code className="bg-muted px-1 rounded">AUTHORIZENET_API_LOGIN_ID</code> and <code className="bg-muted px-1 rounded">AUTHORIZENET_TRANSACTION_KEY</code>).
-              Update them in <strong>Dashboard → Settings → Secrets</strong> if they change.
+              API keys are stored as secrets: <code className="bg-muted px-1 rounded">WHOP_DEV_API_KEY</code> and <code className="bg-muted px-1 rounded">WHOP_PROD_API_KEY</code>. Dev Mode (above) selects which key is used. Set your Plan IDs from the Whop Dashboard below.
             </p>
-            <div className="text-xs text-muted-foreground space-y-1">
-              <p>• Sandbox endpoint: <code className="bg-muted px-1 rounded">apitest.authorize.net</code></p>
-              <p>• Production endpoint: <code className="bg-muted px-1 rounded">api.authorize.net</code></p>
-              <p>• Toggle sandbox/production in <code className="bg-muted px-1 rounded">components/subscription/AuthorizeNetButton.jsx</code> and <code className="bg-muted px-1 rounded">functions/authorizeNetCharge.js</code></p>
+            <div className="grid grid-cols-1 gap-3">
+              <div className="space-y-1">
+                <Label className="text-xs">Men's Plan ID (paid subscription)</Label>
+                <Input
+                  value={form.whop_men_plan_id}
+                  onChange={e => updateField('whop_men_plan_id', e.target.value)}
+                  placeholder="plan_xxxxxxxxxxxx"
+                />
+                <p className="text-xs text-muted-foreground">Product URL: https://whop.com/date-real-girls/date-real-girls-male-subscription</p>
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs">Women's Plan ID (free plan)</Label>
+                <Input
+                  value={form.whop_women_plan_id}
+                  onChange={e => updateField('whop_women_plan_id', e.target.value)}
+                  placeholder="plan_xxxxxxxxxxxx"
+                />
+                <p className="text-xs text-muted-foreground">Product URL: https://whop.com/date-real-girls/date-real-girls-female-subscription</p>
+              </div>
             </div>
+            <p className="text-xs text-muted-foreground">Webhook URL: register <code className="bg-muted px-1 rounded">/api/functions/whopWebhook</code> in Whop Dashboard → Developer → Webhooks</p>
+          </div>
+
+          {/* Authorize.net Info */}
+          <div className="space-y-3 border rounded-lg p-4">
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-semibold">Authorize.net / PaymentCloud</span>
+              <span className="text-xs bg-muted text-muted-foreground px-2 py-0.5 rounded-full">Secondary</span>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Secrets: <code className="bg-muted px-1 rounded">AUTHORIZENET_API_LOGIN_ID</code> and <code className="bg-muted px-1 rounded">AUTHORIZENET_TRANSACTION_KEY</code>. Current keys are Dev/Sandbox. No Prod keys yet.
+            </p>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="font-medium text-xs">Use Hosted Payment Page</p>
+                <p className="text-xs text-muted-foreground">Redirect users to Authorize.net hosted page instead of inline form.</p>
+              </div>
+              <Switch
+                checked={form.authorizenet_use_hosted_page}
+                onCheckedChange={v => updateField('authorizenet_use_hosted_page', v)}
+              />
+            </div>
+          </div>
+
+          {/* SegPay Info */}
+          <div className="space-y-3 border rounded-lg p-4">
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-semibold">SegPay</span>
+              <span className="text-xs bg-muted text-muted-foreground px-2 py-0.5 rounded-full">Third</span>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              No API keys configured yet. Once you have SegPay credentials, add them as secrets and configure the integration.
+            </p>
           </div>
 
           {/* CodaPay Info */}
           <div className="space-y-3 border rounded-lg p-4">
             <div className="flex items-center gap-2">
               <span className="text-sm font-semibold">CodaPay</span>
-              <span className="text-xs bg-muted text-muted-foreground px-2 py-0.5 rounded-full">Secondary</span>
+              <span className="text-xs bg-muted text-muted-foreground px-2 py-0.5 rounded-full">Asia / Local</span>
             </div>
             <p className="text-xs text-muted-foreground">
-              Credentials are stored as server-side secrets (<code className="bg-muted px-1 rounded">CODAPAY_PROJECT_ID</code>, <code className="bg-muted px-1 rounded">CODAPAY_SANDBOX_API_KEY</code>, <code className="bg-muted px-1 rounded">CODAPAY_PRODUCTION_API_KEY</code>).
-              Supports payments across Southeast Asia (PHP, THB, IDR, MYR, VND, SGD, TWD, USD).
+              Secrets: <code className="bg-muted px-1 rounded">CODAPAY_PROJECT_ID</code>, <code className="bg-muted px-1 rounded">CODAPAY_SANDBOX_API_KEY</code>, <code className="bg-muted px-1 rounded">CODAPAY_PRODUCTION_API_KEY</code>.
+              Dev Mode controls sandbox vs production. Supports PHP, THB, IDR, MYR, VND, SGD, TWD, USD.
             </p>
-            <div className="text-xs text-muted-foreground space-y-1">
-              <p>• Toggle sandbox/production in <code className="bg-muted px-1 rounded">components/subscription/CodaPayButton.jsx</code></p>
-            </div>
           </div>
 
           {/* Migration Tool */}
@@ -295,9 +337,9 @@ export default function SiteSettings() {
             <div className="flex items-start gap-2">
               <AlertTriangle className="w-4 h-4 text-destructive shrink-0 mt-0.5" />
               <div>
-                <p className="text-sm font-medium text-destructive">Authorize.net → CodaPay Migration</p>
+                <p className="text-sm font-medium text-destructive">Subscription Migration Tool</p>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Flags all users who subscribed via Authorize.net as <strong>migrating</strong>, prompting them to re-subscribe using CodaPay on their next login. Save settings first before running.
+                  Flags all users with an old subscription as <strong>migrating</strong>, prompting them to re-subscribe on their next login. Save settings first before running.
                 </p>
               </div>
             </div>
@@ -320,7 +362,7 @@ export default function SiteSettings() {
                 setMigrating(false);
               }}
             >
-              {migrating ? 'Migrating…' : 'Run Authorize.net → CodaPay Migration'}
+              {migrating ? 'Migrating…' : 'Run Migration Tool'}
             </Button>
           </div>
         </CardContent>

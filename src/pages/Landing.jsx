@@ -54,6 +54,12 @@ export default function Landing() {
           </div>
         </div>
       )}
+      {/* Dev Mode Badge */}
+      {config.dev_mode && (
+        <div className="w-full bg-amber-500 text-white py-1.5 px-4 text-center z-50 relative">
+          <span className="text-xs font-bold tracking-widest uppercase">⚙️ DEV MODE — Sandbox/Test Payment Keys Active</span>
+        </div>
+      )}
 
       {/* Hero */}
       <section className="relative overflow-hidden">

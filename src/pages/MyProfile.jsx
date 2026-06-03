@@ -22,6 +22,7 @@ import AuthorizeNetButton from '@/components/subscription/AuthorizeNetButton';
 import AuthorizeNetHostedButton from '@/components/subscription/AuthorizeNetHostedButton';
 import FreeTrialButton from '@/components/subscription/FreeTrialButton';
 import CancelSubscriptionDialog from '@/components/dialogs/CancelSubscriptionDialog';
+import WhopButton from '@/components/subscription/WhopButton.jsx';
 
 const INTERESTS = [
   { key: 'Travel', tKey: 'interest_travel' },
@@ -365,25 +366,39 @@ export default function MyProfile() {
                     <p className="text-sm font-medium">{t('subscribe_to_premium')}</p>
                   )}
 
-                  {config.payment_processor === 'codapay' ? (
+                  {config.payment_processor === 'whop' ? (
+                    <div className="border rounded-xl p-4 space-y-2">
+                      <p className="text-sm font-medium">Subscribe via Whop</p>
+                      <WhopButton
+                        planId={config.whop_men_plan_id}
+                        prefillEmail={user?.email}
+                        returnUrl={`${window.location.origin}/my-profile`}
+                      />
+                    </div>
+                  ) : config.payment_processor === 'codapay' ? (
                     <div className="border rounded-xl p-4 space-y-2">
                       <p className="text-sm font-medium">Pay via Local Payment Methods</p>
                       <CodaPayButton
-                        price={config.subscription_price || 9.99}
+                        price={config.subscription_price || 4.99}
                         onSuccess={refetch}
                       />
+                    </div>
+                  ) : config.payment_processor === 'segpay' ? (
+                    <div className="border rounded-xl p-4 space-y-2">
+                      <p className="text-sm font-medium">Pay via SegPay</p>
+                      <p className="text-xs text-muted-foreground">SegPay integration coming soon. Please use another payment method.</p>
                     </div>
                   ) : (
                     <div className="border rounded-xl p-4 space-y-2">
                       <p className="text-sm font-medium">{t('pay_by_card')}</p>
                       {config.authorizenet_use_hosted_page ? (
                         <AuthorizeNetHostedButton
-                          price={config.subscription_price || 9.99}
+                          price={config.subscription_price || 4.99}
                           onSuccess={refetch}
                         />
                       ) : (
                         <AuthorizeNetButton
-                          price={config.subscription_price || 9.99}
+                          price={config.subscription_price || 4.99}
                           onSuccess={refetch}
                         />
                       )}
