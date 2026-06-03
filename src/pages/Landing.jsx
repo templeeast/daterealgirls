@@ -190,7 +190,7 @@ export default function Landing() {
               <p className="text-muted-foreground mb-6">Basic access, always free</p>
               <ul className="text-sm text-left space-y-3 mb-8">
                 <li className="flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> Create a profile</li>
-                <li className="flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> Browse up to {config.free_tier_browse_limit || 5} profiles</li>
+                <li className="flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> Browse up to {config.free_tier_browse_limit ?? 25} profiles</li>
                 <li className="flex items-center gap-2 text-muted-foreground line-through"><Heart className="w-4 h-4" /> Messaging</li>
                 <li className="flex items-center gap-2 text-muted-foreground line-through"><Heart className="w-4 h-4" /> Unlimited browsing</li>
               </ul>
