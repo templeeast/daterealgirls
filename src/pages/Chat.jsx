@@ -9,11 +9,12 @@ import { Skeleton } from '@/components/ui/skeleton';
 import useMyProfile from '@/hooks/useMyProfile';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
+import { Lock } from 'lucide-react';
 
 export default function Chat() {
   const conversationId = window.location.pathname.split('/chat/')[1];
   const navigate = useNavigate();
-  const { user } = useMyProfile();
+  const { user, profile } = useMyProfile();
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [text, setText] = useState('');
@@ -165,26 +166,38 @@ export default function Chat() {
       </div>
 
       {/* Input */}
-      <div className="border-t bg-card px-4 py-3">
-        <div className="flex gap-2 items-center max-w-3xl mx-auto">
-          <label>
-            <Button variant="ghost" size="icon" className="shrink-0" asChild>
-              <span><ImageIcon className="w-5 h-5" /></span>
+      {profile?.gender === 'male' && profile?.subscription_status !== 'active' ? (
+        <div className="border-t bg-card px-4 py-4">
+          <div className="flex items-center justify-center gap-3 max-w-3xl mx-auto bg-accent/50 rounded-xl p-3">
+            <Lock className="w-4 h-4 text-muted-foreground shrink-0" />
+            <p className="text-sm text-muted-foreground">{t('subscription_upgrade_cta')} to send messages.</p>
+            <Button size="sm" className="rounded-full shrink-0" onClick={() => navigate('/my-profile')}>
+              {t('get_premium')}
             </Button>
-            <input type="file" accept="image/*" className="hidden" onChange={handleImageSend} />
-          </label>
-          <Input
-            placeholder={t('type_message')}
-            value={text}
-            onChange={e => setText(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && handleSend()}
-            className="rounded-full"
-          />
-          <Button size="icon" className="rounded-full shrink-0" onClick={handleSend} disabled={!text.trim()}>
-            <Send className="w-4 h-4" />
-          </Button>
+          </div>
         </div>
-      </div>
+      ) : (
+        <div className="border-t bg-card px-4 py-3">
+          <div className="flex gap-2 items-center max-w-3xl mx-auto">
+            <label>
+              <Button variant="ghost" size="icon" className="shrink-0" asChild>
+                <span><ImageIcon className="w-5 h-5" /></span>
+              </Button>
+              <input type="file" accept="image/*" className="hidden" onChange={handleImageSend} />
+            </label>
+            <Input
+              placeholder={t('type_message')}
+              value={text}
+              onChange={e => setText(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && handleSend()}
+              className="rounded-full"
+            />
+            <Button size="icon" className="rounded-full shrink-0" onClick={handleSend} disabled={!text.trim()}>
+              <Send className="w-4 h-4" />
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
