@@ -57,7 +57,7 @@ export default function MemberManagement() {
     if (statusFilter === 'active' && p.is_suspended) return false;
     if (search) {
       const s = search.toLowerCase();
-      return p.display_name?.toLowerCase().includes(s) || p.location_country?.toLowerCase().includes(s);
+      if (!p.display_name?.toLowerCase().includes(s) && !p.location_country?.toLowerCase().includes(s)) return false;
     }
     return true;
   });
