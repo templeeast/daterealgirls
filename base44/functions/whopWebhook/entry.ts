@@ -1,20 +1,25 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
 
-// Whop sends a secret in the Authorization header as "Bearer <WHOP_WEBHOOK_SECRET>"
-// We verify it to ensure requests are genuinely from Whop.
-const WHOP_WEBHOOK_SECRET = Deno.env.get('WHOP_WEBHOOK_SECRET');
-
 Deno.serve(async (req) => {
-  // Verify webhook secret if configured
-  if (WHOP_WEBHOOK_SECRET) {
+  const base44 = createClientFromRequest(req);
+  const body = await req.json();
+
+  // Determine dev_mode from SiteConfig to pick the right webhook secret
+  const configs = await base44.asServiceRole.entities.SiteConfig.list();
+  const isDevMode = configs[0]?.dev_mode === true;
+  const webhookSecret = isDevMode
+    ? Deno.env.get('WHOP_DEV_WEBHOOK_SECRET')
+    : Deno.env.get('WHOP_PROD_WEBHOOK_SECRET');
+
+  // Verify webhook secret
+  if (webhookSecret) {
     const authHeader = req.headers.get('Authorization') || '';
     const token = authHeader.replace('Bearer ', '').trim();
-    if (token !== WHOP_WEBHOOK_SECRET) {
+    if (token !== webhookSecret) {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
   }
 
-  const body = await req.json();
   const action = body.action;
   const membership = body.data;
 
@@ -28,8 +33,6 @@ Deno.serve(async (req) => {
   if (!whopUserId) {
     return Response.json({ error: 'No user_id in membership payload' }, { status: 400 });
   }
-
-  const base44 = createClientFromRequest(req);
 
   // Find the member profile by whop_user_id
   const profiles = await base44.asServiceRole.entities.MemberProfile.filter({ whop_user_id: whopUserId });
@@ -52,7 +55,6 @@ Deno.serve(async (req) => {
   const today = new Date().toISOString().split('T')[0];
 
   if (action === 'membership_activated') {
-    // Calculate subscription end date (30 days from now, or use renewal_period_end if provided)
     const endDate = membership.renewal_period_end
       ? new Date(membership.renewal_period_end * 1000).toISOString().split('T')[0]
       : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
@@ -73,7 +75,6 @@ Deno.serve(async (req) => {
     console.log(`Deactivated subscription for profile ${profile.id}`);
 
   } else if (action === 'membership_cancel_at_period_end_changed') {
-    // User cancelled but retains access until period end
     const cancelAtPeriodEnd = membership.cancel_at_period_end;
     if (cancelAtPeriodEnd) {
       const endDate = membership.renewal_period_end
@@ -86,7 +87,6 @@ Deno.serve(async (req) => {
       });
       console.log(`Marked subscription as cancelled (access until ${endDate}) for profile ${profile.id}`);
     } else {
-      // cancel_at_period_end was reversed (user re-subscribed)
       await base44.asServiceRole.entities.MemberProfile.update(profile.id, {
         subscription_status: 'active',
       });
