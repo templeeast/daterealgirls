@@ -13,6 +13,7 @@ import useSiteConfig from '@/hooks/useSiteConfig';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 
+import CountryCitySelector from '@/components/shared/CountryCitySelector';
 import StripeIdentityStep from '@/components/onboarding/StripeIdentityStep';
 import OnboardingVerificationStep from '@/components/onboarding/OnboardingVerificationStep.jsx';
 
@@ -146,16 +147,12 @@ export default function Onboarding() {
         <Input type="date" value={form.date_of_birth} onChange={e => updateField('date_of_birth', e.target.value)} />
         <p className="text-xs text-muted-foreground">{t('dob_notice')}</p>
       </div>
-      <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label>{t('city_label')}</Label>
-          <Input placeholder={t('city_placeholder')} value={form.location_city} onChange={e => updateField('location_city', e.target.value)} />
-        </div>
-        <div className="space-y-2">
-          <Label>{t('country_label')}</Label>
-          <Input placeholder={t('country_placeholder')} value={form.location_country} onChange={e => updateField('location_country', e.target.value)} />
-        </div>
-      </div>
+      <CountryCitySelector
+        country={form.location_country}
+        city={form.location_city}
+        onCountryChange={v => updateField('location_country', v)}
+        onCityChange={v => updateField('location_city', v)}
+      />
     </div>,
 
     // Step 1: About You

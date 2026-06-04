@@ -1,0 +1,36 @@
+{
+  "name": "City",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "City name"
+    },
+    "country": {
+      "type": "string",
+      "description": "Country name this city belongs to"
+    },
+    "country_code": {
+      "type": "string",
+      "description": "ISO country code"
+    },
+    "needs_review": {
+      "type": "boolean",
+      "default": true,
+      "description": "If true, this city was user-submitted and requires admin review before being considered verified"
+    },
+    "reviewed": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether an admin has reviewed this city"
+    },
+    "submitted_by_user_id": {
+      "type": "string",
+      "description": "User ID who submitted this city"
+    }
+  },
+  "required": [
+    "name",
+    "country"
+  ]
+}
