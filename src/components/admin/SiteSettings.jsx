@@ -35,6 +35,8 @@ export default function SiteSettings() {
     max_photos: 3,
     bio_max_length: 500,
     free_tier_browse_limit: 25,
+    msg_rate_limit_count: 5,
+    msg_rate_limit_seconds: 10,
     primary_color: '',
     require_stripe_identity: false,
     stripe_identity_publishable_key: '',
@@ -59,6 +61,8 @@ export default function SiteSettings() {
         max_photos: existingConfig.max_photos || 3,
         bio_max_length: existingConfig.bio_max_length || 500,
         free_tier_browse_limit: existingConfig.free_tier_browse_limit ?? 25,
+        msg_rate_limit_count: existingConfig.msg_rate_limit_count ?? 5,
+        msg_rate_limit_seconds: existingConfig.msg_rate_limit_seconds ?? 10,
         primary_color: existingConfig.primary_color || '',
         require_stripe_identity: existingConfig.require_stripe_identity || false,
         stripe_identity_publishable_key: existingConfig.stripe_identity_publishable_key || '',
@@ -201,6 +205,16 @@ export default function SiteSettings() {
               <Label>Free Tier Browse Limit (profiles)</Label>
               <Input type="number" value={form.free_tier_browse_limit} onChange={e => updateField('free_tier_browse_limit', Number(e.target.value))} />
               <p className="text-xs text-muted-foreground">Number of profiles free-tier male members can see before being prompted to upgrade.</p>
+            </div>
+            <div className="space-y-2">
+              <Label>Message Rate Limit — Max Messages</Label>
+              <Input type="number" value={form.msg_rate_limit_count} onChange={e => updateField('msg_rate_limit_count', Number(e.target.value))} />
+              <p className="text-xs text-muted-foreground">Max messages a user can send within the time window below.</p>
+            </div>
+            <div className="space-y-2">
+              <Label>Message Rate Limit — Time Window (seconds)</Label>
+              <Input type="number" value={form.msg_rate_limit_seconds} onChange={e => updateField('msg_rate_limit_seconds', Number(e.target.value))} />
+              <p className="text-xs text-muted-foreground">Time window in seconds. Default: 5 messages per 10 seconds.</p>
             </div>
           </div>
         </CardContent>

@@ -93,6 +93,16 @@
     "whop_women_plan_id": {
       "type": "string",
       "description": "Whop Plan ID for the women's free plan"
+    },
+    "msg_rate_limit_count": {
+      "type": "number",
+      "default": 5,
+      "description": "Maximum number of messages a user can send within the rate limit window"
+    },
+    "msg_rate_limit_seconds": {
+      "type": "number",
+      "default": 10,
+      "description": "Time window in seconds for the message rate limit"
     }
   },
   "required": [

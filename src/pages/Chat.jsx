@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { ArrowLeft, Send, User, Image as ImageIcon } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import useMyProfile from '@/hooks/useMyProfile';
+import useSiteConfig from '@/hooks/useSiteConfig';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { Lock } from 'lucide-react';
@@ -15,10 +16,31 @@ export default function Chat() {
   const conversationId = window.location.pathname.split('/chat/')[1];
   const navigate = useNavigate();
   const { user, profile } = useMyProfile();
+  const { config } = useSiteConfig();
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [text, setText] = useState('');
+  const [rateLimited, setRateLimited] = useState(false);
+  const messageTimes = useRef([]);
   const messagesEndRef = useRef(null);
+
+  const rateLimitCount = config?.msg_rate_limit_count ?? 5;
+  const rateLimitSeconds = config?.msg_rate_limit_seconds ?? 10;
+
+  const checkRateLimit = () => {
+    const now = Date.now();
+    const windowMs = rateLimitSeconds * 1000;
+    messageTimes.current = messageTimes.current.filter(t => now - t < windowMs);
+    if (messageTimes.current.length >= rateLimitCount) {
+      setRateLimited(true);
+      const oldest = messageTimes.current[0];
+      const resetIn = windowMs - (now - oldest);
+      setTimeout(() => setRateLimited(false), resetIn);
+      return false;
+    }
+    messageTimes.current.push(now);
+    return true;
+  };
 
   const { data: conversation } = useQuery({
     queryKey: ['conversation', conversationId],
@@ -78,6 +100,7 @@ export default function Chat() {
 
   const handleSend = () => {
     if (!text.trim()) return;
+    if (!checkRateLimit()) return;
     sendMutation.mutate(text.trim());
   };
 
@@ -186,13 +209,14 @@ export default function Chat() {
               <input type="file" accept="image/*" className="hidden" onChange={handleImageSend} />
             </label>
             <Input
-              placeholder={t('type_message')}
+              placeholder={rateLimited ? `Slow down — too many messages` : t('type_message')}
               value={text}
               onChange={e => setText(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && handleSend()}
-              className="rounded-full"
+              className={`rounded-full ${rateLimited ? 'border-destructive text-destructive' : ''}`}
+              disabled={rateLimited}
             />
-            <Button size="icon" className="rounded-full shrink-0" onClick={handleSend} disabled={!text.trim()}>
+            <Button size="icon" className="rounded-full shrink-0" onClick={handleSend} disabled={!text.trim() || rateLimited}>
               <Send className="w-4 h-4" />
             </Button>
           </div>
