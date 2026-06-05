@@ -188,11 +188,11 @@ const sections = [
 ];
 
 export default function TestPlan() {
-  const { profile } = useMyProfile();
+  const { user } = useMyProfile();
   const [checked, setChecked] = useState({});
   const [expanded, setExpanded] = useState(() => Object.fromEntries(sections.map(s => [s.id, true])));
 
-  if (profile?.role !== 'admin') {
+  if (user?.role !== 'admin') {
     return (
       <div className="flex items-center justify-center h-64">
         <p className="text-muted-foreground">Access denied. Admins only.</p>
