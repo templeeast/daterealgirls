@@ -48,6 +48,8 @@ export default function SiteSettings() {
     dev_mode: true,
     whop_men_plan_id: '',
     whop_women_plan_id: '',
+    app_disabled: false,
+    app_disabled_message: "The application is temporarily unavailable due to maintenance. We'll be back online shortly. Thank you for your patience.",
   });
 
   useEffect(() => {
@@ -74,6 +76,8 @@ export default function SiteSettings() {
         dev_mode: existingConfig.dev_mode !== false,
         whop_men_plan_id: existingConfig.whop_men_plan_id || '',
         whop_women_plan_id: existingConfig.whop_women_plan_id || '',
+        app_disabled: existingConfig.app_disabled || false,
+        app_disabled_message: existingConfig.app_disabled_message || "The application is temporarily unavailable due to maintenance. We'll be back online shortly. Thank you for your patience.",
       });
     }
   }, [existingConfig]);
@@ -386,6 +390,39 @@ export default function SiteSettings() {
               {migrating ? 'Migrating…' : 'Run Migration Tool'}
             </Button>
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Emergency Disable */}
+      <Card className="border-destructive/40 bg-destructive/5">
+        <CardHeader>
+          <CardTitle className="font-heading text-lg flex items-center gap-2 text-destructive">
+            <AlertTriangle className="w-5 h-5" /> Emergency Disable Switch
+          </CardTitle>
+          <CardDescription className="text-destructive/80">
+            Disabling the app will make it inaccessible for all non-admin users. Use with caution.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex items-center justify-between bg-background rounded-lg p-4 border">
+            <p className="font-semibold text-sm">Disable Application</p>
+            <Switch
+              checked={form.app_disabled}
+              onCheckedChange={v => updateField('app_disabled', v)}
+            />
+          </div>
+          {form.app_disabled && (
+            <div className="space-y-2">
+              <Label>Disabled App Message</Label>
+              <Textarea
+                value={form.app_disabled_message}
+                onChange={e => updateField('app_disabled_message', e.target.value)}
+                rows={3}
+                placeholder="The application is temporarily unavailable..."
+              />
+              <p className="text-xs text-destructive">⚠️ The app is currently DISABLED. Save settings to apply.</p>
+            </div>
+          )}
         </CardContent>
       </Card>
 

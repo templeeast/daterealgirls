@@ -18,18 +18,21 @@ import ReportProfile from '@/pages/ReportProfile';
 import AdminDashboard from '@/pages/admin/AdminDashboard';
 import TestPlan from '@/pages/admin/TestPlan';
 import AppLayout from '@/components/layout/AppLayout';
+import useSiteConfig from '@/hooks/useSiteConfig';
 import ProfileCompleteGuard from '@/components/layout/ProfileCompleteGuard';
 import Privacy from '@/pages/Privacy';
+import AppDisabledScreen from '@/components/AppDisabledScreen';
 import Terms from '@/pages/Terms';
 import RefundPolicy from '@/pages/RefundPolicy';
 import ShippingPolicy from '@/pages/ShippingPolicy';
 import ContactUs from '@/pages/ContactUs';
 
 const AuthenticatedApp = () => {
-  const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
+  const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin, user } = useAuth();
+  const { config, isLoading: isLoadingConfig } = useSiteConfig();
 
   // Show loading spinner while checking app public settings or auth
-  if (isLoadingPublicSettings || isLoadingAuth) {
+  if (isLoadingPublicSettings || isLoadingAuth || isLoadingConfig) {
     return (
       <div className="fixed inset-0 flex items-center justify-center">
         <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div>
@@ -49,6 +52,11 @@ const AuthenticatedApp = () => {
         return <Landing />;
       }
     }
+  }
+
+  // Emergency kill switch — block non-admins when app is disabled
+  if (config?.app_disabled && user?.role !== 'admin') {
+    return <AppDisabledScreen message={config.app_disabled_message} />;
   }
 
   // Render the main app

@@ -103,6 +103,16 @@
       "type": "number",
       "default": 10,
       "description": "Time window in seconds for the message rate limit"
+    },
+    "app_disabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Emergency kill switch \u2014 if true, the app is inaccessible to all non-admin users"
+    },
+    "app_disabled_message": {
+      "type": "string",
+      "default": "The application is temporarily unavailable due to maintenance. We'll be back online shortly. Thank you for your patience.",
+      "description": "Message shown to users when the app is disabled"
     }
   },
   "required": [
