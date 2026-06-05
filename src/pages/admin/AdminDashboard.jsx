@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Users, Shield, Flag, HelpCircle, Settings, MapPin } from 'lucide-react';
+import { Users, Shield, Flag, HelpCircle, Settings, MapPin, ClipboardList } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import MemberManagement from '@/components/admin/MemberManagement';
 import VerificationQueue from '@/components/admin/VerificationQueue';
 import ReportsPanel from '@/components/admin/ReportsPanel';
@@ -26,7 +27,14 @@ export default function AdminDashboard() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <h1 className="font-heading text-3xl font-bold mb-2">Admin Dashboard</h1>
+      <div className="flex items-center justify-between mb-2">
+        <h1 className="font-heading text-3xl font-bold">Admin Dashboard</h1>
+        <Link to="/admin/test-plan">
+          <button className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground border rounded-lg px-3 py-2 transition-colors">
+            <ClipboardList className="w-4 h-4" /> Test Plan
+          </button>
+        </Link>
+      </div>
       <p className="text-muted-foreground mb-8">Manage members, moderation, and platform settings.</p>
 
       <AdminStats />

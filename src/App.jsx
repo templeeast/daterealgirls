@@ -16,6 +16,7 @@ import Favorites from '@/pages/Favorites';
 import Support from '@/pages/Support';
 import ReportProfile from '@/pages/ReportProfile';
 import AdminDashboard from '@/pages/admin/AdminDashboard';
+import TestPlan from '@/pages/admin/TestPlan';
 import AppLayout from '@/components/layout/AppLayout';
 import ProfileCompleteGuard from '@/components/layout/ProfileCompleteGuard';
 import Privacy from '@/pages/Privacy';
@@ -65,6 +66,7 @@ const AuthenticatedApp = () => {
         <Route path="/support" element={<Support />} />
         <Route path="/report/:id" element={<ProfileCompleteGuard><ReportProfile /></ProfileCompleteGuard>} />
         <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/test-plan" element={<TestPlan />} />
       </Route>
       <Route path="/privacy" element={<Privacy />} />
       <Route path="/terms" element={<Terms />} />
