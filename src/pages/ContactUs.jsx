@@ -10,10 +10,12 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/components/ui/use-toast';
 import useSiteConfig from '@/hooks/useSiteConfig';
 import LanguageSelector from '@/components/layout/LanguageSelector';
+import useMyProfile from '@/hooks/useMyProfile';
 
 export default function ContactUs() {
   const { t } = useTranslation();
   const { config } = useSiteConfig();
+  const { user } = useMyProfile();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });
@@ -115,12 +117,14 @@ export default function ContactUs() {
           </form>
         )}
 
-        <div className="mt-12 pt-8 border-t flex items-center gap-2 text-sm text-muted-foreground">
-          <Mail className="w-4 h-4" />
-          <span>{t('contact_also_support')}{' '}
-            <Link to="/support" className="text-primary underline underline-offset-4">{t('support_title')}</Link>
-          </span>
-        </div>
+        {user && (
+          <div className="mt-12 pt-8 border-t flex items-center gap-2 text-sm text-muted-foreground">
+            <Mail className="w-4 h-4" />
+            <span>{t('contact_also_support')}{' '}
+              <Link to="/support" className="text-primary underline underline-offset-4">{t('support_title')}</Link>
+            </span>
+          </div>
+        )}
       </div>
     </div>
   );
