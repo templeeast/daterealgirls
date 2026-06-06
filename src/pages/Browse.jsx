@@ -24,14 +24,30 @@ export default function Browse() {
   // Is this a free-tier male user?
   const isFreeMale = profile?.gender === 'male' && (!profile?.subscription_status || profile?.subscription_status === 'free');
   const browseLimit = config?.free_tier_browse_limit ?? 5;
-  const [search, setSearch] = useState('');
-  const [genderFilter, setGenderFilter] = useState('all');
-  const [lookingForFilter, setLookingForFilter] = useState('all');
-  const [ageMin, setAgeMin] = useState('');
-  const [ageMax, setAgeMax] = useState('');
-  const [showFilters, setShowFilters] = useState(false);
-  const [countryFilter, setCountryFilter] = useState('');
-  const [cityFilter, setCityFilter] = useState('');
+
+  // Persist filters in sessionStorage so they survive navigation
+  const loadFilter = (key, fallback) => {
+    try { const v = sessionStorage.getItem('browse_' + key); return v !== null ? JSON.parse(v) : fallback; } catch { return fallback; }
+  };
+  const saveFilter = (key, value) => { try { sessionStorage.setItem('browse_' + key, JSON.stringify(value)); } catch {} };
+
+  const [search, setSearch] = useState(() => loadFilter('search', ''));
+  const [genderFilter, setGenderFilter] = useState(() => loadFilter('gender', 'all'));
+  const [lookingForFilter, setLookingForFilter] = useState(() => loadFilter('lookingFor', 'all'));
+  const [ageMin, setAgeMin] = useState(() => loadFilter('ageMin', ''));
+  const [ageMax, setAgeMax] = useState(() => loadFilter('ageMax', ''));
+  const [showFilters, setShowFilters] = useState(() => loadFilter('showFilters', false));
+  const [countryFilter, setCountryFilter] = useState(() => loadFilter('country', ''));
+  const [cityFilter, setCityFilter] = useState(() => loadFilter('city', ''));
+
+  const handleSearch = v => { setSearch(v); saveFilter('search', v); };
+  const handleGender = v => { setGenderFilter(v); saveFilter('gender', v); };
+  const handleLookingFor = v => { setLookingForFilter(v); saveFilter('lookingFor', v); };
+  const handleAgeMin = v => { setAgeMin(v); saveFilter('ageMin', v); };
+  const handleAgeMax = v => { setAgeMax(v); saveFilter('ageMax', v); };
+  const handleShowFilters = v => { setShowFilters(v); saveFilter('showFilters', v); };
+  const handleCountry = v => { setCountryFilter(v); setCityFilter(''); saveFilter('country', v); saveFilter('city', ''); };
+  const handleCity = v => { setCityFilter(v); saveFilter('city', v); };
 
   const { data: profiles, isLoading } = useQuery({
     queryKey: ['profiles'],
@@ -108,13 +124,13 @@ export default function Browse() {
               placeholder={t('browse_search_placeholder')}
               className="pl-10"
               value={search}
-              onChange={e => setSearch(e.target.value)}
+              onChange={e => handleSearch(e.target.value)}
             />
           </div>
           <Button
             variant="outline"
             className="gap-2 sm:w-auto w-full"
-            onClick={() => setShowFilters(!showFilters)}
+            onClick={() => handleShowFilters(!showFilters)}
           >
             <SlidersHorizontal className="w-4 h-4" />
             {t('browse_filters')}
@@ -122,15 +138,24 @@ export default function Browse() {
         </div>
         {showFilters && (
           <div className="flex flex-wrap gap-3 mt-4 p-4 bg-card rounded-xl border">
-            <Select value={genderFilter} onValueChange={setGenderFilter}>
-              <SelectTrigger className="w-40"><SelectValue placeholder={t('browse_gender')} /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{t('browse_all_genders')}</SelectItem>
-                <SelectItem value="female">{t('browse_women')}</SelectItem>
-                <SelectItem value="male">{t('browse_men')}</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select value={lookingForFilter} onValueChange={setLookingForFilter}>
+            {/* Gender — radio buttons */}
+            <div className="flex items-center gap-3">
+              <span className="text-sm text-muted-foreground font-medium">{t('browse_gender')}:</span>
+              {[{ value: 'all', label: t('browse_all_genders') }, { value: 'female', label: t('browse_women') }, { value: 'male', label: t('browse_men') }].map(opt => (
+                <label key={opt.value} className="flex items-center gap-1.5 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="genderFilter"
+                    value={opt.value}
+                    checked={genderFilter === opt.value}
+                    onChange={() => handleGender(opt.value)}
+                    className="accent-primary"
+                  />
+                  <span className="text-sm">{opt.label}</span>
+                </label>
+              ))}
+            </div>
+            <Select value={lookingForFilter} onValueChange={handleLookingFor}>
               <SelectTrigger className="w-44"><SelectValue placeholder={t('browse_looking_for')} /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{t('browse_all')}</SelectItem>
@@ -143,8 +168,8 @@ export default function Browse() {
             <CountryCitySelector
               country={countryFilter}
               city={cityFilter}
-              onCountryChange={v => { setCountryFilter(v); setCityFilter(''); }}
-              onCityChange={setCityFilter}
+              onCountryChange={handleCountry}
+              onCityChange={handleCity}
               showLabels={false}
             />
             <div className="flex items-center gap-2">
@@ -155,7 +180,7 @@ export default function Browse() {
                 value={ageMin}
                 min={18}
                 max={99}
-                onChange={e => setAgeMin(e.target.value)}
+                onChange={e => handleAgeMin(e.target.value)}
               />
               <span className="text-muted-foreground text-sm">–</span>
               <Input
@@ -165,7 +190,7 @@ export default function Browse() {
                 value={ageMax}
                 min={18}
                 max={99}
-                onChange={e => setAgeMax(e.target.value)}
+                onChange={e => handleAgeMax(e.target.value)}
               />
             </div>
           </div>
