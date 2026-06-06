@@ -95,7 +95,10 @@ export default function CountryCitySelector({
             <SelectValue placeholder="Select country" />
           </SelectTrigger>
           <SelectContent className="max-h-64">
-            {COUNTRIES.map(c => (
+            {[
+              ...COUNTRIES.filter(c => c.code === 'US'),
+              ...COUNTRIES.filter(c => c.code !== 'US').sort((a, b) => a.name.localeCompare(b.name)),
+            ].map(c => (
               <SelectItem key={c.code} value={c.name}>{c.name}</SelectItem>
             ))}
           </SelectContent>

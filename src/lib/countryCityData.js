@@ -110,5 +110,5 @@ export const CITIES_BY_COUNTRY = {
 export function getCitiesForCountry(countryName) {
   const country = COUNTRIES.find(c => c.name === countryName);
   if (!country) return [];
-  return CITIES_BY_COUNTRY[country.code] || [];
+  return [...(CITIES_BY_COUNTRY[country.code] || [])].sort((a, b) => a.localeCompare(b));
 }
