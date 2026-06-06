@@ -112,9 +112,12 @@ export default function Landing() {
                 {t('btn_browse')}
                 <ChevronRight className="w-5 h-5" />
               </Button>
-              <Button size="lg" variant="outline" className="text-lg px-8 py-6 rounded-full bg-white/10 border-white/40 text-white hover:bg-white/20" onClick={() => handleCTAClick('/my-profile')}>
-                {t('btn_complete_profile')}
-              </Button>
+              {/* Hide for authenticated users who have fully completed their profile */}
+              {!(isAuthenticated && profile?.profile_complete) && (
+                <Button size="lg" variant="outline" className="text-lg px-8 py-6 rounded-full bg-white/10 border-white/40 text-white hover:bg-white/20" onClick={() => handleCTAClick('/my-profile')}>
+                  {!isAuthenticated ? t('get_started') : t('btn_complete_profile')}
+                </Button>
+              )}
             </div>
           </motion.div>
         </div>
