@@ -22,9 +22,11 @@ export default function Messages() {
       // Merge and deduplicate
       const map = new Map();
       [...c1, ...c2].forEach(c => map.set(c.id, c));
-      return Array.from(map.values()).sort((a, b) =>
+      const all = Array.from(map.values()).sort((a, b) =>
         new Date(b.last_message_date || b.updated_date) - new Date(a.last_message_date || a.updated_date)
       );
+      // Only show conversations that have at least one message sent
+      return all.filter(c => !!c.last_message);
     },
     enabled: !!user,
     initialData: [],
