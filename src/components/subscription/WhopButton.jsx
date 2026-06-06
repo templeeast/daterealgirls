@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 
-export default function WhopButton({ planId, prefillEmail, returnUrl }) {
+export default function WhopButton({ planId, prefillEmail, returnUrl, devMode }) {
   const handleClick = () => {
     if (!planId) {
       alert('Whop plan ID not configured. Please contact support.');
@@ -10,7 +10,8 @@ export default function WhopButton({ planId, prefillEmail, returnUrl }) {
     const params = new URLSearchParams();
     if (prefillEmail) params.set('prefilled_email', prefillEmail);
     if (returnUrl) params.set('redirect_uri', returnUrl);
-    const url = `https://whop.com/checkout/${planId}/?${params.toString()}`;
+    const baseUrl = devMode ? 'https://sandbox.whop.com' : 'https://whop.com';
+    const url = `${baseUrl}/checkout/${planId}/?${params.toString()}`;
     window.open(url, '_blank');
   };
 

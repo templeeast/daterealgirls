@@ -373,6 +373,7 @@ export default function MyProfile() {
                         planId={config.whop_men_plan_id}
                         prefillEmail={user?.email}
                         returnUrl={`${window.location.origin}/my-profile`}
+                        devMode={config.dev_mode}
                       />
                     </div>
                   ) : config.payment_processor === 'codapay' ? (
