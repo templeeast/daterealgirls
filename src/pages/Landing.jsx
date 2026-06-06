@@ -104,7 +104,7 @@ export default function Landing() {
               {t('tagline')}
             </h1>
             <p className="text-lg sm:text-xl text-white/80 mb-10 max-w-2xl mx-auto leading-relaxed">
-              Real, breathtaking women are waiting to connect with you right now. No bots. No fakes.
+              {t('hero_subtitle')}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center pointer-events-auto relative z-10">
