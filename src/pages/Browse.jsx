@@ -138,23 +138,14 @@ export default function Browse() {
         </div>
         {showFilters && (
           <div className="flex flex-wrap gap-3 mt-4 p-4 bg-card rounded-xl border">
-            {/* Gender — radio buttons */}
-            <div className="flex items-center gap-3">
-              <span className="text-sm text-muted-foreground font-medium">{t('browse_gender')}:</span>
-              {[{ value: 'all', label: t('browse_all_genders') }, { value: 'female', label: t('browse_women') }, { value: 'male', label: t('browse_men') }].map(opt => (
-                <label key={opt.value} className="flex items-center gap-1.5 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="genderFilter"
-                    value={opt.value}
-                    checked={genderFilter === opt.value}
-                    onChange={() => handleGender(opt.value)}
-                    className="accent-primary"
-                  />
-                  <span className="text-sm">{opt.label}</span>
-                </label>
-              ))}
-            </div>
+            <Select value={genderFilter} onValueChange={handleGender}>
+              <SelectTrigger className="w-40"><SelectValue placeholder={t('browse_gender')} /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{t('browse_all_genders')}</SelectItem>
+                <SelectItem value="female">{t('browse_women')}</SelectItem>
+                <SelectItem value="male">{t('browse_men')}</SelectItem>
+              </SelectContent>
+            </Select>
             <Select value={lookingForFilter} onValueChange={handleLookingFor}>
               <SelectTrigger className="w-44"><SelectValue placeholder={t('browse_looking_for')} /></SelectTrigger>
               <SelectContent>
