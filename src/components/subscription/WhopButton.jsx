@@ -9,7 +9,7 @@ export default function WhopButton({ planId, prefillEmail, returnUrl, devMode })
     }
     const params = new URLSearchParams();
     if (prefillEmail) params.set('prefilled_email', prefillEmail);
-    if (returnUrl) params.set('redirect_uri', returnUrl);
+    if (returnUrl) params.set('redirect_url', returnUrl);
     const baseUrl = devMode ? 'https://sandbox.whop.com' : 'https://whop.com';
     const url = `${baseUrl}/checkout/${planId}/?${params.toString()}`;
     window.open(url, '_blank');
