@@ -6,8 +6,8 @@ import { legalTranslations } from './i18n-legal';
 
 const en = {
    // Landing
-   tagline: 'Meet Beautiful Women. For Real.',
-   hero_subtitle: 'Stunning verified women are waiting to connect with you right now. No bots. No fakes. Just real, breathtaking women.',
+   tagline: 'Real. Simple. Yours.',
+   hero_subtitle: 'Meet real girls without the hassle. No bots. No fakes.',
    banner_title: 'Meet Our Members',
    banner_subtitle: 'Verified, real people looking for genuine connections',
   badge_verified: 'Govt. ID Verification',
@@ -281,8 +281,8 @@ const en = {
 };
 
 const es = {
-   tagline: 'Conoce Mujeres Hermosas. De Verdad.',
-   hero_subtitle: 'Mujeres impresionantes y verificadas están esperando conectar contigo ahora mismo. Sin bots. Sin falsas. Solo mujeres reales y deslumbrantes.',
+   tagline: 'Real. Simple. Tuyo.',
+   hero_subtitle: 'Conoce chicas reales sin complicaciones. Sin bots. Sin falsas.',
   banner_title: 'Conoce a Nuestros Miembros',
   banner_subtitle: 'Personas reales y verificadas buscando conexiones genuinas',
   badge_verified: 'Verificación de ID Gubernamental',
@@ -528,8 +528,8 @@ const es = {
 };
 
 const th = {
-   tagline: 'พบกับผู้หญิงสวยจริงๆ ไม่ใช่ปลอม',
-   hero_subtitle: 'ผู้หญิงสวยงามและยืนยันตัวตนแล้วกำลังรอพบคุณอยู่ตอนนี้ ไม่มีบอท ไม่มีปลอม — มีแต่ผู้หญิงจริงๆ',
+   tagline: 'จริง. ง่าย. ของคุณ.',
+   hero_subtitle: 'พบกับสาวจริงๆ โดยไม่ยุ่งยาก ไม่มีบอท ไม่มีปลอม',
   banner_title: 'พบกับสมาชิกของเรา',
   banner_subtitle: 'คนจริงและยืนยันตัวตนแล้วที่มองหาการเชื่อมต่อที่แท้จริง',
   badge_verified: 'การยืนยัน ID รัฐบาล',
@@ -775,8 +775,8 @@ const th = {
 };
 
 const zh = {
-   tagline: '遇见真实美丽的女性',
-   hero_subtitle: '经过验证的迷人女性正在等待与你连接。没有机器人，没有假冒 — 只有真实、令人心动的女性。',
+   tagline: '真实。简单。属于你。',
+   hero_subtitle: '轻松认识真实女孩。没有机器人，没有假冒。',
   banner_title: '认识我们的成员',
   banner_subtitle: '经验证的真人寻找真实的连接',
   badge_verified: '政府身份证验证',
@@ -1022,8 +1022,8 @@ const zh = {
 };
 
 const de = {
-   tagline: 'Triff echte wunderschöne Frauen.',
-   hero_subtitle: 'Atemberaubende, verifizierte Frauen warten darauf, dich jetzt kennenzulernen. Keine Bots. Keine Fakes. Nur echte, bezaubernde Frauen.',
+   tagline: 'Echt. Einfach. Deins.',
+   hero_subtitle: 'Lerne echte Mädchen kennen – ohne Aufwand. Keine Bots. Keine Fakes.',
   banner_title: 'Treffen Sie unsere Mitglieder',
   banner_subtitle: 'Verifizierte, echte Menschen auf der Suche nach echten Verbindungen',
   badge_verified: 'Regierungs-ID-Verifizierung',
@@ -1269,8 +1269,8 @@ const de = {
 };
 
 const vi = {
-   tagline: 'Gặp Gỡ Những Phụ Nữ Đẹp Thật Sự.',
-   hero_subtitle: 'Những phụ nữ quyến rũ đã được xác minh đang chờ kết nối với bạn ngay bây giờ. Không có bot. Không có giả mạo. Chỉ có những phụ nữ thật sự tuyệt vời.',
+   tagline: 'Thật. Đơn Giản. Của Bạn.',
+   hero_subtitle: 'Gặp gỡ các cô gái thật sự mà không rắc rối. Không bot. Không giả mạo.',
   banner_title: 'Gặp Gỡ Các Thành Viên Của Chúng Tôi',
   banner_subtitle: 'Những người thật sự đã được xác minh đang tìm kiếm các kết nối chân thực',
   badge_verified: 'Xác Minh ID Chính Phủ',
@@ -1516,8 +1516,8 @@ const vi = {
 };
 
 const pt = {
-   tagline: 'Conheça Mulheres Lindas de Verdade.',
-   hero_subtitle: 'Mulheres deslumbrantes e verificadas estão esperando para se conectar com você agora. Sem bots. Sem falsas. Apenas mulheres reais e encantadoras.',
+   tagline: 'Real. Simples. Seu.',
+   hero_subtitle: 'Conheça garotas reais sem complicação. Sem bots. Sem falsas.',
   banner_title: 'Conheça Nossos Membros',
   banner_subtitle: 'Pessoas reais e verificadas procurando conexões genuínas',
   badge_verified: 'Verificação de ID Governamental',
@@ -1763,8 +1763,8 @@ const pt = {
 };
 
 const tl = {
-   tagline: 'Makilala ang Magagandang Babae. Tunay.',
-   hero_subtitle: 'Mga kahanga-hangang, na-verify na babae ang naghihintay na kumonekta sa iyo ngayon. Walang bots. Walang peke. Tunay na mga babae.',
+   tagline: 'Tunay. Simple. Sayo.',
+   hero_subtitle: 'Makilala ang mga tunay na babae nang walang abala. Walang bots. Walang peke.',
   banner_title: 'Makilala ang Aming mga Miyembro',
   banner_subtitle: 'Mga verified, tunay na tao na naghahanap ng totoong koneksyon',
   badge_verified: 'Pagpapatunay ng Government ID',
