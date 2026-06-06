@@ -45,7 +45,19 @@ export default function Browse() {
   const handleLookingFor = v => { setLookingForFilter(v); saveFilter('lookingFor', v); };
   const handleAgeMin = v => { setAgeMin(v); saveFilter('ageMin', v); };
   const handleAgeMax = v => { setAgeMax(v); saveFilter('ageMax', v); };
-  const handleShowFilters = v => { setShowFilters(v); saveFilter('showFilters', v); };
+  const handleShowFilters = v => {
+    setShowFilters(v);
+    saveFilter('showFilters', v);
+    if (!v) {
+      // Closing filters — reset all filter values
+      setGenderFilter('all'); saveFilter('gender', 'all');
+      setLookingForFilter('all'); saveFilter('lookingFor', 'all');
+      setAgeMin(''); saveFilter('ageMin', '');
+      setAgeMax(''); saveFilter('ageMax', '');
+      setCountryFilter(''); saveFilter('country', '');
+      setCityFilter(''); saveFilter('city', '');
+    }
+  };
   const handleCountry = v => { setCountryFilter(v); setCityFilter(''); saveFilter('country', v); saveFilter('city', ''); };
   const handleCity = v => { setCityFilter(v); saveFilter('city', v); };
 
