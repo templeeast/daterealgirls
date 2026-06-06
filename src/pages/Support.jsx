@@ -35,7 +35,7 @@ export default function Support() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [showForm, setShowForm] = useState(false);
-  const [form, setForm] = useState({ category: '', subject: '', description: '' });
+  const [form, setForm] = useState({ category: '', subject: '', description: '', email: '' });
 
   const { data: tickets, isLoading } = useQuery({
     queryKey: ['myTickets', user?.id],
@@ -46,14 +46,16 @@ export default function Support() {
 
   const createMutation = useMutation({
     mutationFn: (data) => base44.entities.SupportTicket.create({
-      ...data,
-      user_id: user.id,
-      user_email: user.email,
+      category: data.category,
+      subject: data.subject,
+      description: data.description,
+      user_id: user?.id || 'guest',
+      user_email: user?.email || data.email,
     }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['myTickets'] });
       setShowForm(false);
-      setForm({ category: '', subject: '', description: '' });
+      setForm({ category: '', subject: '', description: '', email: '' });
       toast({ title: t('ticket_submitted') });
     },
   });
@@ -84,6 +86,17 @@ export default function Support() {
                 </SelectContent>
               </Select>
             </div>
+            {!user && (
+              <div className="space-y-2">
+                <Label>Your Email</Label>
+                <Input
+                  type="email"
+                  value={form.email}
+                  onChange={e => setForm(p => ({ ...p, email: e.target.value }))}
+                  placeholder="your@email.com"
+                />
+              </div>
+            )}
             <div className="space-y-2">
               <Label>{t('subject_label')}</Label>
               <Input value={form.subject} onChange={e => setForm(p => ({ ...p, subject: e.target.value }))} placeholder={t('subject_placeholder')} />
@@ -97,7 +110,7 @@ export default function Support() {
               <Button
                 className="gap-2"
                 onClick={() => createMutation.mutate(form)}
-                disabled={!form.category || !form.subject || !form.description}
+                disabled={!form.category || !form.subject || !form.description || (!user && !form.email)}
               >
                 <Send className="w-4 h-4" /> {t('submit_btn')}
               </Button>
