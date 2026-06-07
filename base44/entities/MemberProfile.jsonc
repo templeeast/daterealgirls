@@ -41,48 +41,123 @@
     },
     "photo_1": {
       "type": "string",
-      "description": "Primary profile photo URL (identity photo, cannot be deleted)"
+      "description": "Photo 1 URL"
     },
     "photo_2": {
       "type": "string",
-      "description": "Second photo URL"
+      "description": "Photo 2 URL"
     },
     "photo_3": {
       "type": "string",
-      "description": "Third photo URL"
+      "description": "Photo 3 URL"
     },
     "photo_4": {
       "type": "string",
-      "description": "Fourth photo URL"
+      "description": "Photo 4 URL"
     },
     "photo_5": {
       "type": "string",
-      "description": "Fifth photo URL"
+      "description": "Photo 5 URL"
+    },
+    "photo_6": {
+      "type": "string",
+      "description": "Photo 6 URL"
+    },
+    "photo_7": {
+      "type": "string",
+      "description": "Photo 7 URL"
+    },
+    "photo_8": {
+      "type": "string",
+      "description": "Photo 8 URL"
+    },
+    "photo_9": {
+      "type": "string",
+      "description": "Photo 9 URL"
+    },
+    "photo_10": {
+      "type": "string",
+      "description": "Photo 10 URL"
+    },
+    "photo_11": {
+      "type": "string",
+      "description": "Photo 11 URL"
+    },
+    "photo_12": {
+      "type": "string",
+      "description": "Photo 12 URL"
+    },
+    "photo_13": {
+      "type": "string",
+      "description": "Photo 13 URL"
+    },
+    "photo_14": {
+      "type": "string",
+      "description": "Photo 14 URL"
+    },
+    "photo_15": {
+      "type": "string",
+      "description": "Photo 15 URL"
     },
     "photo_1_visible": {
       "type": "boolean",
-      "default": true,
-      "description": "Whether photo 1 is visible on the profile"
+      "default": true
     },
     "photo_2_visible": {
       "type": "boolean",
-      "default": true,
-      "description": "Whether photo 2 is visible on the profile"
+      "default": true
     },
     "photo_3_visible": {
       "type": "boolean",
-      "default": true,
-      "description": "Whether photo 3 is visible on the profile"
+      "default": true
     },
     "photo_4_visible": {
       "type": "boolean",
-      "default": true,
-      "description": "Whether photo 4 is visible on the profile"
+      "default": true
     },
     "photo_5_visible": {
       "type": "boolean",
-      "default": true,
-      "description": "Whether photo 5 is visible on the profile"
+      "default": true
+    },
+    "photo_6_visible": {
+      "type": "boolean",
+      "default": true
+    },
+    "photo_7_visible": {
+      "type": "boolean",
+      "default": true
+    },
+    "photo_8_visible": {
+      "type": "boolean",
+      "default": true
+    },
+    "photo_9_visible": {
+      "type": "boolean",
+      "default": true
+    },
+    "photo_10_visible": {
+      "type": "boolean",
+      "default": true
+    },
+    "photo_11_visible": {
+      "type": "boolean",
+      "default": true
+    },
+    "photo_12_visible": {
+      "type": "boolean",
+      "default": true
+    },
+    "photo_13_visible": {
+      "type": "boolean",
+      "default": true
+    },
+    "photo_14_visible": {
+      "type": "boolean",
+      "default": true
+    },
+    "photo_15_visible": {
+      "type": "boolean",
+      "default": true
     },
     "instagram": {
       "type": "string",

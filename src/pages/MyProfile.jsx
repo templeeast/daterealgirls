@@ -69,16 +69,12 @@ export default function MyProfile() {
         location_country: profile.location_country || '',
         looking_for: profile.looking_for || '',
         interests: profile.interests || [],
-        photo_1: profile.photo_1 || '',
-        photo_2: profile.photo_2 || '',
-        photo_3: profile.photo_3 || '',
-        photo_4: profile.photo_4 || '',
-        photo_5: profile.photo_5 || '',
-        photo_1_visible: profile.photo_1_visible !== false,
-        photo_2_visible: profile.photo_2_visible !== false,
-        photo_3_visible: profile.photo_3_visible !== false,
-        photo_4_visible: profile.photo_4_visible !== false,
-        photo_5_visible: profile.photo_5_visible !== false,
+        ...Object.fromEntries(
+          Array.from({ length: 15 }, (_, i) => i + 1).flatMap(n => [
+            [`photo_${n}`, profile[`photo_${n}`] || ''],
+            [`photo_${n}_visible`, profile[`photo_${n}_visible`] !== false],
+          ])
+        ),
         instagram: profile.instagram || '',
         facebook: profile.facebook || '',
         tiktok: profile.tiktok || '',
@@ -105,7 +101,17 @@ export default function MyProfile() {
   const photoRef3 = useRef();
   const photoRef4 = useRef();
   const photoRef5 = useRef();
-  const allPhotoRefs = [photoRef1, photoRef2, photoRef3, photoRef4, photoRef5];
+  const photoRef6 = useRef();
+  const photoRef7 = useRef();
+  const photoRef8 = useRef();
+  const photoRef9 = useRef();
+  const photoRef10 = useRef();
+  const photoRef11 = useRef();
+  const photoRef12 = useRef();
+  const photoRef13 = useRef();
+  const photoRef14 = useRef();
+  const photoRef15 = useRef();
+  const allPhotoRefs = [photoRef1, photoRef2, photoRef3, photoRef4, photoRef5, photoRef6, photoRef7, photoRef8, photoRef9, photoRef10, photoRef11, photoRef12, photoRef13, photoRef14, photoRef15];
   const photoInputRefs = Object.fromEntries(photoFields.map((f, i) => [f, allPhotoRefs[i]]));
 
   const handlePhotoUpload = async (e, field) => {
