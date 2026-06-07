@@ -72,9 +72,13 @@ export default function MyProfile() {
         photo_1: profile.photo_1 || '',
         photo_2: profile.photo_2 || '',
         photo_3: profile.photo_3 || '',
+        photo_4: profile.photo_4 || '',
+        photo_5: profile.photo_5 || '',
         photo_1_visible: profile.photo_1_visible !== false,
         photo_2_visible: profile.photo_2_visible !== false,
         photo_3_visible: profile.photo_3_visible !== false,
+        photo_4_visible: profile.photo_4_visible !== false,
+        photo_5_visible: profile.photo_5_visible !== false,
         instagram: profile.instagram || '',
         facebook: profile.facebook || '',
         tiktok: profile.tiktok || '',
@@ -93,11 +97,16 @@ export default function MyProfile() {
     }));
   };
 
-  const photoInputRefs = {
-    photo_1: useRef(),
-    photo_2: useRef(),
-    photo_3: useRef(),
-  };
+  const maxPhotos = config.max_photos || 3;
+  const photoFields = Array.from({ length: maxPhotos }, (_, i) => `photo_${i + 1}`);
+
+  const photoRef1 = useRef();
+  const photoRef2 = useRef();
+  const photoRef3 = useRef();
+  const photoRef4 = useRef();
+  const photoRef5 = useRef();
+  const allPhotoRefs = [photoRef1, photoRef2, photoRef3, photoRef4, photoRef5];
+  const photoInputRefs = Object.fromEntries(photoFields.map((f, i) => [f, allPhotoRefs[i]]));
 
   const handlePhotoUpload = async (e, field) => {
     const file = e.target.files?.[0];
@@ -457,7 +466,7 @@ export default function MyProfile() {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-3 gap-4">
-            {['photo_1', 'photo_2', 'photo_3'].map((field, i) => {
+            {photoFields.map((field, i) => {
               const visibleKey = `${field}_visible`;
               const isVisible = form[visibleKey] !== false;
 

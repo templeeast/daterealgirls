@@ -51,6 +51,14 @@
       "type": "string",
       "description": "Third photo URL"
     },
+    "photo_4": {
+      "type": "string",
+      "description": "Fourth photo URL"
+    },
+    "photo_5": {
+      "type": "string",
+      "description": "Fifth photo URL"
+    },
     "photo_1_visible": {
       "type": "boolean",
       "default": true,
@@ -65,6 +73,16 @@
       "type": "boolean",
       "default": true,
       "description": "Whether photo 3 is visible on the profile"
+    },
+    "photo_4_visible": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether photo 4 is visible on the profile"
+    },
+    "photo_5_visible": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether photo 5 is visible on the profile"
     },
     "instagram": {
       "type": "string",
