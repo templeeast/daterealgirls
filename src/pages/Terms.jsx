@@ -24,49 +24,219 @@ export default function Terms() {
           <span className="font-heading font-semibold">{config.site_name}</span>
         </div>
 
-        <h1 className="font-heading text-4xl font-bold mb-2">Terms of Service</h1>
-        <p className="text-muted-foreground mb-10">Last updated: {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+        <h1 className="font-heading text-4xl font-bold mb-1">{t('terms_page_title')}</h1>
+        <p className="text-sm text-muted-foreground mb-1">{t('terms_operated_by')}</p>
+        <p className="text-muted-foreground mb-2">{t('terms_effective_date')}</p>
+        <p className="text-sm bg-amber-50 border border-amber-200 text-amber-800 rounded-lg px-4 py-3 mb-10 leading-relaxed">
+          {t('terms_arbitration_notice')}
+        </p>
 
-        <div className="prose prose-sm max-w-none space-y-8 text-foreground">
+        <div className="prose prose-sm max-w-none space-y-10 text-foreground">
+
           <section>
-            <h2 className="font-heading text-xl font-semibold mb-3">1. Acceptance of Terms</h2>
-            <p className="text-muted-foreground leading-relaxed">By accessing and using {config.site_name}, you accept and agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our service.</p>
+            <h2 className="font-heading text-xl font-semibold mb-3">1. {t('terms_s1_title')}</h2>
+            <p className="text-muted-foreground leading-relaxed mb-3">{t('terms_s1_p1', { siteName: config.site_name })}</p>
+            <p className="text-muted-foreground leading-relaxed mb-3">{t('terms_s1_p2')}</p>
+            <p className="text-muted-foreground leading-relaxed mb-2">{t('terms_s1_incorporated')}</p>
+            <ul className="list-disc pl-6 space-y-1 text-muted-foreground mb-3">
+              <li>{t('terms_s1_inc_privacy')}</li>
+              <li>{t('terms_s1_inc_cookie')}</li>
+              <li>{t('terms_s1_inc_payment')}</li>
+              <li>{t('terms_s1_inc_misconduct')}</li>
+            </ul>
+            <p className="text-muted-foreground leading-relaxed">{t('terms_s1_updates')}</p>
           </section>
 
           <section>
-            <h2 className="font-heading text-xl font-semibold mb-3">2. Eligibility</h2>
-            <p className="text-muted-foreground leading-relaxed">You must be at least 18 years of age to use this service. By using {config.site_name}, you represent and warrant that you are 18 years of age or older.</p>
+            <h2 className="font-heading text-xl font-semibold mb-3">2. {t('terms_s2_title')}</h2>
+            <h3 className="font-semibold mb-2">2.1 {t('terms_s2_1_title')}</h3>
+            <p className="text-muted-foreground leading-relaxed mb-4">{t('terms_s2_1_desc')}</p>
+            <h3 className="font-semibold mb-2">2.2 {t('terms_s2_2_title')}</h3>
+            <p className="text-muted-foreground leading-relaxed mb-4">{t('terms_s2_2_desc')}</p>
+            <h3 className="font-semibold mb-2">2.3 {t('terms_s2_3_title')}</h3>
+            <p className="text-muted-foreground leading-relaxed mb-2">{t('terms_s2_3_intro')}</p>
+            <ul className="list-disc pl-6 space-y-1 text-muted-foreground mb-4">
+              <li>{t('terms_s2_3_a')}</li>
+              <li>{t('terms_s2_3_b')}</li>
+              <li>{t('terms_s2_3_c')}</li>
+              <li>{t('terms_s2_3_d')}</li>
+            </ul>
+            <p className="text-muted-foreground leading-relaxed mb-4">{t('terms_s2_3_violation')}</p>
+            <h3 className="font-semibold mb-2">2.4 {t('terms_s2_4_title')}</h3>
+            <p className="text-muted-foreground leading-relaxed mb-4">{t('terms_s2_4_desc')}</p>
+            <h3 className="font-semibold mb-2">2.5 {t('terms_s2_5_title')}</h3>
+            <p className="text-muted-foreground leading-relaxed">{t('terms_s2_5_desc')}</p>
           </section>
 
           <section>
-            <h2 className="font-heading text-xl font-semibold mb-3">3. User Conduct</h2>
-            <p className="text-muted-foreground leading-relaxed">You agree not to use the service to post or transmit any content that is unlawful, harmful, threatening, abusive, harassing, defamatory, or otherwise objectionable. You agree to treat other members with respect at all times.</p>
+            <h2 className="font-heading text-xl font-semibold mb-3">3. {t('terms_s3_title')}</h2>
+            <h3 className="font-semibold mb-2">3.1 {t('terms_s3_1_title')}</h3>
+            <p className="text-muted-foreground leading-relaxed mb-2">{t('terms_s3_1_intro')}</p>
+            <ul className="list-disc pl-6 space-y-1 text-muted-foreground mb-4">
+              <li>{t('terms_s3_1_women')}</li>
+              <li>{t('terms_s3_1_men')}</li>
+            </ul>
+            <h3 className="font-semibold mb-2">3.2 {t('terms_s3_2_title')}</h3>
+            <p className="text-muted-foreground leading-relaxed mb-4">{t('terms_s3_2_desc')}</p>
+            <h3 className="font-semibold mb-2">3.3 {t('terms_s3_3_title')}</h3>
+            <p className="text-muted-foreground leading-relaxed mb-4">{t('terms_s3_3_desc')}</p>
+            <h3 className="font-semibold mb-2">3.4 {t('terms_s3_4_title')}</h3>
+            <p className="text-muted-foreground leading-relaxed">{t('terms_s3_4_desc')}</p>
           </section>
 
           <section>
-            <h2 className="font-heading text-xl font-semibold mb-3">4. Account Responsibility</h2>
-            <p className="text-muted-foreground leading-relaxed">You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. You agree to notify us immediately of any unauthorized use of your account.</p>
+            <h2 className="font-heading text-xl font-semibold mb-3">4. {t('terms_s4_title')}</h2>
+            <h3 className="font-semibold mb-2">4.1 {t('terms_s4_1_title')}</h3>
+            <p className="text-muted-foreground leading-relaxed mb-4">{t('terms_s4_1_desc')}</p>
+            <h3 className="font-semibold mb-2">4.2 {t('terms_s4_2_title')}</h3>
+            <p className="text-muted-foreground leading-relaxed mb-2">{t('terms_s4_2_intro')}</p>
+            <ul className="list-disc pl-6 space-y-1 text-muted-foreground mb-3">
+              <li>{t('terms_s4_2_a')}</li>
+              <li>{t('terms_s4_2_b')}</li>
+              <li>{t('terms_s4_2_c')}</li>
+            </ul>
+            <p className="text-muted-foreground leading-relaxed mb-4">{t('terms_s4_2_submit')}</p>
+            <h3 className="font-semibold mb-2">4.3 {t('terms_s4_3_title')}</h3>
+            <p className="text-muted-foreground leading-relaxed">{t('terms_s4_3_desc')}</p>
           </section>
 
           <section>
-            <h2 className="font-heading text-xl font-semibold mb-3">5. Subscriptions and Payments</h2>
-            <p className="text-muted-foreground leading-relaxed">Certain features of the service are available through a paid subscription. Subscription fees are billed in advance and are non-refundable except as required by law. You may cancel your subscription at any time.</p>
+            <h2 className="font-heading text-xl font-semibold mb-3">5. {t('terms_s5_title')}</h2>
+            <h3 className="font-semibold mb-2">5.1 {t('terms_s5_1_title')}</h3>
+            <p className="text-muted-foreground leading-relaxed mb-2">{t('terms_s5_1_intro')}</p>
+            <ul className="list-disc pl-6 space-y-1 text-muted-foreground mb-4">
+              <li>{t('terms_s5_1_a')}</li>
+              <li>{t('terms_s5_1_b')}</li>
+              <li>{t('terms_s5_1_c')}</li>
+              <li>{t('terms_s5_1_d')}</li>
+              <li>{t('terms_s5_1_e')}</li>
+            </ul>
+            <h3 className="font-semibold mb-2">5.2 {t('terms_s5_2_title')}</h3>
+            <p className="text-muted-foreground leading-relaxed mb-2">{t('terms_s5_2_intro')}</p>
+            <ul className="list-disc pl-6 space-y-1 text-muted-foreground mb-4">
+              <li>{t('terms_s5_2_a')}</li>
+              <li>{t('terms_s5_2_b')}</li>
+              <li>{t('terms_s5_2_c')}</li>
+              <li>{t('terms_s5_2_d')}</li>
+              <li>{t('terms_s5_2_e')}</li>
+              <li>{t('terms_s5_2_f')}</li>
+              <li>{t('terms_s5_2_g')}</li>
+              <li>{t('terms_s5_2_h')}</li>
+              <li>{t('terms_s5_2_i')}</li>
+              <li>{t('terms_s5_2_j')}</li>
+            </ul>
+            <h3 className="font-semibold mb-2">5.3 {t('terms_s5_3_title')}</h3>
+            <p className="text-muted-foreground leading-relaxed mb-4">{t('terms_s5_3_desc')}</p>
+            <h3 className="font-semibold mb-2">5.4 {t('terms_s5_4_title')}</h3>
+            <p className="text-muted-foreground leading-relaxed">{t('terms_s5_4_desc')}</p>
           </section>
 
           <section>
-            <h2 className="font-heading text-xl font-semibold mb-3">6. Content</h2>
-            <p className="text-muted-foreground leading-relaxed">You retain ownership of content you post on the platform. By posting content, you grant us a non-exclusive license to use, display, and distribute that content in connection with our service.</p>
+            <h2 className="font-heading text-xl font-semibold mb-3">6. {t('terms_s6_title')}</h2>
+            <h3 className="font-semibold mb-2">6.1 {t('terms_s6_1_title')}</h3>
+            <p className="text-muted-foreground leading-relaxed mb-4">{t('terms_s6_1_desc')}</p>
+            <h3 className="font-semibold mb-2">6.2 {t('terms_s6_2_title')}</h3>
+            <p className="text-muted-foreground leading-relaxed mb-4">{t('terms_s6_2_desc')}</p>
+            <h3 className="font-semibold mb-2">6.3 {t('terms_s6_3_title')}</h3>
+            <p className="text-muted-foreground leading-relaxed">{t('terms_s6_3_desc')}</p>
           </section>
 
           <section>
-            <h2 className="font-heading text-xl font-semibold mb-3">7. Termination</h2>
-            <p className="text-muted-foreground leading-relaxed">We reserve the right to suspend or terminate your account at any time for violations of these terms or for any other reason at our sole discretion.</p>
+            <h2 className="font-heading text-xl font-semibold mb-3">7. {t('terms_s7_title')}</h2>
+            <p className="text-muted-foreground leading-relaxed">{t('terms_s7_desc')}</p>
           </section>
 
           <section>
-            <h2 className="font-heading text-xl font-semibold mb-3">8. Contact Us</h2>
-            <p className="text-muted-foreground leading-relaxed">If you have questions about these Terms, please <Link to="/support" className="text-primary underline underline-offset-4">contact our support team</Link>.</p>
+            <h2 className="font-heading text-xl font-semibold mb-3">8. {t('terms_s8_title')}</h2>
+            <p className="text-muted-foreground leading-relaxed">{t('terms_s8_desc')}</p>
           </section>
+
+          <section>
+            <h2 className="font-heading text-xl font-semibold mb-3">9. {t('terms_s9_title')}</h2>
+            <p className="text-muted-foreground leading-relaxed mb-2 uppercase text-sm font-medium">{t('terms_s9_p1')}</p>
+            <p className="text-muted-foreground leading-relaxed">{t('terms_s9_p2')}</p>
+          </section>
+
+          <section>
+            <h2 className="font-heading text-xl font-semibold mb-3">10. {t('terms_s10_title')}</h2>
+            <p className="text-muted-foreground leading-relaxed mb-3 uppercase text-sm font-medium">{t('terms_s10_p1')}</p>
+            <p className="text-muted-foreground leading-relaxed">{t('terms_s10_p2')}</p>
+          </section>
+
+          <section>
+            <h2 className="font-heading text-xl font-semibold mb-3">11. {t('terms_s11_title')}</h2>
+            <p className="text-muted-foreground leading-relaxed">{t('terms_s11_desc')}</p>
+          </section>
+
+          <section>
+            <h2 className="font-heading text-xl font-semibold mb-3">12. {t('terms_s12_title')}</h2>
+            <h3 className="font-semibold mb-2">12.1 {t('terms_s12_1_title')}</h3>
+            <p className="text-muted-foreground leading-relaxed mb-4">{t('terms_s12_1_desc')}</p>
+            <h3 className="font-semibold mb-2">12.2 {t('terms_s12_2_title')}</h3>
+            <p className="text-muted-foreground leading-relaxed mb-4">{t('terms_s12_2_desc')}</p>
+            <h3 className="font-semibold mb-2">12.3 {t('terms_s12_3_title')}</h3>
+            <p className="text-muted-foreground leading-relaxed mb-4">{t('terms_s12_3_desc')}</p>
+            <h3 className="font-semibold mb-2">12.4 {t('terms_s12_4_title')}</h3>
+            <p className="text-muted-foreground leading-relaxed">{t('terms_s12_4_desc')}</p>
+          </section>
+
+          <section>
+            <h2 className="font-heading text-xl font-semibold mb-3">13. {t('terms_s13_title')}</h2>
+            <p className="text-muted-foreground leading-relaxed">{t('terms_s13_desc')}</p>
+          </section>
+
+          <section>
+            <h2 className="font-heading text-xl font-semibold mb-3">14. {t('terms_s14_title')}</h2>
+            <p className="text-muted-foreground leading-relaxed">{t('terms_s14_desc')}</p>
+          </section>
+
+          <section>
+            <h2 className="font-heading text-xl font-semibold mb-3">15. {t('terms_s15_title')}</h2>
+            <p className="text-sm bg-amber-50 border border-amber-200 text-amber-800 rounded-lg px-4 py-3 mb-4">{t('terms_s15_warning')}</p>
+            <h3 className="font-semibold mb-2">15.1 {t('terms_s15_1_title')}</h3>
+            <p className="text-muted-foreground leading-relaxed mb-4">{t('terms_s15_1_desc')}</p>
+            <h3 className="font-semibold mb-2">15.2 {t('terms_s15_2_title')}</h3>
+            <p className="text-muted-foreground leading-relaxed mb-4">{t('terms_s15_2_desc')}</p>
+            <h3 className="font-semibold mb-2">15.3 {t('terms_s15_3_title')}</h3>
+            <p className="text-muted-foreground leading-relaxed mb-2">{t('terms_s15_3_us')}</p>
+            <p className="text-muted-foreground leading-relaxed mb-4 text-sm pl-4 border-l-2 border-muted">National Arbitration and Mediation (NAM) · 990 Stewart Avenue, 1st Floor, Garden City, NY 11530 · commercial@namadr.com · namadr.com</p>
+            <p className="text-muted-foreground leading-relaxed mb-2">{t('terms_s15_3_intl')}</p>
+            <p className="text-muted-foreground leading-relaxed mb-4 text-sm pl-4 border-l-2 border-muted">London Court of International Arbitration (LCIA) · 1 Paternoster Lane, London EC4M 7BQ · onlinefiling@lcia.org · lcia.org</p>
+            <h3 className="font-semibold mb-2">15.4 {t('terms_s15_4_title')}</h3>
+            <p className="text-muted-foreground leading-relaxed mb-4">{t('terms_s15_4_desc')}</p>
+            <h3 className="font-semibold mb-2">15.5 {t('terms_s15_5_title')}</h3>
+            <p className="text-muted-foreground leading-relaxed uppercase text-sm font-medium mb-4">{t('terms_s15_5_desc')}</p>
+            <h3 className="font-semibold mb-2">15.6 {t('terms_s15_6_title')}</h3>
+            <p className="text-muted-foreground leading-relaxed mb-4">{t('terms_s15_6_desc')}</p>
+            <h3 className="font-semibold mb-2">15.7 {t('terms_s15_7_title')}</h3>
+            <p className="text-muted-foreground leading-relaxed">{t('terms_s15_7_desc')}</p>
+          </section>
+
+          <section>
+            <h2 className="font-heading text-xl font-semibold mb-3">16. {t('terms_s16_title')}</h2>
+            <div className="space-y-4">
+              <div><h3 className="font-semibold mb-1">16.1 {t('terms_s16_1_title')}</h3><p className="text-muted-foreground leading-relaxed">{t('terms_s16_1_desc')}</p></div>
+              <div><h3 className="font-semibold mb-1">16.2 {t('terms_s16_2_title')}</h3><p className="text-muted-foreground leading-relaxed">{t('terms_s16_2_desc')}</p></div>
+              <div><h3 className="font-semibold mb-1">16.3 {t('terms_s16_3_title')}</h3><p className="text-muted-foreground leading-relaxed">{t('terms_s16_3_desc')}</p></div>
+              <div><h3 className="font-semibold mb-1">16.4 {t('terms_s16_4_title')}</h3><p className="text-muted-foreground leading-relaxed">{t('terms_s16_4_desc')}</p></div>
+              <div><h3 className="font-semibold mb-1">16.5 {t('terms_s16_5_title')}</h3><p className="text-muted-foreground leading-relaxed">{t('terms_s16_5_desc')}</p></div>
+              <div><h3 className="font-semibold mb-1">16.6 {t('terms_s16_6_title')}</h3><p className="text-muted-foreground leading-relaxed">{t('terms_s16_6_desc')}</p></div>
+              <div><h3 className="font-semibold mb-1">16.7 {t('terms_s16_7_title')}</h3><p className="text-muted-foreground leading-relaxed">{t('terms_s16_7_desc')}</p></div>
+            </div>
+          </section>
+
+          <section>
+            <h2 className="font-heading text-xl font-semibold mb-3">17. {t('terms_s17_title')}</h2>
+            <div className="bg-muted rounded-xl p-5 text-muted-foreground text-sm space-y-1">
+              <p className="font-semibold text-foreground">Temple East LLC</p>
+              <p>Operating: {config.site_name}</p>
+              <p>General Support: <a href="mailto:support@daterealgirls.com" className="text-primary underline underline-offset-4">support@daterealgirls.com</a></p>
+              <p>Legal / Arbitration: <a href="mailto:legal@daterealgirls.com" className="text-primary underline underline-offset-4">legal@daterealgirls.com</a></p>
+              <p>Website: <a href="https://www.daterealgirls.com" className="text-primary underline underline-offset-4">www.daterealgirls.com</a></p>
+            </div>
+            <p className="text-xs text-muted-foreground mt-6">© 2025 Temple East LLC. All Rights Reserved.</p>
+          </section>
+
         </div>
       </div>
     </div>

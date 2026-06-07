@@ -244,8 +244,6 @@ export default function Landing() {
               <Link to="/contact" className="hover:text-foreground transition-colors">{t('contact_us_title')}</Link>
               <Link to="/privacy" className="hover:text-foreground transition-colors">{t('privacy')}</Link>
               <Link to="/terms" className="hover:text-foreground transition-colors">{t('terms')}</Link>
-              <Link to="/refund-policy" className="hover:text-foreground transition-colors">{t('refund_policy_title')}</Link>
-              <Link to="/shipping-policy" className="hover:text-foreground transition-colors">{t('shipping_policy_title')}</Link>
             </div>
             <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} {config.site_name}</p>
           </div>
