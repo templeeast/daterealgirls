@@ -86,83 +86,131 @@ export default function VerificationQueue() {
               </div>
 
               {/* Documents grid */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-4">
 
-                {/* Original Selfie */}
-                <div className="space-y-2">
-                  <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Original Selfie</p>
-                  {urls.selfie ? (
-                    <img src={urls.selfie} className="w-full h-40 object-cover rounded-xl border" alt="Original selfie" />
-                  ) : (
-                    <div className="w-full h-40 rounded-xl bg-muted flex items-center justify-center">
-                      <p className="text-xs text-muted-foreground">Not uploaded</p>
-                    </div>
-                  )}
+                {/* Selfies row */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Original Selfie</p>
+                    {urls.selfie ? (
+                      <img src={urls.selfie} className="w-full h-40 object-cover rounded-xl border" alt="Original selfie" />
+                    ) : (
+                      <div className="w-full h-40 rounded-xl bg-muted flex items-center justify-center">
+                        <p className="text-xs text-muted-foreground">Not uploaded</p>
+                      </div>
+                    )}
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground flex items-center gap-1">
+                      Re-uploaded Selfie
+                      {urls.selfie2 && <Badge className="bg-amber-100 text-amber-700 text-xs ml-1">New</Badge>}
+                    </p>
+                    {urls.selfie2 ? (
+                      <img src={urls.selfie2} className="w-full h-40 object-cover rounded-xl border border-amber-300" alt="Updated selfie" />
+                    ) : (
+                      <div className="w-full h-40 rounded-xl bg-muted flex items-center justify-center">
+                        <p className="text-xs text-muted-foreground italic">No re-upload</p>
+                      </div>
+                    )}
+                  </div>
                 </div>
 
-                {/* Updated Selfie */}
-                <div className="space-y-2">
-                  <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground flex items-center gap-1">
-                    Re-uploaded Selfie
-                    {urls.selfie2 && <Badge className="bg-amber-100 text-amber-700 text-xs ml-1">New</Badge>}
-                  </p>
-                  {urls.selfie2 ? (
-                    <img src={urls.selfie2} className="w-full h-40 object-cover rounded-xl border border-amber-300" alt="Updated selfie" />
-                  ) : (
-                    <div className="w-full h-40 rounded-xl bg-muted flex items-center justify-center">
-                      <p className="text-xs text-muted-foreground italic">No re-upload</p>
+                {/* Original ID — Front & Back */}
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">Original Govt. ID</p>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                      <p className="text-xs text-muted-foreground">Front</p>
+                      {p.id_document_url ? (
+                        <button
+                          onClick={() => openDoc(p.id, 'id1', p.id_document_url)}
+                          disabled={loadingDoc === `${p.id}-id1`}
+                          className="w-full h-36 rounded-xl border bg-muted flex flex-col items-center justify-center gap-2 hover:bg-muted/70 transition-colors disabled:opacity-50"
+                        >
+                          {loadingDoc === `${p.id}-id1`
+                            ? <Loader2 className="w-5 h-5 animate-spin" />
+                            : <><ExternalLink className="w-5 h-5 text-primary" /><span className="text-xs text-primary font-medium">View Front</span></>
+                          }
+                        </button>
+                      ) : (
+                        <div className="w-full h-36 rounded-xl bg-muted flex items-center justify-center">
+                          <p className="text-xs text-muted-foreground">Not submitted</p>
+                        </div>
+                      )}
                     </div>
-                  )}
+                    <div className="space-y-1">
+                      <p className="text-xs text-muted-foreground">Back</p>
+                      {p.id_document_back_url ? (
+                        <button
+                          onClick={() => openDoc(p.id, 'idb1', p.id_document_back_url)}
+                          disabled={loadingDoc === `${p.id}-idb1`}
+                          className="w-full h-36 rounded-xl border bg-muted flex flex-col items-center justify-center gap-2 hover:bg-muted/70 transition-colors disabled:opacity-50"
+                        >
+                          {loadingDoc === `${p.id}-idb1`
+                            ? <Loader2 className="w-5 h-5 animate-spin" />
+                            : <><ExternalLink className="w-5 h-5 text-primary" /><span className="text-xs text-primary font-medium">View Back</span></>
+                          }
+                        </button>
+                      ) : (
+                        <div className="w-full h-36 rounded-xl bg-muted flex items-center justify-center">
+                          <p className="text-xs text-muted-foreground">Not submitted</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
 
-                {/* Original Govt ID */}
-                <div className="space-y-2">
-                  <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Original Govt. ID</p>
-                  {p.id_document_url ? (
-                    <button
-                      onClick={() => openDoc(p.id, 'id1', p.id_document_url)}
-                      disabled={loadingDoc === `${p.id}-id1`}
-                      className="w-full h-40 rounded-xl border bg-muted flex flex-col items-center justify-center gap-2 hover:bg-muted/70 transition-colors disabled:opacity-50"
-                    >
-                      {loadingDoc === `${p.id}-id1`
-                        ? <Loader2 className="w-5 h-5 animate-spin" />
-                        : <><ExternalLink className="w-5 h-5 text-primary" /><span className="text-xs text-primary font-medium">View Original ID</span></>
-                      }
-                    </button>
-                  ) : (
-                    <div className="w-full h-40 rounded-xl bg-muted flex items-center justify-center">
-                      <p className="text-xs text-muted-foreground">Not submitted</p>
-                    </div>
-                  )}
-                </div>
-
-                {/* Updated Govt ID */}
-                <div className="space-y-2">
-                  <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground flex items-center gap-1">
+                {/* Re-uploaded ID — Front & Back */}
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2 flex items-center gap-1">
                     Re-uploaded Govt. ID
-                    {p.id_document_url_2 && <Badge className="bg-amber-100 text-amber-700 text-xs ml-1">New</Badge>}
+                    {(p.id_document_url_2 || p.id_document_back_url_2) && <Badge className="bg-amber-100 text-amber-700 text-xs ml-1">New</Badge>}
                   </p>
-                  {p.id_document_url_2 ? (
-                    <button
-                      onClick={() => openDoc(p.id, 'id2', p.id_document_url_2)}
-                      disabled={loadingDoc === `${p.id}-id2`}
-                      className="w-full h-40 rounded-xl border border-amber-300 bg-amber-50 flex flex-col items-center justify-center gap-2 hover:bg-amber-100 transition-colors disabled:opacity-50"
-                    >
-                      {loadingDoc === `${p.id}-id2`
-                        ? <Loader2 className="w-5 h-5 animate-spin" />
-                        : <><ExternalLink className="w-5 h-5 text-amber-700" /><span className="text-xs text-amber-700 font-medium">View New ID</span></>
-                      }
-                    </button>
-                  ) : (
-                    <div className="w-full h-40 rounded-xl bg-muted flex items-center justify-center">
-                      <p className="text-xs text-muted-foreground italic">No re-upload</p>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                      <p className="text-xs text-muted-foreground">Front</p>
+                      {p.id_document_url_2 ? (
+                        <button
+                          onClick={() => openDoc(p.id, 'id2', p.id_document_url_2)}
+                          disabled={loadingDoc === `${p.id}-id2`}
+                          className="w-full h-36 rounded-xl border border-amber-300 bg-amber-50 flex flex-col items-center justify-center gap-2 hover:bg-amber-100 transition-colors disabled:opacity-50"
+                        >
+                          {loadingDoc === `${p.id}-id2`
+                            ? <Loader2 className="w-5 h-5 animate-spin" />
+                            : <><ExternalLink className="w-5 h-5 text-amber-700" /><span className="text-xs text-amber-700 font-medium">View New Front</span></>
+                          }
+                        </button>
+                      ) : (
+                        <div className="w-full h-36 rounded-xl bg-muted flex items-center justify-center">
+                          <p className="text-xs text-muted-foreground italic">No re-upload</p>
+                        </div>
+                      )}
                     </div>
-                  )}
+                    <div className="space-y-1">
+                      <p className="text-xs text-muted-foreground">Back</p>
+                      {p.id_document_back_url_2 ? (
+                        <button
+                          onClick={() => openDoc(p.id, 'idb2', p.id_document_back_url_2)}
+                          disabled={loadingDoc === `${p.id}-idb2`}
+                          className="w-full h-36 rounded-xl border border-amber-300 bg-amber-50 flex flex-col items-center justify-center gap-2 hover:bg-amber-100 transition-colors disabled:opacity-50"
+                        >
+                          {loadingDoc === `${p.id}-idb2`
+                            ? <Loader2 className="w-5 h-5 animate-spin" />
+                            : <><ExternalLink className="w-5 h-5 text-amber-700" /><span className="text-xs text-amber-700 font-medium">View New Back</span></>
+                          }
+                        </button>
+                      ) : (
+                        <div className="w-full h-36 rounded-xl bg-muted flex items-center justify-center">
+                          <p className="text-xs text-muted-foreground italic">No re-upload</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
 
               {/* Warning if re-uploads exist */}
-              {(p.selfie_url_2 || p.id_document_url_2) && (
+              {(p.selfie_url_2 || p.id_document_url_2 || p.id_document_back_url_2) && (
                 <div className="text-xs bg-amber-50 border border-amber-200 text-amber-800 rounded-lg p-3">
                   ⚠ This member has re-uploaded one or more documents. Compare originals vs. new uploads to verify identity consistency.
                 </div>

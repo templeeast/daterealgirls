@@ -7,11 +7,20 @@ import { useTranslation } from 'react-i18next';
 
 export default function OnboardingVerificationStep({
   selfieUploaded,
-  idUploaded,
+  idFrontUploaded,
+  idBackUploaded,
   onSelfieUploaded,
+  onIdFrontUploaded,
+  onIdBackUploaded,
+  // Legacy prop support
+  idUploaded,
   onIdUploaded,
 }) {
   const { t } = useTranslation();
+
+  // Support legacy single-ID prop
+  const frontUploaded = idFrontUploaded ?? idUploaded;
+  const onFrontUploaded = onIdFrontUploaded ?? onIdUploaded;
 
   const handleSelfie = async (e) => {
     const file = e.target.files?.[0];
@@ -20,11 +29,18 @@ export default function OnboardingVerificationStep({
     onSelfieUploaded(file_uri);
   };
 
-  const handleId = async (e) => {
+  const handleIdFront = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
     const { file_uri } = await base44.integrations.Core.UploadPrivateFile({ file });
-    onIdUploaded(file_uri);
+    onFrontUploaded(file_uri);
+  };
+
+  const handleIdBack = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const { file_uri } = await base44.integrations.Core.UploadPrivateFile({ file });
+    if (onIdBackUploaded) onIdBackUploaded(file_uri);
   };
 
   return (
@@ -43,7 +59,7 @@ export default function OnboardingVerificationStep({
         <p className="text-xs text-muted-foreground" dangerouslySetInnerHTML={{ __html: t('selfie_step_desc') }} />
         <div className="flex items-center gap-3">
           {selfieUploaded && (
-            <span className="text-xs text-primary font-medium">{t('selfie_on_file')}</span>
+            <span className="text-xs text-primary font-medium">✓ {t('selfie_on_file')}</span>
           )}
           <label>
             <Button variant={selfieUploaded ? 'outline' : 'default'} size="sm" className="gap-2" asChild>
@@ -57,24 +73,46 @@ export default function OnboardingVerificationStep({
         </div>
       </div>
 
-      {/* Govt ID — Optional */}
-      <div className="border rounded-xl p-4 space-y-2">
+      {/* Govt ID Front */}
+      <div className={`border-2 rounded-xl p-4 space-y-2 ${!frontUploaded ? 'border-amber-300 bg-amber-50' : 'border-border'}`}>
         <div className="flex items-center gap-2">
-          <p className="text-sm font-medium">{t('govtid_step_title')}</p>
-          <Badge variant="outline" className="text-xs px-2 py-0.5">{t('optional_badge')}</Badge>
+          <p className="text-sm font-medium">Govt. ID — Front</p>
+          <Badge variant="outline" className="text-xs px-2 py-0.5">Optional</Badge>
         </div>
-        <p className="text-xs text-muted-foreground" dangerouslySetInnerHTML={{ __html: t('govtid_step_desc') }} />
+        <p className="text-xs text-muted-foreground">Upload the <strong>front side</strong> of your government-issued photo ID (passport, driver's license, national ID).</p>
         <div className="flex items-center gap-3">
-          {idUploaded && (
-            <span className="text-xs text-primary font-medium">✓ ID on file</span>
+          {frontUploaded && (
+            <span className="text-xs text-primary font-medium">✓ Front on file</span>
           )}
           <label>
             <Button variant="outline" size="sm" className="gap-2" asChild>
               <span>
-                <Upload className="w-4 h-4" /> {t('upload_govt_id')}
+                <Upload className="w-4 h-4" /> {frontUploaded ? 'Replace Front' : 'Upload Front'}
               </span>
             </Button>
-            <input type="file" accept="image/*,.pdf" className="hidden" onChange={handleId} />
+            <input type="file" accept="image/*,.pdf" className="hidden" onChange={handleIdFront} />
+          </label>
+        </div>
+      </div>
+
+      {/* Govt ID Back */}
+      <div className={`border-2 rounded-xl p-4 space-y-2 ${!idBackUploaded ? 'border-amber-300/50 bg-amber-50/50' : 'border-border'}`}>
+        <div className="flex items-center gap-2">
+          <p className="text-sm font-medium">Govt. ID — Back</p>
+          <Badge variant="outline" className="text-xs px-2 py-0.5">Optional</Badge>
+        </div>
+        <p className="text-xs text-muted-foreground">Upload the <strong>back side</strong> of your government-issued photo ID.</p>
+        <div className="flex items-center gap-3">
+          {idBackUploaded && (
+            <span className="text-xs text-primary font-medium">✓ Back on file</span>
+          )}
+          <label>
+            <Button variant="outline" size="sm" className="gap-2" asChild>
+              <span>
+                <Upload className="w-4 h-4" /> {idBackUploaded ? 'Replace Back' : 'Upload Back'}
+              </span>
+            </Button>
+            <input type="file" accept="image/*,.pdf" className="hidden" onChange={handleIdBack} />
           </label>
         </div>
       </div>

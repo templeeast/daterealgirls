@@ -53,6 +53,7 @@ export default function Onboarding() {
   const [identityVerified, setIdentityVerified] = useState(false);
   const [selfieUri, setSelfieUri] = useState('');
   const [idDocUri, setIdDocUri] = useState('');
+  const [idDocBackUri, setIdDocBackUri] = useState('');
   const [form, setForm] = useState({
     display_name: '',
     gender: '',
@@ -112,6 +113,7 @@ export default function Onboarding() {
       age,
       selfie_url: selfieUri || undefined,
       id_document_url: idDocUri || undefined,
+      id_document_back_url: idDocBackUri || undefined,
       verification_status: identityVerified ? 'pending' : (selfieUri || idDocUri ? 'pending' : 'unverified'),
       is_active: true,
       is_suspended: false,
@@ -211,9 +213,11 @@ export default function Onboarding() {
       <OnboardingVerificationStep
         key="verify"
         selfieUploaded={!!selfieUri}
-        idUploaded={!!idDocUri}
+        idFrontUploaded={!!idDocUri}
+        idBackUploaded={!!idDocBackUri}
         onSelfieUploaded={setSelfieUri}
-        onIdUploaded={setIdDocUri}
+        onIdFrontUploaded={setIdDocUri}
+        onIdBackUploaded={setIdDocBackUri}
       />
     ]),
 

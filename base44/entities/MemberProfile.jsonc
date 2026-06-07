@@ -99,11 +99,19 @@
     },
     "id_document_url": {
       "type": "string",
-      "description": "ORIGINAL govt ID document URI (private) \u2014 set once, never overwritten"
+      "description": "ORIGINAL govt ID front URI (private) \u2014 set once, never overwritten"
     },
     "id_document_url_2": {
       "type": "string",
-      "description": "Most recent re-upload govt ID URI (private, overwritten on each re-upload)"
+      "description": "Most recent re-upload govt ID front URI (private, overwritten on each re-upload)"
+    },
+    "id_document_back_url": {
+      "type": "string",
+      "description": "ORIGINAL govt ID back URI (private) \u2014 set once, never overwritten"
+    },
+    "id_document_back_url_2": {
+      "type": "string",
+      "description": "Most recent re-upload govt ID back URI (private, overwritten on each re-upload)"
     },
     "is_active": {
       "type": "boolean",

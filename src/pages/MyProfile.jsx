@@ -108,7 +108,7 @@ export default function MyProfile() {
     e.target.value = '';
   };
 
-  const handleIdUpload = async (e) => {
+  const handleIdFrontUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
     const { file_uri } = await base44.integrations.Core.UploadPrivateFile({ file });
@@ -117,10 +117,22 @@ export default function MyProfile() {
     const updates = isFirstUpload
       ? { id_document_url: file_uri }
       : { id_document_url_2: file_uri, verification_status: 'unverified' };
-    // If both docs now on file, set to pending
     if (hasSelfie) updates.verification_status = isFirstUpload ? 'pending' : 'unverified';
     await base44.entities.MemberProfile.update(profile.id, updates);
-    toast({ title: isFirstUpload ? 'Govt. ID submitted! You are now pending verification.' : 'New Govt. ID saved. Your verification status has been reset — please re-submit for review.' });
+    toast({ title: isFirstUpload ? 'Govt. ID front submitted!' : 'New Govt. ID front saved. Verification status reset.' });
+    refetch();
+  };
+
+  const handleIdBackUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const { file_uri } = await base44.integrations.Core.UploadPrivateFile({ file });
+    const isFirstUpload = !profile.id_document_back_url;
+    const updates = isFirstUpload
+      ? { id_document_back_url: file_uri }
+      : { id_document_back_url_2: file_uri, verification_status: 'unverified' };
+    await base44.entities.MemberProfile.update(profile.id, updates);
+    toast({ title: isFirstUpload ? 'Govt. ID back submitted!' : 'New Govt. ID back saved. Verification status reset.' });
     refetch();
   };
 
@@ -279,29 +291,52 @@ export default function MyProfile() {
                   </div>
                 </div>
 
-                {/* Govt ID upload */}
+                {/* Govt ID — Front */}
                 <div className={`border-2 rounded-xl p-4 space-y-2 ${!profile.id_document_url ? 'border-amber-300 bg-amber-50' : 'border-border'}`}>
                   <div className="flex items-center gap-2">
-                    <p className="text-sm font-medium">{t('verif_id_title')}</p>
-                    <Badge variant="outline" className="text-xs px-2 py-0.5">{t('verif_id_badge')}</Badge>
+                    <p className="text-sm font-medium">Govt. ID — Front</p>
+                    <Badge variant="outline" className="text-xs px-2 py-0.5">Optional</Badge>
                   </div>
-                  {profile.id_document_url ? (
-                    <p className="text-xs text-muted-foreground">{t('verif_id_on_file')}</p>
-                  ) : (
-                    <p className="text-xs text-amber-700 font-medium">{t('verif_id_no_file')}</p>
-                  )}
+                  <p className="text-xs text-muted-foreground">
+                    {profile.id_document_url ? 'Front of ID on file.' : 'Upload the front side of your government-issued photo ID.'}
+                  </p>
                   <div className="flex items-center gap-3">
                     <label>
                       <Button variant={profile.id_document_url ? 'outline' : 'secondary'} size="sm" className="gap-2" asChild>
                         <span>
                           <Upload className="w-4 h-4" />
-                          {profile.id_document_url ? t('verif_id_reupload_btn') : t('verif_id_upload_btn')}
+                          {profile.id_document_url ? 'Re-upload Front' : 'Upload Front'}
                         </span>
                       </Button>
-                      <input type="file" accept="image/*,.pdf" className="hidden" onChange={handleIdUpload} />
+                      <input type="file" accept="image/*,.pdf" className="hidden" onChange={handleIdFrontUpload} />
                     </label>
                     {profile.id_document_url_2 && (
                       <span className="text-xs text-amber-600 font-medium">{t('verif_id_updated_tag')}</span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Govt ID — Back */}
+                <div className={`border-2 rounded-xl p-4 space-y-2 ${!profile.id_document_back_url ? 'border-amber-300/60 bg-amber-50/50' : 'border-border'}`}>
+                  <div className="flex items-center gap-2">
+                    <p className="text-sm font-medium">Govt. ID — Back</p>
+                    <Badge variant="outline" className="text-xs px-2 py-0.5">Optional</Badge>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    {profile.id_document_back_url ? 'Back of ID on file.' : 'Upload the back side of your government-issued photo ID.'}
+                  </p>
+                  <div className="flex items-center gap-3">
+                    <label>
+                      <Button variant={profile.id_document_back_url ? 'outline' : 'secondary'} size="sm" className="gap-2" asChild>
+                        <span>
+                          <Upload className="w-4 h-4" />
+                          {profile.id_document_back_url ? 'Re-upload Back' : 'Upload Back'}
+                        </span>
+                      </Button>
+                      <input type="file" accept="image/*,.pdf" className="hidden" onChange={handleIdBackUpload} />
+                    </label>
+                    {profile.id_document_back_url_2 && (
+                      <span className="text-xs text-amber-600 font-medium">Updated</span>
                     )}
                   </div>
                 </div>
