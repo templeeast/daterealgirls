@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { CheckSquare, Square, ChevronDown, ChevronRight, Shield, Users, CreditCard, MessageSquare, Heart, Settings, Bug, Globe } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import useMyProfile from '@/hooks/useMyProfile';
+import { base44 } from '@/api/base44Client';
 
 const sections = [
   {
@@ -191,6 +192,31 @@ export default function TestPlan() {
   const { user } = useMyProfile();
   const [checked, setChecked] = useState({});
   const [expanded, setExpanded] = useState(() => Object.fromEntries(sections.map(s => [s.id, true])));
+  const [recordId, setRecordId] = useState(null);
+  const saveTimer = useRef(null);
+
+  // Load saved progress on mount
+  useEffect(() => {
+    base44.entities.TestPlanProgress.list().then(records => {
+      if (records.length > 0) {
+        setRecordId(records[0].id);
+        setChecked(records[0].checked_items || {});
+      }
+    });
+  }, []);
+
+  // Debounced save to database
+  const saveProgress = (newChecked) => {
+    if (saveTimer.current) clearTimeout(saveTimer.current);
+    saveTimer.current = setTimeout(async () => {
+      if (recordId) {
+        await base44.entities.TestPlanProgress.update(recordId, { checked_items: newChecked });
+      } else {
+        const record = await base44.entities.TestPlanProgress.create({ checked_items: newChecked });
+        setRecordId(record.id);
+      }
+    }, 500);
+  };
 
   if (user?.role !== 'admin') {
     return (
@@ -200,7 +226,13 @@ export default function TestPlan() {
     );
   }
 
-  const toggle = (id) => setChecked(prev => ({ ...prev, [id]: !prev[id] }));
+  const toggle = (id) => {
+    setChecked(prev => {
+      const newChecked = { ...prev, [id]: !prev[id] };
+      saveProgress(newChecked);
+      return newChecked;
+    });
+  };
   const toggleSection = (id) => setExpanded(prev => ({ ...prev, [id]: !prev[id] }));
 
   const totalItems = sections.reduce((acc, s) => acc + s.items.length, 0);
@@ -279,7 +311,7 @@ export default function TestPlan() {
       </div>
 
       <p className="text-xs text-muted-foreground text-center mt-8">
-        Note: Checkboxes are session-only and reset on page refresh. Use this as a guided manual testing reference.
+        Progress is automatically saved to the database and persists across sessions.
       </p>
     </div>
   );

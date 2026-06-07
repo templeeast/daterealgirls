@@ -1,0 +1,11 @@
+{
+  "name": "TestPlanProgress",
+  "type": "object",
+  "properties": {
+    "checked_items": {
+      "type": "object",
+      "description": "Map of test item IDs to boolean checked state"
+    }
+  },
+  "required": []
+}
