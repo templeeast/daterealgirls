@@ -199,7 +199,7 @@ export default function SiteSettings() {
             </div>
             <div className="space-y-2">
               <Label>Max Photos Per Profile</Label>
-              <Input type="number" min={1} max={15} value={form.max_photos} onChange={e => updateField('max_photos', Number(e.target.value))} />
+              <Input type="number" value={form.max_photos} onChange={e => updateField('max_photos', Number(e.target.value))} />
             </div>
             <div className="space-y-2">
               <Label>Max Bio Length (characters)</Label>
