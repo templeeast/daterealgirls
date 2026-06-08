@@ -59,7 +59,7 @@ export default function StockProfilesBanner() {
   };
 
   return (
-    <section className="py-12 bg-secondary/30 overflow-hidden border-y border-border">
+    <section className="py-4 bg-secondary/30 overflow-hidden border-y border-border">
       <div
         className="flex gap-4 stock-banner-scroll"
         style={{ width: 'max-content' }}
