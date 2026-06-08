@@ -14,6 +14,7 @@ import Messages from '@/pages/Messages';
 import Chat from '@/pages/Chat';
 import Favorites from '@/pages/Favorites';
 import Support from '@/pages/Support';
+import Winks from '@/pages/Winks';
 import ReportProfile from '@/pages/ReportProfile';
 import AdminDashboard from '@/pages/admin/AdminDashboard';
 import TestPlan from '@/pages/admin/TestPlan';
@@ -71,6 +72,7 @@ const AuthenticatedApp = () => {
         <Route path="/messages" element={<ProfileCompleteGuard><Messages /></ProfileCompleteGuard>} />
         <Route path="/chat/:id" element={<ProfileCompleteGuard><Chat /></ProfileCompleteGuard>} />
         <Route path="/favorites" element={<ProfileCompleteGuard><Favorites /></ProfileCompleteGuard>} />
+        <Route path="/winks" element={<ProfileCompleteGuard><Winks /></ProfileCompleteGuard>} />
         <Route path="/support" element={<Support />} />
         <Route path="/report/:id" element={<ProfileCompleteGuard><ReportProfile /></ProfileCompleteGuard>} />
         <Route path="/admin" element={<AdminDashboard />} />

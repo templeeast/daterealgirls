@@ -491,12 +491,15 @@ export default function MyProfile() {
       {winks && winks.length > 0 && (
         <Card className="mb-6">
           <CardContent className="pt-6 space-y-4">
-            <div className="flex items-center gap-3">
-              <span className="text-2xl">😉</span>
-              <div>
-                <p className="font-semibold text-lg">{t('winks_received_title', { count: winks.length })}</p>
-                <p className="text-sm text-muted-foreground">{t('winks_received_desc')}</p>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <span className="text-2xl">😉</span>
+                <div>
+                  <p className="font-semibold text-lg">{t('winks_received_title', { count: winks.length })}</p>
+                  <p className="text-sm text-muted-foreground">{t('winks_received_desc')}</p>
+                </div>
               </div>
+              <button onClick={() => navigate('/winks')} className="text-sm text-primary hover:underline shrink-0">View all</button>
             </div>
             <div className="flex flex-wrap gap-3">
               {winks.map(wink => (
