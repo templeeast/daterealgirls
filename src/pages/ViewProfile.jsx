@@ -22,15 +22,7 @@ export default function ViewProfile() {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
 
-  const { data: myProfile } = useQuery({
-    queryKey: ['myProfile'],
-    queryFn: async () => {
-      const me = await base44.auth.me();
-      const profiles = await base44.entities.MemberProfile.filter({ user_id: me.id });
-      return profiles[0] || null;
-    },
-    enabled: !!user,
-  });
+  const { profile: myProfile } = useMyProfile();
 
   const isFreeMale = myProfile?.gender === 'male' && (!myProfile?.subscription_status || myProfile?.subscription_status === 'free');
 
