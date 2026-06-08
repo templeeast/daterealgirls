@@ -168,18 +168,26 @@ export default function MyProfile() {
     refetch();
   };
 
-  const handleCancelArbSubscription = () => {
+  const handleCancelSubscription = () => {
     setShowCancelDialog(true);
   };
 
   const handleConfirmCancel = async () => {
     setCancellingSubscription(true);
     try {
-      const useSandbox = true; // match the same flag used when subscribing
-      const res = await base44.functions.invoke('authorizeNetCancelSubscription', { useSandbox });
-      if (res.data?.error) {
-        toast({ title: res.data.error, variant: 'destructive' });
-        return;
+      if (config.payment_processor === 'whop') {
+        const res = await base44.functions.invoke('whopCancelSubscription', {});
+        if (res.data?.error) {
+          toast({ title: res.data.error, variant: 'destructive' });
+          return;
+        }
+      } else {
+        const useSandbox = true;
+        const res = await base44.functions.invoke('authorizeNetCancelSubscription', { useSandbox });
+        if (res.data?.error) {
+          toast({ title: res.data.error, variant: 'destructive' });
+          return;
+        }
       }
       toast({ title: 'Subscription cancelled. You keep access until the end of your billing period.' });
       setShowCancelDialog(false);
@@ -369,12 +377,23 @@ export default function MyProfile() {
               <div>
                 <h3 className="font-heading text-lg font-semibold mb-1">{t('subscription_title')}</h3>
                 {profile.subscription_status === 'active' ? (
-                  <p className="text-sm text-muted-foreground">
-                    {profile.subscription_end_date ? t('subscription_active_renews', { date: profile.subscription_end_date }) : t('subscription_active')}
-                    {profile.paymentnerds_subscription_id && config.payment_processor !== 'codapay' && (
-                      <span className="ml-1 text-xs text-primary">(Auto-renews monthly)</span>
+                  <div className="space-y-1">
+                    <p className="text-sm text-muted-foreground">
+                      {profile.subscription_end_date
+                        ? t('subscription_active_renews', { date: profile.subscription_end_date })
+                        : t('subscription_active')}
+                    </p>
+                    {config.payment_processor === 'whop' && (
+                      <a
+                        href="https://whop.com/manage-memberships/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs text-primary underline"
+                      >
+                        Manage Billing ↗
+                      </a>
                     )}
-                  </p>
+                  </div>
                 ) : (
                   <p className="text-sm text-muted-foreground">{t('subscription_free_desc')}</p>
                 )}
@@ -385,16 +404,15 @@ export default function MyProfile() {
                 {profile.subscription_status === 'active' ? t('subscription_premium_badge') : t('subscription_free_badge')}
               </Badge>
             </div>
-            {/* Cancel ARB subscription button */}
+            {/* Cancel subscription button — shown for whop or ARB */}
             {profile.subscription_status === 'active' &&
-              profile.paymentnerds_subscription_id &&
-              config.payment_processor !== 'codapay' && (
+              (config.payment_processor === 'whop' || profile.paymentnerds_subscription_id) && (
               <div className="mt-4 pt-4 border-t">
                 <Button
                   variant="ghost"
                   size="sm"
                   className="text-muted-foreground hover:text-destructive gap-2"
-                  onClick={handleCancelArbSubscription}
+                  onClick={handleCancelSubscription}
                   disabled={cancellingSubscription}
                 >
                   <XCircle className="w-4 h-4" />
