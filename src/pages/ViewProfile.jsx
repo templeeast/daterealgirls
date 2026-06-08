@@ -190,7 +190,7 @@ export default function ViewProfile() {
           {/* Wink count — shown when viewing someone else's profile */}
           {user && profile.user_id !== user.id && winkCount > 0 && (
             <p className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
-              <span>😉</span> {winkCount} {winkCount === 1 ? 'wink' : 'winks'}
+              <span>😉</span> {t('wink_count', { count: winkCount })}
             </p>
           )}
         </div>

@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
+import { useTranslation } from 'react-i18next';
 
 // Wink emoji icon – no lucide import needed
 export default function WinkButton({ myProfile, targetProfileId, existingWink, onWinked, size = 'default' }) {
   const { toast } = useToast();
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(!!existingWink);
 
@@ -16,12 +18,12 @@ export default function WinkButton({ myProfile, targetProfileId, existingWink, o
     e.stopPropagation();
 
     if (!isPremium) {
-      toast({ title: 'Upgrade to Premium to send winks 😉', variant: 'destructive' });
+      toast({ title: t('wink_premium_required'), variant: 'destructive' });
       return;
     }
 
     if (sent) {
-      toast({ title: 'You already winked at this person!' });
+      toast({ title: t('wink_already_sent') });
       return;
     }
 
@@ -33,7 +35,7 @@ export default function WinkButton({ myProfile, targetProfileId, existingWink, o
       sender_photo: myProfile.photo_1 || '',
     });
     setSent(true);
-    toast({ title: '😉 Wink sent!' });
+    toast({ title: t('wink_sent_toast') });
     onWinked?.();
     setLoading(false);
   };
@@ -45,10 +47,10 @@ export default function WinkButton({ myProfile, targetProfileId, existingWink, o
       className="gap-1.5 rounded-full"
       onClick={handleWink}
       disabled={loading || sent}
-      title={sent ? 'Wink sent' : 'Send a wink'}
+      title={sent ? t('wink_btn_sent') : t('wink_btn')}
     >
       <span className="text-base leading-none">😉</span>
-      {size !== 'icon' && (sent ? 'Winked' : 'Wink')}
+      {size !== 'icon' && (sent ? t('wink_btn_sent') : t('wink_btn'))}
     </Button>
   );
 }

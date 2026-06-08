@@ -494,8 +494,8 @@ export default function MyProfile() {
             <div className="flex items-center gap-3">
               <span className="text-2xl">😉</span>
               <div>
-                <p className="font-semibold text-lg">{winkCount} {winkCount === 1 ? 'Wink' : 'Winks'} Received</p>
-                <p className="text-sm text-muted-foreground">Other members have winked at your profile!</p>
+                <p className="font-semibold text-lg">{t('winks_received_title', { count: winkCount })}</p>
+                <p className="text-sm text-muted-foreground">{t('winks_received_desc')}</p>
               </div>
             </div>
           </CardContent>
