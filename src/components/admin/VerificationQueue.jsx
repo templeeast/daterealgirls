@@ -12,7 +12,15 @@ export default function VerificationQueue() {
 
   const { data: pending, isLoading } = useQuery({
     queryKey: ['pendingVerifications'],
-    queryFn: () => base44.entities.MemberProfile.filter({ verification_status: 'pending' }),
+    queryFn: async () => {
+      const [pendingProfiles, unverifiedProfiles] = await Promise.all([
+        base44.entities.MemberProfile.filter({ verification_status: 'pending' }),
+        base44.entities.MemberProfile.filter({ verification_status: 'unverified' }),
+      ]);
+      // Include unverified members who have uploaded at least a selfie
+      const unverifiedWithDocs = unverifiedProfiles.filter(p => p.selfie_url || p.id_document_url);
+      return [...pendingProfiles, ...unverifiedWithDocs];
+    },
     initialData: [],
   });
 
