@@ -4,8 +4,9 @@ import { MapPin, Heart, Shield, Star } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
+import WinkButton from '@/components/profile/WinkButton';
 
-export default function ProfileCard({ profile, onFavorite, isFavorited }) {
+export default function ProfileCard({ profile, onFavorite, isFavorited, myProfile, hasWinked }) {
   const lookingForLabels = {
     relationship: 'Relationship',
     friendship: 'Friendship',
@@ -71,14 +72,23 @@ export default function ProfileCard({ profile, onFavorite, isFavorited }) {
             <Badge key={i} variant="outline" className="text-xs">{i}</Badge>
           ))}
         </div>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="shrink-0"
-          onClick={(e) => { e.preventDefault(); onFavorite?.(profile); }}
-        >
-          <Star className={`w-4 h-4 ${isFavorited ? 'fill-primary text-primary' : 'text-muted-foreground'}`} />
-        </Button>
+        <div className="flex items-center gap-1 shrink-0">
+          {myProfile && (
+            <WinkButton
+              myProfile={myProfile}
+              targetProfileId={profile.id}
+              existingWink={hasWinked}
+              size="icon"
+            />
+          )}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={(e) => { e.preventDefault(); onFavorite?.(profile); }}
+          >
+            <Star className={`w-4 h-4 ${isFavorited ? 'fill-primary text-primary' : 'text-muted-foreground'}`} />
+          </Button>
+        </div>
       </div>
     </motion.div>
   );

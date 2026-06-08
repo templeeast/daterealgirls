@@ -1,0 +1,26 @@
+{
+  "name": "Wink",
+  "type": "object",
+  "properties": {
+    "sender_id": {
+      "type": "string",
+      "description": "User ID of the person sending the wink"
+    },
+    "recipient_profile_id": {
+      "type": "string",
+      "description": "MemberProfile ID of the recipient"
+    },
+    "sender_name": {
+      "type": "string",
+      "description": "Display name of the sender"
+    },
+    "sender_photo": {
+      "type": "string",
+      "description": "Photo URL of the sender"
+    }
+  },
+  "required": [
+    "sender_id",
+    "recipient_profile_id"
+  ]
+}

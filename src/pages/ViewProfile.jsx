@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { MapPin, Shield, Star, MessageCircle, Flag, Heart, ArrowLeft, Instagram, Facebook } from 'lucide-react';
+import WinkButton from '@/components/profile/WinkButton';
 import { Skeleton } from '@/components/ui/skeleton';
 import useMyProfile from '@/hooks/useMyProfile';
 import { useToast } from '@/components/ui/use-toast';
@@ -51,6 +52,23 @@ export default function ViewProfile() {
     enabled: !!user,
     initialData: [],
   });
+
+  const { data: myWinks, refetch: refetchWinks } = useQuery({
+    queryKey: ['myWinks', user?.id],
+    queryFn: () => user ? base44.entities.Wink.filter({ sender_id: user.id }) : [],
+    enabled: !!user,
+    initialData: [],
+  });
+
+  const { data: winkCount } = useQuery({
+    queryKey: ['winkCount', profileId],
+    queryFn: () => base44.entities.Wink.filter({ recipient_profile_id: profileId }),
+    enabled: !!profileId,
+    select: (data) => data.length,
+    initialData: [],
+  });
+
+  const hasWinked = myWinks.some(w => w.recipient_profile_id === profileId);
 
   const isFavorited = myFavorites.some(f => f.favorited_profile_id === profileId);
 
@@ -169,6 +187,12 @@ export default function ViewProfile() {
               {[profile.location_city, profile.location_country].filter(Boolean).join(', ')}
             </p>
           )}
+          {/* Wink count — shown when viewing someone else's profile */}
+          {user && profile.user_id !== user.id && winkCount > 0 && (
+            <p className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
+              <span>😉</span> {winkCount} {winkCount === 1 ? 'wink' : 'winks'}
+            </p>
+          )}
         </div>
       </div>
 
@@ -178,7 +202,7 @@ export default function ViewProfile() {
           <UpgradePrompt price={9.99} inline />
         </div>
       ) : (
-        <div className="flex gap-3 mb-8">
+        <div className="flex gap-3 mb-8 flex-wrap">
           <Button className="gap-2 rounded-full" onClick={handleMessage}>
             <MessageCircle className="w-4 h-4" /> {t('message_btn')}
           </Button>
@@ -186,6 +210,14 @@ export default function ViewProfile() {
             <Star className={`w-4 h-4 ${isFavorited ? 'fill-primary text-primary' : ''}`} />
             {isFavorited ? t('favorited_btn') : t('favorite_btn')}
           </Button>
+          {myProfile && (
+            <WinkButton
+              myProfile={myProfile}
+              targetProfileId={profileId}
+              existingWink={hasWinked}
+              onWinked={() => refetchWinks()}
+            />
+          )}
           <Button variant="ghost" size="icon" className="rounded-full text-muted-foreground" onClick={handleReport}>
             <Flag className="w-4 h-4" />
           </Button>

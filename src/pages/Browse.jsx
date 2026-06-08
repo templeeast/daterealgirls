@@ -75,6 +75,14 @@ export default function Browse() {
     initialData: [],
   });
 
+  const { data: myWinks } = useQuery({
+    queryKey: ['myWinks', user?.id],
+    queryFn: () => user ? base44.entities.Wink.filter({ sender_id: user.id }) : [],
+    enabled: !!user,
+    initialData: [],
+  });
+  const winkedIds = new Set(myWinks.map(w => w.recipient_profile_id));
+
   const favMutation = useMutation({
     mutationFn: async (profile) => {
       const existing = myFavorites.find(f => f.favorited_profile_id === profile.id);
@@ -223,6 +231,8 @@ export default function Browse() {
                 profile={p}
                 isFavorited={favoritedIds.has(p.id)}
                 onFavorite={() => favMutation.mutate(p)}
+                myProfile={profile}
+                hasWinked={winkedIds.has(p.id)}
               />
             ))}
             {/* Blurred locked cards for free-tier males */}

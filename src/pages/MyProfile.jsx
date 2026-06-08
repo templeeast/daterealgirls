@@ -9,7 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Upload, Shield, Camera, Save, Trash2, Eye, EyeOff, AlertTriangle, XCircle } from 'lucide-react';
+import { Upload, Shield, Camera, Save, Trash2, Eye, EyeOff, AlertTriangle, XCircle, Smile } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
 import useMyProfile from '@/hooks/useMyProfile';
@@ -56,6 +56,13 @@ export default function MyProfile() {
   const [cancellingSubscription, setCancellingSubscription] = useState(false);
   const [showCancelDialog, setShowCancelDialog] = useState(false);
   const [form, setForm] = useState(null);
+  const [winkCount, setWinkCount] = useState(null);
+
+  useEffect(() => {
+    if (profile?.id && winkCount === null) {
+      base44.entities.Wink.filter({ recipient_profile_id: profile.id }).then(winks => setWinkCount(winks.length));
+    }
+  }, [profile?.id]);
 
   useEffect(() => {
     if (!isLoading && !profile) {
@@ -476,6 +483,21 @@ export default function MyProfile() {
                 </div>
               </div>
             )}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Winks Received */}
+      {winkCount !== null && winkCount > 0 && (
+        <Card className="mb-6">
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-3">
+              <span className="text-2xl">😉</span>
+              <div>
+                <p className="font-semibold text-lg">{winkCount} {winkCount === 1 ? 'Wink' : 'Winks'} Received</p>
+                <p className="text-sm text-muted-foreground">Other members have winked at your profile!</p>
+              </div>
+            </div>
           </CardContent>
         </Card>
       )}
