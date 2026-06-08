@@ -11,7 +11,7 @@ export default function WinkButton({ myProfile, targetProfileId, existingWink, o
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(!!existingWink);
 
-  const isPremium = myProfile?.subscription_status === 'active';
+  const isPremium = myProfile?.subscription_status === 'active' || myProfile?.gender === 'female';
 
   const handleWink = async (e) => {
     e.preventDefault();
