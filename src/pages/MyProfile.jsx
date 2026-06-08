@@ -56,11 +56,11 @@ export default function MyProfile() {
   const [cancellingSubscription, setCancellingSubscription] = useState(false);
   const [showCancelDialog, setShowCancelDialog] = useState(false);
   const [form, setForm] = useState(null);
-  const [winkCount, setWinkCount] = useState(null);
+  const [winks, setWinks] = useState(null);
 
   useEffect(() => {
-    if (profile?.id && winkCount === null) {
-      base44.entities.Wink.filter({ recipient_profile_id: profile.id }).then(winks => setWinkCount(winks.length));
+    if (profile?.id && winks === null) {
+      base44.entities.Wink.filter({ recipient_profile_id: profile.id }).then(setWinks);
     }
   }, [profile?.id]);
 
@@ -488,15 +488,32 @@ export default function MyProfile() {
       )}
 
       {/* Winks Received */}
-      {winkCount !== null && winkCount > 0 && (
+      {winks && winks.length > 0 && (
         <Card className="mb-6">
-          <CardContent className="pt-6">
+          <CardContent className="pt-6 space-y-4">
             <div className="flex items-center gap-3">
               <span className="text-2xl">😉</span>
               <div>
-                <p className="font-semibold text-lg">{t('winks_received_title', { count: winkCount })}</p>
+                <p className="font-semibold text-lg">{t('winks_received_title', { count: winks.length })}</p>
                 <p className="text-sm text-muted-foreground">{t('winks_received_desc')}</p>
               </div>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              {winks.map(wink => (
+                <a
+                  key={wink.id}
+                  href={`/browse`}
+                  onClick={e => { e.preventDefault(); navigate(`/profile/${wink.sender_id}`); }}
+                  className="flex items-center gap-2 bg-muted hover:bg-accent rounded-full pl-1 pr-3 py-1 transition-colors cursor-pointer"
+                >
+                  {wink.sender_photo ? (
+                    <img src={wink.sender_photo} className="w-8 h-8 rounded-full object-cover" alt="" />
+                  ) : (
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-sm">😉</div>
+                  )}
+                  <span className="text-sm font-medium">{wink.sender_name || 'Someone'}</span>
+                </a>
+              ))}
             </div>
           </CardContent>
         </Card>
