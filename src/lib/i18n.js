@@ -8,7 +8,7 @@ import { winkTranslations } from './i18n-winks';
 const en = {
    // Landing
    tagline: 'Real. Simple. Yours.',
-   hero_subtitle: 'Real, breathtaking women waiting to connect. No bots. No fakes. Women sign-up for free!',
+   hero_subtitle: 'Real, breathtaking women waiting to connect. No bots. No tokens. Women sign-up for free!',
    banner_title: 'Meet Our Members',
    banner_subtitle: 'Verified, real people looking for genuine connections',
   badge_verified: 'Govt. ID Verification',
@@ -283,7 +283,7 @@ const en = {
 
 const es = {
    tagline: 'Real. Simple. Tuyo.',
-   hero_subtitle: 'Mujeres reales e impresionantes esperando conectar. Sin bots. Sin falsas. ¡Las mujeres se registran gratis!',
+   hero_subtitle: 'Mujeres reales e impresionantes esperando conectar. Sin bots. Sin tokens. ¡Las mujeres se registran gratis!',
   banner_title: 'Conoce a Nuestros Miembros',
   banner_subtitle: 'Personas reales y verificadas buscando conexiones genuinas',
   badge_verified: 'Verificación de ID Gubernamental',
@@ -530,7 +530,7 @@ const es = {
 
 const th = {
    tagline: 'จริง. ง่าย. ของคุณ.',
-   hero_subtitle: 'ผู้หญิงจริงที่น่าหลงใหลรอพบคุณ ไม่มีบอท ไม่มีปลอม สมัครฟรีสำหรับผู้หญิง!',
+   hero_subtitle: 'ผู้หญิงจริงที่น่าหลงใหลรอพบคุณ ไม่มีบอท ไม่มีโทเค็น สมัครฟรีสำหรับผู้หญิง!',
   banner_title: 'พบกับสมาชิกของเรา',
   banner_subtitle: 'คนจริงและยืนยันตัวตนแล้วที่มองหาการเชื่อมต่อที่แท้จริง',
   badge_verified: 'การยืนยัน ID รัฐบาล',
@@ -777,7 +777,7 @@ const th = {
 
 const zh = {
    tagline: '真实。简单。属于你。',
-   hero_subtitle: '真实迷人的女性等待连接。没有机器人，没有假冒。女性免费注册！',
+   hero_subtitle: '真实迷人的女性等待连接。没有机器人，没有代币。女性免费注册！',
   banner_title: '认识我们的成员',
   banner_subtitle: '经验证的真人寻找真实的连接',
   badge_verified: '政府身份证验证',
@@ -1024,7 +1024,7 @@ const zh = {
 
 const de = {
    tagline: 'Echt. Einfach. Deins.',
-   hero_subtitle: 'Echte, atemberaubende Frauen warten darauf, dich kennenzulernen. Keine Bots. Keine Fakes. Frauen melden sich kostenlos an!',
+   hero_subtitle: 'Echte, atemberaubende Frauen warten darauf, dich kennenzulernen. Keine Bots. Keine Token. Frauen melden sich kostenlos an!',
   banner_title: 'Treffen Sie unsere Mitglieder',
   banner_subtitle: 'Verifizierte, echte Menschen auf der Suche nach echten Verbindungen',
   badge_verified: 'Regierungs-ID-Verifizierung',
@@ -1271,7 +1271,7 @@ const de = {
 
 const vi = {
    tagline: 'Thật. Đơn Giản. Của Bạn.',
-   hero_subtitle: 'Những phụ nữ thật sự quyến rũ đang chờ kết nối. Không bot. Không giả mạo. Phụ nữ đăng ký miễn phí!',
+   hero_subtitle: 'Những phụ nữ thật sự quyến rũ đang chờ kết nối. Không bot. Không token. Phụ nữ đăng ký miễn phí!',
   banner_title: 'Gặp Gỡ Các Thành Viên Của Chúng Tôi',
   banner_subtitle: 'Những người thật sự đã được xác minh đang tìm kiếm các kết nối chân thực',
   badge_verified: 'Xác Minh ID Chính Phủ',
@@ -1518,7 +1518,7 @@ const vi = {
 
 const pt = {
    tagline: 'Real. Simples. Seu.',
-   hero_subtitle: 'Mulheres reais e deslumbrantes esperando para se conectar. Sem bots. Sem falsas. Mulheres se cadastram grátis!',
+   hero_subtitle: 'Mulheres reais e deslumbrantes esperando para se conectar. Sem bots. Sem tokens. Mulheres se cadastram grátis!',
   banner_title: 'Conheça Nossos Membros',
   banner_subtitle: 'Pessoas reais e verificadas procurando conexões genuínas',
   badge_verified: 'Verificação de ID Governamental',
@@ -1765,7 +1765,7 @@ const pt = {
 
 const tl = {
    tagline: 'Tunay. Simple. Sayo.',
-   hero_subtitle: 'Mga tunay at kahanga-hangang babae naghihintay na kumonekta. Walang bots. Walang peke. Libreng mag-sign up ang mga babae!',
+   hero_subtitle: 'Mga tunay at kahanga-hangang babae naghihintay na kumonekta. Walang bots. Walang tokens. Libreng mag-sign up ang mga babae!',
   banner_title: 'Makilala ang Aming mga Miyembro',
   banner_subtitle: 'Mga verified, tunay na tao na naghahanap ng totoong koneksyon',
   badge_verified: 'Pagpapatunay ng Government ID',
