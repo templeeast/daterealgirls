@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Upload, Shield, Camera, Save, Trash2, Eye, EyeOff, AlertTriangle, XCircle, Smile, ExternalLink } from 'lucide-react';
+import { formatDistanceToNow } from 'date-fns';
 import { useToast } from '@/components/ui/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
 import useMyProfile from '@/hooks/useMyProfile';
@@ -530,6 +531,9 @@ export default function MyProfile() {
                     <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-sm">😉</div>
                   )}
                   <span className="text-sm font-medium">{wink.sender_name || 'Someone'}</span>
+                  {wink.created_date && (
+                    <span className="text-xs text-muted-foreground">{formatDistanceToNow(new Date(wink.created_date), { addSuffix: true })}</span>
+                  )}
                 </a>
               ))}
             </div>
