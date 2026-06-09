@@ -52,6 +52,16 @@ export default function MyProfile() {
   const { toast } = useToast();
   const { t } = useTranslation();
   const queryClient = useQueryClient();
+  const subscriptionRef = useRef(null);
+
+  useEffect(() => {
+    if (window.location.hash === '#subscription' && subscriptionRef.current) {
+      setTimeout(() => {
+        subscriptionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 300);
+    }
+  }, []);
+
   const [saving, setSaving] = useState(false);
   const [cancellingSubscription, setCancellingSubscription] = useState(false);
   const [showCancelDialog, setShowCancelDialog] = useState(false);
@@ -378,7 +388,7 @@ export default function MyProfile() {
 
       {/* Subscription Info (for men) */}
       {profile.gender === 'male' && (
-        <Card id="subscription" className={`mb-6 ${profile.subscription_status !== 'active' ? 'border-2 border-primary/30' : ''}`}>
+        <Card ref={subscriptionRef} id="subscription" className={`mb-6 scroll-mt-20 ${profile.subscription_status !== 'active' ? 'border-2 border-primary/30' : ''}`}>
           <CardContent className="pt-6">
             <div className="flex items-start justify-between">
               <div>
