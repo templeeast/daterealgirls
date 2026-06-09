@@ -11,11 +11,13 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Upload, Shield, Camera, Save, Trash2, Eye, EyeOff, AlertTriangle, XCircle, Smile, ExternalLink } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
+import { enUS, es, th, zhCN, de, vi as viLocale, pt } from 'date-fns/locale';
 import { useToast } from '@/components/ui/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
 import useMyProfile from '@/hooks/useMyProfile';
 import useSiteConfig from '@/hooks/useSiteConfig';
 import { useTranslation } from 'react-i18next';
+import i18n from '@/lib/i18n';
 import StripeIdentityCard from '@/components/profile/StripeIdentityCard';
 import CountryCitySelector from '@/components/shared/CountryCitySelector';
 import CodaPayButton from '@/components/subscription/CodaPayButton';
@@ -115,6 +117,9 @@ export default function MyProfile() {
         : [...prev.interests, interest]
     }));
   };
+
+  const dateFnsLocaleMap = { en: enUS, es, th, zh: zhCN, de, vi: viLocale, pt, tl: enUS, default: enUS };
+  const dateFnsLocale = dateFnsLocaleMap[i18n.language] || enUS;
 
   const maxPhotos = config.max_photos || 3;
   const photoFields = Array.from({ length: maxPhotos }, (_, i) => `photo_${i + 1}`);
@@ -447,7 +452,7 @@ export default function MyProfile() {
               <div className="mt-4 space-y-4">
                 <div className="p-4 bg-accent/50 rounded-xl text-sm text-foreground">
                   <strong className="text-primary">{t('subscription_upgrade_cta')}</strong>{' '}
-                  Try Premium FREE for 30 days, then just ${config.subscription_price || 9.99}/month. Cancel anytime.
+                  {t('subscription_upgrade_desc', { price: config.subscription_price || 9.99 })}
                 </div>
 
                 {/* Paid option — only show the configured payment processor */}
@@ -514,7 +519,7 @@ export default function MyProfile() {
                   <p className="text-sm text-muted-foreground">{t('winks_received_desc')}</p>
                 </div>
               </div>
-              <button onClick={() => navigate('/winks')} className="text-sm text-primary hover:underline shrink-0">View all</button>
+              <button onClick={() => navigate('/winks')} className="text-sm text-primary hover:underline shrink-0">{t('view_all')}</button>
             </div>
             <div className="flex flex-wrap gap-3">
               {winks.map(wink => (
@@ -529,9 +534,9 @@ export default function MyProfile() {
                   ) : (
                     <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-sm">😉</div>
                   )}
-                  <span className="text-sm font-medium">{wink.sender_name || 'Someone'}</span>
+                  <span className="text-sm font-medium">{wink.sender_name || t('someone')}</span>
                   {wink.created_date && (
-                    <span className="text-xs text-muted-foreground">{formatDistanceToNow(new Date(wink.created_date), { addSuffix: true })}</span>
+                    <span className="text-xs text-muted-foreground">{formatDistanceToNow(new Date(wink.created_date), { addSuffix: true, locale: dateFnsLocale })}</span>
                   )}
                 </a>
               ))}
