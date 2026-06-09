@@ -56,12 +56,12 @@ export default function MyProfile() {
   const subscriptionRef = useRef(null);
 
   useEffect(() => {
-    if (window.location.hash === '#subscription' && subscriptionRef.current) {
+    if (window.location.hash === '#subscription' && subscriptionRef.current && profile) {
       setTimeout(() => {
         subscriptionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 300);
+      }, 100);
     }
-  }, []);
+  }, [profile]);
 
   const [saving, setSaving] = useState(false);
   const [cancellingSubscription, setCancellingSubscription] = useState(false);
