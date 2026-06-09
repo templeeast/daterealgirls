@@ -17,22 +17,28 @@ export default function WhopReturn() {
   useEffect(() => {
     if (!isSuccess) return;
 
-    // Poll up to ~30s for Whop to register the membership
+    // Poll up to ~15s (3 attempts), then give up gracefully — webhook handles activation
     let attempts = 0;
-    const maxAttempts = 10;
-    const delay = 3000;
+    const maxAttempts = 3;
+    const delay = 4000;
 
     const tryActivate = async () => {
       attempts++;
-      const res = await base44.functions.invoke('whopActivateSubscription', {});
-      if (res.data?.activated) {
-        setActivated(true);
-        setActivating(false);
-      } else if (attempts < maxAttempts) {
+      try {
+        const res = await base44.functions.invoke('whopActivateSubscription', {});
+        if (res.data?.activated) {
+          setActivated(true);
+          setActivating(false);
+          return;
+        }
+      } catch (_) {
+        // ignore errors, keep polling
+      }
+      if (attempts < maxAttempts) {
         setTimeout(tryActivate, delay);
       } else {
-        // Give up polling — webhook will still fire later
-        setActivationMsg('Your payment was received. It may take a moment to reflect. Check your profile shortly.');
+        // Give up — webhook will activate in the background
+        setActivationMsg('Your payment was received! Your subscription will be activated within a few minutes.');
         setActivating(false);
       }
     };
