@@ -390,16 +390,7 @@ export default function MyProfile() {
                         ? t('subscription_active_renews', { date: profile.subscription_end_date })
                         : t('subscription_active')}
                     </p>
-                    {config.payment_processor === 'whop' && (
-                      <a
-                        href="https://whop.com/manage-memberships/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-xs text-primary underline"
-                      >
-                        Manage Billing ↗
-                      </a>
-                    )}
+
                   </div>
                 ) : (
                   <p className="text-sm text-muted-foreground">{t('subscription_free_desc')}</p>
@@ -411,20 +402,31 @@ export default function MyProfile() {
                 {profile.subscription_status === 'active' ? t('subscription_premium_badge') : t('subscription_free_badge')}
               </Badge>
             </div>
-            {/* Cancel subscription button — shown for whop or ARB */}
-            {profile.subscription_status === 'active' &&
-              (config.payment_processor === 'whop' || profile.paymentnerds_subscription_id) && (
-              <div className="mt-4 pt-4 border-t">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="text-muted-foreground hover:text-destructive gap-2"
-                  onClick={handleCancelSubscription}
-                  disabled={cancellingSubscription}
-                >
-                  <XCircle className="w-4 h-4" />
-                  {cancellingSubscription ? 'Cancelling...' : 'Cancel Subscription'}
-                </Button>
+            {/* Active subscription actions */}
+            {profile.subscription_status === 'active' && (
+              <div className="mt-4 pt-4 border-t space-y-3">
+                {config.payment_processor === 'whop' && (
+                  <div className="space-y-1">
+                    <p className="text-xs text-muted-foreground">
+                      Your subscription is managed through our payment provider. Use the same email address you used when you subscribed.
+                    </p>
+                    <a href="https://whop.com/@me/settings/memberships/" target="_blank" rel="noopener noreferrer">
+                      <Button size="sm" className="rounded-full gap-2">Manage My Subscription</Button>
+                    </a>
+                  </div>
+                )}
+                {(config.payment_processor === 'whop' || profile.paymentnerds_subscription_id) && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-muted-foreground hover:text-destructive gap-2"
+                    onClick={handleCancelSubscription}
+                    disabled={cancellingSubscription}
+                  >
+                    <XCircle className="w-4 h-4" />
+                    {cancellingSubscription ? 'Cancelling...' : 'Cancel Subscription'}
+                  </Button>
+                )}
               </div>
             )}
 
@@ -661,22 +663,6 @@ export default function MyProfile() {
         </CardContent>
       </Card>
 
-      {/* Manage Subscription — male members only */}
-      {profile.gender === 'male' && (
-        <Card className="mb-6">
-          <CardContent className="pt-6 space-y-3">
-            <h3 className="font-heading text-lg font-semibold">Subscription Management</h3>
-            <p className="text-sm text-muted-foreground">
-              Your subscription is managed through our payment provider. Use the same email address you used when you subscribed.
-            </p>
-            <a href="https://whop.com/@me/settings/memberships/" target="_blank" rel="noopener noreferrer">
-              <Button className="rounded-full gap-2">Manage My Subscription</Button>
-            </a>
-          </CardContent>
-        </Card>
-      )}
-
-      <hr className="mb-6 border-border" />
 
       {/* Save */}
       <Button className="w-full gap-2 rounded-full" size="lg" onClick={handleSave} disabled={saving}>
