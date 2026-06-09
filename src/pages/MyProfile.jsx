@@ -661,6 +661,23 @@ export default function MyProfile() {
         </CardContent>
       </Card>
 
+      {/* Manage Subscription — male members only */}
+      {profile.gender === 'male' && (
+        <Card className="mb-6">
+          <CardContent className="pt-6 space-y-3">
+            <h3 className="font-heading text-lg font-semibold">Subscription Management</h3>
+            <p className="text-sm text-muted-foreground">
+              Your subscription is managed through our payment provider. Use the same email address you used when you subscribed.
+            </p>
+            <a href="https://whop.com/@me/settings/memberships/" target="_blank" rel="noopener noreferrer">
+              <Button className="rounded-full gap-2">Manage My Subscription</Button>
+            </a>
+          </CardContent>
+        </Card>
+      )}
+
+      <hr className="mb-6 border-border" />
+
       {/* Save */}
       <Button className="w-full gap-2 rounded-full" size="lg" onClick={handleSave} disabled={saving}>
         <Save className="w-4 h-4" />
