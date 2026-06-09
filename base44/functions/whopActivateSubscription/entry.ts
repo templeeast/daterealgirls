@@ -24,57 +24,88 @@ Deno.serve(async (req) => {
       : Deno.env.get('WHOP_PROD_API_KEY');
     const planId = config?.whop_men_plan_id;
 
-    // Whop API: list memberships for this user by looking up via their email
-    // Try fetching the user by email first to get their whop user id
+    // Step 1: Look up the Whop user by email to get their whop user ID
     const userEmail = user.email?.toLowerCase();
+    let whopUserId = profile.whop_user_id || null;
 
-    // Search memberships filtered by plan_id, valid only
-    let searchUrl = `https://api.whop.com/api/v2/memberships?valid=true&per=50`;
-    if (planId) searchUrl += `&plan_id=${planId}`;
-
-    const resp = await fetch(searchUrl, {
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-      },
-    });
-
-    const respText = await resp.text();
-    console.log('Whop status:', resp.status, '| url:', searchUrl);
-    console.log('Whop response (first 800 chars):', respText.slice(0, 800));
-
-    if (!resp.ok) {
-      // Fallback: if we can't verify via API right now, just trust the webhook will come
-      return Response.json({ activated: false, message: 'Whop API unavailable, webhook will activate shortly.' });
-    }
-
-    const data = JSON.parse(respText);
-    const memberships = data.data || [];
-
-    console.log(`Total memberships: ${memberships.length}`);
-    if (memberships[0]) {
-      console.log('First membership keys:', Object.keys(memberships[0]).join(', '));
-      console.log('First membership sample:', JSON.stringify(memberships[0]).slice(0, 400));
-    }
-
-    // Match by email or stored whop_user_id
-    let membership = memberships.find(m => {
-      const mEmail = (m.user?.email || m.email || '').toLowerCase();
-      return mEmail === userEmail;
-    });
-
-    if (!membership && profile.whop_user_id) {
-      membership = memberships.find(m =>
-        m.user_id === profile.whop_user_id || m.user?.id === profile.whop_user_id
+    if (!whopUserId) {
+      // Try to find the whop user by searching memberships with email filter
+      const userSearchResp = await fetch(
+        `https://api.whop.com/api/v5/users?email=${encodeURIComponent(userEmail)}`,
+        { headers: { 'Authorization': `Bearer ${apiKey}` } }
       );
+      const userSearchText = await userSearchResp.text();
+      console.log('Whop user search status:', userSearchResp.status);
+      console.log('Whop user search response:', userSearchText.slice(0, 500));
+
+      if (userSearchResp.ok) {
+        const userData = JSON.parse(userSearchText);
+        whopUserId = userData?.data?.[0]?.id || userData?.id || null;
+        console.log('Found whop user id:', whopUserId);
+      }
+    }
+
+    // Step 2: Look up memberships
+    // If we have a whop user id, search by that; otherwise fall back to listing by plan
+    let membership = null;
+
+    if (whopUserId) {
+      // Get memberships for this specific user
+      let url = `https://api.whop.com/api/v5/memberships?user_id=${whopUserId}&status=active`;
+      if (planId) url += `&plan_id=${planId}`;
+      const resp = await fetch(url, {
+        headers: { 'Authorization': `Bearer ${apiKey}` },
+      });
+      const respText = await resp.text();
+      console.log('Membership by user_id status:', resp.status);
+      console.log('Membership by user_id response:', respText.slice(0, 600));
+
+      if (resp.ok) {
+        const data = JSON.parse(respText);
+        const members = data.data || (Array.isArray(data) ? data : []);
+        membership = members[0] || null;
+      }
+    }
+
+    // Fallback: list memberships by plan and try to match
+    if (!membership) {
+      let url = `https://api.whop.com/api/v5/memberships?status=active&per=50`;
+      if (planId) url += `&plan_id=${planId}`;
+      const resp = await fetch(url, {
+        headers: { 'Authorization': `Bearer ${apiKey}` },
+      });
+      const respText = await resp.text();
+      console.log('Fallback membership list status:', resp.status);
+      console.log('Fallback membership list response:', respText.slice(0, 800));
+
+      if (resp.ok) {
+        const data = JSON.parse(respText);
+        const members = data.data || (Array.isArray(data) ? data : []);
+        console.log(`Fallback: found ${members.length} memberships`);
+
+        if (members[0]) {
+          console.log('First membership structure:', JSON.stringify(members[0]).slice(0, 500));
+        }
+
+        // Try matching by email or stored whop_user_id
+        membership = members.find(m => {
+          const mEmail = (m.user?.email_address || m.user?.email || m.email || '').toLowerCase();
+          const mUserId = m.user_id || m.user?.id;
+          return mEmail === userEmail || (profile.whop_user_id && mUserId === profile.whop_user_id);
+        });
+      }
     }
 
     if (!membership) {
-      console.log(`No matching membership for email: ${userEmail}`);
-      return Response.json({ activated: false, message: 'No valid Whop membership found yet.' });
+      return Response.json({
+        activated: false,
+        subscription_status: profile.subscription_status,
+        message: 'No active Whop membership found for your account.',
+      });
     }
 
     // Parse end date
-    const expiresAt = membership.expires_at || membership.renewal_period_end;
+    const expiresAt = membership.expires_at || membership.renewal_period_end || membership.valid_until;
     let endDate;
     if (expiresAt) {
       const d = typeof expiresAt === 'number' ? new Date(expiresAt * 1000) : new Date(expiresAt);
@@ -84,17 +115,17 @@ Deno.serve(async (req) => {
     }
 
     const today = new Date().toISOString().split('T')[0];
-    const whopUserId = membership.user_id || membership.user?.id;
+    const foundWhopUserId = membership.user_id || membership.user?.id || whopUserId;
 
     await base44.entities.MemberProfile.update(profile.id, {
       subscription_status: 'active',
       subscription_start_date: today,
       subscription_end_date: endDate,
-      ...(whopUserId ? { whop_user_id: whopUserId } : {}),
+      ...(foundWhopUserId ? { whop_user_id: foundWhopUserId } : {}),
     });
 
     console.log(`Activated subscription for profile ${profile.id}, ends ${endDate}`);
-    return Response.json({ activated: true, endDate });
+    return Response.json({ activated: true, subscription_status: 'active', endDate });
   } catch (error) {
     console.error('whopActivateSubscription error:', error.message);
     return Response.json({ error: error.message }, { status: 500 });

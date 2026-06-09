@@ -26,6 +26,7 @@ import AuthorizeNetHostedButton from '@/components/subscription/AuthorizeNetHost
 import FreeTrialButton from '@/components/subscription/FreeTrialButton';
 import CancelSubscriptionDialog from '@/components/dialogs/CancelSubscriptionDialog';
 import WhopButton from '@/components/subscription/WhopButton';
+import { RefreshCw } from 'lucide-react';
 
 const INTERESTS = [
   { key: 'Travel', tKey: 'interest_travel' },
@@ -60,6 +61,8 @@ export default function MyProfile() {
   const [saving, setSaving] = useState(false);
   const [cancellingSubscription, setCancellingSubscription] = useState(false);
   const [showCancelDialog, setShowCancelDialog] = useState(false);
+  const [refreshingStatus, setRefreshingStatus] = useState(false);
+  const [refreshMsg, setRefreshMsg] = useState('');
 
   const [form, setForm] = useState(null);
   const [winks, setWinks] = useState(null);
@@ -189,6 +192,25 @@ export default function MyProfile() {
     await base44.entities.MemberProfile.update(profile.id, updates);
     toast({ title: isFirstUpload ? 'Selfie uploaded! Upload your Govt. ID to complete verification.' : 'New selfie saved. Your verification status has been reset — please re-submit for review.' });
     refetch();
+  };
+
+  const handleRefreshStatus = async () => {
+    setRefreshingStatus(true);
+    setRefreshMsg('');
+    try {
+      const res = await base44.functions.invoke('whopActivateSubscription', {});
+      if (res.data?.activated) {
+        setRefreshMsg('✓ Subscription activated!');
+        queryClient.invalidateQueries({ queryKey: ['myProfile'] });
+        refetch();
+      } else {
+        setRefreshMsg(res.data?.message || 'No active membership found.');
+      }
+    } catch (err) {
+      setRefreshMsg('Error checking status. Please try again.');
+    } finally {
+      setRefreshingStatus(false);
+    }
   };
 
   const handleCancelSubscription = () => {
@@ -460,6 +482,25 @@ export default function MyProfile() {
 
             {profile.subscription_status !== 'active' && (
               <div className="mt-4 space-y-4">
+                {/* Refresh status button — useful if payment went through but webhook didn't fire */}
+                <div className="flex items-center gap-3">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="gap-2"
+                    onClick={handleRefreshStatus}
+                    disabled={refreshingStatus}
+                  >
+                    <RefreshCw className={`w-4 h-4 ${refreshingStatus ? 'animate-spin' : ''}`} />
+                    {refreshingStatus ? 'Checking…' : 'Refresh Membership Status'}
+                  </Button>
+                  {refreshMsg && (
+                    <span className={`text-sm ${refreshMsg.startsWith('✓') ? 'text-primary font-medium' : 'text-muted-foreground'}`}>
+                      {refreshMsg}
+                    </span>
+                  )}
+                </div>
+
                 <div className="p-4 bg-accent/50 rounded-xl text-sm text-foreground">
                   <strong className="text-primary">{t('subscription_upgrade_cta')}</strong>{' '}
                   {t('subscription_upgrade_desc', { price: config.subscription_price || 9.99 })}
