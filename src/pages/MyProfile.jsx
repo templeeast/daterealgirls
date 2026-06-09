@@ -9,7 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Upload, Shield, Camera, Save, Trash2, Eye, EyeOff, AlertTriangle, XCircle, Smile, ExternalLink } from 'lucide-react';
+import { Upload, Shield, Camera, Save, Trash2, Eye, EyeOff, AlertTriangle, XCircle, Smile, ExternalLink, CreditCard } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { enUS, es, th, zhCN, de, vi as viLocale, pt } from 'date-fns/locale';
 import { useToast } from '@/components/ui/use-toast';
@@ -423,6 +423,15 @@ export default function MyProfile() {
             <p className="text-xs text-muted-foreground mb-3">
               {t('subscription_managed_notice')}
             </p>
+            {config.payment_processor === 'whop' && (
+              <button
+                onClick={() => navigate('/payment-history')}
+                className="text-sm text-primary hover:underline flex items-center gap-1 mb-2"
+              >
+                <CreditCard className="w-4 h-4" />
+                View Payment History
+              </button>
+            )}
             <div className="flex flex-col gap-2">
               {config.payment_processor === 'whop' && (
                 <a href="https://whop.com/@me/settings/memberships/" target="_blank" rel="noopener noreferrer">
