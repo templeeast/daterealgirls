@@ -25,7 +25,7 @@ import AuthorizeNetButton from '@/components/subscription/AuthorizeNetButton';
 import AuthorizeNetHostedButton from '@/components/subscription/AuthorizeNetHostedButton';
 import FreeTrialButton from '@/components/subscription/FreeTrialButton';
 import CancelSubscriptionDialog from '@/components/dialogs/CancelSubscriptionDialog';
-import WhopEmbeddedCheckout from '@/components/subscription/WhopEmbeddedCheckout';
+import WhopButton from '@/components/subscription/WhopButton';
 
 const INTERESTS = [
   { key: 'Travel', tKey: 'interest_travel' },
@@ -60,7 +60,7 @@ export default function MyProfile() {
   const [saving, setSaving] = useState(false);
   const [cancellingSubscription, setCancellingSubscription] = useState(false);
   const [showCancelDialog, setShowCancelDialog] = useState(false);
-  const [showWhopCheckout, setShowWhopCheckout] = useState(false);
+
   const [form, setForm] = useState(null);
   const [winks, setWinks] = useState(null);
 
@@ -258,15 +258,6 @@ export default function MyProfile() {
         onConfirm={handleConfirmCancel}
         loading={cancellingSubscription}
       />
-      {showWhopCheckout && (
-        <WhopEmbeddedCheckout
-          planId={config.whop_men_plan_id}
-          prefillEmail={user?.email}
-          prefillName={user?.full_name}
-          devMode={config.dev_mode}
-          onClose={() => { setShowWhopCheckout(false); refetch(); }}
-        />
-      )}
       <h1 className="font-heading text-3xl font-bold mb-6">{t('my_profile_title')}</h1>
 
       {/* Incomplete profile banner */}
@@ -483,13 +474,12 @@ export default function MyProfile() {
                   {config.payment_processor === 'whop' ? (
                     <div className="border rounded-xl p-4 space-y-2">
                       <p className="text-sm font-medium">{t('subscribe_via_whop')}</p>
-                      <Button
-                        className="w-full gap-2 rounded-full"
-                        size="lg"
-                        onClick={() => setShowWhopCheckout(true)}
-                      >
-                        Subscribe via Whop
-                      </Button>
+                      <WhopButton
+                        planId={config.whop_men_plan_id}
+                        prefillEmail={user?.email}
+                        returnUrl={`${window.location.origin}/whop-return`}
+                        devMode={config.dev_mode}
+                      />
                     </div>
                   ) : config.payment_processor === 'codapay' ? (
                     <div className="border rounded-xl p-4 space-y-2">
