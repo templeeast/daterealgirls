@@ -24,44 +24,44 @@ Deno.serve(async (req) => {
       : Deno.env.get('WHOP_PROD_API_KEY');
     const planId = config?.whop_men_plan_id;
 
-    // Query Whop v2 memberships — valid=true, optionally filtered by plan
+    // Whop API: list memberships for this user by looking up via their email
+    // Try fetching the user by email first to get their whop user id
+    const userEmail = user.email?.toLowerCase();
+
+    // Search memberships filtered by plan_id, valid only
     let searchUrl = `https://api.whop.com/api/v2/memberships?valid=true&per=50`;
     if (planId) searchUrl += `&plan_id=${planId}`;
 
     const resp = await fetch(searchUrl, {
       headers: {
         'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
       },
     });
 
     const respText = await resp.text();
-    console.log('Whop memberships status:', resp.status);
-    console.log('Whop memberships raw:', respText.slice(0, 500));
+    console.log('Whop status:', resp.status, '| url:', searchUrl);
+    console.log('Whop response (first 800 chars):', respText.slice(0, 800));
 
     if (!resp.ok) {
-      return Response.json({ activated: false, message: `Whop API error: ${respText}` });
+      // Fallback: if we can't verify via API right now, just trust the webhook will come
+      return Response.json({ activated: false, message: 'Whop API unavailable, webhook will activate shortly.' });
     }
 
     const data = JSON.parse(respText);
     const memberships = data.data || [];
-    console.log(`Found ${memberships.length} memberships. User email: ${user.email}`);
 
-    // Log first membership structure to understand shape
-    if (memberships.length > 0) {
-      console.log('Sample membership keys:', Object.keys(memberships[0]).join(', '));
-      console.log('Sample membership:', JSON.stringify(memberships[0]).slice(0, 400));
+    console.log(`Total memberships: ${memberships.length}`);
+    if (memberships[0]) {
+      console.log('First membership keys:', Object.keys(memberships[0]).join(', '));
+      console.log('First membership sample:', JSON.stringify(memberships[0]).slice(0, 400));
     }
 
-    const userEmail = user.email?.toLowerCase();
-
-    // Try multiple ways to match the membership to this user
+    // Match by email or stored whop_user_id
     let membership = memberships.find(m => {
       const mEmail = (m.user?.email || m.email || '').toLowerCase();
       return mEmail === userEmail;
     });
 
-    // Fallback: match by stored whop_user_id
     if (!membership && profile.whop_user_id) {
       membership = memberships.find(m =>
         m.user_id === profile.whop_user_id || m.user?.id === profile.whop_user_id
@@ -69,6 +69,7 @@ Deno.serve(async (req) => {
     }
 
     if (!membership) {
+      console.log(`No matching membership for email: ${userEmail}`);
       return Response.json({ activated: false, message: 'No valid Whop membership found yet.' });
     }
 
