@@ -27,6 +27,7 @@ import Terms from '@/pages/Terms';
 import RefundPolicy from '@/pages/RefundPolicy';
 import ShippingPolicy from '@/pages/ShippingPolicy';
 import ContactUs from '@/pages/ContactUs';
+import WhopReturn from '@/pages/WhopReturn';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin, user } = useAuth();
@@ -83,6 +84,7 @@ const AuthenticatedApp = () => {
       <Route path="/refund-policy" element={<RefundPolicy />} />
       <Route path="/shipping-policy" element={<ShippingPolicy />} />
       <Route path="/contact" element={<ContactUs />} />
+      <Route path="/whop-return" element={<WhopReturn />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
