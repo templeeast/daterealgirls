@@ -298,7 +298,7 @@ export default function MyProfile() {
                 {t(`verif_status_${profile.verification_status}`)}
               </Badge>
             </div>
-            {(profile.verification_status === 'unverified' || profile.verification_status === 'rejected' || profile.verification_status === 'pending') && (
+            {true && (
               <div className="mt-4 space-y-4">
                 <div className="flex items-start gap-2 text-xs text-muted-foreground bg-muted rounded-lg p-3">
                   <Shield className="w-3.5 h-3.5 shrink-0 mt-0.5 text-primary" />
