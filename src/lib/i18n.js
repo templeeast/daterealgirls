@@ -4,6 +4,7 @@ import { verificationTranslations } from './i18n-verification';
 import { paymentInterestsTranslations } from './i18n-payment-interests';
 import { legalTranslations } from './i18n-legal';
 import { winkTranslations } from './i18n-winks';
+import { subscriptionIdTranslations } from './i18n-subscription-id';
 
 const en = {
    // Landing
@@ -1975,14 +1976,14 @@ const tl = {
 };
 
 const resources = {
-  en: { translation: { ...en, ...verificationTranslations.en, ...paymentInterestsTranslations.en, ...legalTranslations.en, ...winkTranslations.en } },
-  es: { translation: { ...es, ...verificationTranslations.es, ...paymentInterestsTranslations.es, ...legalTranslations.es, ...winkTranslations.es } },
-  th: { translation: { ...th, ...verificationTranslations.th, ...paymentInterestsTranslations.th, ...legalTranslations.th, ...winkTranslations.th } },
-  zh: { translation: { ...zh, ...verificationTranslations.zh, ...paymentInterestsTranslations.zh, ...legalTranslations.zh, ...winkTranslations.zh } },
-  de: { translation: { ...de, ...verificationTranslations.de, ...paymentInterestsTranslations.de, ...legalTranslations.de, ...winkTranslations.de } },
-  vi: { translation: { ...vi, ...verificationTranslations.vi, ...paymentInterestsTranslations.vi, ...legalTranslations.vi, ...winkTranslations.vi } },
-  pt: { translation: { ...pt, ...verificationTranslations.pt, ...paymentInterestsTranslations.pt, ...legalTranslations.pt, ...winkTranslations.pt } },
-  tl: { translation: { ...tl, ...verificationTranslations.tl, ...paymentInterestsTranslations.tl, ...legalTranslations.tl, ...winkTranslations.tl } },
+  en: { translation: { ...en, ...verificationTranslations.en, ...paymentInterestsTranslations.en, ...legalTranslations.en, ...winkTranslations.en, ...subscriptionIdTranslations.en } },
+  es: { translation: { ...es, ...verificationTranslations.es, ...paymentInterestsTranslations.es, ...legalTranslations.es, ...winkTranslations.es, ...subscriptionIdTranslations.es } },
+  th: { translation: { ...th, ...verificationTranslations.th, ...paymentInterestsTranslations.th, ...legalTranslations.th, ...winkTranslations.th, ...subscriptionIdTranslations.th } },
+  zh: { translation: { ...zh, ...verificationTranslations.zh, ...paymentInterestsTranslations.zh, ...legalTranslations.zh, ...winkTranslations.zh, ...subscriptionIdTranslations.zh } },
+  de: { translation: { ...de, ...verificationTranslations.de, ...paymentInterestsTranslations.de, ...legalTranslations.de, ...winkTranslations.de, ...subscriptionIdTranslations.de } },
+  vi: { translation: { ...vi, ...verificationTranslations.vi, ...paymentInterestsTranslations.vi, ...legalTranslations.vi, ...winkTranslations.vi, ...subscriptionIdTranslations.vi } },
+  pt: { translation: { ...pt, ...verificationTranslations.pt, ...paymentInterestsTranslations.pt, ...legalTranslations.pt, ...winkTranslations.pt, ...subscriptionIdTranslations.pt } },
+  tl: { translation: { ...tl, ...verificationTranslations.tl, ...paymentInterestsTranslations.tl, ...legalTranslations.tl, ...winkTranslations.tl, ...subscriptionIdTranslations.tl } },
 };
 
 i18n

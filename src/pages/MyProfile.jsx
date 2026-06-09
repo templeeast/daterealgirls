@@ -334,18 +334,18 @@ export default function MyProfile() {
                 {/* Govt ID — Front */}
                 <div className={`border-2 rounded-xl p-4 space-y-2 ${!profile.id_document_url ? 'border-amber-300 bg-amber-50' : 'border-border'}`}>
                   <div className="flex items-center gap-2">
-                    <p className="text-sm font-medium">Govt. ID — Front</p>
-                    <Badge variant="outline" className="text-xs px-2 py-0.5">Optional</Badge>
+                    <p className="text-sm font-medium">{t('govt_id_front_title')}</p>
+                    <Badge variant="outline" className="text-xs px-2 py-0.5">{t('optional_badge')}</Badge>
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    {profile.id_document_url ? 'Front of ID on file.' : 'Upload the front side of your government-issued photo ID.'}
+                    {profile.id_document_url ? t('govt_id_front_on_file') : t('govt_id_front_no_file')}
                   </p>
                   <div className="flex items-center gap-3">
                     <label>
                       <Button variant={profile.id_document_url ? 'outline' : 'secondary'} size="sm" className="gap-2" asChild>
                         <span>
                           <Upload className="w-4 h-4" />
-                          {profile.id_document_url ? 'Re-upload Front' : 'Upload Front'}
+                          {profile.id_document_url ? t('govt_id_front_reupload_btn') : t('govt_id_front_upload_btn')}
                         </span>
                       </Button>
                       <input type="file" accept="image/*,.pdf" className="hidden" onChange={handleIdFrontUpload} />
@@ -359,24 +359,24 @@ export default function MyProfile() {
                 {/* Govt ID — Back */}
                 <div className={`border-2 rounded-xl p-4 space-y-2 ${!profile.id_document_back_url ? 'border-amber-300/60 bg-amber-50/50' : 'border-border'}`}>
                   <div className="flex items-center gap-2">
-                    <p className="text-sm font-medium">Govt. ID — Back</p>
-                    <Badge variant="outline" className="text-xs px-2 py-0.5">Optional</Badge>
+                    <p className="text-sm font-medium">{t('govt_id_back_title')}</p>
+                    <Badge variant="outline" className="text-xs px-2 py-0.5">{t('optional_badge')}</Badge>
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    {profile.id_document_back_url ? 'Back of ID on file.' : 'Upload the back side of your government-issued photo ID.'}
+                    {profile.id_document_back_url ? t('govt_id_back_on_file') : t('govt_id_back_no_file')}
                   </p>
                   <div className="flex items-center gap-3">
                     <label>
                       <Button variant={profile.id_document_back_url ? 'outline' : 'secondary'} size="sm" className="gap-2" asChild>
                         <span>
                           <Upload className="w-4 h-4" />
-                          {profile.id_document_back_url ? 'Re-upload Back' : 'Upload Back'}
+                          {profile.id_document_back_url ? t('govt_id_back_reupload_btn') : t('govt_id_back_upload_btn')}
                         </span>
                       </Button>
                       <input type="file" accept="image/*,.pdf" className="hidden" onChange={handleIdBackUpload} />
                     </label>
                     {profile.id_document_back_url_2 && (
-                      <span className="text-xs text-amber-600 font-medium">Updated</span>
+                      <span className="text-xs text-amber-600 font-medium">{t('verif_id_updated_tag')}</span>
                     )}
                   </div>
                 </div>
@@ -414,33 +414,33 @@ export default function MyProfile() {
             </div>
             {/* Active subscription actions */}
             {profile.subscription_status === 'active' && (
-              <div className="mt-4 pt-4 border-t space-y-2">
-                <p className="text-xs text-muted-foreground mb-3">
-                  Your subscription is managed through our payment provider. Use the same email address you used when you subscribed.
-                </p>
-                <div className="flex flex-col gap-2">
-                  {config.payment_processor === 'whop' && (
-                    <a href="https://whop.com/@me/settings/memberships/" target="_blank" rel="noopener noreferrer">
-                      <Button size="sm" variant="outline" className="w-full gap-2">
-                        <ExternalLink className="w-4 h-4" />
-                        Manage My Subscription
-                      </Button>
-                    </a>
-                  )}
-                  {(config.payment_processor === 'whop' || profile.paymentnerds_subscription_id) && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="w-full text-destructive border-destructive/30 hover:bg-destructive/10 gap-2"
-                      onClick={handleCancelSubscription}
-                      disabled={cancellingSubscription}
-                    >
-                      <XCircle className="w-4 h-4" />
-                      {cancellingSubscription ? 'Cancelling...' : 'Cancel Subscription'}
-                    </Button>
-                  )}
-                </div>
-              </div>
+            <div className="mt-4 pt-4 border-t space-y-2">
+            <p className="text-xs text-muted-foreground mb-3">
+              {t('subscription_managed_notice')}
+            </p>
+            <div className="flex flex-col gap-2">
+              {config.payment_processor === 'whop' && (
+                <a href="https://whop.com/@me/settings/memberships/" target="_blank" rel="noopener noreferrer">
+                  <Button size="sm" variant="outline" className="w-full gap-2">
+                    <ExternalLink className="w-4 h-4" />
+                    {t('manage_subscription_btn')}
+                  </Button>
+                </a>
+              )}
+              {(config.payment_processor === 'whop' || profile.paymentnerds_subscription_id) && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full text-destructive border-destructive/30 hover:bg-destructive/10 gap-2"
+                  onClick={handleCancelSubscription}
+                  disabled={cancellingSubscription}
+                >
+                  <XCircle className="w-4 h-4" />
+                  {cancellingSubscription ? t('cancelling') : t('cancel_subscription_btn')}
+                </Button>
+              )}
+            </div>
+            </div>
             )}
 
             {profile.subscription_status !== 'active' && (
@@ -458,7 +458,7 @@ export default function MyProfile() {
 
                   {config.payment_processor === 'whop' ? (
                     <div className="border rounded-xl p-4 space-y-2">
-                      <p className="text-sm font-medium">Subscribe via Whop</p>
+                      <p className="text-sm font-medium">{t('subscribe_via_whop')}</p>
                       <WhopButton
                         planId={config.whop_men_plan_id}
                         prefillEmail={user?.email}
@@ -468,7 +468,7 @@ export default function MyProfile() {
                     </div>
                   ) : config.payment_processor === 'codapay' ? (
                     <div className="border rounded-xl p-4 space-y-2">
-                      <p className="text-sm font-medium">Pay via Local Payment Methods</p>
+                      <p className="text-sm font-medium">{t('pay_via_local')}</p>
                       <CodaPayButton
                         price={config.subscription_price || 4.99}
                         onSuccess={refetch}
@@ -476,8 +476,8 @@ export default function MyProfile() {
                     </div>
                   ) : config.payment_processor === 'segpay' ? (
                     <div className="border rounded-xl p-4 space-y-2">
-                      <p className="text-sm font-medium">Pay via SegPay</p>
-                      <p className="text-xs text-muted-foreground">SegPay integration coming soon. Please use another payment method.</p>
+                      <p className="text-sm font-medium">{t('pay_via_segpay')}</p>
+                      <p className="text-xs text-muted-foreground">{t('segpay_coming_soon')}</p>
                     </div>
                   ) : (
                     <div className="border rounded-xl p-4 space-y-2">
