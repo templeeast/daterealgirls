@@ -9,7 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Upload, Shield, Camera, Save, Trash2, Eye, EyeOff, AlertTriangle, XCircle, Smile } from 'lucide-react';
+import { Upload, Shield, Camera, Save, Trash2, Eye, EyeOff, AlertTriangle, XCircle, Smile, ExternalLink } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
 import useMyProfile from '@/hooks/useMyProfile';
@@ -404,29 +404,32 @@ export default function MyProfile() {
             </div>
             {/* Active subscription actions */}
             {profile.subscription_status === 'active' && (
-              <div className="mt-4 pt-4 border-t space-y-3">
-                {config.payment_processor === 'whop' && (
-                  <div className="space-y-1">
-                    <p className="text-xs text-muted-foreground">
-                      Your subscription is managed through our payment provider. Use the same email address you used when you subscribed.
-                    </p>
+              <div className="mt-4 pt-4 border-t space-y-2">
+                <p className="text-xs text-muted-foreground mb-3">
+                  Your subscription is managed through our payment provider. Use the same email address you used when you subscribed.
+                </p>
+                <div className="flex flex-col gap-2">
+                  {config.payment_processor === 'whop' && (
                     <a href="https://whop.com/@me/settings/memberships/" target="_blank" rel="noopener noreferrer">
-                      <Button size="sm" className="rounded-full gap-2">Manage My Subscription</Button>
+                      <Button size="sm" variant="outline" className="w-full gap-2">
+                        <ExternalLink className="w-4 h-4" />
+                        Manage My Subscription
+                      </Button>
                     </a>
-                  </div>
-                )}
-                {(config.payment_processor === 'whop' || profile.paymentnerds_subscription_id) && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-muted-foreground hover:text-destructive gap-2"
-                    onClick={handleCancelSubscription}
-                    disabled={cancellingSubscription}
-                  >
-                    <XCircle className="w-4 h-4" />
-                    {cancellingSubscription ? 'Cancelling...' : 'Cancel Subscription'}
-                  </Button>
-                )}
+                  )}
+                  {(config.payment_processor === 'whop' || profile.paymentnerds_subscription_id) && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full text-destructive border-destructive/30 hover:bg-destructive/10 gap-2"
+                      onClick={handleCancelSubscription}
+                      disabled={cancellingSubscription}
+                    >
+                      <XCircle className="w-4 h-4" />
+                      {cancellingSubscription ? 'Cancelling...' : 'Cancel Subscription'}
+                    </Button>
+                  )}
+                </div>
               </div>
             )}
 
