@@ -119,23 +119,17 @@ export default function MyProfile() {
   const maxPhotos = config.max_photos || 3;
   const photoFields = Array.from({ length: maxPhotos }, (_, i) => `photo_${i + 1}`);
 
-  const photoRef1 = useRef();
-  const photoRef2 = useRef();
-  const photoRef3 = useRef();
-  const photoRef4 = useRef();
-  const photoRef5 = useRef();
-  const photoRef6 = useRef();
-  const photoRef7 = useRef();
-  const photoRef8 = useRef();
-  const photoRef9 = useRef();
-  const photoRef10 = useRef();
-  const photoRef11 = useRef();
-  const photoRef12 = useRef();
-  const photoRef13 = useRef();
-  const photoRef14 = useRef();
-  const photoRef15 = useRef();
-  const allPhotoRefs = [photoRef1, photoRef2, photoRef3, photoRef4, photoRef5, photoRef6, photoRef7, photoRef8, photoRef9, photoRef10, photoRef11, photoRef12, photoRef13, photoRef14, photoRef15];
-  const photoInputRefs = Object.fromEntries(photoFields.map((f, i) => [f, allPhotoRefs[i]]));
+  // 15 stable refs — always created unconditionally regardless of maxPhotos
+  const photoRefs = [
+    useRef(), useRef(), useRef(), useRef(), useRef(),
+    useRef(), useRef(), useRef(), useRef(), useRef(),
+    useRef(), useRef(), useRef(), useRef(), useRef(),
+  ];
+  // Map field name -> ref (index-stable, covers all 15 slots)
+  const getPhotoRef = (field) => {
+    const n = parseInt(field.replace('photo_', ''), 10);
+    return photoRefs[n - 1];
+  };
 
   const handlePhotoUpload = async (e, field) => {
     const file = e.target.files?.[0];
@@ -564,7 +558,7 @@ export default function MyProfile() {
                 <div key={field} className="flex flex-col gap-1">
                   <div
                     className={`aspect-square rounded-xl border-2 border-dashed flex items-center justify-center overflow-hidden transition-colors relative cursor-pointer ${form[field] ? 'border-primary' : 'border-muted-foreground/30 hover:border-primary/50'} ${!isVisible && form[field] ? 'opacity-50' : ''}`}
-                    onClick={() => photoInputRefs[field].current?.click()}
+                    onClick={() => getPhotoRef(field).current?.click()}
                   >
                     {form[field] ? (
                       <img src={form[field]} className="w-full h-full object-cover" alt="" />
@@ -575,7 +569,7 @@ export default function MyProfile() {
                       </div>
                     )}
                   </div>
-                  <input ref={photoInputRefs[field]} type="file" accept="image/*" className="hidden" onChange={e => handlePhotoUpload(e, field)} />
+                  <input ref={getPhotoRef(field)} type="file" accept="image/*" className="hidden" onChange={e => handlePhotoUpload(e, field)} />
 
                   {form[field] && (
                     <div className="flex gap-1">
