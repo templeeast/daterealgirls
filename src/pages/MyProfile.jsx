@@ -476,7 +476,7 @@ export default function MyProfile() {
                       <WhopButton
                         planId={config.whop_men_plan_id}
                         prefillEmail={user?.email}
-                        returnUrl={`${window.location.origin}/my-profile`}
+                        returnUrl={`${window.location.origin}/whop-return`}
                         devMode={config.dev_mode}
                       />
                     </div>
