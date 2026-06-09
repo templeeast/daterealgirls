@@ -21,7 +21,7 @@ export default function UpgradePrompt({ price = 9.99, inline = false }) {
         <p className="text-sm text-foreground flex-1">
           Upgrade to <strong>Premium</strong> to unlock full messaging & browsing.
         </p>
-        <Button size="sm" className="rounded-full gap-1 shrink-0" onClick={() => navigate('/my-profile')}>
+        <Button size="sm" className="rounded-full gap-1 shrink-0" onClick={() => navigate('/my-profile#subscription')}>
           <Crown className="w-3 h-3" /> Upgrade
         </Button>
       </div>
@@ -46,7 +46,7 @@ export default function UpgradePrompt({ price = 9.99, inline = false }) {
             </div>
           ))}
         </div>
-        <Button size="lg" className="rounded-full gap-2 px-8" onClick={() => navigate('/my-profile')}>
+        <Button size="lg" className="rounded-full gap-2 px-8" onClick={() => navigate('/my-profile#subscription')}>
           <Crown className="w-4 h-4" /> Get Premium — ${price}/mo
         </Button>
         <p className="text-xs text-muted-foreground mt-3">Cancel anytime</p>

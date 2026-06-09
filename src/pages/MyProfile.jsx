@@ -378,7 +378,7 @@ export default function MyProfile() {
 
       {/* Subscription Info (for men) */}
       {profile.gender === 'male' && (
-        <Card className={`mb-6 ${profile.subscription_status !== 'active' ? 'border-2 border-primary/30' : ''}`}>
+        <Card id="subscription" className={`mb-6 ${profile.subscription_status !== 'active' ? 'border-2 border-primary/30' : ''}`}>
           <CardContent className="pt-6">
             <div className="flex items-start justify-between">
               <div>
