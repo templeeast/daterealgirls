@@ -56,12 +56,18 @@ export default function MyProfile() {
   const subscriptionRef = useRef(null);
 
   useEffect(() => {
-    if (window.location.hash === '#subscription' && subscriptionRef.current && profile) {
-      setTimeout(() => {
-        subscriptionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 100);
+    if (!profile || !form) return;
+    if (window.location.hash === '#subscription') {
+      // Use requestAnimationFrame to ensure the DOM has painted before scrolling
+      const raf = requestAnimationFrame(() => {
+        setTimeout(() => {
+          const el = document.getElementById('subscription');
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 150);
+      });
+      return () => cancelAnimationFrame(raf);
     }
-  }, [profile]);
+  }, [profile, form]);
 
   const [saving, setSaving] = useState(false);
   const [cancellingSubscription, setCancellingSubscription] = useState(false);
