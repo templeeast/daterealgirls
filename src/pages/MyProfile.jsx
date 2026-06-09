@@ -55,10 +55,15 @@ export default function MyProfile() {
   const queryClient = useQueryClient();
   const subscriptionRef = useRef(null);
 
+  const [saving, setSaving] = useState(false);
+  const [cancellingSubscription, setCancellingSubscription] = useState(false);
+  const [showCancelDialog, setShowCancelDialog] = useState(false);
+  const [form, setForm] = useState(null);
+  const [winks, setWinks] = useState(null);
+
   useEffect(() => {
     if (!profile || !form) return;
     if (window.location.hash === '#subscription') {
-      // Use requestAnimationFrame to ensure the DOM has painted before scrolling
       const raf = requestAnimationFrame(() => {
         setTimeout(() => {
           const el = document.getElementById('subscription');
@@ -68,12 +73,6 @@ export default function MyProfile() {
       return () => cancelAnimationFrame(raf);
     }
   }, [profile, form]);
-
-  const [saving, setSaving] = useState(false);
-  const [cancellingSubscription, setCancellingSubscription] = useState(false);
-  const [showCancelDialog, setShowCancelDialog] = useState(false);
-  const [form, setForm] = useState(null);
-  const [winks, setWinks] = useState(null);
 
   useEffect(() => {
     if (profile?.id && winks === null) {
