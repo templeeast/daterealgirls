@@ -99,8 +99,8 @@ export default function Landing() {
         </div>
 
         <div className="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-10">
-          {/* Centered logo + site name — top of hero */}
-          <div className="flex items-center justify-center gap-2 mb-32">
+          {/* Centered logo + site name — below top controls with enough margin to avoid overlap */}
+          <div className="flex items-center justify-center gap-2 mt-10 mb-24">
             {config.logo_url ? (
               <img src={config.logo_url} alt={config.site_name} className="h-6 w-auto" />
             ) : (
