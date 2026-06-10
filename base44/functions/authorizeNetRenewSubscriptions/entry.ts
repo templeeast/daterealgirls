@@ -55,15 +55,14 @@ Deno.serve(async (req) => {
 
         if (resultCode === 'Ok' && arbStatus) {
           if (arbStatus === 'active') {
-            // Subscription is still active — extend end date by 1 month from today if it's past
-            if (profile.subscription_end_date && profile.subscription_end_date < today) {
-              const newEnd = new Date();
-              newEnd.setMonth(newEnd.getMonth() + 1);
-              await base44.asServiceRole.entities.MemberProfile.update(profile.id, {
-                subscription_end_date: newEnd.toISOString().split('T')[0],
-              });
-              renewed++;
-            }
+            // Subscription is active — always sync end date to 1 month from today
+            const newEnd = new Date();
+            newEnd.setMonth(newEnd.getMonth() + 1);
+            await base44.asServiceRole.entities.MemberProfile.update(profile.id, {
+              subscription_status: 'active',
+              subscription_end_date: newEnd.toISOString().split('T')[0],
+            });
+            renewed++;
           } else if (arbStatus === 'canceled' || arbStatus === 'terminated' || arbStatus === 'expired') {
             await base44.asServiceRole.entities.MemberProfile.update(profile.id, {
               subscription_status: arbStatus === 'canceled' ? 'cancelled' : 'expired',

@@ -553,11 +553,13 @@ export default function MyProfile() {
                         <AuthorizeNetHostedButton
                           price={config.subscription_price || 4.99}
                           onSuccess={refetch}
+                          devMode={config.dev_mode}
                         />
                       ) : (
                         <AuthorizeNetButton
                           price={config.subscription_price || 4.99}
                           onSuccess={refetch}
+                          devMode={config.dev_mode}
                         />
                       )}
                     </div>

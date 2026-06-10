@@ -7,8 +7,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { CreditCard, Loader2, Lock } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
-// Sandbox toggle — set to false for production
-const USE_SANDBOX = true;
+// Sandbox mode is driven by site config (dev_mode flag) passed in via props
 
 function formatCardNumber(value) {
   return value.replace(/\D/g, '').slice(0, 16).replace(/(.{4})/g, '$1 ').trim();
@@ -20,7 +19,7 @@ function formatExpiry(value) {
   return digits;
 }
 
-export default function AuthorizeNetButton({ price, onSuccess }) {
+export default function AuthorizeNetButton({ price, onSuccess, devMode = false }) {
   const { toast } = useToast();
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
@@ -49,7 +48,7 @@ export default function AuthorizeNetButton({ price, onSuccess }) {
         cardExpiry,
         cardCvv,
         amount: price,
-        useSandbox: USE_SANDBOX,
+        useSandbox: devMode,
         firstName,
         lastName,
         address,

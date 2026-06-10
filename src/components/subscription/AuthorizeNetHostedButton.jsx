@@ -5,9 +5,15 @@ import { CreditCard, Loader2, X } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { addMonths, format } from 'date-fns';
 
-const HOSTED_FORM_URL = 'https://test.authorize.net/payment/payment'; // Change to https://accept.authorize.net/payment/payment for production
+// Hosted form URL is driven by the token fetch (sandbox vs production is handled backend-side)
+// The correct Accept Hosted endpoints are:
+// Sandbox:    https://test.authorize.net/payment/payment
+// Production: https://accept.authorize.net/payment/payment
 
-export default function AuthorizeNetHostedButton({ price, onSuccess }) {
+export default function AuthorizeNetHostedButton({ price, onSuccess, devMode = false }) {
+  const HOSTED_FORM_URL = devMode
+    ? 'https://test.authorize.net/payment/payment'
+    : 'https://accept.authorize.net/payment/payment';
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [token, setToken] = useState(null);
