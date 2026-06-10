@@ -137,14 +137,14 @@ export default function Landing() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.4 + i * 0.1 }}
-                  className="p-5 rounded-2xl"
-                  style={{ backgroundColor: 'rgba(40,28,24,0.72)', backdropFilter: 'blur(8px)' }}
+                  className="p-6 rounded-2xl"
+                  style={{ backgroundColor: 'rgba(35,22,18,0.80)', backdropFilter: 'blur(10px)' }}
                 >
-                  <div className="mb-3">
+                  <div className="mb-4 inline-flex items-center justify-center w-9 h-9 rounded-lg" style={{ backgroundColor: 'rgba(255,255,255,0.08)' }}>
                     <f.icon className="w-5 h-5 text-primary" />
                   </div>
-                  <h3 className="font-bold text-sm text-white mb-1.5">{f.title}</h3>
-                  <p className="text-white/60 text-xs leading-relaxed">{f.desc}</p>
+                  <h3 className="font-bold text-base text-white mb-2.5">{f.title}</h3>
+                  <p className="text-white/65 text-sm leading-relaxed">{f.desc}</p>
                 </motion.div>
               ))}
             </div>
