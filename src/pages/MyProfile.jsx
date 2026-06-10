@@ -500,7 +500,7 @@ export default function MyProfile() {
                 className="text-sm text-primary hover:underline flex items-center gap-1 mb-2"
               >
                 <CreditCard className="w-4 h-4" />
-                View Payment History
+                {t('view_payment_history')}
               </button>
             )}
             <div className="flex flex-col gap-2">
