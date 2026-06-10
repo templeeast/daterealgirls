@@ -127,9 +127,6 @@ export default function Landing() {
         <div className="absolute bottom-10 right-10 w-96 h-96 bg-accent/40 rounded-full blur-3xl pointer-events-none" />
       </section>
 
-      {/* Scrolling profiles banner */}
-      <StockProfilesBanner />
-
       {/* Features */}
       <section className="py-24 bg-card">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -159,6 +156,9 @@ export default function Landing() {
           </div>
         </div>
       </section>
+
+      {/* Scrolling profiles banner */}
+      <StockProfilesBanner />
 
       {/* Pricing */}
       <section className="py-24">
