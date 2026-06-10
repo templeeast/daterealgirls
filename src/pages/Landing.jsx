@@ -61,15 +61,15 @@ export default function Landing() {
         </div>
       )}
 
-      {/* Hero */}
-      <section className="relative overflow-hidden">
-        {/* Background photo — bikini women on beach */}
+      {/* Hero — background extends into Features below */}
+      <section className="relative overflow-visible">
+        {/* Background photo — bikini women on beach, extends down */}
         <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: "url('https://media.base44.com/images/public/6a075fa1d43a688621123d26/79fc46786_image.png')" }}
+          className="absolute inset-x-0 top-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: "url('https://media.base44.com/images/public/6a075fa1d43a688621123d26/79fc46786_image.png')", bottom: '-320px' }}
         />
-        {/* Dark gradient overlay to keep text readable */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-background" />
+        {/* Dark gradient overlay — fades to background color far below the fold */}
+        <div className="absolute inset-x-0 top-0 bg-gradient-to-b from-black/60 via-black/30 to-background" style={{ bottom: '-320px' }} />
 
         {/* Top-right controls */}
         <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
@@ -128,13 +128,13 @@ export default function Landing() {
       </section>
 
       {/* Features */}
-      <section className="py-24 bg-card">
+      <section className="py-24 relative z-10 bg-transparent">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="font-heading text-3xl sm:text-4xl font-bold mb-4">{t('why_title', { siteName: config.site_name })}</h2>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              {t('why_subtitle')}
-            </p>
+          <h2 className="font-heading text-3xl sm:text-4xl font-bold mb-4 text-white drop-shadow">{t('why_title', { siteName: config.site_name })}</h2>
+          <p className="text-white/80 text-lg max-w-2xl mx-auto">
+            {t('why_subtitle')}
+          </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {features.map((f, i) => (
@@ -144,13 +144,13 @@ export default function Landing() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.1 }}
                 viewport={{ once: true }}
-                className="text-center p-6"
+                className="text-center p-6 rounded-2xl bg-black/30 backdrop-blur-sm border border-white/10"
               >
-                <div className="w-14 h-14 bg-accent rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <div className="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
                   <f.icon className="w-7 h-7 text-primary" />
                 </div>
-                <h3 className="font-heading text-xl font-semibold mb-2">{f.title}</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">{f.desc}</p>
+                <h3 className="font-heading text-xl font-semibold mb-2 text-white">{f.title}</h3>
+                <p className="text-white/70 text-sm leading-relaxed">{f.desc}</p>
               </motion.div>
             ))}
           </div>
