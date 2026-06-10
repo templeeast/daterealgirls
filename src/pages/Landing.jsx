@@ -93,7 +93,17 @@ export default function Landing() {
           )}
         </div>
 
-        <div className="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-10">
+        <div className="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-10">
+          {/* Centered logo + site name — top of hero */}
+          <div className="flex items-center justify-center gap-2 mb-10">
+            {config.logo_url ? (
+              <img src={config.logo_url} alt={config.site_name} className="h-6 w-auto" />
+            ) : (
+              <Heart className="w-5 h-5 text-primary fill-primary" />
+            )}
+            <span className="font-heading font-bold text-white text-lg tracking-wide">{config.site_name}</span>
+          </div>
+
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -107,7 +117,7 @@ export default function Landing() {
               {t('hero_subtitle')}
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center pointer-events-auto relative z-10 mb-12">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center pointer-events-auto relative z-10 mb-16">
               <Button size="lg" className="text-lg px-8 py-6 gap-2 rounded-full" onClick={() => handleCTAClick('/browse')}>
                 {t('btn_browse')}
                 <ChevronRight className="w-5 h-5" />
@@ -119,8 +129,8 @@ export default function Landing() {
               )}
             </div>
 
-            {/* Feature cards — inside hero, matching coming soon style */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-left">
+            {/* Feature cards — lower in hero, matching coming soon reference */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-left mt-8">
               {features.slice(0, 3).map((f, i) => (
                 <motion.div
                   key={f.title}
