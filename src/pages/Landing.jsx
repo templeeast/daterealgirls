@@ -63,9 +63,15 @@ export default function Landing() {
       {/* Hero — background extends into Features below */}
       <section className="relative overflow-visible">
         {/* Background photo — bikini women on beach, extends down */}
+        {/* Desktop background */}
         <div
-          className="absolute inset-x-0 top-0 bg-cover bg-center bg-no-repeat"
+          className="absolute inset-x-0 top-0 bg-cover bg-center bg-no-repeat hidden sm:block"
           style={{ backgroundImage: "url('https://media.base44.com/images/public/6a075fa1d43a688621123d26/79fc46786_image.png')", bottom: '-320px' }}
+        />
+        {/* Mobile background — portrait/closer crop */}
+        <div
+          className="absolute inset-x-0 top-0 bg-cover bg-top bg-no-repeat sm:hidden"
+          style={{ backgroundImage: "url('https://media.base44.com/images/public/6a075fa1d43a688621123d26/79fc46786_image.png')", backgroundPosition: 'center top', backgroundSize: 'cover', bottom: '-320px' }}
         />
         {/* Subtle overlay — matches coming soon reference brightness */}
         <div className="absolute inset-x-0 top-0" style={{ bottom: '-320px', background: 'linear-gradient(to bottom, rgba(0,0,0,0.38) 0%, rgba(0,0,0,0.32) 60%, hsl(30,25%,98%) 100%)' }} />
@@ -138,7 +144,7 @@ export default function Landing() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.4 + i * 0.1 }}
                   className="p-6 rounded-2xl"
-                  style={{ backgroundColor: 'rgba(35,22,18,0.80)', backdropFilter: 'blur(10px)' }}
+                  style={{ backgroundColor: 'rgba(35,22,18,0.55)', backdropFilter: 'blur(6px)' }}
                 >
                   <div className="mb-4 inline-flex items-center justify-center w-9 h-9 rounded-lg" style={{ backgroundColor: 'rgba(255,255,255,0.08)' }}>
                     <f.icon className="w-5 h-5 text-primary" />
