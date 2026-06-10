@@ -514,7 +514,7 @@ export default function MyProfile() {
                   </Button>
                 </a>
               )}
-              {(config.payment_processor === 'whop' || profile.paymentnerds_subscription_id) && (
+              {(config.payment_processor === 'whop' || config.payment_processor === 'authorizenet' || profile.paymentnerds_subscription_id) && (
                 <Button
                   variant="outline"
                   size="sm"
