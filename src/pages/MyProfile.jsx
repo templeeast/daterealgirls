@@ -412,6 +412,7 @@ export default function MyProfile() {
                   <div className="flex items-center gap-2">
                     <p className="text-sm font-medium">{t('govt_id_front_title')}</p>
                     <Badge variant="outline" className="text-xs px-2 py-0.5">{t('optional_badge')}</Badge>
+                    <Badge className="bg-primary text-primary-foreground text-xs px-2 py-0.5">{t('verif_id_required_badge')}</Badge>
                   </div>
                   <p className="text-xs text-muted-foreground">
                     {profile.id_document_url ? t('govt_id_front_on_file') : t('govt_id_front_no_file')}
@@ -437,6 +438,7 @@ export default function MyProfile() {
                   <div className="flex items-center gap-2">
                     <p className="text-sm font-medium">{t('govt_id_back_title')}</p>
                     <Badge variant="outline" className="text-xs px-2 py-0.5">{t('optional_badge')}</Badge>
+                    <Badge className="bg-primary text-primary-foreground text-xs px-2 py-0.5">{t('verif_id_required_badge')}</Badge>
                   </div>
                   <p className="text-xs text-muted-foreground">
                     {profile.id_document_back_url ? t('govt_id_back_on_file') : t('govt_id_back_no_file')}
