@@ -179,6 +179,10 @@ export default function ViewProfile() {
               {[profile.location_city, profile.location_country].filter(Boolean).join(', ')}
             </p>
           )}
+          {/* Tag ID */}
+          {profile.tag_id && profile.show_tag_id !== false && (
+            <p className="font-mono text-sm text-muted-foreground mt-1">{profile.tag_id}</p>
+          )}
           {/* Wink count — shown when viewing someone else's profile */}
           {user && profile.user_id !== user.id && winkCount > 0 && (
             <p className="flex items-center gap-1 text-sm text-muted-foreground mt-1">

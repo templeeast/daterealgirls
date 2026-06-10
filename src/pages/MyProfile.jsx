@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { Upload, Shield, Camera, Save, Trash2, Eye, EyeOff, AlertTriangle, XCircle, Smile, ExternalLink, CreditCard } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
@@ -672,12 +673,21 @@ export default function MyProfile() {
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Member Tag ID */}
-          <div className="flex items-center justify-between bg-muted rounded-xl px-4 py-3">
-            <div>
-              <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide mb-0.5">Your Member Tag ID</p>
-              <p className="font-mono font-bold text-lg text-foreground">{profile.tag_id || '...'}</p>
+          <div className="bg-muted rounded-xl px-4 py-3 space-y-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide mb-0.5">Your Member Tag ID</p>
+                <p className="font-mono font-bold text-lg text-foreground">{profile.tag_id || '...'}</p>
+              </div>
+              <div className="text-xs text-muted-foreground text-right max-w-[140px]">Share this so others can find you easily</div>
             </div>
-            <div className="text-xs text-muted-foreground text-right max-w-[140px]">Share this so others can find you easily</div>
+            <div className="flex items-center justify-between pt-1 border-t border-border">
+              <span className="text-sm text-muted-foreground">Show on public profile</span>
+              <Switch
+                checked={form.show_tag_id !== false}
+                onCheckedChange={v => setForm(f => ({ ...f, show_tag_id: v }))}
+              />
+            </div>
           </div>
           <div className="space-y-2">
             <Label>{t('display_name_label')}</Label>

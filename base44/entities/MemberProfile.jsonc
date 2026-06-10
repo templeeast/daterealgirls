@@ -10,6 +10,11 @@
       "type": "string",
       "description": "Unique short member tag ID (e.g. @DRG-A1B2C3) for easy sharing and search"
     },
+    "show_tag_id": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether to display the tag ID on the public profile"
+    },
     "display_name": {
       "type": "string",
       "description": "Display name on the platform"
