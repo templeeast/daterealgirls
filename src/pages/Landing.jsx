@@ -106,7 +106,7 @@ export default function Landing() {
             ) : (
               <Heart className="w-5 h-5 text-primary fill-primary" />
             )}
-            <span className="font-heading font-bold text-lg tracking-wide">
+            <span className="font-heading font-bold text-2xl tracking-wide">
               <span className="text-white">Date</span><span className="text-primary">Real</span><span className="text-white">Girls</span>
             </span>
           </div>
