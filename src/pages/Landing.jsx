@@ -68,7 +68,7 @@ export default function Landing() {
           style={{ backgroundImage: "url('https://media.base44.com/images/public/6a075fa1d43a688621123d26/79fc46786_image.png')", bottom: '-320px' }}
         />
         {/* Subtle overlay — matches coming soon reference brightness */}
-        <div className="absolute inset-x-0 top-0" style={{ bottom: '-320px', background: 'linear-gradient(to bottom, rgba(0,0,0,0.18) 0%, rgba(0,0,0,0.12) 60%, hsl(30,25%,98%) 100%)' }} />
+        <div className="absolute inset-x-0 top-0" style={{ bottom: '-320px', background: 'linear-gradient(to bottom, rgba(0,0,0,0.38) 0%, rgba(0,0,0,0.32) 60%, hsl(30,25%,98%) 100%)' }} />
 
         {/* Top-right controls */}
         <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
@@ -94,7 +94,7 @@ export default function Landing() {
 
         <div className="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-10">
           {/* Centered logo + site name — top of hero */}
-          <div className="flex items-center justify-center gap-2 mb-20">
+          <div className="flex items-center justify-center gap-2 mb-32">
             {config.logo_url ? (
               <img src={config.logo_url} alt={config.site_name} className="h-6 w-auto" />
             ) : (
