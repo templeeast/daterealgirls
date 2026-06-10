@@ -494,7 +494,7 @@ export default function MyProfile() {
             <p className="text-xs text-muted-foreground mb-3">
               {t('subscription_managed_notice')}
             </p>
-            {config.payment_processor === 'whop' && (
+            {(config.payment_processor === 'whop' || config.payment_processor === 'authorizenet') && (
               <button
                 onClick={() => navigate('/payment-history')}
                 className="text-sm text-primary hover:underline flex items-center gap-1 mb-2"

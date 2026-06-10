@@ -1,44 +1,55 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ArrowLeft, CreditCard, CheckCircle2, XCircle, Clock } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import useMyProfile from '@/hooks/useMyProfile';
+import useSiteConfig from '@/hooks/useSiteConfig';
 
 export default function PaymentHistory() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { profile, isLoading: profileLoading } = useMyProfile();
+  const { config, isLoading: configLoading } = useSiteConfig();
   const [payments, setPayments] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (profileLoading) return;
+    if (profileLoading || configLoading) return;
     if (!profile || profile.gender !== 'male') {
       navigate('/my-profile');
       return;
     }
-    base44.functions.invoke('whopPaymentHistory', {})
+    const fn = config?.payment_processor === 'authorizenet'
+      ? 'authorizeNetPaymentHistory'
+      : 'whopPaymentHistory';
+    base44.functions.invoke(fn, {})
       .then(res => setPayments(res.data?.payments || []))
       .catch(err => setError(err?.response?.data?.error || err.message))
       .finally(() => setLoading(false));
-  }, [profileLoading, profile]);
+  }, [profileLoading, configLoading, profile, config]);
+
+  const isAuthNet = config?.payment_processor === 'authorizenet';
 
   const statusIcon = (status) => {
-    if (status === 'paid') return <CheckCircle2 className="w-4 h-4 text-green-500" />;
-    if (status === 'failed' || status === 'refunded') return <XCircle className="w-4 h-4 text-destructive" />;
+    const settled = ['settledSuccessfully', 'paid', 'capturedPendingSettlement'];
+    const failed = ['failed', 'declined', 'voided', 'refunded', 'generalError'];
+    if (settled.some(s => status?.toLowerCase().includes(s.toLowerCase()) || status === s)) return <CheckCircle2 className="w-4 h-4 text-green-500" />;
+    if (failed.some(s => status?.toLowerCase().includes(s.toLowerCase()) || status === s)) return <XCircle className="w-4 h-4 text-destructive" />;
     return <Clock className="w-4 h-4 text-muted-foreground" />;
   };
 
   const statusBadge = (status) => {
-    if (status === 'paid') return <Badge className="bg-green-100 text-green-700">Paid</Badge>;
-    if (status === 'failed') return <Badge className="bg-destructive/10 text-destructive">Failed</Badge>;
-    if (status === 'refunded') return <Badge className="bg-amber-100 text-amber-700">Refunded</Badge>;
+    if (!status) return <Badge variant="outline">Unknown</Badge>;
+    const settled = status === 'paid' || status.toLowerCase().includes('settled');
+    const failed = ['failed', 'declined', 'voided', 'refunded'].some(s => status.toLowerCase().includes(s));
+    if (settled) return <Badge className="bg-green-100 text-green-700">Paid</Badge>;
+    if (failed) return <Badge className="bg-destructive/10 text-destructive">{status}</Badge>;
     return <Badge variant="outline">{status}</Badge>;
   };
 
@@ -50,7 +61,8 @@ export default function PaymentHistory() {
 
   const formatAmount = (amount, currency) => {
     if (amount == null) return '—';
-    const num = typeof amount === 'number' ? amount / 100 : parseFloat(amount);
+    // Whop returns cents (integer), Authorize.net returns dollars (float string)
+    const num = isAuthNet ? parseFloat(amount) : (typeof amount === 'number' ? amount / 100 : parseFloat(amount));
     return new Intl.NumberFormat(undefined, {
       style: 'currency',
       currency: (currency || 'USD').toUpperCase(),
@@ -101,14 +113,26 @@ export default function PaymentHistory() {
                   {statusIcon(payment.status)}
                   <div>
                     <p className="font-medium text-sm">
-                      {payment.plan_id || payment.membership_id || 'Subscription'}
+                      {isAuthNet
+                        ? (payment.description || 'Subscription Payment')
+                        : (payment.plan_id || payment.membership_id || 'Subscription')}
                     </p>
-                    <p className="text-xs text-muted-foreground">{formatDate(payment.created_at)}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {formatDate(isAuthNet ? payment.submitted_at : payment.created_at)}
+                    </p>
+                    {isAuthNet && payment.account_number && (
+                      <p className="text-xs text-muted-foreground">
+                        {payment.account_type} ···{payment.account_number.replace(/X/g, '')}
+                      </p>
+                    )}
                   </div>
                 </div>
                 <div className="flex items-center gap-3 shrink-0">
                   <span className="font-semibold text-sm">
-                    {formatAmount(payment.final_amount || payment.amount, payment.currency)}
+                    {formatAmount(
+                      isAuthNet ? payment.amount : (payment.final_amount || payment.amount),
+                      payment.currency
+                    )}
                   </span>
                   {statusBadge(payment.status)}
                 </div>
