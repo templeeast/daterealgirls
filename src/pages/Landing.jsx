@@ -67,7 +67,6 @@ export default function Landing() {
         <div
           className="absolute inset-x-0 top-0 bg-cover bg-no-repeat hidden sm:block"
           style={{ backgroundImage: "url('https://media.base44.com/images/public/6a075fa1d43a688621123d26/79fc46786_image.png')", backgroundPosition: 'center 20%', bottom: '-320px' }}
-          style={{ bottom: '-320px' }}
         />
         {/* Mobile background — portrait image */}
         <div
