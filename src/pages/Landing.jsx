@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Heart, Shield, Users, Star, ChevronRight, LogIn, UserCircle } from 'lucide-react';
+import { Heart, Shield, Users, Globe, ChevronRight, LogIn, UserCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import useSiteConfig from '@/hooks/useSiteConfig';
@@ -27,10 +27,9 @@ export default function Landing() {
   };
 
   const features = [
+    { icon: Heart, title: t('feature_real_connections_title'), desc: t('feature_real_connections_desc') },
+    { icon: Globe, title: t('feature_global_reach_title'), desc: t('feature_global_reach_desc') },
     { icon: Shield, title: t('feature_id_verified_title'), desc: t('feature_id_verified_desc') },
-    { icon: Users, title: t('feature_real_people_title'), desc: t('feature_real_people_desc') },
-    { icon: Heart, title: t('feature_genuine_title'), desc: t('feature_genuine_desc') },
-    { icon: Star, title: t('feature_safe_title'), desc: t('feature_safe_desc') },
   ];
 
   useEffect(() => {
@@ -110,10 +109,11 @@ export default function Landing() {
             transition={{ duration: 0.8 }}
             className="text-center"
           >
-            <h1 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight mb-6 text-white drop-shadow-lg">
-              {t('tagline')}
+            <h1 className="font-heading font-bold tracking-tight mb-6 drop-shadow-lg" style={{ fontSize: 'clamp(2.5rem, 7vw, 4.5rem)', lineHeight: 1.1 }}>
+              <span className="text-white block">{t('tagline_line1')}</span>
+              <span className="text-primary block">{t('tagline_line2')}</span>
             </h1>
-            <p className="text-lg sm:text-xl text-white/80 mb-10 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-base sm:text-lg text-white/80 mb-10 max-w-xl mx-auto leading-relaxed">
               {t('hero_subtitle')}
             </p>
 
@@ -129,8 +129,8 @@ export default function Landing() {
               )}
             </div>
 
-            {/* Feature cards — lower in hero, matching coming soon reference */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-left mt-8">
+            {/* Feature cards — pushed lower, near bottom of hero image */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-left mt-24">
               {features.slice(0, 3).map((f, i) => (
                 <motion.div
                   key={f.title}

@@ -5,11 +5,13 @@ import { paymentInterestsTranslations } from './i18n-payment-interests';
 import { legalTranslations } from './i18n-legal';
 import { winkTranslations } from './i18n-winks';
 import { subscriptionIdTranslations } from './i18n-subscription-id';
+import { heroFeaturesTranslations } from './i18n-hero-features';
 
 const en = {
    // Landing
-   tagline: 'Real. Simple. Yours.',
-   hero_subtitle: 'Real, breathtaking women waiting to connect. No bots. No tokens. Women sign-up for free!',
+   tagline_line1: 'Something Beautiful',
+   tagline_line2: 'Is Here',
+   hero_subtitle: 'A new way to connect with real, engaging women around the world. No bots. No tokens. Women sign-up for free!',
    banner_title: 'Meet Our Members',
    banner_subtitle: 'Verified, real people looking for genuine connections',
   badge_verified: 'Govt. ID Verification',
@@ -1976,14 +1978,14 @@ const tl = {
 };
 
 const resources = {
-  en: { translation: { ...en, ...verificationTranslations.en, ...paymentInterestsTranslations.en, ...legalTranslations.en, ...winkTranslations.en, ...subscriptionIdTranslations.en } },
-  es: { translation: { ...es, ...verificationTranslations.es, ...paymentInterestsTranslations.es, ...legalTranslations.es, ...winkTranslations.es, ...subscriptionIdTranslations.es } },
-  th: { translation: { ...th, ...verificationTranslations.th, ...paymentInterestsTranslations.th, ...legalTranslations.th, ...winkTranslations.th, ...subscriptionIdTranslations.th } },
-  zh: { translation: { ...zh, ...verificationTranslations.zh, ...paymentInterestsTranslations.zh, ...legalTranslations.zh, ...winkTranslations.zh, ...subscriptionIdTranslations.zh } },
-  de: { translation: { ...de, ...verificationTranslations.de, ...paymentInterestsTranslations.de, ...legalTranslations.de, ...winkTranslations.de, ...subscriptionIdTranslations.de } },
-  vi: { translation: { ...vi, ...verificationTranslations.vi, ...paymentInterestsTranslations.vi, ...legalTranslations.vi, ...winkTranslations.vi, ...subscriptionIdTranslations.vi } },
-  pt: { translation: { ...pt, ...verificationTranslations.pt, ...paymentInterestsTranslations.pt, ...legalTranslations.pt, ...winkTranslations.pt, ...subscriptionIdTranslations.pt } },
-  tl: { translation: { ...tl, ...verificationTranslations.tl, ...paymentInterestsTranslations.tl, ...legalTranslations.tl, ...winkTranslations.tl, ...subscriptionIdTranslations.tl } },
+  en: { translation: { ...en, ...heroFeaturesTranslations.en, ...verificationTranslations.en, ...paymentInterestsTranslations.en, ...legalTranslations.en, ...winkTranslations.en, ...subscriptionIdTranslations.en } },
+  es: { translation: { ...es, ...heroFeaturesTranslations.es, ...verificationTranslations.es, ...paymentInterestsTranslations.es, ...legalTranslations.es, ...winkTranslations.es, ...subscriptionIdTranslations.es } },
+  th: { translation: { ...th, ...heroFeaturesTranslations.th, ...verificationTranslations.th, ...paymentInterestsTranslations.th, ...legalTranslations.th, ...winkTranslations.th, ...subscriptionIdTranslations.th } },
+  zh: { translation: { ...zh, ...heroFeaturesTranslations.zh, ...verificationTranslations.zh, ...paymentInterestsTranslations.zh, ...legalTranslations.zh, ...winkTranslations.zh, ...subscriptionIdTranslations.zh } },
+  de: { translation: { ...de, ...heroFeaturesTranslations.de, ...verificationTranslations.de, ...paymentInterestsTranslations.de, ...legalTranslations.de, ...winkTranslations.de, ...subscriptionIdTranslations.de } },
+  vi: { translation: { ...vi, ...heroFeaturesTranslations.vi, ...verificationTranslations.vi, ...paymentInterestsTranslations.vi, ...legalTranslations.vi, ...winkTranslations.vi, ...subscriptionIdTranslations.vi } },
+  pt: { translation: { ...pt, ...heroFeaturesTranslations.pt, ...verificationTranslations.pt, ...paymentInterestsTranslations.pt, ...legalTranslations.pt, ...winkTranslations.pt, ...subscriptionIdTranslations.pt } },
+  tl: { translation: { ...tl, ...heroFeaturesTranslations.tl, ...verificationTranslations.tl, ...paymentInterestsTranslations.tl, ...legalTranslations.tl, ...winkTranslations.tl, ...subscriptionIdTranslations.tl } },
 };
 
 i18n
