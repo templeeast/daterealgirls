@@ -68,10 +68,10 @@ export default function Landing() {
           className="absolute inset-x-0 top-0 bg-cover bg-center bg-no-repeat hidden sm:block"
           style={{ backgroundImage: "url('https://media.base44.com/images/public/6a075fa1d43a688621123d26/79fc46786_image.png')", bottom: '-320px' }}
         />
-        {/* Mobile background — portrait/closer crop */}
+        {/* Mobile background — portrait image */}
         <div
-          className="absolute inset-x-0 top-0 bg-cover bg-top bg-no-repeat sm:hidden"
-          style={{ backgroundImage: "url('https://media.base44.com/images/public/6a075fa1d43a688621123d26/79fc46786_image.png')", backgroundPosition: 'center top', backgroundSize: 'cover', bottom: '-320px' }}
+          className="absolute inset-x-0 top-0 bg-cover bg-center bg-no-repeat sm:hidden"
+          style={{ backgroundImage: "url('https://media.base44.com/images/public/6a075fa1d43a688621123d26/a18e6ab74_image.png')", bottom: '-320px' }}
         />
         {/* Subtle overlay — matches coming soon reference brightness */}
         <div className="absolute inset-x-0 top-0" style={{ bottom: '-320px', background: 'linear-gradient(to bottom, rgba(0,0,0,0.38) 0%, rgba(0,0,0,0.32) 60%, hsl(30,25%,98%) 100%)' }} />
