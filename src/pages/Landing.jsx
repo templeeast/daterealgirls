@@ -74,7 +74,7 @@ export default function Landing() {
           style={{ backgroundImage: "url('https://media.base44.com/images/public/6a075fa1d43a688621123d26/a18e6ab74_image.png')", bottom: '-320px' }}
         />
         {/* Subtle overlay — matches coming soon reference brightness */}
-        <div className="absolute inset-x-0 top-0" style={{ bottom: '-320px', background: 'linear-gradient(to bottom, rgba(0,0,0,0.38) 0%, rgba(0,0,0,0.32) 60%, hsl(30,25%,98%) 100%)' }} />
+        <div className="absolute inset-x-0 top-0" style={{ bottom: '-320px', background: 'linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.48) 60%, hsl(30,25%,98%) 100%)' }} />
 
         {/* Top-right controls */}
         <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
