@@ -64,6 +64,10 @@ export default function MyProfile() {
   const [showCancelDialog, setShowCancelDialog] = useState(false);
   const [refreshingStatus, setRefreshingStatus] = useState(false);
   const [refreshMsg, setRefreshMsg] = useState('');
+  const [editingTagId, setEditingTagId] = useState(false);
+  const [tagIdInput, setTagIdInput] = useState('');
+  const [tagIdSaving, setTagIdSaving] = useState(false);
+  const [tagIdError, setTagIdError] = useState('');
 
   const [form, setForm] = useState(null);
   const [winks, setWinks] = useState(null);
@@ -253,6 +257,38 @@ export default function MyProfile() {
     } finally {
       setCancellingSubscription(false);
     }
+  };
+
+  const handleEditTagId = () => {
+    setTagIdInput(profile.tag_id || '');
+    setTagIdError('');
+    setEditingTagId(true);
+  };
+
+  const handleSaveTagId = async () => {
+    const raw = tagIdInput.trim().toUpperCase();
+    // Enforce @DRG- prefix
+    const formatted = raw.startsWith('@DRG-') ? raw : `@DRG-${raw.replace(/^@/, '')}`;
+    const suffix = formatted.replace('@DRG-', '');
+    if (!/^[A-Z0-9]{3,10}$/.test(suffix)) {
+      setTagIdError('Tag must be 3–10 letters/numbers after @DRG-');
+      return;
+    }
+    setTagIdSaving(true);
+    setTagIdError('');
+    // Check uniqueness
+    const existing = await base44.entities.MemberProfile.filter({ tag_id: formatted });
+    const takenByOther = existing.filter(p => p.id !== profile.id);
+    if (takenByOther.length > 0) {
+      setTagIdError('That tag is already taken. Please choose another.');
+      setTagIdSaving(false);
+      return;
+    }
+    await base44.entities.MemberProfile.update(profile.id, { tag_id: formatted });
+    toast({ title: 'Member tag updated!' });
+    setEditingTagId(false);
+    setTagIdSaving(false);
+    refetch();
   };
 
   const handleSave = async () => {
@@ -679,9 +715,32 @@ export default function MyProfile() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide mb-0.5">Your Member Tag ID</p>
-                <p className="font-mono font-bold text-lg text-foreground">{profile.tag_id || '...'}</p>
+                {editingTagId ? (
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className="font-mono text-sm text-muted-foreground">@DRG-</span>
+                    <Input
+                      className="font-mono font-bold h-8 w-36 text-sm"
+                      value={tagIdInput.replace(/^@DRG-/i, '')}
+                      onChange={e => { setTagIdInput(`@DRG-${e.target.value.toUpperCase()}`); setTagIdError(''); }}
+                      maxLength={14}
+                      autoFocus
+                    />
+                    <Button size="sm" onClick={handleSaveTagId} disabled={tagIdSaving}>
+                      {tagIdSaving ? 'Saving…' : 'Save'}
+                    </Button>
+                    <Button size="sm" variant="ghost" onClick={() => { setEditingTagId(false); setTagIdError(''); }}>
+                      Cancel
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2 mt-0.5">
+                    <p className="font-mono font-bold text-lg text-foreground">{profile.tag_id || '...'}</p>
+                    <button onClick={handleEditTagId} className="text-xs text-primary hover:underline">Edit</button>
+                  </div>
+                )}
+                {tagIdError && <p className="text-xs text-destructive mt-1">{tagIdError}</p>}
               </div>
-              <div className="text-xs text-muted-foreground text-right max-w-[140px]">Share this so others can find you easily</div>
+              {!editingTagId && <div className="text-xs text-muted-foreground text-right max-w-[140px]">Share this so others can find you easily</div>}
             </div>
             <div className="flex items-center justify-between pt-1 border-t border-border">
               <span className="text-sm text-muted-foreground">Show on public profile</span>
