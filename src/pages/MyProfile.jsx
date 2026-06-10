@@ -747,7 +747,10 @@ export default function MyProfile() {
               <span className="text-sm text-muted-foreground">Show on public profile</span>
               <Switch
                 checked={form.show_tag_id !== false}
-                onCheckedChange={v => setForm(f => ({ ...f, show_tag_id: v }))}
+                onCheckedChange={async v => {
+                  setForm(f => ({ ...f, show_tag_id: v }));
+                  await base44.entities.MemberProfile.update(profile.id, { show_tag_id: v });
+                }}
               />
             </div>
           </div>
