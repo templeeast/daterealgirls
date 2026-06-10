@@ -94,7 +94,7 @@ export default function Landing() {
 
         <div className="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-10">
           {/* Centered logo + site name — top of hero */}
-          <div className="flex items-center justify-center gap-2 mb-10">
+          <div className="flex items-center justify-center gap-2 mb-20">
             {config.logo_url ? (
               <img src={config.logo_url} alt={config.site_name} className="h-6 w-auto" />
             ) : (
@@ -110,8 +110,8 @@ export default function Landing() {
             className="text-center"
           >
             <h1 className="font-heading font-bold tracking-tight mb-6 drop-shadow-lg" style={{ fontSize: 'clamp(2.5rem, 7vw, 4.5rem)', lineHeight: 1.1 }}>
-              <span className="text-white block">{t('tagline_line1')}</span>
-              <span className="text-primary block">{t('tagline_line2')}</span>
+              <span className="text-white block">{t('tagline_line1').split(' ')[0]} <span style={{ color: '#F5A623' }}>{t('tagline_line1').split(' ').slice(1).join(' ')}</span></span>
+              <span className="text-white block">{t('tagline_line2')}</span>
             </h1>
             <p className="text-base sm:text-lg text-white/80 mb-10 max-w-xl mx-auto leading-relaxed">
               {t('hero_subtitle')}
