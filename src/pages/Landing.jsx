@@ -68,8 +68,8 @@ export default function Landing() {
           className="absolute inset-x-0 top-0 bg-cover bg-center bg-no-repeat"
           style={{ backgroundImage: "url('https://media.base44.com/images/public/6a075fa1d43a688621123d26/79fc46786_image.png')", bottom: '-320px' }}
         />
-        {/* Dark gradient overlay — lighter, matching coming soon reference */}
-        <div className="absolute inset-x-0 top-0 bg-gradient-to-b from-black/35 via-black/20 to-background" style={{ bottom: '-320px' }} />
+        {/* Subtle overlay — matches coming soon reference brightness */}
+        <div className="absolute inset-x-0 top-0" style={{ bottom: '-320px', background: 'linear-gradient(to bottom, rgba(0,0,0,0.18) 0%, rgba(0,0,0,0.12) 60%, hsl(30,25%,98%) 100%)' }} />
 
         {/* Top-right controls */}
         <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
@@ -93,12 +93,12 @@ export default function Landing() {
           )}
         </div>
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-32">
+        <div className="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-center max-w-3xl mx-auto"
+            className="text-center"
           >
             <h1 className="font-heading text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight mb-6 text-white drop-shadow-lg">
               {t('tagline')}
@@ -107,47 +107,38 @@ export default function Landing() {
               {t('hero_subtitle')}
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center pointer-events-auto relative z-10">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center pointer-events-auto relative z-10 mb-12">
               <Button size="lg" className="text-lg px-8 py-6 gap-2 rounded-full" onClick={() => handleCTAClick('/browse')}>
                 {t('btn_browse')}
                 <ChevronRight className="w-5 h-5" />
               </Button>
-              {/* Hide for authenticated users who have fully completed their profile */}
               {!(isAuthenticated && profile?.profile_complete) && (
                 <Button size="lg" variant="outline" className="text-lg px-8 py-6 rounded-full bg-white/10 border-white/40 text-white hover:bg-white/20" onClick={() => handleCTAClick('/my-profile')}>
                   {!isAuthenticated ? t('get_started') : t('btn_complete_profile')}
                 </Button>
               )}
             </div>
+
+            {/* Feature cards — inside hero, matching coming soon style */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-left">
+              {features.slice(0, 3).map((f, i) => (
+                <motion.div
+                  key={f.title}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 + i * 0.1 }}
+                  className="p-5 rounded-2xl"
+                  style={{ backgroundColor: 'rgba(40,28,24,0.72)', backdropFilter: 'blur(8px)' }}
+                >
+                  <div className="mb-3">
+                    <f.icon className="w-5 h-5 text-primary" />
+                  </div>
+                  <h3 className="font-bold text-sm text-white mb-1.5">{f.title}</h3>
+                  <p className="text-white/60 text-xs leading-relaxed">{f.desc}</p>
+                </motion.div>
+              ))}
+            </div>
           </motion.div>
-        </div>
-
-        {/* Decorative elements */}
-        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-10 right-10 w-96 h-96 bg-accent/40 rounded-full blur-3xl pointer-events-none" />
-      </section>
-
-      {/* Features — compact glassy cards, no heading, 3-col matching coming soon style */}
-      <section className="pb-16 pt-4 relative z-10 bg-transparent">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {features.slice(0, 3).map((f, i) => (
-              <motion.div
-                key={f.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.1 }}
-                viewport={{ once: true }}
-                className="p-5 rounded-2xl bg-black/40 backdrop-blur-md border border-white/10"
-              >
-                <div className="w-9 h-9 flex items-center justify-center mb-3">
-                  <f.icon className="w-5 h-5 text-primary" />
-                </div>
-                <h3 className="font-semibold text-sm text-white mb-1">{f.title}</h3>
-                <p className="text-white/60 text-xs leading-relaxed">{f.desc}</p>
-              </motion.div>
-            ))}
-          </div>
         </div>
       </section>
 
