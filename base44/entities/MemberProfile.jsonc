@@ -6,6 +6,10 @@
       "type": "string",
       "description": "Reference to the User entity id"
     },
+    "tag_id": {
+      "type": "string",
+      "description": "Unique short member tag ID (e.g. @DRG-A1B2C3) for easy sharing and search"
+    },
     "display_name": {
       "type": "string",
       "description": "Display name on the platform"

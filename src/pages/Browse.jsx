@@ -116,7 +116,8 @@ export default function Browse() {
         p.display_name?.toLowerCase().includes(s) ||
         p.location_city?.toLowerCase().includes(s) ||
         p.location_country?.toLowerCase().includes(s) ||
-        p.bio?.toLowerCase().includes(s)
+        p.bio?.toLowerCase().includes(s) ||
+        p.tag_id?.toLowerCase().includes(s)
       );
     }
     return true;

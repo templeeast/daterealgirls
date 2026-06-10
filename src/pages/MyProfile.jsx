@@ -86,6 +86,16 @@ export default function MyProfile() {
     }
   }, [profile?.id]);
 
+  // Auto-generate tag_id if missing
+  useEffect(() => {
+    if (profile && !profile.tag_id) {
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      const rand = Array.from({ length: 6 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+      const newTagId = `@DRG-${rand}`;
+      base44.entities.MemberProfile.update(profile.id, { tag_id: newTagId });
+    }
+  }, [profile?.id]);
+
   useEffect(() => {
     if (!isLoading && !profile) {
       navigate('/onboarding');
@@ -661,6 +671,14 @@ export default function MyProfile() {
           <CardTitle className="font-heading text-lg">{t('profile_info_title')}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
+          {/* Member Tag ID */}
+          <div className="flex items-center justify-between bg-muted rounded-xl px-4 py-3">
+            <div>
+              <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide mb-0.5">Your Member Tag ID</p>
+              <p className="font-mono font-bold text-lg text-foreground">{profile.tag_id || '...'}</p>
+            </div>
+            <div className="text-xs text-muted-foreground text-right max-w-[140px]">Share this so others can find you easily</div>
+          </div>
           <div className="space-y-2">
             <Label>{t('display_name_label')}</Label>
             <Input value={form.display_name} onChange={e => updateField('display_name', e.target.value)} />
