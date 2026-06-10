@@ -260,7 +260,7 @@ export default function SiteSettings() {
         <CardHeader>
           <CardTitle className="font-heading text-lg">Payment Processors</CardTitle>
           <CardDescription>
-            <strong>Whop</strong> is the primary processor. <strong>Authorize.net (PaymentCloud)</strong> is secondary. <strong>SegPay</strong> is the third option. <strong>CodaPay</strong> supports Southeast Asian local payment methods.
+            <strong>Whop</strong>, <strong>Authorize.net (ZenPayments)</strong>, <strong>SegPay</strong>, and <strong>CodaPay</strong> are available processors. Select the active one below — it will be marked as <strong>Primary</strong>.
             Dev Mode (above) controls which API keys are used across all processors.
           </CardDescription>
         </CardHeader>
@@ -272,9 +272,9 @@ export default function SiteSettings() {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="whop">Whop — Primary</SelectItem>
-                <SelectItem value="authorizenet">Authorize.net (PaymentCloud) — Secondary</SelectItem>
-                <SelectItem value="segpay">SegPay — Third</SelectItem>
+                <SelectItem value="whop">Whop</SelectItem>
+                <SelectItem value="authorizenet">Authorize.net (ZenPayments)</SelectItem>
+                <SelectItem value="segpay">SegPay</SelectItem>
                 <SelectItem value="codapay">CodaPay — Asia / Local</SelectItem>
               </SelectContent>
             </Select>
@@ -282,10 +282,10 @@ export default function SiteSettings() {
           </div>
 
           {/* Whop Config */}
-          <div className="space-y-3 border-2 border-primary/20 rounded-lg p-4 bg-primary/5">
+          <div className={`space-y-3 rounded-lg p-4 ${form.payment_processor === 'whop' ? 'border-2 border-primary/20 bg-primary/5' : 'border'}`}>
             <div className="flex items-center gap-2">
               <span className="text-sm font-semibold">Whop</span>
-              <span className="text-xs bg-primary text-primary-foreground px-2 py-0.5 rounded-full">Primary</span>
+              {form.payment_processor === 'whop' && <span className="text-xs bg-primary text-primary-foreground px-2 py-0.5 rounded-full">Primary</span>}
             </div>
             <p className="text-xs text-muted-foreground">
               API keys are stored as secrets: <code className="bg-muted px-1 rounded">WHOP_DEV_API_KEY</code> and <code className="bg-muted px-1 rounded">WHOP_PROD_API_KEY</code>. Dev Mode (above) selects which key is used. Set your Plan IDs from the Whop Dashboard below.
@@ -314,10 +314,10 @@ export default function SiteSettings() {
           </div>
 
           {/* Authorize.net Info */}
-          <div className="space-y-3 border rounded-lg p-4">
+          <div className={`space-y-3 rounded-lg p-4 ${form.payment_processor === 'authorizenet' ? 'border-2 border-primary/20 bg-primary/5' : 'border'}`}>
             <div className="flex items-center gap-2">
-              <span className="text-sm font-semibold">Authorize.net / PaymentCloud</span>
-              <span className="text-xs bg-muted text-muted-foreground px-2 py-0.5 rounded-full">Secondary</span>
+              <span className="text-sm font-semibold">Authorize.net / ZenPayments</span>
+              {form.payment_processor === 'authorizenet' && <span className="text-xs bg-primary text-primary-foreground px-2 py-0.5 rounded-full">Primary</span>}
             </div>
             <p className="text-xs text-muted-foreground">
               Secrets: <code className="bg-muted px-1 rounded">AUTHORIZENET_API_LOGIN_ID</code> and <code className="bg-muted px-1 rounded">AUTHORIZENET_TRANSACTION_KEY</code>. Current keys are Dev/Sandbox. No Prod keys yet.
@@ -335,10 +335,10 @@ export default function SiteSettings() {
           </div>
 
           {/* SegPay Info */}
-          <div className="space-y-3 border rounded-lg p-4">
+          <div className={`space-y-3 rounded-lg p-4 ${form.payment_processor === 'segpay' ? 'border-2 border-primary/20 bg-primary/5' : 'border'}`}>
             <div className="flex items-center gap-2">
               <span className="text-sm font-semibold">SegPay</span>
-              <span className="text-xs bg-muted text-muted-foreground px-2 py-0.5 rounded-full">Third</span>
+              {form.payment_processor === 'segpay' && <span className="text-xs bg-primary text-primary-foreground px-2 py-0.5 rounded-full">Primary</span>}
             </div>
             <p className="text-xs text-muted-foreground">
               No API keys configured yet. Once you have SegPay credentials, add them as secrets and configure the integration.
@@ -346,10 +346,10 @@ export default function SiteSettings() {
           </div>
 
           {/* CodaPay Info */}
-          <div className="space-y-3 border rounded-lg p-4">
+          <div className={`space-y-3 rounded-lg p-4 ${form.payment_processor === 'codapay' ? 'border-2 border-primary/20 bg-primary/5' : 'border'}`}>
             <div className="flex items-center gap-2">
               <span className="text-sm font-semibold">CodaPay</span>
-              <span className="text-xs bg-muted text-muted-foreground px-2 py-0.5 rounded-full">Asia / Local</span>
+              {form.payment_processor === 'codapay' ? <span className="text-xs bg-primary text-primary-foreground px-2 py-0.5 rounded-full">Primary</span> : <span className="text-xs bg-muted text-muted-foreground px-2 py-0.5 rounded-full">Asia / Local</span>}
             </div>
             <p className="text-xs text-muted-foreground">
               Secrets: <code className="bg-muted px-1 rounded">CODAPAY_PROJECT_ID</code>, <code className="bg-muted px-1 rounded">CODAPAY_SANDBOX_API_KEY</code>, <code className="bg-muted px-1 rounded">CODAPAY_PRODUCTION_API_KEY</code>.
