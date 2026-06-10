@@ -122,6 +122,7 @@ export default function MyProfile() {
         instagram: profile.instagram || '',
         facebook: profile.facebook || '',
         tiktok: profile.tiktok || '',
+        show_tag_id: profile.show_tag_id !== false,
       });
     }
   }, [profile, isLoading, form, navigate]);
