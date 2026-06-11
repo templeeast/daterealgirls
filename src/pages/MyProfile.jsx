@@ -532,24 +532,26 @@ export default function MyProfile() {
 
             {profile.subscription_status !== 'active' && (
               <div className="mt-4 space-y-4">
-                {/* Refresh status button — useful if payment went through but webhook didn't fire */}
-                <div className="flex items-center gap-3">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="gap-2"
-                    onClick={handleRefreshStatus}
-                    disabled={refreshingStatus}
-                  >
-                    <RefreshCw className={`w-4 h-4 ${refreshingStatus ? 'animate-spin' : ''}`} />
-                    {refreshingStatus ? 'Checking…' : 'Refresh Membership Status'}
-                  </Button>
-                  {refreshMsg && (
-                    <span className={`text-sm ${refreshMsg.startsWith('✓') ? 'text-primary font-medium' : 'text-muted-foreground'}`}>
-                      {refreshMsg}
-                    </span>
-                  )}
-                </div>
+                {/* Refresh status button — only relevant for Whop (webhook-based activation) */}
+                {config.payment_processor === 'whop' && (
+                  <div className="flex items-center gap-3">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="gap-2"
+                      onClick={handleRefreshStatus}
+                      disabled={refreshingStatus}
+                    >
+                      <RefreshCw className={`w-4 h-4 ${refreshingStatus ? 'animate-spin' : ''}`} />
+                      {refreshingStatus ? 'Checking…' : 'Refresh Membership Status'}
+                    </Button>
+                    {refreshMsg && (
+                      <span className={`text-sm ${refreshMsg.startsWith('✓') ? 'text-primary font-medium' : 'text-muted-foreground'}`}>
+                        {refreshMsg}
+                      </span>
+                    )}
+                  </div>
+                )}
 
                 <div className="p-4 bg-accent/50 rounded-xl text-sm text-foreground">
                   <strong className="text-primary">{t('subscription_upgrade_cta')}</strong>{' '}
