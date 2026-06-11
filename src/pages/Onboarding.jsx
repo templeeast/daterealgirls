@@ -148,7 +148,11 @@ export default function Onboarding() {
       <div className="space-y-2">
         <Label>{t('dob_label')}</Label>
         <Input type="date" value={form.date_of_birth} onChange={e => updateField('date_of_birth', e.target.value)} />
-        <p className="text-xs text-muted-foreground">{t('dob_notice')}</p>
+        {isUnderAge ? (
+          <p className="text-xs text-destructive font-medium">You must be at least 18 years old to join.</p>
+        ) : (
+          <p className="text-xs text-muted-foreground">{t('dob_notice')}</p>
+        )}
       </div>
       <CountryCitySelector
         country={form.location_country}
@@ -260,8 +264,11 @@ export default function Onboarding() {
     t('step_photos'),
   ];
   const verifyStepIndex = 2;
+  const ageIfDobEntered = form.date_of_birth ? calculateAge(form.date_of_birth) : null;
+  const isUnderAge = ageIfDobEntered !== null && ageIfDobEntered < 18;
+
   const canProceed = step === 0
-    ? form.display_name && form.gender && form.date_of_birth
+    ? form.display_name && form.gender && form.date_of_birth && !isUnderAge
     : step === verifyStepIndex && !requireStripeIdentity
       ? !!selfieUri
       : true;
