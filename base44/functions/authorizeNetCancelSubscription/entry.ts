@@ -24,8 +24,13 @@ Deno.serve(async (req) => {
     const profile = profiles[0];
     const subscriptionId = profile.subscription_id || profile.paymentnerds_subscription_id;
 
+    // Free trial users have no ARB subscription — just cancel locally
     if (!subscriptionId) {
-      return Response.json({ error: 'No active ARB subscription found.' }, { status: 400 });
+      await base44.asServiceRole.entities.MemberProfile.update(profile.id, {
+        subscription_status: 'cancelled',
+        free_trial_claimed: true,
+      });
+      return Response.json({ success: true });
     }
 
     const body = {
