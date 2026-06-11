@@ -110,7 +110,8 @@ Deno.serve(async (req) => {
             subscription_end_date: trialEndDate.toISOString().split('T')[0],
             free_trial_claimed: true,
             free_trial_start_date: today.toISOString().split('T')[0],
-            paymentnerds_subscription_id: subscriptionId,
+            subscription_id: subscriptionId,
+            subscription_payment_processor: 'authorizenet',
           });
         }
         return Response.json({ success: true, subscriptionId });
@@ -138,7 +139,8 @@ Deno.serve(async (req) => {
         subscription_end_date: trialEndDate.toISOString().split('T')[0],
         free_trial_claimed: true,
         free_trial_start_date: today.toISOString().split('T')[0],
-        paymentnerds_subscription_id: subscriptionId,
+        subscription_id: subscriptionId,
+        subscription_payment_processor: 'authorizenet',
       });
     }
 

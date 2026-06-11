@@ -22,7 +22,7 @@ Deno.serve(async (req) => {
     }
 
     const profile = profiles[0];
-    const subscriptionId = profile.paymentnerds_subscription_id;
+    const subscriptionId = profile.subscription_id || profile.paymentnerds_subscription_id;
 
     if (!subscriptionId) {
       return Response.json({ error: 'No active ARB subscription found.' }, { status: 400 });
@@ -56,7 +56,7 @@ Deno.serve(async (req) => {
     // Mark subscription as cancelled in our DB
     await base44.asServiceRole.entities.MemberProfile.update(profile.id, {
       subscription_status: 'cancelled',
-      paymentnerds_subscription_id: null,
+      subscription_id: null,
     });
 
     return Response.json({ success: true });

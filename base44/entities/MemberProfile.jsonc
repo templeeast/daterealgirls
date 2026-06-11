@@ -251,6 +251,14 @@
       "format": "date",
       "description": "When the paid subscription expires"
     },
+    "subscription_id": {
+      "type": "string",
+      "description": "Payment processor subscription ID (ARB subscription ID for Authorize.net, membership ID for Whop, etc.)"
+    },
+    "subscription_payment_processor": {
+      "type": "string",
+      "description": "The payment processor used when this subscription was created (e.g. authorizenet, whop, codapay)"
+    },
     "free_trial_claimed": {
       "type": "boolean",
       "default": false,

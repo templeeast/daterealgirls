@@ -33,7 +33,7 @@ Deno.serve(async (req) => {
     let expired = 0;
 
     for (const profile of activeProfiles) {
-      const arbSubId = profile.paymentnerds_subscription_id;
+      const arbSubId = profile.subscription_id || profile.paymentnerds_subscription_id;
 
       if (arbSubId) {
         // ARB-managed subscription — check status with Authorize.net
@@ -66,7 +66,7 @@ Deno.serve(async (req) => {
           } else if (arbStatus === 'canceled' || arbStatus === 'terminated' || arbStatus === 'expired') {
             await base44.asServiceRole.entities.MemberProfile.update(profile.id, {
               subscription_status: arbStatus === 'canceled' ? 'cancelled' : 'expired',
-              paymentnerds_subscription_id: null,
+              subscription_id: null,
             });
             expired++;
           } else if (arbStatus === 'suspended') {

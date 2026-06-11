@@ -11,7 +11,7 @@ Deno.serve(async (req) => {
     const profile = profiles?.[0];
     if (!profile) return Response.json({ error: 'Profile not found' }, { status: 404 });
 
-    const subscriptionId = profile.paymentnerds_subscription_id;
+    const subscriptionId = profile.subscription_id || profile.paymentnerds_subscription_id;
 
     // Build a synthetic $0 signup record if the member is in a free trial period
     const freeTrialRecord = (profile.free_trial_claimed && profile.free_trial_start_date)
