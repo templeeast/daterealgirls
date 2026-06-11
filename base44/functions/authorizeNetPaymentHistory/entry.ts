@@ -12,7 +12,21 @@ Deno.serve(async (req) => {
     if (!profile) return Response.json({ error: 'Profile not found' }, { status: 404 });
 
     const subscriptionId = profile.paymentnerds_subscription_id;
-    if (!subscriptionId) return Response.json({ payments: [] });
+
+    // Build a synthetic $0 signup record if the member is in a free trial period
+    const freeTrialRecord = (profile.free_trial_claimed && profile.free_trial_start_date)
+      ? [{
+          id: 'free-trial-signup',
+          status: 'settledSuccessfully',
+          amount: 0,
+          submitted_at: profile.free_trial_start_date,
+          account_type: null,
+          account_number: null,
+          description: 'Premium Signup — Free Trial',
+        }]
+      : [];
+
+    if (!subscriptionId) return Response.json({ payments: freeTrialRecord });
 
     const siteConfigs = await base44.asServiceRole.entities.SiteConfig.list();
     const config = siteConfigs?.[0];
@@ -83,7 +97,7 @@ Deno.serve(async (req) => {
       description: tx.transactionType || 'Subscription Payment',
     }));
 
-    return Response.json({ payments });
+    return Response.json({ payments: [...payments, ...freeTrialRecord] });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
   }
