@@ -107,20 +107,32 @@ export default function Chat() {
   const handleImageSend = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
-    const myProfile = (await base44.entities.MemberProfile.filter({ user_id: user.id }))[0];
-    await base44.entities.Message.create({
-      conversation_id: conversationId,
-      sender_id: user.id,
-      sender_name: myProfile?.display_name || 'User',
-      content: '📷 Photo',
-      image_url: file_url,
-    });
-    await base44.entities.Conversation.update(conversationId, {
-      last_message: '📷 Photo',
-      last_message_date: new Date().toISOString(),
-    });
-    queryClient.invalidateQueries({ queryKey: ['messages', conversationId] });
+
+    const reader = new FileReader();
+    reader.onload = async () => {
+      const base64 = reader.result.split(',')[1];
+      const res = await base44.functions.invoke('uploadToCloudinary', {
+        file: base64,
+        filename: file.name,
+      });
+      const imageUrl = res.data?.url;
+      if (!imageUrl) return;
+
+      const myProfile = (await base44.entities.MemberProfile.filter({ user_id: user.id }))[0];
+      await base44.entities.Message.create({
+        conversation_id: conversationId,
+        sender_id: user.id,
+        sender_name: myProfile?.display_name || 'User',
+        content: '📷 Photo',
+        image_url: imageUrl,
+      });
+      await base44.entities.Conversation.update(conversationId, {
+        last_message: '📷 Photo',
+        last_message_date: new Date().toISOString(),
+      });
+      queryClient.invalidateQueries({ queryKey: ['messages', conversationId] });
+    };
+    reader.readAsDataURL(file);
   };
 
   if (!conversation) return null;
