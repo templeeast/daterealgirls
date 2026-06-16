@@ -143,6 +143,9 @@ export default function Onboarding() {
 
   const requireStripeIdentity = config.require_stripe_identity === true;
 
+  const ageIfDobEntered = form.date_of_birth ? calculateAge(form.date_of_birth) : null;
+  const isUnderAge = ageIfDobEntered !== null && ageIfDobEntered < 18;
+
   const steps = [
     // Step 0: Basic Info
     <div key="basic" className="space-y-4">
@@ -279,9 +282,6 @@ export default function Onboarding() {
     t('step_photos'),
   ];
   const verifyStepIndex = 2;
-  const ageIfDobEntered = form.date_of_birth ? calculateAge(form.date_of_birth) : null;
-  const isUnderAge = ageIfDobEntered !== null && ageIfDobEntered < 18;
-
   const canProceed = step === 0
     ? form.display_name && form.gender && form.date_of_birth && !isUnderAge
     : step === verifyStepIndex && !requireStripeIdentity
