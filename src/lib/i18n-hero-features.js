@@ -2,7 +2,7 @@ export const heroFeaturesTranslations = {
   en: {
     tagline_line1: 'Something Beautiful',
     tagline_line2: 'Is Here',
-    hero_subtitle: 'A new way to connect with real, engaging women around the world. No bots. No tokens. Women sign-up for free!',
+    hero_subtitle: 'A new way to connect with real, engaging women around the world. No bots. Free sign-up!',
     feature_real_connections_title: 'Real Connections',
     feature_real_connections_desc: 'Connect with genuine, engaging women — no bots, no fakes, just real people.',
     feature_global_reach_title: 'Global Reach',
@@ -11,7 +11,7 @@ export const heroFeaturesTranslations = {
   es: {
     tagline_line1: 'Algo Hermoso',
     tagline_line2: 'Está Aquí',
-    hero_subtitle: 'Una nueva forma de conectar con mujeres reales y atractivas de todo el mundo. Sin bots. Sin tokens. ¡Las mujeres se registran gratis!',
+    hero_subtitle: 'Una nueva forma de conectar con mujeres reales y atractivas de todo el mundo. Sin bots. ¡Registro gratis!',
     feature_real_connections_title: 'Conexiones Reales',
     feature_real_connections_desc: 'Conéctate con mujeres genuinas y atractivas — sin bots, sin falsos, solo personas reales.',
     feature_global_reach_title: 'Alcance Global',
@@ -20,7 +20,7 @@ export const heroFeaturesTranslations = {
   th: {
     tagline_line1: 'บางสิ่งที่สวยงาม',
     tagline_line2: 'มาถึงแล้ว',
-    hero_subtitle: 'วิธีใหม่ในการเชื่อมต่อกับผู้หญิงจริงที่น่าหลงใหลทั่วโลก ไม่มีบอท ไม่มีโทเค็น สมัครฟรีสำหรับผู้หญิง!',
+    hero_subtitle: 'วิธีใหม่ในการเชื่อมต่อกับผู้หญิงจริงที่น่าหลงใหลทั่วโลก ไม่มีบอท สมัครฟรี!',
     feature_real_connections_title: 'การเชื่อมต่อที่แท้จริง',
     feature_real_connections_desc: 'เชื่อมต่อกับผู้หญิงจริงที่น่าหลงใหล — ไม่มีบอท ไม่มีปลอม แค่คนจริงเท่านั้น',
     feature_global_reach_title: 'เข้าถึงทั่วโลก',
@@ -29,7 +29,7 @@ export const heroFeaturesTranslations = {
   zh: {
     tagline_line1: '美好的事情',
     tagline_line2: '已经到来',
-    hero_subtitle: '以全新方式与来自世界各地真实、迷人的女性建立联系。没有机器人，没有代币。女性免费注册！',
+    hero_subtitle: '以全新方式与来自世界各地真实、迷人的女性建立联系。没有机器人。免费注册！',
     feature_real_connections_title: '真实连接',
     feature_real_connections_desc: '与真实、迷人的女性建立联系——没有机器人，没有虚假，只有真实的人。',
     feature_global_reach_title: '全球覆盖',
@@ -38,7 +38,7 @@ export const heroFeaturesTranslations = {
   de: {
     tagline_line1: 'Etwas Wunderschönes',
     tagline_line2: 'Ist Da',
-    hero_subtitle: 'Eine neue Art, mit echten, engagierten Frauen aus aller Welt in Kontakt zu treten. Keine Bots. Keine Token. Frauen melden sich kostenlos an!',
+    hero_subtitle: 'Eine neue Art, mit echten, engagierten Frauen aus aller Welt in Kontakt zu treten. Keine Bots. Kostenlose Anmeldung!',
     feature_real_connections_title: 'Echte Verbindungen',
     feature_real_connections_desc: 'Verbinde dich mit echten, engagierten Frauen — keine Bots, keine Fakes, nur echte Menschen.',
     feature_global_reach_title: 'Globale Reichweite',
@@ -47,7 +47,7 @@ export const heroFeaturesTranslations = {
   vi: {
     tagline_line1: 'Điều Gì Đó Tuyệt Vời',
     tagline_line2: 'Đã Ở Đây',
-    hero_subtitle: 'Cách mới để kết nối với những phụ nữ thật sự quyến rũ trên toàn thế giới. Không bot. Không token. Phụ nữ đăng ký miễn phí!',
+    hero_subtitle: 'Cách mới để kết nối với những phụ nữ thật sự quyến rũ trên toàn thế giới. Không bot. Đăng ký miễn phí!',
     feature_real_connections_title: 'Kết Nối Thực',
     feature_real_connections_desc: 'Kết nối với những phụ nữ chân thực, cuốn hút — không bot, không giả mạo, chỉ người thật.',
     feature_global_reach_title: 'Phạm Vi Toàn Cầu',
@@ -56,7 +56,7 @@ export const heroFeaturesTranslations = {
   pt: {
     tagline_line1: 'Algo Lindo',
     tagline_line2: 'Está Aqui',
-    hero_subtitle: 'Uma nova forma de se conectar com mulheres reais e envolventes do mundo todo. Sem bots. Sem tokens. Mulheres se cadastram grátis!',
+    hero_subtitle: 'Uma nova forma de se conectar com mulheres reais e envolventes do mundo todo. Sem bots. Cadastro grátis!',
     feature_real_connections_title: 'Conexões Reais',
     feature_real_connections_desc: 'Conecte-se com mulheres genuínas e envolventes — sem bots, sem falsas, apenas pessoas reais.',
     feature_global_reach_title: 'Alcance Global',
@@ -65,7 +65,7 @@ export const heroFeaturesTranslations = {
   tl: {
     tagline_line1: 'Isang Magandang Bagay',
     tagline_line2: 'Ay Nandito Na',
-    hero_subtitle: 'Isang bagong paraan para kumonekta sa mga tunay at kahanga-hangang babae sa buong mundo. Walang bots. Walang tokens. Libreng mag-sign up ang mga babae!',
+    hero_subtitle: 'Isang bagong paraan para kumonekta sa mga tunay at kahanga-hangang babae sa buong mundo. Walang bots. Libreng mag-sign up!',
     feature_real_connections_title: 'Tunay na Koneksyon',
     feature_real_connections_desc: 'Kumonekta sa mga tunay at kahanga-hangang babae — walang bots, walang peke, tunay na tao lamang.',
     feature_global_reach_title: 'Global na Saklaw',
