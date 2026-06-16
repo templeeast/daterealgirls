@@ -170,7 +170,7 @@ export default function Landing() {
             <h2 className="font-heading text-3xl sm:text-4xl font-bold mb-4">{t('pricing_title')}</h2>
             <p className="text-muted-foreground text-lg">Easy signup, no upfront cost</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+          <div className={`grid grid-cols-1 ${config.men_subscription_enabled ? 'md:grid-cols-3' : 'md:grid-cols-2'} gap-6 max-w-4xl mx-auto`}>
             {/* Women — always free */}
             <div className="bg-card border rounded-2xl p-8 text-center md:col-span-1">
               <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium mb-4">
@@ -187,45 +187,65 @@ export default function Landing() {
               <Button className="w-full rounded-full" size="lg" onClick={() => handleCTAClick('/my-profile')}>{t('get_started')}</Button>
             </div>
 
-            {/* Men — Free tier */}
+            {/* Men — Free tier: shows full access when subscriptions disabled, basic access when enabled */}
             <div className="bg-card border rounded-2xl p-8 text-center">
               <div className="inline-flex items-center gap-2 bg-muted text-muted-foreground px-3 py-1 rounded-full text-sm font-medium mb-4">
                 Men — Free
               </div>
               <div className="font-heading text-5xl font-bold mb-2">$0</div>
-              <p className="text-muted-foreground mb-6">Basic access, always free</p>
-              <ul className="text-sm text-left space-y-3 mb-8">
-                <li className="flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> Create a profile</li>
-                <li className="flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> Browse up to {config.free_tier_browse_limit ?? 25} profiles</li>
-                <li className="flex items-center gap-2 text-muted-foreground line-through"><Heart className="w-4 h-4" /> Messaging</li>
-                <li className="flex items-center gap-2 text-muted-foreground line-through"><Heart className="w-4 h-4" /> Unlimited browsing</li>
-              </ul>
-              <Button variant="outline" className="w-full rounded-full" size="lg" onClick={() => handleCTAClick('/my-profile')}>{t('get_started')}</Button>
+              {!config.men_subscription_enabled ? (
+                <>
+                  <p className="text-muted-foreground mb-6">{t('men_free_full_access_desc')}</p>
+                  <div className="text-sm bg-green-50 border border-green-200 text-green-800 px-3 py-2 rounded-lg font-medium mb-4">
+                    {t('men_free_site_new_note')}
+                  </div>
+                  <ul className="text-sm text-left space-y-3 mb-8">
+                    <li className="flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> {t('full_profile')}</li>
+                    <li className="flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> {t('unlimited_msg')}</li>
+                    <li className="flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> {t('browse_search')}</li>
+                    <li className="flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> {t('id_verification')}</li>
+                  </ul>
+                  <Button className="w-full rounded-full" size="lg" onClick={() => handleCTAClick('/my-profile')}>{t('get_started')}</Button>
+                </>
+              ) : (
+                <>
+                  <p className="text-muted-foreground mb-6">Basic access, always free</p>
+                  <ul className="text-sm text-left space-y-3 mb-8">
+                    <li className="flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> Create a profile</li>
+                    <li className="flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> Browse up to {config.free_tier_browse_limit ?? 25} profiles</li>
+                    <li className="flex items-center gap-2 text-muted-foreground line-through"><Heart className="w-4 h-4" /> Messaging</li>
+                    <li className="flex items-center gap-2 text-muted-foreground line-through"><Heart className="w-4 h-4" /> Unlimited browsing</li>
+                  </ul>
+                  <Button variant="outline" className="w-full rounded-full" size="lg" onClick={() => handleCTAClick('/my-profile')}>{t('get_started')}</Button>
+                </>
+              )}
             </div>
 
-            {/* Men — Premium */}
-            <div className="bg-card border-2 border-primary rounded-2xl p-8 text-center relative">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground px-4 py-1 rounded-full text-sm font-medium">
-                {t('most_popular')}
+            {/* Men — Premium: only shown when subscription plans are enabled */}
+            {config.men_subscription_enabled && (
+              <div className="bg-card border-2 border-primary rounded-2xl p-8 text-center relative">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground px-4 py-1 rounded-full text-sm font-medium">
+                  {t('most_popular')}
+                </div>
+                <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium mb-4 mt-2">
+                  Men — Premium
+                </div>
+                <div className="font-heading text-5xl font-bold mb-2">${config.subscription_price || 9.99}<span className="text-lg font-normal text-muted-foreground">/mo</span></div>
+                <div className="mb-6">
+                  <p className="text-muted-foreground mb-2">Full access, cancel anytime</p>
+                  <p className="text-sm bg-accent/60 text-accent-foreground px-3 py-2 rounded-lg font-medium">
+                    {t('try_free_1_month')}
+                  </p>
+                </div>
+                <ul className="text-sm text-left space-y-3 mb-8">
+                  <li className="flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> {t('full_profile')}</li>
+                  <li className="flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> {t('unlimited_msg')}</li>
+                  <li className="flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> {t('browse_search')}</li>
+                  <li className="flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> {t('id_verification')}</li>
+                </ul>
+                <Button className="w-full rounded-full" size="lg" onClick={() => handleCTAClick('/my-profile#subscription')}>{t('get_premium')}</Button>
               </div>
-              <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium mb-4 mt-2">
-                Men — Premium
-              </div>
-              <div className="font-heading text-5xl font-bold mb-2">${config.subscription_price || 9.99}<span className="text-lg font-normal text-muted-foreground">/mo</span></div>
-              <div className="mb-6">
-                <p className="text-muted-foreground mb-2">Full access, cancel anytime</p>
-                <p className="text-sm bg-accent/60 text-accent-foreground px-3 py-2 rounded-lg font-medium">
-                  {t('try_free_1_month')}
-                </p>
-              </div>
-              <ul className="text-sm text-left space-y-3 mb-8">
-                <li className="flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> {t('full_profile')}</li>
-                <li className="flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> {t('unlimited_msg')}</li>
-                <li className="flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> {t('browse_search')}</li>
-                <li className="flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> {t('id_verification')}</li>
-              </ul>
-              <Button className="w-full rounded-full" size="lg" onClick={() => handleCTAClick('/my-profile#subscription')}>{t('get_premium')}</Button>
-            </div>
+            )}
           </div>
         </div>
       </section>
