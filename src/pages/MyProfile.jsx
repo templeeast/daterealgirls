@@ -532,75 +532,87 @@ export default function MyProfile() {
 
             {profile.subscription_status !== 'active' && (
               <div className="mt-4 space-y-4">
-                {/* Refresh status button — only relevant for Whop (webhook-based activation) */}
-                {config.payment_processor === 'whop' && (
-                  <div className="flex items-center gap-3">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="gap-2"
-                      onClick={handleRefreshStatus}
-                      disabled={refreshingStatus}
-                    >
-                      <RefreshCw className={`w-4 h-4 ${refreshingStatus ? 'animate-spin' : ''}`} />
-                      {refreshingStatus ? 'Checking…' : 'Refresh Membership Status'}
-                    </Button>
-                    {refreshMsg && (
-                      <span className={`text-sm ${refreshMsg.startsWith('✓') ? 'text-primary font-medium' : 'text-muted-foreground'}`}>
-                        {refreshMsg}
-                      </span>
-                    )}
+                {!config.men_subscription_enabled ? (
+                  /* FREE FULL ACCESS — Initial rollout */
+                  <div className="p-4 bg-green-50 border border-green-200 rounded-xl space-y-3">
+                    <p className="text-sm font-semibold text-green-800">{t('men_free_new_site_desc')}</p>
+                    <p className="text-xs text-green-700">{t('men_free_new_site_cta')}</p>
+                    <Badge className="bg-green-100 text-green-700 border-green-300">Free — Full Access</Badge>
                   </div>
-                )}
+                ) : (
+                  /* PAID SUBSCRIPTION FLOW — Enabled by admin */
+                  <>
+                    {/* Refresh status button — only relevant for Whop (webhook-based activation) */}
+                    {config.payment_processor === 'whop' && (
+                      <div className="flex items-center gap-3">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="gap-2"
+                          onClick={handleRefreshStatus}
+                          disabled={refreshingStatus}
+                        >
+                          <RefreshCw className={`w-4 h-4 ${refreshingStatus ? 'animate-spin' : ''}`} />
+                          {refreshingStatus ? 'Checking…' : 'Refresh Membership Status'}
+                        </Button>
+                        {refreshMsg && (
+                          <span className={`text-sm ${refreshMsg.startsWith('✓') ? 'text-primary font-medium' : 'text-muted-foreground'}`}>
+                            {refreshMsg}
+                          </span>
+                        )}
+                      </div>
+                    )}
 
-                <div className="p-4 bg-accent/50 rounded-xl text-sm text-foreground">
-                  <strong className="text-primary">{t('subscription_upgrade_cta')}</strong>{' '}
-                  {t('subscription_upgrade_desc', { price: config.subscription_price || 9.99 })}
-                </div>
-
-                {/* Paid option — only show the configured payment processor */}
-                <div className="space-y-2">
-                  {true && (
-                    <p className="text-sm font-medium">{t('subscribe_to_premium')}</p>
-                  )}
-
-                  {config.payment_processor === 'whop' ? (
-                    <div className="border rounded-xl p-4 space-y-2">
-                      <p className="text-sm font-medium">{t('subscribe_via_whop')}</p>
-                      <WhopButton
-                        planId={config.whop_men_plan_id}
-                        prefillEmail={user?.email}
-                        returnUrl={`${window.location.origin}/whop-return`}
-                        devMode={config.dev_mode}
-                      />
+                    <div className="p-4 bg-accent/50 rounded-xl text-sm text-foreground">
+                      <strong className="text-primary">{t('subscription_upgrade_cta')}</strong>{' '}
+                      {t('subscription_upgrade_desc', { price: config.subscription_price || 9.99 })}
                     </div>
-                  ) : config.payment_processor === 'codapay' ? (
-                    <div className="border rounded-xl p-4 space-y-2">
-                      <p className="text-sm font-medium">{t('pay_via_local')}</p>
-                      <CodaPayButton
-                        price={config.subscription_price || 4.99}
-                        onSuccess={refetch}
-                      />
-                    </div>
-                  ) : (
-                    <div className="border rounded-xl p-4 space-y-2">
-                      <p className="text-sm font-medium">{t('pay_by_card')}</p>
-                      {config.authorizenet_use_hosted_page ? (
-                        <AuthorizeNetHostedButton
-                          price={config.subscription_price || 4.99}
-                          onSuccess={refetch}
-                          devMode={config.dev_mode}
-                        />
+
+                    {/* Paid option — only show the configured payment processor */}
+                    <div className="space-y-2">
+                      {true && (
+                        <p className="text-sm font-medium">{t('subscribe_to_premium')}</p>
+                      )}
+
+                      {config.payment_processor === 'whop' ? (
+                        <div className="border rounded-xl p-4 space-y-2">
+                          <p className="text-sm font-medium">{t('subscribe_via_whop')}</p>
+                          <WhopButton
+                            planId={config.whop_men_plan_id}
+                            prefillEmail={user?.email}
+                            returnUrl={`${window.location.origin}/whop-return`}
+                            devMode={config.dev_mode}
+                          />
+                        </div>
+                      ) : config.payment_processor === 'codapay' ? (
+                        <div className="border rounded-xl p-4 space-y-2">
+                          <p className="text-sm font-medium">{t('pay_via_local')}</p>
+                          <CodaPayButton
+                            price={config.subscription_price || 4.99}
+                            onSuccess={refetch}
+                          />
+                        </div>
                       ) : (
-                        <AuthorizeNetButton
-                          price={config.subscription_price || 4.99}
-                          onSuccess={refetch}
-                          devMode={config.dev_mode}
-                        />
+                        <div className="border rounded-xl p-4 space-y-2">
+                          <p className="text-sm font-medium">{t('pay_by_card')}</p>
+                          {config.authorizenet_use_hosted_page ? (
+                            <AuthorizeNetHostedButton
+                              price={config.subscription_price || 4.99}
+                              onSuccess={refetch}
+                              devMode={config.dev_mode}
+                            />
+                          ) : (
+                            <AuthorizeNetButton
+                              price={config.subscription_price || 4.99}
+                              onSuccess={refetch}
+                              devMode={config.dev_mode}
+                            />
+                          )}
+                        </div>
                       )}
                     </div>
-                  )}
-                </div>
+                  </>
+                )}
               </div>
             )}
           </CardContent>

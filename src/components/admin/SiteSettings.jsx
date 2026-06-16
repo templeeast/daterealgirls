@@ -50,6 +50,9 @@ export default function SiteSettings() {
     whop_women_plan_id: '',
     app_disabled: false,
     app_disabled_message: "The application is temporarily unavailable due to maintenance. We'll be back online shortly. Thank you for your patience.",
+    men_subscription_enabled: false,
+    juicyads_enabled: false,
+    juicyads_api_key: '',
   });
 
   useEffect(() => {
@@ -78,6 +81,9 @@ export default function SiteSettings() {
         whop_women_plan_id: existingConfig.whop_women_plan_id || '',
         app_disabled: existingConfig.app_disabled || false,
         app_disabled_message: existingConfig.app_disabled_message || "The application is temporarily unavailable due to maintenance. We'll be back online shortly. Thank you for your patience.",
+        men_subscription_enabled: existingConfig.men_subscription_enabled || false,
+        juicyads_enabled: existingConfig.juicyads_enabled || false,
+        juicyads_api_key: existingConfig.juicyads_api_key || '',
       });
     }
   }, [existingConfig]);
@@ -255,6 +261,37 @@ export default function SiteSettings() {
         </CardContent>
       </Card>
 
+      {/* Monetization — Ads */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="font-heading text-lg">Monetization — Embedded Ads</CardTitle>
+          <CardDescription>JuicyAds or other ad network. When enabled, ads appear on women's profile pages when viewed by men.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="font-medium text-sm">Enable Embedded Ads (JuicyAds)</p>
+              <p className="text-xs text-muted-foreground mt-0.5">Shows banner/video ads on women's profiles. Requires a JuicyAds API key below.</p>
+            </div>
+            <Switch
+              checked={form.juicyads_enabled}
+              onCheckedChange={v => updateField('juicyads_enabled', v)}
+            />
+          </div>
+          {form.juicyads_enabled && (
+            <div className="space-y-2 pt-2 border-t">
+              <Label>JuicyAds API Key</Label>
+              <Input
+                value={form.juicyads_api_key}
+                onChange={e => updateField('juicyads_api_key', e.target.value)}
+                placeholder="Enter your JuicyAds API key..."
+              />
+              <p className="text-xs text-muted-foreground">Get your API key from JuicyAds Dashboard → Account Settings → API Keys.</p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
       {/* Payment Processor */}
       <Card>
         <CardHeader>
@@ -278,6 +315,22 @@ export default function SiteSettings() {
               </SelectContent>
             </Select>
             <p className="text-xs text-muted-foreground">This controls which processor is shown to users on the subscription page.</p>
+          </div>
+
+          {/* Men's Subscription Toggle */}
+          <div className="border rounded-lg p-4 space-y-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="font-medium text-sm">Enable Men's Paid Subscription Plan</p>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  When <strong>OFF</strong>: Men get free full access (initial rollout). When <strong>ON</strong>: Men see limited free tier + paid subscription options.
+                </p>
+              </div>
+              <Switch
+                checked={form.men_subscription_enabled}
+                onCheckedChange={v => updateField('men_subscription_enabled', v)}
+              />
+            </div>
           </div>
 
           {/* Whop Config */}
