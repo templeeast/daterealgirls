@@ -161,6 +161,15 @@ export default function Chat() {
         </Link>
       </div>
 
+      {/* Retention Notice */}
+      {(config?.chat_retention_days ?? 90) > 0 && (
+        <div className="bg-muted/50 border-b px-4 py-1.5 text-center">
+          <p className="text-xs text-muted-foreground">
+            {t('chat_retention_notice', { days: config.chat_retention_days ?? 90 })}
+          </p>
+        </div>
+      )}
+
       {/* Messages */}
       <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
         {isLoading ? (

@@ -53,6 +53,7 @@ export default function SiteSettings() {
     men_subscription_enabled: false,
     juicyads_enabled: false,
     juicyads_api_key: '',
+    chat_retention_days: 90,
   });
 
   useEffect(() => {
@@ -84,7 +85,8 @@ export default function SiteSettings() {
         men_subscription_enabled: existingConfig.men_subscription_enabled || false,
         juicyads_enabled: existingConfig.juicyads_enabled || false,
         juicyads_api_key: existingConfig.juicyads_api_key || '',
-      });
+        chat_retention_days: existingConfig.chat_retention_days ?? 90,
+        });
     }
   }, [existingConfig]);
 
@@ -225,6 +227,11 @@ export default function SiteSettings() {
               <Label>Message Rate Limit — Time Window (seconds)</Label>
               <Input type="number" value={form.msg_rate_limit_seconds} onChange={e => updateField('msg_rate_limit_seconds', Number(e.target.value))} />
               <p className="text-xs text-muted-foreground">Time window in seconds. Default: 5 messages per 10 seconds.</p>
+            </div>
+            <div className="space-y-2">
+              <Label>Chat Message Retention (days)</Label>
+              <Input type="number" value={form.chat_retention_days} onChange={e => updateField('chat_retention_days', Number(e.target.value))} />
+              <p className="text-xs text-muted-foreground">Chat messages older than this are automatically deleted. Users see this on the chat page. Default: 90 days.</p>
             </div>
           </div>
         </CardContent>
