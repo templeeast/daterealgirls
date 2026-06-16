@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { CheckSquare, Square, ChevronDown, ChevronRight, Shield, Users, CreditCard, MessageSquare, Heart, Settings, Bug, Globe } from 'lucide-react';
+import { CheckSquare, Square, ChevronDown, ChevronRight, Shield, Users, CreditCard, MessageSquare, Heart, Settings, Bug, Globe, Trash2, RefreshCw } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import useMyProfile from '@/hooks/useMyProfile';
 import { base44 } from '@/api/base44Client';
@@ -225,6 +225,26 @@ const sections = [
       { id: 'legal-5', label: 'Contact Us page renders and contact form submits correctly' },
       { id: 'legal-6', label: 'All footer links navigate to correct pages' },
       { id: 'legal-7', label: 'Footer copyright year is current year' },
+    ],
+  },
+  {
+    id: 'automations',
+    icon: RefreshCw,
+    title: 'Automations & Data Lifecycle',
+    color: 'text-emerald-500',
+    items: [
+      { id: 'auto-1', label: 'cleanupDeletedUser: Deleting a MemberProfile triggers automatic removal of all associated Conversations' },
+      { id: 'auto-2', label: 'cleanupDeletedUser: Deleting a MemberProfile triggers automatic removal of all associated Messages' },
+      { id: 'auto-3', label: 'cleanupDeletedUser: Deleting a MemberProfile triggers automatic removal of all associated Favorites (both given and received)' },
+      { id: 'auto-4', label: 'cleanupDeletedUser: Deleting a MemberProfile triggers automatic removal of all associated Winks (both sent and received)' },
+      { id: 'auto-5', label: 'cleanupDeletedUser: Deleting a MemberProfile triggers automatic deletion of Cloudinary photos (profile images, selfies, ID documents)' },
+      { id: 'auto-6', label: 'cleanupDeletedUser: Deleting a MemberProfile does NOT delete the User record itself' },
+      { id: 'auto-7', label: 'deleteOldMessages: Messages older than configured retention period (chat_retention_days) are automatically purged' },
+      { id: 'auto-8', label: 'deleteOldMessages: Cloudinary images in deleted messages are also removed' },
+      { id: 'auto-9', label: 'expireSubscriptions: Profiles with subscription_end_date in the past are automatically marked as "expired"' },
+      { id: 'auto-10', label: 'sendRenewalReminders: Users with expiring subscriptions receive email reminders' },
+      { id: 'auto-11', label: 'Bulk demo profile creation: 100 female demo profiles exist with unique, non-repeating Unsplash photos' },
+      { id: 'auto-12', label: 'Bulk demo profile deletion: All demo profiles (demo_f*) can be bulk-deleted and cleanup automation fires correctly' },
     ],
   },
 ];
