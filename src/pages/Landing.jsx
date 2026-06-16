@@ -190,7 +190,7 @@ export default function Landing() {
             {/* Men — Free tier: shows full access when subscriptions disabled, basic access when enabled */}
             <div className="bg-card border rounded-2xl p-8 text-center">
               <div className="inline-flex items-center gap-2 bg-muted text-muted-foreground px-3 py-1 rounded-full text-sm font-medium mb-4">
-                Men — Free
+                {t('men_free_badge')}
               </div>
               <div className="font-heading text-5xl font-bold mb-2">$0</div>
               {!config.men_subscription_enabled ? (
@@ -228,7 +228,7 @@ export default function Landing() {
                   {t('most_popular')}
                 </div>
                 <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium mb-4 mt-2">
-                  Men — Premium
+                  {t('men_premium_badge')}
                 </div>
                 <div className="font-heading text-5xl font-bold mb-2">${config.subscription_price || 9.99}<span className="text-lg font-normal text-muted-foreground">/mo</span></div>
                 <div className="mb-6">
