@@ -19,6 +19,10 @@ export default function VerificationDetail({ profile: p, onBack, onVerify }) {
       const loaded = {};
       if (p.selfie_url)            loaded.selfie   = await getSignedUrl(p.selfie_url).catch(() => null);
       if (p.selfie_url_2)          loaded.selfie2  = await getSignedUrl(p.selfie_url_2).catch(() => null);
+      if (p.id_document_url)       loaded.idFront  = await getSignedUrl(p.id_document_url).catch(() => null);
+      if (p.id_document_back_url)  loaded.idBack   = await getSignedUrl(p.id_document_back_url).catch(() => null);
+      if (p.id_document_url_2)     loaded.idFront2 = await getSignedUrl(p.id_document_url_2).catch(() => null);
+      if (p.id_document_back_url_2) loaded.idBack2 = await getSignedUrl(p.id_document_back_url_2).catch(() => null);
       setUrls(loaded);
     };
     load();
@@ -86,25 +90,31 @@ export default function VerificationDetail({ profile: p, onBack, onVerify }) {
           <div>
             <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">Original Govt. ID</p>
             <div className="grid grid-cols-2 gap-4">
-              {['id_document_url', 'id_document_back_url'].map((field, i) => {
-                const key = i === 0 ? 'id1' : 'idb1';
-                const label = i === 0 ? 'Front' : 'Back';
-                return (
-                  <div key={field} className="space-y-1">
-                    <p className="text-xs text-muted-foreground">{label}</p>
-                    {p[field] ? (
+              {[
+                { field: 'id_document_url', urlKey: 'idFront', key: 'id1', label: 'Front' },
+                { field: 'id_document_back_url', urlKey: 'idBack', key: 'idb1', label: 'Back' },
+              ].map(({ field, urlKey, key, label }) => (
+                <div key={field} className="space-y-2">
+                  <p className="text-xs text-muted-foreground">{label}</p>
+                  {urls[urlKey] ? (
+                    <div className="relative group">
+                      <img src={urls[urlKey]} className="w-full h-48 object-cover rounded-xl border" alt={`Govt ID ${label}`} />
                       <button onClick={() => openDoc(key, p[field])} disabled={loadingDoc === key}
-                        className="w-full h-36 rounded-xl border bg-muted flex flex-col items-center justify-center gap-2 hover:bg-muted/70 transition-colors disabled:opacity-50">
-                        {loadingDoc === key ? <Loader2 className="w-5 h-5 animate-spin" /> : <><ExternalLink className="w-5 h-5 text-primary" /><span className="text-xs text-primary font-medium">View {label}</span></>}
+                        className="absolute top-2 right-2 bg-white/90 rounded-lg p-1.5 shadow opacity-0 group-hover:opacity-100 transition-opacity">
+                        {loadingDoc === key ? <Loader2 className="w-4 h-4 animate-spin" /> : <ExternalLink className="w-4 h-4 text-primary" />}
                       </button>
-                    ) : (
-                      <div className="w-full h-36 rounded-xl bg-muted flex items-center justify-center">
-                        <p className="text-xs text-muted-foreground">Not submitted</p>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
+                    </div>
+                  ) : p[field] ? (
+                    <div className="w-full h-48 rounded-xl bg-muted flex items-center justify-center">
+                      <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
+                    </div>
+                  ) : (
+                    <div className="w-full h-48 rounded-xl bg-muted flex items-center justify-center">
+                      <p className="text-xs text-muted-foreground">Not submitted</p>
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
           </div>
 
@@ -115,25 +125,31 @@ export default function VerificationDetail({ profile: p, onBack, onVerify }) {
               {(p.id_document_url_2 || p.id_document_back_url_2) && <Badge className="bg-amber-100 text-amber-700 text-xs ml-1">New</Badge>}
             </p>
             <div className="grid grid-cols-2 gap-4">
-              {['id_document_url_2', 'id_document_back_url_2'].map((field, i) => {
-                const key = i === 0 ? 'id2' : 'idb2';
-                const label = i === 0 ? 'Front' : 'Back';
-                return (
-                  <div key={field} className="space-y-1">
-                    <p className="text-xs text-muted-foreground">{label}</p>
-                    {p[field] ? (
+              {[
+                { field: 'id_document_url_2', urlKey: 'idFront2', key: 'id2', label: 'Front' },
+                { field: 'id_document_back_url_2', urlKey: 'idBack2', key: 'idb2', label: 'Back' },
+              ].map(({ field, urlKey, key, label }) => (
+                <div key={field} className="space-y-2">
+                  <p className="text-xs text-muted-foreground">{label}</p>
+                  {urls[urlKey] ? (
+                    <div className="relative group">
+                      <img src={urls[urlKey]} className="w-full h-48 object-cover rounded-xl border border-amber-300" alt={`New Govt ID ${label}`} />
                       <button onClick={() => openDoc(key, p[field])} disabled={loadingDoc === key}
-                        className="w-full h-36 rounded-xl border border-amber-300 bg-amber-50 flex flex-col items-center justify-center gap-2 hover:bg-amber-100 transition-colors disabled:opacity-50">
-                        {loadingDoc === key ? <Loader2 className="w-5 h-5 animate-spin" /> : <><ExternalLink className="w-5 h-5 text-amber-700" /><span className="text-xs text-amber-700 font-medium">View New {label}</span></>}
+                        className="absolute top-2 right-2 bg-white/90 rounded-lg p-1.5 shadow opacity-0 group-hover:opacity-100 transition-opacity">
+                        {loadingDoc === key ? <Loader2 className="w-4 h-4 animate-spin" /> : <ExternalLink className="w-4 h-4 text-amber-700" />}
                       </button>
-                    ) : (
-                      <div className="w-full h-36 rounded-xl bg-muted flex items-center justify-center">
-                        <p className="text-xs text-muted-foreground italic">No re-upload</p>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
+                    </div>
+                  ) : p[field] ? (
+                    <div className="w-full h-48 rounded-xl bg-muted flex items-center justify-center">
+                      <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
+                    </div>
+                  ) : (
+                    <div className="w-full h-48 rounded-xl bg-muted flex items-center justify-center">
+                      <p className="text-xs text-muted-foreground italic">No re-upload</p>
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
           </div>
 
