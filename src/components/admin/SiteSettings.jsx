@@ -260,7 +260,7 @@ export default function SiteSettings() {
         <CardHeader>
           <CardTitle className="font-heading text-lg">Payment Processors</CardTitle>
           <CardDescription>
-            <strong>Whop</strong>, <strong>Authorize.net (ZenPayments)</strong>, <strong>SegPay</strong>, and <strong>CodaPay</strong> are available processors. Select the active one below — it will be marked as <strong>Primary</strong>.
+            <strong>Whop</strong>, <strong>Authorize.net (ZenPayments)</strong>, and <strong>CodaPay</strong> are available processors. Select the active one below — it will be marked as <strong>Primary</strong>.
             Dev Mode (above) controls which API keys are used across all processors.
           </CardDescription>
         </CardHeader>
@@ -274,7 +274,6 @@ export default function SiteSettings() {
               <SelectContent>
                 <SelectItem value="whop">Whop</SelectItem>
                 <SelectItem value="authorizenet">Authorize.net (ZenPayments)</SelectItem>
-                <SelectItem value="segpay">SegPay</SelectItem>
                 <SelectItem value="codapay">CodaPay — Asia / Local</SelectItem>
               </SelectContent>
             </Select>
@@ -332,17 +331,6 @@ export default function SiteSettings() {
                 onCheckedChange={v => updateField('authorizenet_use_hosted_page', v)}
               />
             </div>
-          </div>
-
-          {/* SegPay Info */}
-          <div className={`space-y-3 rounded-lg p-4 ${form.payment_processor === 'segpay' ? 'border-2 border-primary/20 bg-primary/5' : 'border'}`}>
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-semibold">SegPay</span>
-              {form.payment_processor === 'segpay' && <span className="text-xs bg-primary text-primary-foreground px-2 py-0.5 rounded-full">Primary</span>}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              No API keys configured yet. Once you have SegPay credentials, add them as secrets and configure the integration.
-            </p>
           </div>
 
           {/* CodaPay Info */}

@@ -61,8 +61,7 @@
       "enum": [
         "authorizenet",
         "codapay",
-        "whop",
-        "segpay"
+        "whop"
       ],
       "default": "whop",
       "description": "Active payment processor shown to users."

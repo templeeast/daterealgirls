@@ -582,11 +582,6 @@ export default function MyProfile() {
                         onSuccess={refetch}
                       />
                     </div>
-                  ) : config.payment_processor === 'segpay' ? (
-                    <div className="border rounded-xl p-4 space-y-2">
-                      <p className="text-sm font-medium">{t('pay_via_segpay')}</p>
-                      <p className="text-xs text-muted-foreground">{t('segpay_coming_soon')}</p>
-                    </div>
                   ) : (
                     <div className="border rounded-xl p-4 space-y-2">
                       <p className="text-sm font-medium">{t('pay_by_card')}</p>
