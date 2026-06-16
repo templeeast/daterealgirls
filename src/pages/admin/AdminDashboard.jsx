@@ -10,6 +10,7 @@ import ReportsPanel from '@/components/admin/ReportsPanel';
 import TicketsPanel from '@/components/admin/TicketsPanel';
 import SiteSettings from '@/components/admin/SiteSettings';
 import AdminStats from '@/components/admin/AdminStats';
+import SignupsChart from '@/components/admin/SignupsChart';
 import CityReviewPanel from '@/components/admin/CityReviewPanel';
 import useMyProfile from '@/hooks/useMyProfile';
 
@@ -38,6 +39,7 @@ export default function AdminDashboard() {
       <p className="text-muted-foreground mb-8">Manage members, moderation, and platform settings.</p>
 
       <AdminStats />
+      <SignupsChart />
 
       <Tabs defaultValue="members" className="mt-8">
         <TabsList className="mb-6 flex-wrap h-auto gap-1">
