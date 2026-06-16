@@ -85,8 +85,23 @@ export default function Onboarding() {
   const handlePhotoUpload = async (e, field) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
-    updateField(field, file_url);
+
+    const reader = new FileReader();
+    reader.onload = async () => {
+      const base64 = reader.result.split(',')[1];
+      try {
+        const res = await base44.functions.invoke('uploadToCloudinary', {
+          file: base64,
+          filename: file.name,
+        });
+        if (res.data?.url) {
+          updateField(field, res.data.url);
+        }
+      } catch {
+        // silently fail — user can retry
+      }
+    };
+    reader.readAsDataURL(file);
   };
 
   const calculateAge = (dob) => {
