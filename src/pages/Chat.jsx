@@ -4,13 +4,13 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ArrowLeft, Send, User, Image as ImageIcon, Trash2 } from 'lucide-react';
+import { ArrowLeft, Send, User, Image as ImageIcon, Trash2, Coins } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import useMyProfile from '@/hooks/useMyProfile';
 import useSiteConfig from '@/hooks/useSiteConfig';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
-import { Lock } from 'lucide-react';
+
 
 export default function Chat() {
   const conversationId = window.location.pathname.split('/chat/')[1];
@@ -26,6 +26,13 @@ export default function Chat() {
 
   const rateLimitCount = config?.msg_rate_limit_count ?? 5;
   const rateLimitSeconds = config?.msg_rate_limit_seconds ?? 10;
+
+  const isMale = profile?.gender === 'male';
+  const msgTokenEnabled = isMale ? (config?.tokens_msg_men_enabled !== false) : (config?.tokens_msg_women_enabled || false);
+  const msgTokenCost = isMale ? (config?.tokens_msg_cost_men ?? 50) : (config?.tokens_msg_cost_women ?? 0);
+  const tokens = profile?.tokens ?? 0;
+
+  const showTokenLock = msgTokenEnabled && msgTokenCost > 0 && tokens < msgTokenCost;
 
   const checkRateLimit = () => {
     const now = Date.now();
@@ -76,6 +83,12 @@ export default function Chat() {
   const sendMutation = useMutation({
     mutationFn: async (content) => {
       const myProfile = (await base44.entities.MemberProfile.filter({ user_id: user.id }))[0];
+      // Deduct tokens if applicable
+      if (msgTokenEnabled && msgTokenCost > 0) {
+        await base44.entities.MemberProfile.update(myProfile.id, {
+          tokens: Math.max(0, tokens - msgTokenCost),
+        });
+      }
       await base44.entities.Message.create({
         conversation_id: conversationId,
         sender_id: user.id,
@@ -94,6 +107,7 @@ export default function Chat() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['messages', conversationId] });
       queryClient.invalidateQueries({ queryKey: ['conversations'] });
+      queryClient.invalidateQueries({ queryKey: ['myProfile'] });
       setText('');
     },
   });
@@ -231,18 +245,25 @@ export default function Chat() {
       </div>
 
       {/* Input */}
-      {config?.men_subscription_enabled && profile?.gender === 'male' && profile?.subscription_status !== 'active' ? (
+      {showTokenLock ? (
         <div className="border-t bg-card px-4 py-4">
           <div className="flex items-center justify-center gap-3 max-w-3xl mx-auto bg-accent/50 rounded-xl p-3">
-            <Lock className="w-4 h-4 text-muted-foreground shrink-0" />
-            <p className="text-sm text-muted-foreground">{t('subscription_upgrade_cta')} to send messages.</p>
+            <Coins className="w-4 h-4 text-muted-foreground shrink-0" />
+            <p className="text-sm text-muted-foreground">Each message costs {msgTokenCost} tokens. You need more tokens to continue.</p>
             <Button size="sm" className="rounded-full shrink-0" onClick={() => navigate('/my-profile')}>
-              {t('get_premium')}
+              Buy Tokens
             </Button>
           </div>
         </div>
       ) : (
         <div className="border-t bg-card px-4 py-3">
+          {msgTokenEnabled && msgTokenCost > 0 && (
+            <div className="flex justify-center mb-2">
+              <span className="text-xs text-muted-foreground flex items-center gap-1">
+                <Coins className="w-3 h-3" /> {msgTokenCost} tokens per message · Balance: {tokens.toLocaleString()}
+              </span>
+            </div>
+          )}
           <div className="flex gap-2 items-center max-w-3xl mx-auto">
             <label>
               <Button variant="ghost" size="icon" className="shrink-0" asChild>

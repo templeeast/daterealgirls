@@ -11,7 +11,6 @@ import { Skeleton } from '@/components/ui/skeleton';
 import useMyProfile from '@/hooks/useMyProfile';
 import { useToast } from '@/components/ui/use-toast';
 import { useTranslation } from 'react-i18next';
-import UpgradePrompt from '@/components/subscription/UpgradePrompt';
 import useSiteConfig from '@/hooks/useSiteConfig';
 
 export default function ViewProfile() {
@@ -25,8 +24,6 @@ export default function ViewProfile() {
 
   const { profile: myProfile } = useMyProfile();
   const { config } = useSiteConfig();
-
-  const isFreeMale = config?.men_subscription_enabled && myProfile?.gender === 'male' && (!myProfile?.subscription_status || myProfile?.subscription_status === 'free');
 
   const { data: profile, isLoading } = useQuery({
     queryKey: ['profile', profileId],
@@ -195,32 +192,26 @@ export default function ViewProfile() {
       </div>
 
       {/* Action buttons */}
-      {isFreeMale ? (
-        <div className="mb-8">
-          <UpgradePrompt price={9.99} inline />
-        </div>
-      ) : (
-        <div className="flex gap-3 mb-8 flex-wrap">
-          <Button className="gap-2 rounded-full" onClick={handleMessage}>
-            <MessageCircle className="w-4 h-4" /> {t('message_btn')}
-          </Button>
-          <Button variant="outline" className="gap-2 rounded-full" onClick={() => favMutation.mutate()}>
-            <Star className={`w-4 h-4 ${isFavorited ? 'fill-primary text-primary' : ''}`} />
-            {isFavorited ? t('favorited_btn') : t('favorite_btn')}
-          </Button>
-          {myProfile && (
-            <WinkButton
-              myProfile={myProfile}
-              targetProfileId={profileId}
-              existingWink={hasWinked}
-              onWinked={() => refetchWinks()}
-            />
-          )}
-          <Button variant="ghost" size="icon" className="rounded-full text-muted-foreground" onClick={handleReport}>
-            <Flag className="w-4 h-4" />
-          </Button>
-        </div>
-      )}
+      <div className="flex gap-3 mb-8 flex-wrap">
+        <Button className="gap-2 rounded-full" onClick={handleMessage}>
+          <MessageCircle className="w-4 h-4" /> {t('message_btn')}
+        </Button>
+        <Button variant="outline" className="gap-2 rounded-full" onClick={() => favMutation.mutate()}>
+          <Star className={`w-4 h-4 ${isFavorited ? 'fill-primary text-primary' : ''}`} />
+          {isFavorited ? t('favorited_btn') : t('favorite_btn')}
+        </Button>
+        {myProfile && (
+          <WinkButton
+            myProfile={myProfile}
+            targetProfileId={profileId}
+            existingWink={hasWinked}
+            onWinked={() => refetchWinks()}
+          />
+        )}
+        <Button variant="ghost" size="icon" className="rounded-full text-muted-foreground" onClick={handleReport}>
+          <Flag className="w-4 h-4" />
+        </Button>
+      </div>
 
       {/* Bio */}
       {profile.bio && (

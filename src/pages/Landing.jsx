@@ -163,89 +163,78 @@ export default function Landing() {
       {/* Scrolling profiles banner */}
       <StockProfilesBanner />
 
-      {/* Pricing */}
+      {/* Token Pricing */}
       <section className="pt-32 pb-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="font-heading text-3xl sm:text-4xl font-bold mb-4">{t('pricing_title')}</h2>
-            <p className="text-muted-foreground text-lg">{t('pricing_subtitle')}</p>
+            <h2 className="font-heading text-3xl sm:text-4xl font-bold mb-4">Simple Token Pricing — Pay Only for What You Use</h2>
+            <p className="text-muted-foreground text-lg">Start with {(config.welcome_tokens ?? 5000).toLocaleString()} FREE tokens when you join. No subscription required.</p>
           </div>
-          <div className={`grid grid-cols-1 ${config.men_subscription_enabled ? 'md:grid-cols-3' : 'md:grid-cols-2'} gap-6 max-w-4xl mx-auto`}>
-            {/* Women — always free */}
-            <div className="bg-card border rounded-2xl p-8 text-center md:col-span-1">
-              <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium mb-4">
-                {t('for_women')}
-              </div>
-              <div className="font-heading text-5xl font-bold mb-2">{t('free')}</div>
-              <p className="text-muted-foreground mb-6">{t('always_free')}</p>
-              <ul className="text-sm text-left space-y-3 mb-8">
-                <li className="flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> {t('full_profile')}</li>
-                <li className="flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> {t('unlimited_msg')}</li>
-                <li className="flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> {t('browse_search')}</li>
-                <li className="flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> {t('id_verification')}</li>
-              </ul>
-              <Button className="w-full rounded-full" size="lg" onClick={() => handleCTAClick('/my-profile')}>{t('get_started')}</Button>
-            </div>
 
-            {/* Men — Free tier: shows full access when subscriptions disabled, basic access when enabled */}
-            <div className="bg-card border rounded-2xl p-8 text-center">
-              <div className="inline-flex items-center gap-2 bg-muted text-muted-foreground px-3 py-1 rounded-full text-sm font-medium mb-4">
-                {t('men_free_badge')}
-              </div>
-              <div className="font-heading text-5xl font-bold mb-2">$0</div>
-              {!config.men_subscription_enabled ? (
-                <>
-                  <p className="text-muted-foreground mb-6">{t('men_free_full_access_desc')}</p>
-                  <div className="text-sm bg-green-50 border border-green-200 text-green-800 px-3 py-2 rounded-lg font-medium mb-4">
-                    {t('men_free_site_new_note')}
+          {/* Token Packs */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto mb-16">
+            {[
+              { name: 'Starter Pack', tokens: config.token_pack_starter_tokens ?? 500, price: config.token_pack_starter_price ?? 5.99, badge: null },
+              { name: 'Popular Pack', tokens: config.token_pack_popular_tokens ?? 1500, price: config.token_pack_popular_price ?? 14.99, badge: 'Most Popular', highlight: true },
+              { name: 'Value Pack', tokens: config.token_pack_value_tokens ?? 3500, price: config.token_pack_value_price ?? 29.99, badge: null },
+              { name: 'Best Deal Pack', tokens: config.token_pack_best_tokens ?? 8000, price: config.token_pack_best_price ?? 59.99, badge: 'Best Value' },
+            ].map((pack) => (
+              <div key={pack.name} className={`bg-card border rounded-2xl p-6 text-center relative ${pack.highlight ? 'border-primary shadow-lg shadow-primary/10' : ''}`}>
+                {pack.badge && (
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-medium">
+                    {pack.badge}
                   </div>
-                  <ul className="text-sm text-left space-y-3 mb-8">
-                    <li className="flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> {t('full_profile')}</li>
-                    <li className="flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> {t('unlimited_msg')}</li>
-                    <li className="flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> {t('browse_search')}</li>
-                    <li className="flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> {t('id_verification')}</li>
-                  </ul>
-                  <Button className="w-full rounded-full" size="lg" onClick={() => handleCTAClick('/my-profile')}>{t('get_started')}</Button>
-                </>
-              ) : (
-                <>
-                  <p className="text-muted-foreground mb-6">Basic access, always free</p>
-                  <ul className="text-sm text-left space-y-3 mb-8">
-                    <li className="flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> Create a profile</li>
-                    <li className="flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> Browse up to {config.free_tier_browse_limit ?? 25} profiles</li>
-                    <li className="flex items-center gap-2 text-muted-foreground line-through"><Heart className="w-4 h-4" /> Messaging</li>
-                    <li className="flex items-center gap-2 text-muted-foreground line-through"><Heart className="w-4 h-4" /> Unlimited browsing</li>
-                  </ul>
-                  <Button variant="outline" className="w-full rounded-full" size="lg" onClick={() => handleCTAClick('/my-profile')}>{t('get_started')}</Button>
-                </>
-              )}
-            </div>
-
-            {/* Men — Premium: only shown when subscription plans are enabled */}
-            {config.men_subscription_enabled && (
-              <div className="bg-card border-2 border-primary rounded-2xl p-8 text-center relative">
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground px-4 py-1 rounded-full text-sm font-medium">
-                  {t('most_popular')}
-                </div>
-                <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium mb-4 mt-2">
-                  {t('men_premium_badge')}
-                </div>
-                <div className="font-heading text-5xl font-bold mb-2">${config.subscription_price || 9.99}<span className="text-lg font-normal text-muted-foreground">/mo</span></div>
-                <div className="mb-6">
-                  <p className="text-muted-foreground mb-2">Full access, cancel anytime</p>
-                  <p className="text-sm bg-accent/60 text-accent-foreground px-3 py-2 rounded-lg font-medium">
-                    {t('try_free_1_month')}
-                  </p>
-                </div>
-                <ul className="text-sm text-left space-y-3 mb-8">
-                  <li className="flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> {t('full_profile')}</li>
-                  <li className="flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> {t('unlimited_msg')}</li>
-                  <li className="flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> {t('browse_search')}</li>
-                  <li className="flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> {t('id_verification')}</li>
-                </ul>
-                <Button className="w-full rounded-full" size="lg" onClick={() => handleCTAClick('/my-profile#subscription')}>{t('get_premium')}</Button>
+                )}
+                <div className="font-heading text-3xl font-bold mb-1 mt-2">{pack.tokens.toLocaleString()}</div>
+                <p className="text-sm text-muted-foreground mb-1">tokens</p>
+                <div className="font-heading text-3xl font-bold text-primary mb-4">${pack.price}</div>
+                <p className="text-xs text-muted-foreground mb-6">{pack.name}</p>
+                <Button className="w-full rounded-full" size="sm" onClick={() => handleCTAClick('/my-profile')}>Get Started</Button>
               </div>
-            )}
+            ))}
+          </div>
+
+          {/* Cost Breakdown Table */}
+          <div className="max-w-3xl mx-auto bg-card border rounded-2xl overflow-hidden">
+            <div className="px-6 py-4 border-b bg-muted/30">
+              <h3 className="font-heading text-lg font-semibold">What can you do with your tokens?</h3>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b bg-muted/20">
+                    <th className="text-left px-6 py-3 font-medium">Action</th>
+                    <th className="text-center px-4 py-3 font-medium">Men</th>
+                    <th className="text-center px-4 py-3 font-medium">Women</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="border-b">
+                    <td className="px-6 py-3">Browse profiles (first {config.tokens_free_browse_limit ?? 25}/week)</td>
+                    <td className="text-center px-4 py-3 text-green-600 font-medium">Free</td>
+                    <td className="text-center px-4 py-3 text-green-600 font-medium">Free</td>
+                  </tr>
+                  <tr className="border-b">
+                    <td className="px-6 py-3">Browse profiles (beyond limit)</td>
+                    <td className="text-center px-4 py-3">{config.tokens_browse_cost_men ?? 100} tokens</td>
+                    <td className="text-center px-4 py-3">{config.tokens_browse_cost_women ?? 0} tokens</td>
+                  </tr>
+                  <tr className="border-b">
+                    <td className="px-6 py-3">Send a message</td>
+                    <td className="text-center px-4 py-3">{config.tokens_msg_cost_men ?? 50} tokens</td>
+                    <td className="text-center px-4 py-3">{config.tokens_msg_cost_women ?? 0} tokens</td>
+                  </tr>
+                  <tr>
+                    <td className="px-6 py-3">ID Verification</td>
+                    <td className="text-center px-4 py-3">{config.tokens_verify_cost_men ?? 200} tokens</td>
+                    <td className="text-center px-4 py-3">{config.tokens_verify_cost_women ?? 200} tokens</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div className="px-6 py-3 border-t bg-muted/20">
+              <p className="text-xs text-muted-foreground text-center">Token costs shown reflect current settings. Women currently browse and message free during our launch period.</p>
+            </div>
           </div>
         </div>
       </section>

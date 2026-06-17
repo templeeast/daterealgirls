@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Heart, MessageCircle, User, Search, Menu, X, Star, Shield, LogOut, Settings } from 'lucide-react';
+import { Heart, MessageCircle, User, Search, Menu, X, Star, Shield, LogOut, Settings, Coins } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import useSiteConfig from '@/hooks/useSiteConfig';
@@ -80,6 +80,11 @@ export default function Navbar() {
 
           {/* Right side */}
           <div className="flex items-center gap-2">
+            {/* Token Balance */}
+            <div className="hidden sm:flex items-center gap-1.5 bg-accent text-accent-foreground px-2.5 py-1 rounded-full text-sm font-medium">
+              <Coins className="w-3.5 h-3.5 text-primary" />
+              <span>{(profile?.tokens ?? 0).toLocaleString()}</span>
+            </div>
             {profile?.verification_status === 'verified' && (
               <div className="hidden sm:flex items-center gap-1 text-xs text-primary bg-accent px-2 py-1 rounded-full">
                 <Shield className="w-3 h-3" />

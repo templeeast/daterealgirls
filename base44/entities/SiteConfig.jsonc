@@ -3,58 +3,38 @@
   "type": "object",
   "properties": {
     "site_name": {
-      "type": "string",
-      "description": "Name of the site"
+      "type": "string"
     },
     "logo_url": {
-      "type": "string",
-      "description": "URL of the site logo"
+      "type": "string"
     },
     "tagline": {
-      "type": "string",
-      "description": "Site tagline shown on landing page"
-    },
-    "subscription_price": {
-      "type": "number",
-      "default": 9.99,
-      "description": "Monthly subscription price in USD for men (paid tier)"
+      "type": "string"
     },
     "max_photos": {
       "type": "number",
-      "default": 3,
-      "description": "Maximum photos per profile"
+      "default": 3
     },
     "bio_max_length": {
       "type": "number",
-      "default": 500,
-      "description": "Maximum character length for bio"
+      "default": 500
     },
     "primary_color": {
-      "type": "string",
-      "description": "Primary brand color hex code"
+      "type": "string"
     },
     "target_audience": {
-      "type": "string",
-      "description": "Description of target audience"
+      "type": "string"
     },
     "require_stripe_identity": {
       "type": "boolean",
-      "default": false,
-      "description": "If true, all new users must complete Stripe Identity verification during onboarding"
+      "default": false
     },
     "stripe_identity_publishable_key": {
-      "type": "string",
-      "description": "Stripe publishable key for Identity verification"
-    },
-    "free_tier_browse_limit": {
-      "type": "number",
-      "default": 25,
-      "description": "Number of profiles free-tier men can browse before being prompted to upgrade"
+      "type": "string"
     },
     "banner_show_women_only": {
       "type": "boolean",
-      "default": true,
-      "description": "If true, the scrolling profiles banner on the landing page shows only female profiles. If false, shows all genders."
+      "default": true
     },
     "payment_processor": {
       "type": "string",
@@ -63,74 +43,143 @@
         "codapay",
         "whop"
       ],
-      "default": "whop",
-      "description": "Active payment processor shown to users."
+      "default": "whop"
     },
     "authorizenet_use_hosted_page": {
       "type": "boolean",
-      "default": false,
-      "description": "If true, clicking Pay redirects users to the Authorize.net hosted payment page instead of showing the inline card form."
+      "default": false
     },
     "authorizenet_hosted_page_url": {
-      "type": "string",
-      "description": "The full URL of your Authorize.net hosted payment page."
+      "type": "string"
     },
     "demo_mode": {
       "type": "boolean",
-      "default": true,
-      "description": "If true, a prominent Beta/coming soon banner is shown on the landing page"
+      "default": true
     },
     "dev_mode": {
       "type": "boolean",
-      "default": true,
-      "description": "If true, sandbox/dev API keys are used and a DEV MODE banner is shown"
+      "default": true
     },
     "whop_men_plan_id": {
-      "type": "string",
-      "description": "Whop Plan ID for the men's paid subscription"
+      "type": "string"
     },
     "whop_women_plan_id": {
-      "type": "string",
-      "description": "Whop Plan ID for the women's free plan"
-    },
-    "men_subscription_enabled": {
-      "type": "boolean",
-      "default": false,
-      "description": "If true, men see limited free + paid subscription flow. If false (initial rollout), men get free full access."
+      "type": "string"
     },
     "juicyads_enabled": {
       "type": "boolean",
-      "default": false,
-      "description": "If true, embedded JuicyAds advertisements are shown on women's profile pages when viewed by men."
+      "default": false
     },
     "juicyads_api_key": {
-      "type": "string",
-      "description": "JuicyAds API key for ad integration"
+      "type": "string"
     },
     "msg_rate_limit_count": {
       "type": "number",
-      "default": 5,
-      "description": "Maximum number of messages a user can send within the rate limit window"
+      "default": 5
     },
     "msg_rate_limit_seconds": {
       "type": "number",
-      "default": 10,
-      "description": "Time window in seconds for the message rate limit"
+      "default": 10
     },
     "chat_retention_days": {
       "type": "number",
-      "default": 90,
-      "description": "Number of days chat messages are retained before automatic deletion"
+      "default": 90
     },
     "app_disabled": {
       "type": "boolean",
-      "default": false,
-      "description": "Emergency kill switch \u2014 if true, the app is inaccessible to all non-admin users"
+      "default": false
     },
     "app_disabled_message": {
       "type": "string",
-      "default": "The application is temporarily unavailable due to maintenance. We'll be back online shortly. Thank you for your patience.",
-      "description": "Message shown to users when the app is disabled"
+      "default": "The application is temporarily unavailable due to maintenance. We'll be back online shortly. Thank you for your patience."
+    },
+    "welcome_tokens": {
+      "type": "number",
+      "default": 5000
+    },
+    "tokens_browse_men_enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "tokens_browse_women_enabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "tokens_free_browse_limit": {
+      "type": "number",
+      "default": 25
+    },
+    "tokens_browse_cost_men": {
+      "type": "number",
+      "default": 100
+    },
+    "tokens_browse_cost_women": {
+      "type": "number",
+      "default": 0
+    },
+    "tokens_msg_men_enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "tokens_msg_women_enabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "tokens_msg_cost_men": {
+      "type": "number",
+      "default": 50
+    },
+    "tokens_msg_cost_women": {
+      "type": "number",
+      "default": 0
+    },
+    "tokens_verify_men_enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "tokens_verify_women_enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "tokens_verify_cost_men": {
+      "type": "number",
+      "default": 200
+    },
+    "tokens_verify_cost_women": {
+      "type": "number",
+      "default": 200
+    },
+    "token_pack_starter_tokens": {
+      "type": "number",
+      "default": 500
+    },
+    "token_pack_starter_price": {
+      "type": "number",
+      "default": 5.99
+    },
+    "token_pack_popular_tokens": {
+      "type": "number",
+      "default": 1500
+    },
+    "token_pack_popular_price": {
+      "type": "number",
+      "default": 14.99
+    },
+    "token_pack_value_tokens": {
+      "type": "number",
+      "default": 3500
+    },
+    "token_pack_value_price": {
+      "type": "number",
+      "default": 29.99
+    },
+    "token_pack_best_tokens": {
+      "type": "number",
+      "default": 8000
+    },
+    "token_pack_best_price": {
+      "type": "number",
+      "default": 59.99
     }
   },
   "required": [

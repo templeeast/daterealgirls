@@ -134,7 +134,7 @@ export default function Onboarding() {
       is_active: true,
       is_suspended: false,
       profile_complete: true,
-      subscription_status: 'free',
+      tokens: config.welcome_tokens ?? 5000,
     });
 
     toast({ title: t('profile_created', { siteName: config.site_name }) });

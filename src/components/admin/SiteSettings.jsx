@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Upload, Save, AlertTriangle } from 'lucide-react';
+import TokenEconomySettings from '@/components/admin/TokenEconomySettings';
 import { useToast } from '@/components/ui/use-toast';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -15,8 +16,6 @@ export default function SiteSettings() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [saving, setSaving] = useState(false);
-  const [migrating, setMigrating] = useState(false);
-  const [migrateResult, setMigrateResult] = useState(null);
 
   const { data: configs } = useQuery({
     queryKey: ['siteConfigAdmin'],
@@ -31,10 +30,8 @@ export default function SiteSettings() {
     tagline: '',
     target_audience: '',
     logo_url: '',
-    subscription_price: 4.99,
     max_photos: 3,
     bio_max_length: 500,
-    free_tier_browse_limit: 25,
     msg_rate_limit_count: 5,
     msg_rate_limit_seconds: 10,
     primary_color: '',
@@ -50,10 +47,31 @@ export default function SiteSettings() {
     whop_women_plan_id: '',
     app_disabled: false,
     app_disabled_message: "The application is temporarily unavailable due to maintenance. We'll be back online shortly. Thank you for your patience.",
-    men_subscription_enabled: false,
     juicyads_enabled: false,
     juicyads_api_key: '',
     chat_retention_days: 90,
+    welcome_tokens: 5000,
+    tokens_browse_men_enabled: true,
+    tokens_browse_women_enabled: false,
+    tokens_free_browse_limit: 25,
+    tokens_browse_cost_men: 100,
+    tokens_browse_cost_women: 0,
+    tokens_msg_men_enabled: true,
+    tokens_msg_women_enabled: false,
+    tokens_msg_cost_men: 50,
+    tokens_msg_cost_women: 0,
+    tokens_verify_men_enabled: true,
+    tokens_verify_women_enabled: true,
+    tokens_verify_cost_men: 200,
+    tokens_verify_cost_women: 200,
+    token_pack_starter_tokens: 500,
+    token_pack_starter_price: 5.99,
+    token_pack_popular_tokens: 1500,
+    token_pack_popular_price: 14.99,
+    token_pack_value_tokens: 3500,
+    token_pack_value_price: 29.99,
+    token_pack_best_tokens: 8000,
+    token_pack_best_price: 59.99,
   });
 
   useEffect(() => {
@@ -63,10 +81,8 @@ export default function SiteSettings() {
         tagline: existingConfig.tagline || '',
         target_audience: existingConfig.target_audience || '',
         logo_url: existingConfig.logo_url || '',
-        subscription_price: existingConfig.subscription_price || 4.99,
         max_photos: existingConfig.max_photos || 3,
         bio_max_length: existingConfig.bio_max_length || 500,
-        free_tier_browse_limit: existingConfig.free_tier_browse_limit ?? 25,
         msg_rate_limit_count: existingConfig.msg_rate_limit_count ?? 5,
         msg_rate_limit_seconds: existingConfig.msg_rate_limit_seconds ?? 10,
         primary_color: existingConfig.primary_color || '',
@@ -82,11 +98,32 @@ export default function SiteSettings() {
         whop_women_plan_id: existingConfig.whop_women_plan_id || '',
         app_disabled: existingConfig.app_disabled || false,
         app_disabled_message: existingConfig.app_disabled_message || "The application is temporarily unavailable due to maintenance. We'll be back online shortly. Thank you for your patience.",
-        men_subscription_enabled: existingConfig.men_subscription_enabled || false,
         juicyads_enabled: existingConfig.juicyads_enabled || false,
         juicyads_api_key: existingConfig.juicyads_api_key || '',
         chat_retention_days: existingConfig.chat_retention_days ?? 90,
-        });
+        welcome_tokens: existingConfig.welcome_tokens ?? 5000,
+        tokens_browse_men_enabled: existingConfig.tokens_browse_men_enabled !== false,
+        tokens_browse_women_enabled: existingConfig.tokens_browse_women_enabled || false,
+        tokens_free_browse_limit: existingConfig.tokens_free_browse_limit ?? 25,
+        tokens_browse_cost_men: existingConfig.tokens_browse_cost_men ?? 100,
+        tokens_browse_cost_women: existingConfig.tokens_browse_cost_women ?? 0,
+        tokens_msg_men_enabled: existingConfig.tokens_msg_men_enabled !== false,
+        tokens_msg_women_enabled: existingConfig.tokens_msg_women_enabled || false,
+        tokens_msg_cost_men: existingConfig.tokens_msg_cost_men ?? 50,
+        tokens_msg_cost_women: existingConfig.tokens_msg_cost_women ?? 0,
+        tokens_verify_men_enabled: existingConfig.tokens_verify_men_enabled !== false,
+        tokens_verify_women_enabled: existingConfig.tokens_verify_women_enabled !== false,
+        tokens_verify_cost_men: existingConfig.tokens_verify_cost_men ?? 200,
+        tokens_verify_cost_women: existingConfig.tokens_verify_cost_women ?? 200,
+        token_pack_starter_tokens: existingConfig.token_pack_starter_tokens ?? 500,
+        token_pack_starter_price: existingConfig.token_pack_starter_price ?? 5.99,
+        token_pack_popular_tokens: existingConfig.token_pack_popular_tokens ?? 1500,
+        token_pack_popular_price: existingConfig.token_pack_popular_price ?? 14.99,
+        token_pack_value_tokens: existingConfig.token_pack_value_tokens ?? 3500,
+        token_pack_value_price: existingConfig.token_pack_value_price ?? 29.99,
+        token_pack_best_tokens: existingConfig.token_pack_best_tokens ?? 8000,
+        token_pack_best_price: existingConfig.token_pack_best_price ?? 59.99,
+      });
     }
   }, [existingConfig]);
 
@@ -194,17 +231,13 @@ export default function SiteSettings() {
         </CardContent>
       </Card>
 
-      {/* Pricing */}
+      {/* Profile Limits */}
       <Card>
         <CardHeader>
-          <CardTitle className="font-heading text-lg">Pricing & Limits</CardTitle>
+          <CardTitle className="font-heading text-lg">Profile Limits</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>Subscription Price ($/month)</Label>
-              <Input type="number" value={form.subscription_price} onChange={e => updateField('subscription_price', Number(e.target.value))} />
-            </div>
             <div className="space-y-2">
               <Label>Max Photos Per Profile</Label>
               <Input type="number" value={form.max_photos} onChange={e => updateField('max_photos', Number(e.target.value))} />
@@ -214,28 +247,23 @@ export default function SiteSettings() {
               <Input type="number" value={form.bio_max_length} onChange={e => updateField('bio_max_length', Number(e.target.value))} />
             </div>
             <div className="space-y-2">
-              <Label>Free Tier Browse Limit (profiles)</Label>
-              <Input type="number" value={form.free_tier_browse_limit} onChange={e => updateField('free_tier_browse_limit', Number(e.target.value))} />
-              <p className="text-xs text-muted-foreground">Number of profiles free-tier male members can see before being prompted to upgrade.</p>
-            </div>
-            <div className="space-y-2">
               <Label>Message Rate Limit — Max Messages</Label>
               <Input type="number" value={form.msg_rate_limit_count} onChange={e => updateField('msg_rate_limit_count', Number(e.target.value))} />
-              <p className="text-xs text-muted-foreground">Max messages a user can send within the time window below.</p>
             </div>
             <div className="space-y-2">
               <Label>Message Rate Limit — Time Window (seconds)</Label>
               <Input type="number" value={form.msg_rate_limit_seconds} onChange={e => updateField('msg_rate_limit_seconds', Number(e.target.value))} />
-              <p className="text-xs text-muted-foreground">Time window in seconds. Default: 5 messages per 10 seconds.</p>
             </div>
             <div className="space-y-2">
               <Label>Chat Message Retention (days)</Label>
               <Input type="number" value={form.chat_retention_days} onChange={e => updateField('chat_retention_days', Number(e.target.value))} />
-              <p className="text-xs text-muted-foreground">Chat messages older than this are automatically deleted. Users see this on the chat page. Default: 90 days.</p>
             </div>
           </div>
         </CardContent>
       </Card>
+
+      {/* Token Economy */}
+      <TokenEconomySettings form={form} updateField={updateField} />
 
       {/* Identity Verification */}
       <Card>
@@ -304,7 +332,7 @@ export default function SiteSettings() {
         <CardHeader>
           <CardTitle className="font-heading text-lg">Payment Processors</CardTitle>
           <CardDescription>
-            <strong>Whop</strong>, <strong>Authorize.net (ZenPayments)</strong>, and <strong>CodaPay</strong> are available processors. Select the active one below — it will be marked as <strong>Primary</strong>.
+            <strong>Whop</strong>, <strong>Authorize.net (ZenPayments)</strong>, and <strong>CodaPay</strong> are available processors for token pack purchases. Select the active one below.
             Dev Mode (above) controls which API keys are used across all processors.
           </CardDescription>
         </CardHeader>
@@ -312,32 +340,14 @@ export default function SiteSettings() {
           <div className="space-y-2">
             <Label>Active Processor Shown to Users</Label>
             <Select value={form.payment_processor} onValueChange={v => updateField('payment_processor', v)}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
+              <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="whop">Whop</SelectItem>
                 <SelectItem value="authorizenet">Authorize.net (ZenPayments)</SelectItem>
                 <SelectItem value="codapay">CodaPay — Asia / Local</SelectItem>
               </SelectContent>
             </Select>
-            <p className="text-xs text-muted-foreground">This controls which processor is shown to users on the subscription page.</p>
-          </div>
-
-          {/* Men's Subscription Toggle */}
-          <div className="border rounded-lg p-4 space-y-3">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-medium text-sm">Enable Men's Paid Subscription Plan</p>
-                <p className="text-xs text-muted-foreground mt-0.5">
-                  When <strong>OFF</strong>: Men get free full access (initial rollout). When <strong>ON</strong>: Men see limited free tier + paid subscription options.
-                </p>
-              </div>
-              <Switch
-                checked={form.men_subscription_enabled}
-                onCheckedChange={v => updateField('men_subscription_enabled', v)}
-              />
-            </div>
+            <p className="text-xs text-muted-foreground">This controls which processor handles token pack purchases.</p>
           </div>
 
           {/* Whop Config */}
@@ -347,29 +357,19 @@ export default function SiteSettings() {
               {form.payment_processor === 'whop' && <span className="text-xs bg-primary text-primary-foreground px-2 py-0.5 rounded-full">Primary</span>}
             </div>
             <p className="text-xs text-muted-foreground">
-              API keys are stored as secrets: <code className="bg-muted px-1 rounded">WHOP_DEV_API_KEY</code> and <code className="bg-muted px-1 rounded">WHOP_PROD_API_KEY</code>. Dev Mode (above) selects which key is used. Set your Plan IDs from the Whop Dashboard below.
+              API keys: <code className="bg-muted px-1 rounded">WHOP_DEV_API_KEY</code> / <code className="bg-muted px-1 rounded">WHOP_PROD_API_KEY</code>.
             </p>
             <div className="grid grid-cols-1 gap-3">
               <div className="space-y-1">
-                <Label className="text-xs">Men's Plan ID (paid subscription)</Label>
-                <Input
-                  value={form.whop_men_plan_id}
-                  onChange={e => updateField('whop_men_plan_id', e.target.value)}
-                  placeholder="plan_xxxxxxxxxxxx"
-                />
-                <p className="text-xs text-muted-foreground">Product URL: https://whop.com/date-real-girls/date-real-girls-male-subscription</p>
+                <Label className="text-xs">Men's Plan ID</Label>
+                <Input value={form.whop_men_plan_id} onChange={e => updateField('whop_men_plan_id', e.target.value)} placeholder="plan_xxxxxxxxxxxx" />
               </div>
               <div className="space-y-1">
-                <Label className="text-xs">Women's Plan ID (free plan)</Label>
-                <Input
-                  value={form.whop_women_plan_id}
-                  onChange={e => updateField('whop_women_plan_id', e.target.value)}
-                  placeholder="plan_xxxxxxxxxxxx"
-                />
-                <p className="text-xs text-muted-foreground">Product URL: https://whop.com/date-real-girls/date-real-girls-female-subscription</p>
+                <Label className="text-xs">Women's Plan ID</Label>
+                <Input value={form.whop_women_plan_id} onChange={e => updateField('whop_women_plan_id', e.target.value)} placeholder="plan_xxxxxxxxxxxx" />
               </div>
             </div>
-            <p className="text-xs text-muted-foreground">Webhook URL: register <code className="bg-muted px-1 rounded">/api/functions/whopWebhook</code> in Whop Dashboard → Developer → Webhooks</p>
+            <p className="text-xs text-muted-foreground">Webhook URL: <code className="bg-muted px-1 rounded">/api/functions/whopWebhook</code></p>
           </div>
 
           {/* Authorize.net Info */}
@@ -379,17 +379,13 @@ export default function SiteSettings() {
               {form.payment_processor === 'authorizenet' && <span className="text-xs bg-primary text-primary-foreground px-2 py-0.5 rounded-full">Primary</span>}
             </div>
             <p className="text-xs text-muted-foreground">
-              Secrets: <code className="bg-muted px-1 rounded">AUTHORIZENET_API_LOGIN_ID</code> and <code className="bg-muted px-1 rounded">AUTHORIZENET_TRANSACTION_KEY</code>. Current keys are Dev/Sandbox. No Prod keys yet.
+              Secrets: <code className="bg-muted px-1 rounded">AUTHORIZENET_API_LOGIN_ID</code> and <code className="bg-muted px-1 rounded">AUTHORIZENET_TRANSACTION_KEY</code>.
             </p>
             <div className="flex items-center justify-between">
               <div>
                 <p className="font-medium text-xs">Use Hosted Payment Page</p>
-                <p className="text-xs text-muted-foreground">Redirect users to Authorize.net hosted page instead of inline form.</p>
               </div>
-              <Switch
-                checked={form.authorizenet_use_hosted_page}
-                onCheckedChange={v => updateField('authorizenet_use_hosted_page', v)}
-              />
+              <Switch checked={form.authorizenet_use_hosted_page} onCheckedChange={v => updateField('authorizenet_use_hosted_page', v)} />
             </div>
           </div>
 
@@ -401,42 +397,7 @@ export default function SiteSettings() {
             </div>
             <p className="text-xs text-muted-foreground">
               Secrets: <code className="bg-muted px-1 rounded">CODAPAY_PROJECT_ID</code>, <code className="bg-muted px-1 rounded">CODAPAY_SANDBOX_API_KEY</code>, <code className="bg-muted px-1 rounded">CODAPAY_PRODUCTION_API_KEY</code>.
-              Dev Mode controls sandbox vs production. Supports PHP, THB, IDR, MYR, VND, SGD, TWD, USD.
             </p>
-          </div>
-
-          {/* Migration Tool */}
-          <div className="border border-destructive/30 rounded-lg p-4 bg-destructive/5 space-y-3">
-            <div className="flex items-start gap-2">
-              <AlertTriangle className="w-4 h-4 text-destructive shrink-0 mt-0.5" />
-              <div>
-                <p className="text-sm font-medium text-destructive">Subscription Migration Tool</p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  Flags all users with an old subscription as <strong>migrating</strong>, prompting them to re-subscribe on their next login. Save settings first before running.
-                </p>
-              </div>
-            </div>
-            {migrateResult && (
-              <div className="text-xs bg-background rounded p-2 text-muted-foreground">{migrateResult}</div>
-            )}
-            <Button
-              variant="destructive"
-              size="sm"
-              disabled={migrating}
-              onClick={async () => {
-                setMigrating(true);
-                setMigrateResult(null);
-                try {
-                  const res = await base44.functions.invoke('migrateSubscriptions', {});
-                  setMigrateResult(res.data?.message || 'Migration complete.');
-                } catch (err) {
-                  setMigrateResult('Migration failed: ' + (err?.response?.data?.error || err.message));
-                }
-                setMigrating(false);
-              }}
-            >
-              {migrating ? 'Migrating…' : 'Run Migration Tool'}
-            </Button>
           </div>
         </CardContent>
       </Card>

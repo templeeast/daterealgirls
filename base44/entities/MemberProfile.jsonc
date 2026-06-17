@@ -197,88 +197,40 @@
     },
     "selfie_url_2": {
       "type": "string",
-      "description": "Most recent re-upload selfie (overwritten on each re-upload)"
+      "description": "Most recent re-upload selfie"
     },
     "id_document_url": {
       "type": "string",
-      "description": "ORIGINAL govt ID front URI (private) \u2014 set once, never overwritten"
+      "description": "ORIGINAL govt ID front URI (private)"
     },
     "id_document_url_2": {
       "type": "string",
-      "description": "Most recent re-upload govt ID front URI (private, overwritten on each re-upload)"
+      "description": "Most recent re-upload govt ID front URI"
     },
     "id_document_back_url": {
       "type": "string",
-      "description": "ORIGINAL govt ID back URI (private) \u2014 set once, never overwritten"
+      "description": "ORIGINAL govt ID back URI (private)"
     },
     "id_document_back_url_2": {
       "type": "string",
-      "description": "Most recent re-upload govt ID back URI (private, overwritten on each re-upload)"
+      "description": "Most recent re-upload govt ID back URI"
     },
     "is_active": {
       "type": "boolean",
-      "default": true,
-      "description": "Whether the profile is active/visible"
+      "default": true
     },
     "is_suspended": {
       "type": "boolean",
-      "default": false,
-      "description": "Whether the profile is suspended by admin"
+      "default": false
     },
     "suspension_reason": {
-      "type": "string",
-      "description": "Reason for suspension"
-    },
-    "subscription_status": {
-      "type": "string",
-      "enum": [
-        "free",
-        "active",
-        "expired",
-        "cancelled",
-        "migrating"
-      ],
-      "default": "free",
-      "description": "Subscription status."
-    },
-    "subscription_start_date": {
-      "type": "string",
-      "format": "date",
-      "description": "When the paid subscription started"
-    },
-    "subscription_end_date": {
-      "type": "string",
-      "format": "date",
-      "description": "When the paid subscription expires"
-    },
-    "subscription_id": {
-      "type": "string",
-      "description": "Payment processor subscription ID (ARB subscription ID for Authorize.net, membership ID for Whop, etc.)"
-    },
-    "subscription_payment_processor": {
-      "type": "string",
-      "description": "The payment processor used when this subscription was created (e.g. authorizenet, whop, codapay)"
-    },
-    "free_trial_claimed": {
-      "type": "boolean",
-      "default": false,
-      "description": "Whether the male member has already claimed their free month trial"
-    },
-    "free_trial_start_date": {
-      "type": "string",
-      "format": "date",
-      "description": "Date the free trial was activated"
-    },
-    "whop_user_id": {
-      "type": "string",
-      "description": "Whop User ID associated with this member's subscription"
+      "type": "string"
     },
     "interests": {
       "type": "array",
       "items": {
         "type": "string"
-      },
-      "description": "List of interests/hobbies"
+      }
     },
     "looking_for": {
       "type": "string",
@@ -287,13 +239,26 @@
         "friendship",
         "casual",
         "marriage"
-      ],
-      "description": "What the member is looking for"
+      ]
     },
     "profile_complete": {
       "type": "boolean",
-      "default": false,
-      "description": "Whether the profile setup is complete"
+      "default": false
+    },
+    "tokens": {
+      "type": "number",
+      "default": 0,
+      "description": "Current token balance"
+    },
+    "browse_count_this_week": {
+      "type": "number",
+      "default": 0,
+      "description": "Profiles browsed in current rolling 7-day window"
+    },
+    "browse_week_start": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Start of current 7-day browse window"
     }
   },
   "required": [

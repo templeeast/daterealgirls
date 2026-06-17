@@ -1,29 +1,42 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search, SlidersHorizontal } from 'lucide-react';
+import { Search, SlidersHorizontal, Coins } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import ProfileCard from '@/components/browse/ProfileCard';
 import useMyProfile from '@/hooks/useMyProfile';
 import { useAuth } from '@/lib/AuthContext';
 import { useTranslation } from 'react-i18next';
-import UpgradePrompt from '@/components/subscription/UpgradePrompt';
 import useSiteConfig from '@/hooks/useSiteConfig';
 import CountryCitySelector from '@/components/shared/CountryCitySelector';
 
 export default function Browse() {
+  const navigate = useNavigate();
   const { user, profile } = useMyProfile();
   const { isAuthenticated } = useAuth();
   const { t } = useTranslation();
   const { config } = useSiteConfig();
   const queryClient = useQueryClient();
 
-  // Is this a free-tier male user? Only applies when men's subscription is enabled
-  const isFreeMale = config?.men_subscription_enabled && profile?.gender === 'male' && (!profile?.subscription_status || profile?.subscription_status === 'free');
-  const browseLimit = config?.free_tier_browse_limit ?? 25;
+  // Token-based browse gating
+  const isMale = profile?.gender === 'male';
+  const browseEnabled = isMale ? (config?.tokens_browse_men_enabled !== false) : (config?.tokens_browse_women_enabled || false);
+  const browseLimit = config?.tokens_free_browse_limit ?? 25;
+  const browseCost = isMale ? (config?.tokens_browse_cost_men ?? 100) : (config?.tokens_browse_cost_women ?? 0);
+  const currentTokens = profile?.tokens ?? 0;
+
+  // Check browse week window
+  const browseWeekStart = profile?.browse_week_start ? new Date(profile.browse_week_start) : null;
+  const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+  const needsWeekReset = !browseWeekStart || browseWeekStart < weekAgo;
+  const effectiveBrowseCount = needsWeekReset ? 0 : (profile?.browse_count_this_week ?? 0);
+  const isPastFreeLimit = effectiveBrowseCount >= browseLimit;
+
+  const shouldGateBrowsing = browseEnabled && isPastFreeLimit;
 
   // Persist filters in sessionStorage so they survive navigation
   const loadFilter = (key, fallback) => {
@@ -123,15 +136,19 @@ export default function Browse() {
     return true;
   });
 
-  const visibleProfiles = isFreeMale ? filtered.slice(0, browseLimit) : filtered;
-  const hasLockedProfiles = isFreeMale && filtered.length > browseLimit;
+  const visibleProfiles = shouldGateBrowsing ? filtered.slice(0, browseLimit - effectiveBrowseCount) : filtered;
+  const hasLockedProfiles = shouldGateBrowsing && filtered.length > (browseLimit - effectiveBrowseCount);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      {/* Free tier banner for men */}
-      {isFreeMale && (
-        <div className="mb-6">
-          <UpgradePrompt price={config?.subscription_price ?? 9.99} inline />
+      {/* Token balance banner */}
+      {currentTokens < 200 && (
+        <div className="mb-6 bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Coins className="w-4 h-4 text-amber-600" />
+            <p className="text-sm text-amber-800">Running low on tokens — Top up now!</p>
+          </div>
+          <Button size="sm" variant="outline" className="border-amber-300" onClick={() => navigate('/my-profile')}>Buy Tokens</Button>
         </div>
       )}
 
@@ -236,21 +253,25 @@ export default function Browse() {
                 hasWinked={winkedIds.has(p.id)}
               />
             ))}
-            {/* Blurred locked cards for free-tier males */}
-            {isFreeMale && filtered.slice(browseLimit).map((p, i) => (
+            {/* Blurred locked cards for token-gated browsing */}
+            {shouldGateBrowsing && filtered.slice(browseLimit - effectiveBrowseCount).map((p, i) => (
               <div key={`locked-${i}`} className="relative rounded-2xl overflow-hidden border">
                 <div className="aspect-[3/4] bg-gradient-to-br from-primary/10 to-accent blur-sm scale-105" />
                 <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/40">
                   <div className="bg-white/90 rounded-xl px-4 py-3 text-center shadow-lg">
-                    <p className="text-xs font-semibold text-foreground">🔒 Premium Only</p>
+                    <p className="text-xs font-semibold text-foreground">{browseCost} tokens/profile</p>
+                    <p className="text-xs text-muted-foreground mt-1">Buy tokens to continue browsing</p>
                   </div>
                 </div>
               </div>
             ))}
           </div>
           {hasLockedProfiles && (
-            <div className="mt-10 max-w-md mx-auto">
-              <UpgradePrompt price={config?.subscription_price ?? 9.99} />
+            <div className="mt-10 max-w-md mx-auto text-center">
+              <p className="text-muted-foreground mb-4">You've reached your free browse limit. Get more tokens to discover more profiles!</p>
+              <Button size="lg" className="rounded-full" onClick={() => navigate('/my-profile')}>
+                <Coins className="w-4 h-4 mr-2" /> Buy Tokens
+              </Button>
             </div>
           )}
         </>
