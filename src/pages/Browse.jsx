@@ -21,9 +21,9 @@ export default function Browse() {
   const { config } = useSiteConfig();
   const queryClient = useQueryClient();
 
-  // Is this a free-tier male user?
-  const isFreeMale = profile?.gender === 'male' && (!profile?.subscription_status || profile?.subscription_status === 'free');
-  const browseLimit = config?.free_tier_browse_limit ?? 5;
+  // Is this a free-tier male user? Only applies when men's subscription is enabled
+  const isFreeMale = config?.men_subscription_enabled && profile?.gender === 'male' && (!profile?.subscription_status || profile?.subscription_status === 'free');
+  const browseLimit = config?.free_tier_browse_limit ?? 25;
 
   // Persist filters in sessionStorage so they survive navigation
   const loadFilter = (key, fallback) => {
