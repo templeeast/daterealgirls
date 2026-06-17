@@ -15,10 +15,11 @@ Deno.serve(async (req) => {
     }
 
     // Look up the profile to get the user_id
-    const profile = await base44.entities.MemberProfile.get(profileId);
-    if (!profile) {
+    const profiles = await base44.entities.MemberProfile.filter({ id: profileId }, null, 1);
+    if (!profiles || profiles.length === 0) {
       return Response.json({ error: 'Profile not found' }, { status: 404 });
     }
+    const profile = profiles[0];
 
     const userId = profile.user_id;
 
