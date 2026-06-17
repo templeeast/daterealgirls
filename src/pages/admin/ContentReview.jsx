@@ -51,7 +51,7 @@ function buildPhotoList(profiles, messages, reviews) {
 
   // Chat images
   messages.forEach(m => {
-    if (!m.image_url || m.content === '📷 Photo') return;
+    if (!m.image_url) return;
     const url = m.image_url;
     const existing = reviewMap[url];
     items.push({
