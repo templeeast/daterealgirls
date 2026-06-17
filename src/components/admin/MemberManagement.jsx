@@ -56,7 +56,7 @@ export default function MemberManagement() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => base44.entities.MemberProfile.delete(id),
+    mutationFn: (id) => base44.functions.invoke('deleteMemberAndUser', { profileId: id }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['allProfiles'] });
       setDeleteDialog(null);
@@ -356,7 +356,7 @@ export default function MemberManagement() {
             <DialogTitle>Delete {deleteDialog?.display_name}?</DialogTitle>
           </DialogHeader>
           <p className="text-sm text-muted-foreground">
-            This will permanently delete this member's profile and cannot be undone.
+            This will permanently delete this member's profile and user account, along with all their messages, conversations, winks, and favorites. This cannot be undone.
           </p>
           <DialogFooter>
             <Button variant="outline" onClick={() => setDeleteDialog(null)}>Cancel</Button>
