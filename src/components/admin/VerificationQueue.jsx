@@ -6,9 +6,9 @@ import { Badge } from '@/components/ui/badge';
 import { CheckCircle, ChevronRight, Loader2, User } from 'lucide-react';
 import VerificationDetail from './VerificationDetail';
 
-export default function VerificationQueue() {
+export default function VerificationQueue({ profileId }) {
   const queryClient = useQueryClient();
-  const [selectedId, setSelectedId] = useState(null);
+  const [selectedId, setSelectedId] = useState(profileId || null);
 
   const { data: pending, isLoading } = useQuery({
     queryKey: ['pendingVerifications'],

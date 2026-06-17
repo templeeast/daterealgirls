@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -16,6 +17,8 @@ import useMyProfile from '@/hooks/useMyProfile';
 
 export default function AdminDashboard() {
   const { user } = useMyProfile();
+  const [searchParams] = useSearchParams();
+  const urlTab = searchParams.get('tab') || 'members';
 
   if (user?.role !== 'admin') {
     return (
@@ -48,7 +51,7 @@ export default function AdminDashboard() {
       <AdminStats />
       <SignupsChart />
 
-      <Tabs defaultValue="members" className="mt-8">
+      <Tabs defaultValue={urlTab} className="mt-8">
         <TabsList className="mb-6 flex-wrap h-auto gap-1">
           <TabsTrigger value="members" className="gap-2"><Users className="w-4 h-4" /> Members</TabsTrigger>
           <TabsTrigger value="verification" className="gap-2"><Shield className="w-4 h-4" /> Verification</TabsTrigger>
@@ -59,7 +62,7 @@ export default function AdminDashboard() {
         </TabsList>
 
         <TabsContent value="members"><MemberManagement /></TabsContent>
-        <TabsContent value="verification"><VerificationQueue /></TabsContent>
+        <TabsContent value="verification"><VerificationQueue profileId={searchParams.get('profile')} /></TabsContent>
         <TabsContent value="reports"><ReportsPanel /></TabsContent>
         <TabsContent value="tickets"><TicketsPanel /></TabsContent>
         <TabsContent value="settings"><SiteSettings /></TabsContent>
