@@ -180,11 +180,19 @@
       "type": "string",
       "description": "TikTok username"
     },
+    "profile_review_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved"
+      ],
+      "default": "pending",
+      "description": "Admin profile review status \u2014 whether the profile has been reviewed and approved"
+    },
     "verification_status": {
       "type": "string",
       "enum": [
         "unverified",
-        "pending",
         "verified",
         "rejected"
       ],

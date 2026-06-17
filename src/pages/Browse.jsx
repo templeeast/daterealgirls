@@ -117,6 +117,7 @@ export default function Browse() {
 
   const filtered = profiles.filter(p => {
     if (user && p.user_id === user.id) return false;
+    if (p.verification_status === 'rejected') return false;
     if (genderFilter !== 'all' && p.gender !== genderFilter) return false;
     if (lookingForFilter !== 'all' && p.looking_for !== lookingForFilter) return false;
     if (ageMin !== '' && (p.age == null || p.age < parseInt(ageMin))) return false;
