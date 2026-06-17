@@ -45,6 +45,7 @@ function buildPhotoList(profiles, messages, reviews) {
         rejection_reason: existing?.rejection_reason || null,
         reviewed_date: existing?.updated_date || null,
         review_id: existing?.id || null,
+        uploaded_date: null,
       });
     }
   });
@@ -67,6 +68,7 @@ function buildPhotoList(profiles, messages, reviews) {
       rejection_reason: existing?.rejection_reason || null,
       reviewed_date: existing?.updated_date || null,
       review_id: existing?.id || null,
+      uploaded_date: m.created_date || null,
     });
   });
 
