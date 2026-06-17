@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ArrowLeft, Send, User, Image as ImageIcon } from 'lucide-react';
+import { ArrowLeft, Send, User, Image as ImageIcon, Trash2 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import useMyProfile from '@/hooks/useMyProfile';
 import useSiteConfig from '@/hooks/useSiteConfig';
@@ -95,6 +95,15 @@ export default function Chat() {
       queryClient.invalidateQueries({ queryKey: ['messages', conversationId] });
       queryClient.invalidateQueries({ queryKey: ['conversations'] });
       setText('');
+    },
+  });
+
+  const deleteImageMutation = useMutation({
+    mutationFn: async (msgId) => {
+      await base44.entities.Message.update(msgId, { image_url: '' });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['messages', conversationId] });
     },
   });
 
@@ -194,7 +203,19 @@ export default function Chat() {
                       : 'bg-muted rounded-bl-md'
                   }`}>
                     {msg.image_url && (
-                      <img src={msg.image_url} className="rounded-lg max-w-full mb-2" alt="" />
+                      <div className="relative group">
+                        <img src={msg.image_url} className="rounded-lg max-w-full mb-2" alt="" />
+                        {isMe && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="absolute top-1 right-1 h-7 w-7 rounded-full bg-black/40 hover:bg-black/70 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                            onClick={() => deleteImageMutation.mutate(msg.id)}
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </Button>
+                        )}
+                      </div>
                     )}
                     <p className="text-sm">{msg.content !== '📷 Photo' ? msg.content : ''}</p>
                   </div>
