@@ -10,7 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
-import { Upload, Shield, Camera, Save, Trash2, Eye, EyeOff, AlertTriangle, Smile, ExternalLink, Coins, ShoppingCart } from 'lucide-react';
+import { Upload, Shield, Camera, Save, Trash2, Eye, EyeOff, AlertTriangle, Smile, ExternalLink, Coins, ShoppingCart, CreditCard, Lock, Loader2 } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { formatDistanceToNow } from 'date-fns';
 import { enUS, es, th, zhCN, de, vi as viLocale, pt } from 'date-fns/locale';
 import { useToast } from '@/components/ui/use-toast';
@@ -59,6 +60,44 @@ export default function MyProfile() {
 
   const [form, setForm] = useState(null);
   const [winks, setWinks] = useState(null);
+
+  // Token purchase dialog state
+  const [buyDialog, setBuyDialog] = useState({ open: false, pack: null });
+  const [cardNumber, setCardNumber] = useState('');
+  const [cardExpiry, setCardExpiry] = useState('');
+  const [cardCvv, setCardCvv] = useState('');
+  const [purchasing, setPurchasing] = useState(false);
+
+  const handleBuyTokens = (pack) => {
+    setBuyDialog({ open: true, pack });
+    setCardNumber('');
+    setCardExpiry('');
+    setCardCvv('');
+  };
+
+  const handlePurchaseSubmit = async () => {
+    if (!cardNumber || !cardExpiry || !cardCvv) {
+      toast({ title: 'Please fill in all card details', variant: 'destructive' });
+      return;
+    }
+    setPurchasing(true);
+    const res = await base44.functions.invoke('purchaseTokens', {
+      cardNumber,
+      cardExpiry,
+      cardCvv,
+      amount: buyDialog.pack.price,
+      packName: buyDialog.pack.name,
+      tokensToAdd: buyDialog.pack.tokens,
+    });
+    setPurchasing(false);
+    if (res.data?.success) {
+      toast({ title: `Purchased ${buyDialog.pack.tokens.toLocaleString()} tokens!` });
+      setBuyDialog({ open: false, pack: null });
+      refetch();
+    } else {
+      toast({ title: res.data?.error || 'Payment failed', variant: 'destructive' });
+    }
+  };
 
   useEffect(() => {
     if (profile?.id && winks === null) {
@@ -442,7 +481,7 @@ export default function MyProfile() {
                 <p className="text-2xl font-bold mt-1">{pack.tokens.toLocaleString()}</p>
                 <p className="text-xs text-muted-foreground mb-2">tokens</p>
                 <p className="text-xl font-bold text-primary mb-3">${pack.price}</p>
-                <Button size="sm" className="w-full rounded-full" variant={pack.highlight ? 'default' : 'outline'}>
+                <Button size="sm" className="w-full rounded-full" variant={pack.highlight ? 'default' : 'outline'} onClick={() => handleBuyTokens(pack)}>
                   Buy {pack.name}
                 </Button>
               </div>
@@ -700,6 +739,76 @@ export default function MyProfile() {
         <Save className="w-4 h-4" />
         {saving ? t('saving') : t('save_profile')}
       </Button>
+
+      {/* Buy Tokens Dialog */}
+      <Dialog open={buyDialog.open} onOpenChange={(v) => !v && setBuyDialog({ open: false, pack: null })}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Coins className="w-5 h-5 text-primary" /> Buy {buyDialog.pack?.name}
+            </DialogTitle>
+            <DialogDescription>
+              {buyDialog.pack?.tokens?.toLocaleString()} tokens for ${buyDialog.pack?.price}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 pt-2">
+            <div className="space-y-1.5">
+              <Label>Card Number</Label>
+              <div className="relative">
+                <CreditCard className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input
+                  className="pl-10"
+                  placeholder="1234 5678 9012 3456"
+                  value={cardNumber}
+                  onChange={e => setCardNumber(e.target.value)}
+                  maxLength={19}
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1.5">
+                <Label>Expiry</Label>
+                <Input
+                  placeholder="MM/YY"
+                  value={cardExpiry}
+                  onChange={e => setCardExpiry(e.target.value)}
+                  maxLength={5}
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label>CVV</Label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <Input
+                    className="pl-10"
+                    placeholder="123"
+                    value={cardCvv}
+                    onChange={e => setCardCvv(e.target.value)}
+                    maxLength={4}
+                    type="password"
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted rounded-lg p-3">
+              <Lock className="w-3.5 h-3.5 shrink-0" />
+              <span>Your payment info is encrypted and secure. Powered by Authorize.net.</span>
+            </div>
+          </div>
+          <DialogFooter className="gap-2">
+            <Button variant="outline" onClick={() => setBuyDialog({ open: false, pack: null })} disabled={purchasing}>
+              Cancel
+            </Button>
+            <Button onClick={handlePurchaseSubmit} disabled={purchasing} className="gap-2">
+              {purchasing ? (
+                <><Loader2 className="w-4 h-4 animate-spin" /> Processing...</>
+              ) : (
+                <>Pay ${buyDialog.pack?.price}</>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
