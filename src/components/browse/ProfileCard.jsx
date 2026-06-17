@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { MapPin, Heart, Shield, Star } from 'lucide-react';
+import { MapPin, Heart, Shield, Star, Clock, AlertCircle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
@@ -37,11 +37,23 @@ export default function ProfileCard({ profile, onFavorite, isFavorited, myProfil
           {/* Overlay gradient */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
 
-          {/* Verification badge */}
+          {/* Verification badges */}
           {profile.verification_status === 'verified' && (
-            <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm text-primary px-2 py-1 rounded-full flex items-center gap-1 text-xs font-medium">
+            <div className="absolute top-3 left-3 bg-green-500/90 backdrop-blur-sm text-white px-2 py-1 rounded-full flex items-center gap-1 text-xs font-medium">
               <Shield className="w-3 h-3" />
               Verified
+            </div>
+          )}
+          {profile.verification_status === 'pending' && (
+            <div className="absolute top-3 left-3 bg-amber-500/90 backdrop-blur-sm text-white px-2 py-1 rounded-full flex items-center gap-1 text-xs font-medium">
+              <Clock className="w-3 h-3" />
+              Pending
+            </div>
+          )}
+          {profile.verification_status === 'unverified' && (
+            <div className="absolute top-3 left-3 bg-slate-400/80 backdrop-blur-sm text-white px-2 py-1 rounded-full flex items-center gap-1 text-xs font-medium">
+              <AlertCircle className="w-3 h-3" />
+              Unverified
             </div>
           )}
 
