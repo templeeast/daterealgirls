@@ -1,0 +1,60 @@
+{
+  "name": "PhotoReview",
+  "type": "object",
+  "properties": {
+    "photo_url": {
+      "type": "string",
+      "description": "URL of the photo being reviewed"
+    },
+    "source_type": {
+      "type": "string",
+      "enum": [
+        "profile",
+        "chat"
+      ],
+      "description": "Where the photo comes from"
+    },
+    "source_description": {
+      "type": "string",
+      "description": "Human-readable description like 'Profile photo #3 of Jane'"
+    },
+    "source_profile_id": {
+      "type": "string",
+      "description": "MemberProfile ID this photo belongs to"
+    },
+    "source_user_id": {
+      "type": "string",
+      "description": "User ID who owns this photo"
+    },
+    "source_field": {
+      "type": "string",
+      "description": "For profile photos: the field name (photo_1 through photo_15)"
+    },
+    "source_message_id": {
+      "type": "string",
+      "description": "For chat images: the Message ID"
+    },
+    "source_conversation_id": {
+      "type": "string",
+      "description": "For chat images: the Conversation ID for linking to chat"
+    },
+    "review_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "rejected"
+      ],
+      "default": "pending",
+      "description": "Review status of the photo"
+    },
+    "rejection_reason": {
+      "type": "string",
+      "description": "Reason for rejection"
+    }
+  },
+  "required": [
+    "photo_url",
+    "source_type"
+  ]
+}

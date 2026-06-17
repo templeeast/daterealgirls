@@ -18,6 +18,7 @@ import Winks from '@/pages/Winks';
 import ReportProfile from '@/pages/ReportProfile';
 import AdminDashboard from '@/pages/admin/AdminDashboard';
 import TestPlan from '@/pages/admin/TestPlan';
+import ContentReview from '@/pages/admin/ContentReview';
 import AppLayout from '@/components/layout/AppLayout';
 import useSiteConfig from '@/hooks/useSiteConfig';
 import ProfileCompleteGuard from '@/components/layout/ProfileCompleteGuard';
@@ -79,6 +80,7 @@ const AuthenticatedApp = () => {
         <Route path="/report/:id" element={<ProfileCompleteGuard><ReportProfile /></ProfileCompleteGuard>} />
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/admin/test-plan" element={<TestPlan />} />
+        <Route path="/admin/content-review" element={<ContentReview />} />
       </Route>
       <Route path="/privacy" element={<Privacy />} />
       <Route path="/terms" element={<Terms />} />
