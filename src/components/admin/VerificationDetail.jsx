@@ -50,10 +50,10 @@ export default function VerificationDetail({ profile: p, onBack, onVerify }) {
               <p className="text-sm text-muted-foreground capitalize">{p.gender} · {[p.location_city, p.location_country].filter(Boolean).join(', ')}</p>
             </div>
             <div className="flex gap-2 shrink-0">
-              <Button size="sm" className="gap-1" onClick={() => onVerify(p.id, 'verified')}>
+              <Button size="sm" className="gap-1" onClick={() => onVerify(p.id, 'approved', 'verified')}>
                 <CheckCircle className="w-4 h-4" /> Approve
               </Button>
-              <Button size="sm" variant="outline" className="gap-1 text-destructive" onClick={() => onVerify(p.id, 'rejected')}>
+              <Button size="sm" variant="outline" className="gap-1 text-destructive" onClick={() => onVerify(p.id, 'rejected', 'unverified')}>
                 <XCircle className="w-4 h-4" /> Reject
               </Button>
             </div>

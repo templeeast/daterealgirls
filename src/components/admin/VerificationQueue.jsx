@@ -13,20 +13,23 @@ export default function VerificationQueue({ profileId }) {
   const { data: pending, isLoading } = useQuery({
     queryKey: ['pendingVerifications'],
     queryFn: async () => {
-      const [pendingProfiles, unverifiedProfiles] = await Promise.all([
-        base44.entities.MemberProfile.filter({ verification_status: 'pending' }),
+      const [pendingReview, unverifiedProfiles] = await Promise.all([
+        base44.entities.MemberProfile.filter({ profile_review_status: 'pending' }),
         base44.entities.MemberProfile.filter({ verification_status: 'unverified' }),
       ]);
       // Include unverified members who have uploaded at least a selfie
       const unverifiedWithDocs = unverifiedProfiles.filter(p => p.selfie_url || p.id_document_url);
-      return [...pendingProfiles, ...unverifiedWithDocs];
+      return [...pendingReview, ...unverifiedWithDocs];
     },
     initialData: [],
   });
 
   const verifyMutation = useMutation({
-    mutationFn: ({ id, status }) =>
-      base44.entities.MemberProfile.update(id, { verification_status: status }),
+    mutationFn: ({ id, reviewStatus, verificationStatus }) =>
+      base44.entities.MemberProfile.update(id, {
+        profile_review_status: reviewStatus,
+        verification_status: verificationStatus,
+      }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['pendingVerifications'] });
       queryClient.invalidateQueries({ queryKey: ['allProfiles'] });

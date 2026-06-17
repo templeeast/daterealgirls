@@ -184,7 +184,8 @@
       "type": "string",
       "enum": [
         "pending",
-        "approved"
+        "approved",
+        "rejected"
       ],
       "default": "pending",
       "description": "Admin profile review status \u2014 whether the profile has been reviewed and approved"
