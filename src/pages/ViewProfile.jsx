@@ -12,6 +12,7 @@ import useMyProfile from '@/hooks/useMyProfile';
 import { useToast } from '@/components/ui/use-toast';
 import { useTranslation } from 'react-i18next';
 import UpgradePrompt from '@/components/subscription/UpgradePrompt';
+import useSiteConfig from '@/hooks/useSiteConfig';
 
 export default function ViewProfile() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -23,8 +24,9 @@ export default function ViewProfile() {
   const queryClient = useQueryClient();
 
   const { profile: myProfile } = useMyProfile();
+  const { config } = useSiteConfig();
 
-  const isFreeMale = myProfile?.gender === 'male' && (!myProfile?.subscription_status || myProfile?.subscription_status === 'free');
+  const isFreeMale = config?.men_subscription_enabled && myProfile?.gender === 'male' && (!myProfile?.subscription_status || myProfile?.subscription_status === 'free');
 
   const { data: profile, isLoading } = useQuery({
     queryKey: ['profile', profileId],
