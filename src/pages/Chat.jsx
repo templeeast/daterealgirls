@@ -210,7 +210,7 @@ export default function Chat() {
       </div>
 
       {/* Input */}
-      {profile?.gender === 'male' && profile?.subscription_status !== 'active' ? (
+      {config?.men_subscription_enabled && profile?.gender === 'male' && profile?.subscription_status !== 'active' ? (
         <div className="border-t bg-card px-4 py-4">
           <div className="flex items-center justify-center gap-3 max-w-3xl mx-auto bg-accent/50 rounded-xl p-3">
             <Lock className="w-4 h-4 text-muted-foreground shrink-0" />
