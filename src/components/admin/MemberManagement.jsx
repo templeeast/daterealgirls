@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import VerificationDetail from '@/components/admin/VerificationDetail';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -8,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
-import { Search, Ban, Eye, RotateCcw, X, Instagram, Facebook, MapPin, Calendar, User, ExternalLink } from 'lucide-react';
+import { Search, Ban, Eye, RotateCcw, X, Instagram, Facebook, MapPin, Calendar, User, ExternalLink, Trash2, Shield } from 'lucide-react';
 
 export default function MemberManagement() {
   const queryClient = useQueryClient();
@@ -18,6 +19,8 @@ export default function MemberManagement() {
   const [suspendReason, setSuspendReason] = useState('');
   const [detailMember, setDetailMember] = useState(null);
   const [signedUrls, setSignedUrls] = useState({});
+  const [deleteDialog, setDeleteDialog] = useState(null);
+  const [verifyDialog, setVerifyDialog] = useState(null);
 
   const openDetailMember = async (p) => {
     setDetailMember(p);
@@ -49,6 +52,23 @@ export default function MemberManagement() {
       queryClient.invalidateQueries({ queryKey: ['allProfiles'] });
       setSuspendDialog(null);
       setSuspendReason('');
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id) => base44.entities.MemberProfile.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['allProfiles'] });
+      setDeleteDialog(null);
+    },
+  });
+
+  const verifyMutation = useMutation({
+    mutationFn: ({ id, status }) =>
+      base44.entities.MemberProfile.update(id, { verification_status: status }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['allProfiles'] });
+      setVerifyDialog(null);
     },
   });
 
@@ -130,6 +150,9 @@ export default function MemberManagement() {
                 </TableCell>
                 <TableCell>
                   <div className="flex gap-1" onClick={e => e.stopPropagation()}>
+                    <Button size="sm" variant="ghost" className="text-xs gap-1" onClick={() => setVerifyDialog(p)} title="View Verification">
+                      <Shield className="w-3 h-3" />
+                    </Button>
                     {p.is_suspended ? (
                       <Button size="sm" variant="ghost" className="text-xs gap-1" onClick={() => suspendMutation.mutate({ id: p.id, suspend: false })}>
                         <RotateCcw className="w-3 h-3" /> Restore
@@ -139,6 +162,9 @@ export default function MemberManagement() {
                         <Ban className="w-3 h-3" /> Suspend
                       </Button>
                     )}
+                    <Button size="sm" variant="ghost" className="text-xs gap-1 text-destructive" onClick={() => setDeleteDialog(p)} title="Delete Member">
+                      <Trash2 className="w-3 h-3" />
+                    </Button>
                   </div>
                 </TableCell>
               </TableRow>
@@ -320,6 +346,37 @@ export default function MemberManagement() {
               Suspend Member
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={!!deleteDialog} onOpenChange={() => setDeleteDialog(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete {deleteDialog?.display_name}?</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">
+            This will permanently delete this member's profile and cannot be undone.
+          </p>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeleteDialog(null)}>Cancel</Button>
+            <Button variant="destructive" onClick={() => deleteMutation.mutate(deleteDialog.id)}>
+              <Trash2 className="w-4 h-4 mr-1" /> Delete Member
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Verification Dialog */}
+      <Dialog open={!!verifyDialog} onOpenChange={() => setVerifyDialog(null)}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          {verifyDialog && (
+            <VerificationDetail
+              profile={verifyDialog}
+              onBack={() => setVerifyDialog(null)}
+              onVerify={(id, status) => verifyMutation.mutate({ id, status })}
+            />
+          )}
         </DialogContent>
       </Dialog>
     </div>
