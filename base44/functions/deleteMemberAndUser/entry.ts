@@ -27,8 +27,13 @@ Deno.serve(async (req) => {
     await base44.entities.MemberProfile.delete(profileId);
 
     // Delete the User record (requires service role)
+    // If user doesn't exist (demo accounts, etc.), just record it but don't fail
     if (userId) {
-      await base44.asServiceRole.entities.User.delete(userId);
+      try {
+        await base44.asServiceRole.entities.User.delete(userId);
+      } catch (userDeleteError) {
+        console.warn('Could not delete User record, continuing:', userDeleteError.message);
+      }
     }
 
     return Response.json({ success: true, profileId, userId });

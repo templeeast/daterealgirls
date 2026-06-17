@@ -9,7 +9,8 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
-import { Search, Ban, Eye, RotateCcw, X, Instagram, Facebook, MapPin, Calendar, User, ExternalLink, Trash2, Shield } from 'lucide-react';
+import { toast } from 'sonner';
+import { Search, Ban, Eye, RotateCcw, X, Instagram, Facebook, MapPin, Calendar, User, ExternalLink, Trash2, Shield, Loader2 } from 'lucide-react';
 
 export default function MemberManagement() {
   const queryClient = useQueryClient();
@@ -57,9 +58,17 @@ export default function MemberManagement() {
 
   const deleteMutation = useMutation({
     mutationFn: (id) => base44.functions.invoke('deleteMemberAndUser', { profileId: id }),
-    onSuccess: () => {
+    onSuccess: (res) => {
+      if (res.data?.error) {
+        toast.error(res.data.error);
+        return;
+      }
       queryClient.invalidateQueries({ queryKey: ['allProfiles'] });
       setDeleteDialog(null);
+      toast.success('Member deleted successfully');
+    },
+    onError: (error) => {
+      toast.error(error?.response?.data?.error || error?.message || 'Failed to delete member');
     },
   });
 
@@ -360,8 +369,12 @@ export default function MemberManagement() {
           </p>
           <DialogFooter>
             <Button variant="outline" onClick={() => setDeleteDialog(null)}>Cancel</Button>
-            <Button variant="destructive" onClick={() => deleteMutation.mutate(deleteDialog.id)}>
-              <Trash2 className="w-4 h-4 mr-1" /> Delete Member
+            <Button variant="destructive" onClick={() => deleteMutation.mutate(deleteDialog.id)} disabled={deleteMutation.isPending}>
+              {deleteMutation.isPending ? (
+                <><Loader2 className="w-4 h-4 mr-1 animate-spin" /> Deleting...</>
+              ) : (
+                <><Trash2 className="w-4 h-4 mr-1" /> Delete Member</>
+              )}
             </Button>
           </DialogFooter>
         </DialogContent>
