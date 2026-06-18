@@ -169,8 +169,8 @@ export default function Landing() {
           <div className="text-center mb-16">
             <h2 className="font-heading text-3xl sm:text-4xl font-bold mb-4">Simple Token Pricing — Pay Only for What You Use</h2>
             <p className="text-muted-foreground text-lg">
-              {config.first_purchase_bonus_enabled !== false
-                ? t('token_pricing_subtitle_bonus', { n: (config.first_purchase_bonus_tokens ?? 5000).toLocaleString() })
+              {config.first_purchase_bonus_men_enabled !== false
+                ? t('token_pricing_subtitle_bonus_men', { n: (config.first_purchase_bonus_men_tokens ?? config.first_purchase_bonus_tokens ?? 5000).toLocaleString() })
                 : t('token_pricing_subtitle_no_bonus')}
             </p>
           </div>

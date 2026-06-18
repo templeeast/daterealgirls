@@ -73,11 +73,19 @@ Deno.serve(async (req) => {
       const profile = profiles[0];
       const isFirstPurchase = !profile.has_purchased_tokens;
 
-      // Fetch site config to check first-purchase bonus settings
+      // Fetch site config to check first-purchase bonus settings (gender-specific)
       const configs = await base44.asServiceRole.entities.SiteConfig.list();
       const siteConfig = configs[0] || {};
-      const bonusEnabled = siteConfig.first_purchase_bonus_enabled !== false;
-      const bonusTokens = siteConfig.first_purchase_bonus_tokens ?? 5000;
+
+      const isMale = profile.gender === 'male';
+      let bonusEnabled, bonusTokens;
+      if (isMale) {
+        bonusEnabled = siteConfig.first_purchase_bonus_men_enabled !== false;
+        bonusTokens = siteConfig.first_purchase_bonus_men_tokens ?? siteConfig.first_purchase_bonus_tokens ?? 5000;
+      } else {
+        bonusEnabled = siteConfig.first_purchase_bonus_women_enabled === true;
+        bonusTokens = siteConfig.first_purchase_bonus_women_tokens ?? 0;
+      }
 
       const bonusToApply = (isFirstPurchase && bonusEnabled) ? bonusTokens : 0;
       const totalTokens = (profile.tokens || 0) + tokensToAdd + bonusToApply;

@@ -472,15 +472,25 @@ export default function MyProfile() {
         </CardHeader>
         <CardContent>
           {/* First Purchase Bonus Banner */}
-          {!profile.has_purchased_tokens && config.first_purchase_bonus_enabled !== false && (
-            <div className="mb-5 flex items-center gap-3 bg-amber-50 border border-amber-200 text-amber-800 rounded-xl p-4">
-              <span className="text-2xl">🎁</span>
-              <div>
-                <p className="font-semibold text-sm">First Purchase Bonus!</p>
-                <p className="text-sm">Get <strong>{(config.first_purchase_bonus_tokens ?? 5000).toLocaleString()} bonus tokens</strong> added to any pack on your first purchase.</p>
+          {!profile.has_purchased_tokens && (() => {
+            const isMale = profile.gender === 'male';
+            const bonusEnabled = isMale
+              ? config.first_purchase_bonus_men_enabled !== false
+              : config.first_purchase_bonus_women_enabled === true;
+            const bonusTokens = isMale
+              ? (config.first_purchase_bonus_men_tokens ?? config.first_purchase_bonus_tokens ?? 5000)
+              : (config.first_purchase_bonus_women_tokens ?? 0);
+            if (!bonusEnabled || bonusTokens <= 0) return null;
+            return (
+              <div className="mb-5 flex items-center gap-3 bg-amber-50 border border-amber-200 text-amber-800 rounded-xl p-4">
+                <span className="text-2xl">🎁</span>
+                <div>
+                  <p className="font-semibold text-sm">First Purchase Bonus!</p>
+                  <p className="text-sm">Get <strong>{bonusTokens.toLocaleString()} bonus tokens</strong> added to any pack on your first purchase.</p>
+                </div>
               </div>
-            </div>
-          )}
+            );
+          })()}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
             {[
               { name: 'Starter Pack', tokens: config.token_pack_starter_tokens ?? 500, price: config.token_pack_starter_price ?? 5.99 },

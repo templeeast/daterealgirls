@@ -100,12 +100,32 @@
     "first_purchase_bonus_enabled": {
       "type": "boolean",
       "default": true,
-      "description": "Grant bonus tokens on a user's first token purchase"
+      "description": "Legacy: Grant bonus tokens on first purchase (applies to all genders if gender-specific fields not set)"
     },
     "first_purchase_bonus_tokens": {
       "type": "number",
       "default": 5000,
-      "description": "Number of bonus tokens granted on first purchase"
+      "description": "Legacy: Bonus tokens on first purchase"
+    },
+    "first_purchase_bonus_men_enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Grant bonus tokens to men on their first token purchase"
+    },
+    "first_purchase_bonus_men_tokens": {
+      "type": "number",
+      "default": 5000,
+      "description": "Number of bonus tokens granted to men on first purchase"
+    },
+    "first_purchase_bonus_women_enabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Grant bonus tokens to women on their first token purchase"
+    },
+    "first_purchase_bonus_women_tokens": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of bonus tokens granted to women on first purchase"
     },
     "tokens_browse_men_enabled": {
       "type": "boolean",
@@ -137,7 +157,7 @@
     },
     "tokens_msg_cost_men": {
       "type": "number",
-      "default": 50
+      "default": 2
     },
     "tokens_msg_cost_women": {
       "type": "number",
