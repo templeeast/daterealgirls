@@ -219,8 +219,8 @@ export default function Landing() {
                     <td className="text-center px-4 py-3 text-green-600 font-medium">Free</td>
                   </tr>
                   <tr className="border-b">
-                    <td className="px-6 py-3">Browse all profiles (1 week)</td>
-                    <td className="text-center px-4 py-3">{config.tokens_browse_cost_men ?? 100} tokens</td>
+                    <td className="px-6 py-3">Browse all profiles</td>
+                    <td className="text-center px-4 py-3">{config.tokens_browse_cost_men ?? 100} tokens (1 week)</td>
                     <td className="text-center px-4 py-3">{config.tokens_browse_cost_women ?? 0} tokens</td>
                   </tr>
                   <tr className="border-b">

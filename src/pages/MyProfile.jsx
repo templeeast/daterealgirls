@@ -511,7 +511,7 @@ export default function MyProfile() {
                 <span className="text-green-600 font-medium">Free</span>
               </div>
               <div className="flex justify-between">
-                <span>{t('token_cost_browse_all')}</span>
+                <span>{t('token_cost_browse_all')} (1 week)</span>
                 <span>{profile.gender === 'male' ? (config.tokens_browse_cost_men ?? 100) : (config.tokens_browse_cost_women ?? 0)} tokens</span>
               </div>
               <div className="flex justify-between">
