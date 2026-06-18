@@ -97,6 +97,16 @@
       "type": "number",
       "default": 0
     },
+    "first_purchase_bonus_enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Grant bonus tokens on a user's first token purchase"
+    },
+    "first_purchase_bonus_tokens": {
+      "type": "number",
+      "default": 5000,
+      "description": "Number of bonus tokens granted on first purchase"
+    },
     "tokens_browse_men_enabled": {
       "type": "boolean",
       "default": true

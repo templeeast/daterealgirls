@@ -91,7 +91,11 @@ export default function MyProfile() {
     });
     setPurchasing(false);
     if (res.data?.success) {
-      toast({ title: `Purchased ${buyDialog.pack.tokens.toLocaleString()} tokens!` });
+      const bonus = res.data?.bonusTokens;
+      const msg = bonus > 0
+        ? `Purchased ${buyDialog.pack.tokens.toLocaleString()} tokens + ${bonus.toLocaleString()} bonus tokens!`
+        : `Purchased ${buyDialog.pack.tokens.toLocaleString()} tokens!`;
+      toast({ title: msg });
       setBuyDialog({ open: false, pack: null });
       refetch();
     } else {
@@ -467,6 +471,16 @@ export default function MyProfile() {
           <CardDescription>Purchase tokens to browse more profiles, send messages, and verify your identity.</CardDescription>
         </CardHeader>
         <CardContent>
+          {/* First Purchase Bonus Banner */}
+          {!profile.has_purchased_tokens && config.first_purchase_bonus_enabled !== false && (
+            <div className="mb-5 flex items-center gap-3 bg-amber-50 border border-amber-200 text-amber-800 rounded-xl p-4">
+              <span className="text-2xl">🎁</span>
+              <div>
+                <p className="font-semibold text-sm">First Purchase Bonus!</p>
+                <p className="text-sm">Get <strong>{(config.first_purchase_bonus_tokens ?? 5000).toLocaleString()} bonus tokens</strong> added to any pack on your first purchase.</p>
+              </div>
+            </div>
+          )}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
             {[
               { name: 'Starter Pack', tokens: config.token_pack_starter_tokens ?? 500, price: config.token_pack_starter_price ?? 5.99 },

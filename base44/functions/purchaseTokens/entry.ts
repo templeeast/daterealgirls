@@ -71,8 +71,28 @@ Deno.serve(async (req) => {
     const profiles = await base44.asServiceRole.entities.MemberProfile.filter({ user_id: user.id });
     if (profiles.length > 0) {
       const profile = profiles[0];
+      const isFirstPurchase = !profile.has_purchased_tokens;
+
+      // Fetch site config to check first-purchase bonus settings
+      const configs = await base44.asServiceRole.entities.SiteConfig.list();
+      const siteConfig = configs[0] || {};
+      const bonusEnabled = siteConfig.first_purchase_bonus_enabled !== false;
+      const bonusTokens = siteConfig.first_purchase_bonus_tokens ?? 5000;
+
+      const bonusToApply = (isFirstPurchase && bonusEnabled) ? bonusTokens : 0;
+      const totalTokens = (profile.tokens || 0) + tokensToAdd + bonusToApply;
+
       await base44.asServiceRole.entities.MemberProfile.update(profile.id, {
-        tokens: (profile.tokens || 0) + tokensToAdd,
+        tokens: totalTokens,
+        has_purchased_tokens: true,
+      });
+
+      return Response.json({
+        success: true,
+        transactionId: txResponse.transId,
+        tokensAdded: tokensToAdd,
+        bonusTokens: bonusToApply,
+        isFirstPurchase,
       });
     }
 
@@ -80,6 +100,7 @@ Deno.serve(async (req) => {
       success: true,
       transactionId: txResponse.transId,
       tokensAdded: tokensToAdd,
+      bonusTokens: 0,
     });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });

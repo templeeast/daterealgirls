@@ -259,6 +259,11 @@
       "default": 0,
       "description": "Current token balance"
     },
+    "has_purchased_tokens": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether the user has ever completed a token purchase (used for first-purchase bonus)"
+    },
     "browse_count_this_week": {
       "type": "number",
       "default": 0,

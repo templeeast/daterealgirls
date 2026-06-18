@@ -10,17 +10,24 @@ export default function TokenEconomySettings({ form, updateField }) {
 
   return (
     <div className="space-y-6">
-      {/* Welcome Bonus */}
+      {/* First Purchase Bonus */}
       <Card>
         <CardHeader>
-          <CardTitle className="font-heading text-lg">Welcome Bonus</CardTitle>
-          <CardDescription>Tokens granted to every new user upon account creation.</CardDescription>
+          <CardTitle className="font-heading text-lg">First Purchase Bonus</CardTitle>
+          <CardDescription>Bonus tokens granted automatically on a user's very first token purchase.</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="font-medium text-sm">Enable First Purchase Bonus</p>
+              <p className="text-xs text-muted-foreground">When ON, users receive bonus tokens on their first ever token purchase.</p>
+            </div>
+            <Switch checked={form.first_purchase_bonus_enabled !== false} onCheckedChange={v => toggle('first_purchase_bonus_enabled', v)} />
+          </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>Welcome Bonus Tokens</Label>
-              <Input type="number" value={form.welcome_tokens ?? 5000} onChange={e => num('welcome_tokens', e.target.value)} />
+              <Label>Bonus Tokens Amount</Label>
+              <Input type="number" value={form.first_purchase_bonus_tokens ?? 5000} onChange={e => num('first_purchase_bonus_tokens', e.target.value)} disabled={form.first_purchase_bonus_enabled === false} />
             </div>
           </div>
         </CardContent>
