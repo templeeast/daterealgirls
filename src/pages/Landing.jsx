@@ -167,7 +167,7 @@ export default function Landing() {
       <section className="pt-32 pb-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="font-heading text-3xl sm:text-4xl font-bold mb-4">Simple Token Pricing — Pay Only for What You Use</h2>
+            <h2 className="font-heading text-3xl sm:text-4xl font-bold mb-4">{t('token_pricing_title')}</h2>
             <p className="text-muted-foreground text-lg">
               {config.first_purchase_bonus_men_enabled !== false
                 ? t('token_pricing_subtitle_bonus_men', { n: (config.first_purchase_bonus_men_tokens ?? config.first_purchase_bonus_tokens ?? 5000).toLocaleString() })
@@ -178,22 +178,22 @@ export default function Landing() {
           {/* Token Packs */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto mb-16">
             {[
-              { name: 'Starter Pack', tokens: config.token_pack_starter_tokens ?? 500, price: config.token_pack_starter_price ?? 5.99, badge: null },
-              { name: 'Popular Pack', tokens: config.token_pack_popular_tokens ?? 1500, price: config.token_pack_popular_price ?? 14.99, badge: 'Most Popular', highlight: true },
-              { name: 'Value Pack', tokens: config.token_pack_value_tokens ?? 3500, price: config.token_pack_value_price ?? 29.99, badge: null },
-              { name: 'Best Deal Pack', tokens: config.token_pack_best_tokens ?? 8000, price: config.token_pack_best_price ?? 59.99, badge: 'Best Value' },
+              { nameKey: 'pack_starter_name', tokens: config.token_pack_starter_tokens ?? 500, price: config.token_pack_starter_price ?? 5.99, badge: null },
+              { nameKey: 'pack_popular_name', tokens: config.token_pack_popular_tokens ?? 1500, price: config.token_pack_popular_price ?? 14.99, badgeKey: 'pack_badge_most_popular', highlight: true },
+              { nameKey: 'pack_value_name', tokens: config.token_pack_value_tokens ?? 3500, price: config.token_pack_value_price ?? 29.99, badge: null },
+              { nameKey: 'pack_best_name', tokens: config.token_pack_best_tokens ?? 8000, price: config.token_pack_best_price ?? 59.99, badgeKey: 'pack_badge_best_value' },
             ].map((pack) => (
-              <div key={pack.name} className={`bg-card border rounded-2xl p-6 text-center relative ${pack.highlight ? 'border-primary shadow-lg shadow-primary/10' : ''}`}>
-                {pack.badge && (
+              <div key={pack.nameKey} className={`bg-card border rounded-2xl p-6 text-center relative ${pack.highlight ? 'border-primary shadow-lg shadow-primary/10' : ''}`}>
+                {pack.badgeKey && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-medium">
-                    {pack.badge}
+                    {t(pack.badgeKey)}
                   </div>
                 )}
                 <div className="font-heading text-3xl font-bold mb-1 mt-2">{pack.tokens.toLocaleString()}</div>
-                <p className="text-sm text-muted-foreground mb-1">tokens</p>
+                <p className="text-sm text-muted-foreground mb-1">{t('tokens_label')}</p>
                 <div className="font-heading text-3xl font-bold text-primary mb-4">${pack.price}</div>
-                <p className="text-xs text-muted-foreground mb-6">{pack.name}</p>
-                <Button className="w-full rounded-full" size="sm" onClick={() => handleCTAClick('/my-profile')}>Get Started</Button>
+                <p className="text-xs text-muted-foreground mb-6">{t(pack.nameKey)}</p>
+                <Button className="w-full rounded-full" size="sm" onClick={() => handleCTAClick('/my-profile')}>{t('get_started')}</Button>
               </div>
             ))}
           </div>
@@ -201,43 +201,43 @@ export default function Landing() {
           {/* Cost Breakdown Table */}
           <div className="max-w-3xl mx-auto bg-card border rounded-2xl overflow-hidden">
             <div className="px-6 py-4 border-b bg-muted/30">
-              <h3 className="font-heading text-lg font-semibold">What can you do with your tokens?</h3>
+              <h3 className="font-heading text-lg font-semibold">{t('token_table_title')}</h3>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b bg-muted/20">
-                    <th className="text-left px-6 py-3 font-medium">Action</th>
-                    <th className="text-center px-4 py-3 font-medium">Men</th>
-                    <th className="text-center px-4 py-3 font-medium">Women</th>
+                    <th className="text-left px-6 py-3 font-medium">{t('token_table_action')}</th>
+                    <th className="text-center px-4 py-3 font-medium">{t('browse_men')}</th>
+                    <th className="text-center px-4 py-3 font-medium">{t('browse_women')}</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr className="border-b">
-                    <td className="px-6 py-3">Browse {config.tokens_free_browse_limit ?? 25} profiles</td>
-                    <td className="text-center px-4 py-3 text-green-600 font-medium">Free</td>
-                    <td className="text-center px-4 py-3 text-green-600 font-medium">Free</td>
+                    <td className="px-6 py-3">{t('token_cost_browse_free', { n: config.tokens_free_browse_limit ?? 25 })}</td>
+                    <td className="text-center px-4 py-3 text-green-600 font-medium">{t('free')}</td>
+                    <td className="text-center px-4 py-3 text-green-600 font-medium">{t('free')}</td>
                   </tr>
                   <tr className="border-b">
-                    <td className="px-6 py-3">Browse all profiles</td>
-                    <td className="text-center px-4 py-3">{config.tokens_browse_cost_men ?? 100} tokens (1 week)</td>
-                    <td className="text-center px-4 py-3">{config.tokens_browse_cost_women ?? 0} tokens</td>
+                    <td className="px-6 py-3">{t('token_cost_browse_all')}</td>
+                    <td className="text-center px-4 py-3">{t('token_cost_n_tokens_week', { n: config.tokens_browse_cost_men ?? 100 })}</td>
+                    <td className="text-center px-4 py-3">{t('token_cost_n_tokens', { n: config.tokens_browse_cost_women ?? 0 })}</td>
                   </tr>
                   <tr className="border-b">
-                    <td className="px-6 py-3">Send a message</td>
-                    <td className="text-center px-4 py-3">{config.tokens_msg_cost_men ?? 50} tokens</td>
-                    <td className="text-center px-4 py-3">{config.tokens_msg_cost_women ?? 0} tokens</td>
+                    <td className="px-6 py-3">{t('token_cost_send_message')}</td>
+                    <td className="text-center px-4 py-3">{t('token_cost_n_tokens', { n: config.tokens_msg_cost_men ?? 2 })}</td>
+                    <td className="text-center px-4 py-3">{t('token_cost_n_tokens', { n: config.tokens_msg_cost_women ?? 0 })}</td>
                   </tr>
                   <tr>
-                    <td className="px-6 py-3">ID Verification</td>
-                    <td className="text-center px-4 py-3">{config.tokens_verify_cost_men ?? 200} tokens</td>
-                    <td className="text-center px-4 py-3">{config.tokens_verify_cost_women ?? 200} tokens</td>
+                    <td className="px-6 py-3">{t('id_verification')}</td>
+                    <td className="text-center px-4 py-3">{t('token_cost_n_tokens', { n: config.tokens_verify_cost_men ?? 200 })}</td>
+                    <td className="text-center px-4 py-3">{t('token_cost_n_tokens', { n: config.tokens_verify_cost_women ?? 200 })}</td>
                   </tr>
                 </tbody>
               </table>
             </div>
             <div className="px-6 py-3 border-t bg-muted/20">
-              <p className="text-xs text-muted-foreground text-center">Token costs shown reflect current settings. Women currently browse and message free during our launch period.</p>
+              <p className="text-xs text-muted-foreground text-center">{t('token_table_footer')}</p>
             </div>
           </div>
         </div>
