@@ -95,7 +95,7 @@
     },
     "welcome_tokens": {
       "type": "number",
-      "default": 5000
+      "default": 0
     },
     "tokens_browse_men_enabled": {
       "type": "boolean",
@@ -143,11 +143,11 @@
     },
     "tokens_verify_cost_men": {
       "type": "number",
-      "default": 200
+      "default": 300
     },
     "tokens_verify_cost_women": {
       "type": "number",
-      "default": 200
+      "default": 300
     },
     "token_pack_starter_tokens": {
       "type": "number",
