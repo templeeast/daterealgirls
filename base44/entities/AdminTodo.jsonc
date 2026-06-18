@@ -1,0 +1,44 @@
+{
+  "name": "AdminTodo",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Short title for the todo item"
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed description or notes about the task"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "default": "medium"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "todo",
+        "in_progress",
+        "done"
+      ],
+      "default": "todo"
+    },
+    "category": {
+      "type": "string",
+      "description": "Category / section this task belongs to"
+    },
+    "sort_order": {
+      "type": "number",
+      "description": "Display order within the list"
+    }
+  },
+  "required": [
+    "title"
+  ]
+}
