@@ -507,16 +507,16 @@ export default function MyProfile() {
             <h4 className="text-sm font-semibold mb-3">Token Costs</h4>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span>Browse profiles (first {(config.tokens_free_browse_limit ?? 25)}/week)</span>
+                <span>{t('token_cost_browse_free', { n: config.tokens_free_browse_limit ?? 25 })}</span>
                 <span className="text-green-600 font-medium">Free</span>
               </div>
               <div className="flex justify-between">
-                <span>Browse beyond limit (per profile)</span>
+                <span>{t('token_cost_browse_all')}</span>
                 <span>{profile.gender === 'male' ? (config.tokens_browse_cost_men ?? 100) : (config.tokens_browse_cost_women ?? 0)} tokens</span>
               </div>
               <div className="flex justify-between">
-                <span>Send a message</span>
-                <span>{profile.gender === 'male' ? (config.tokens_msg_cost_men ?? 50) : (config.tokens_msg_cost_women ?? 0)} tokens</span>
+                <span>{t('token_cost_send_message')}</span>
+                <span>{profile.gender === 'male' ? (config.tokens_msg_cost_men ?? 2) : (config.tokens_msg_cost_women ?? 0)} tokens</span>
               </div>
               <div className="flex justify-between">
                 <span>ID Verification</span>

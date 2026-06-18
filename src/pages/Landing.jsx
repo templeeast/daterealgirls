@@ -214,12 +214,12 @@ export default function Landing() {
                 </thead>
                 <tbody>
                   <tr className="border-b">
-                    <td className="px-6 py-3">Browse profiles (first {config.tokens_free_browse_limit ?? 25}/week)</td>
+                    <td className="px-6 py-3">Browse {config.tokens_free_browse_limit ?? 25} profiles</td>
                     <td className="text-center px-4 py-3 text-green-600 font-medium">Free</td>
                     <td className="text-center px-4 py-3 text-green-600 font-medium">Free</td>
                   </tr>
                   <tr className="border-b">
-                    <td className="px-6 py-3">Browse profiles (beyond limit)</td>
+                    <td className="px-6 py-3">Browse all profiles (1 week)</td>
                     <td className="text-center px-4 py-3">{config.tokens_browse_cost_men ?? 100} tokens</td>
                     <td className="text-center px-4 py-3">{config.tokens_browse_cost_women ?? 0} tokens</td>
                   </tr>
