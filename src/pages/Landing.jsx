@@ -220,7 +220,7 @@ export default function Landing() {
                     <td className="text-center px-6 py-4 text-green-600 font-semibold">{t('free')}</td>
                     <td className="text-center px-6 py-4 text-green-600 font-semibold">{t('free')}</td>
                   </tr>
-                  <tr className="border-b border-primary/40 outline outline-2 outline-primary rounded-lg">
+                  <tr className="border-b">
                     <td className="px-6 py-4 font-medium">{t('token_cost_browse_all')}</td>
                     <td className="text-center px-6 py-4">
                       <div className="font-semibold">{t('token_cost_n_tokens', { n: config.tokens_browse_cost_men ?? 100 })}</div>
