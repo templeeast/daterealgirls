@@ -30,6 +30,7 @@ export default function Chat() {
   const isMale = profile?.gender === 'male';
   const msgTokenEnabled = isMale ? (config?.tokens_msg_men_enabled !== false) : (config?.tokens_msg_women_enabled || false);
   const msgTokenCost = isMale ? (config?.tokens_msg_cost_men ?? 50) : (config?.tokens_msg_cost_women ?? 0);
+  const photoTokenCost = 2; // 2 tokens per photo sent in message
   const tokens = profile?.tokens ?? 0;
 
   const showTokenLock = msgTokenEnabled && msgTokenCost > 0 && tokens < msgTokenCost;
@@ -131,6 +132,14 @@ export default function Chat() {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    // Check if user can afford the photo token cost
+    const canAffordPhoto = !isMale || tokens >= photoTokenCost;
+    if (!canAffordPhoto) {
+      alert(t('chat_photo_insufficient_tokens', { n: photoTokenCost }));
+      e.target.value = '';
+      return;
+    }
+
     const reader = new FileReader();
     reader.onload = async () => {
       const base64 = reader.result.split(',')[1];
@@ -142,6 +151,14 @@ export default function Chat() {
       if (!imageUrl) return;
 
       const myProfile = (await base44.entities.MemberProfile.filter({ user_id: user.id }))[0];
+
+      // Deduct photo tokens for male users
+      if (isMale && photoTokenCost > 0) {
+        await base44.entities.MemberProfile.update(myProfile.id, {
+          tokens: Math.max(0, tokens - photoTokenCost),
+        });
+      }
+
       await base44.entities.Message.create({
         conversation_id: conversationId,
         sender_id: user.id,
@@ -154,6 +171,7 @@ export default function Chat() {
         last_message_date: new Date().toISOString(),
       });
       queryClient.invalidateQueries({ queryKey: ['messages', conversationId] });
+      queryClient.invalidateQueries({ queryKey: ['myProfile'] });
     };
     reader.readAsDataURL(file);
   };
@@ -257,13 +275,21 @@ export default function Chat() {
         </div>
       ) : (
         <div className="border-t bg-card px-4 py-3">
-          {msgTokenEnabled && msgTokenCost > 0 && (
-            <div className="flex justify-center mb-2">
-              <span className="text-xs text-muted-foreground flex items-center gap-1">
-                <Coins className="w-3 h-3" /> {msgTokenCost} tokens per message · Balance: {tokens.toLocaleString()}
-              </span>
+          {(msgTokenEnabled && msgTokenCost > 0) || isMale ? (
+            <div className="flex justify-center mb-2 flex-wrap gap-x-3 gap-y-0.5">
+              {msgTokenEnabled && msgTokenCost > 0 && (
+                <span className="text-xs text-muted-foreground flex items-center gap-1">
+                  <Coins className="w-3 h-3" /> {t('chat_token_cost_message', { n: msgTokenCost })}
+                </span>
+              )}
+              {isMale && (
+                <span className="text-xs text-muted-foreground flex items-center gap-1">
+                  <Coins className="w-3 h-3" /> {t('chat_token_cost_photo', { n: photoTokenCost })}
+                </span>
+              )}
+              <span className="text-xs text-muted-foreground">· {t('chat_token_balance', { n: tokens.toLocaleString() })}</span>
             </div>
-          )}
+          ) : null}
           <div className="flex gap-2 items-center max-w-3xl mx-auto">
             <label>
               <Button variant="ghost" size="icon" className="shrink-0" asChild>
