@@ -240,6 +240,17 @@ export default function Landing() {
                       <div className="text-xs text-muted-foreground">{t('token_cost_per_message')}</div>
                     </td>
                   </tr>
+                  <tr className="border-b">
+                    <td className="px-6 py-4 font-medium">{t('token_cost_send_photo')}</td>
+                    <td className="text-center px-6 py-4">
+                      <div className="font-semibold">{t('token_cost_n_tokens', { n: 2 })}</div>
+                      <div className="text-xs text-muted-foreground">{t('token_cost_per_photo')}</div>
+                    </td>
+                    <td className="text-center px-6 py-4">
+                      <div className="font-semibold">{t('token_cost_n_tokens', { n: 0 })}</div>
+                      <div className="text-xs text-muted-foreground">{t('token_cost_per_photo')}</div>
+                    </td>
+                  </tr>
                   <tr>
                     <td className="px-6 py-4 font-medium">{t('id_verification')}</td>
                     <td className="text-center px-6 py-4">
