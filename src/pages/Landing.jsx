@@ -200,44 +200,62 @@ export default function Landing() {
 
           {/* Cost Breakdown Table */}
           <div className="max-w-3xl mx-auto bg-card border rounded-2xl overflow-hidden">
-            <div className="px-6 py-4 border-b bg-muted/30">
+            <div className="px-6 py-5">
               <h3 className="font-heading text-lg font-semibold">{t('token_table_title')}</h3>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b bg-muted/20">
-                    <th className="text-left px-6 py-3 font-medium">{t('token_table_action')}</th>
-                    <th className="text-center px-4 py-3 font-medium">{t('browse_men')}</th>
-                    <th className="text-center px-4 py-3 font-medium">{t('browse_women')}</th>
+                  <tr className="border-t border-b">
+                    <th className="text-left px-6 py-3 font-normal text-muted-foreground">{t('token_table_action')}</th>
+                    <th className="text-center px-6 py-3 font-normal text-muted-foreground">{t('browse_men')}</th>
+                    <th className="text-center px-6 py-3 font-normal text-muted-foreground">{t('browse_women')}</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr className="border-b">
-                    <td className="px-6 py-3">{t('token_cost_browse_free', { n: config.tokens_free_browse_limit ?? 25 })}</td>
-                    <td className="text-center px-4 py-3 text-green-600 font-medium">{t('free')}</td>
-                    <td className="text-center px-4 py-3 text-green-600 font-medium">{t('free')}</td>
+                    <td className="px-6 py-4 font-medium">{t('token_cost_browse_free', { n: config.tokens_free_browse_limit ?? 25 })}</td>
+                    <td className="text-center px-6 py-4 text-green-600 font-semibold">{t('free')}</td>
+                    <td className="text-center px-6 py-4 text-green-600 font-semibold">{t('free')}</td>
+                  </tr>
+                  <tr className="border-b border-primary/40 outline outline-2 outline-primary rounded-lg">
+                    <td className="px-6 py-4 font-medium">{t('token_cost_browse_all')}</td>
+                    <td className="text-center px-6 py-4">
+                      <div className="font-semibold">{t('token_cost_n_tokens', { n: config.tokens_browse_cost_men ?? 100 })}</div>
+                      <div className="text-xs text-muted-foreground">{t('token_cost_browse_pass')}</div>
+                    </td>
+                    <td className="text-center px-6 py-4">
+                      <div className="font-semibold">{t('token_cost_n_tokens', { n: config.tokens_browse_cost_women ?? 0 })}</div>
+                      <div className="text-xs text-muted-foreground">{t('token_cost_browse_unlimited')}</div>
+                    </td>
                   </tr>
                   <tr className="border-b">
-                    <td className="px-6 py-3">{t('token_cost_browse_all')}</td>
-                    <td className="text-center px-4 py-3">{t('token_cost_n_tokens_week', { n: config.tokens_browse_cost_men ?? 100 })}</td>
-                    <td className="text-center px-4 py-3">{t('token_cost_n_tokens', { n: config.tokens_browse_cost_women ?? 0 })}</td>
-                  </tr>
-                  <tr className="border-b">
-                    <td className="px-6 py-3">{t('token_cost_send_message')}</td>
-                    <td className="text-center px-4 py-3">{t('token_cost_n_tokens', { n: config.tokens_msg_cost_men ?? 2 })}</td>
-                    <td className="text-center px-4 py-3">{t('token_cost_n_tokens', { n: config.tokens_msg_cost_women ?? 0 })}</td>
+                    <td className="px-6 py-4 font-medium">{t('token_cost_send_message')}</td>
+                    <td className="text-center px-6 py-4">
+                      <div className="font-semibold">{t('token_cost_n_tokens', { n: config.tokens_msg_cost_men ?? 2 })}</div>
+                      <div className="text-xs text-muted-foreground">{t('token_cost_per_message')}</div>
+                    </td>
+                    <td className="text-center px-6 py-4">
+                      <div className="font-semibold">{t('token_cost_n_tokens', { n: config.tokens_msg_cost_women ?? 0 })}</div>
+                      <div className="text-xs text-muted-foreground">{t('token_cost_per_message')}</div>
+                    </td>
                   </tr>
                   <tr>
-                    <td className="px-6 py-3">{t('id_verification')}</td>
-                    <td className="text-center px-4 py-3">{t('token_cost_n_tokens', { n: config.tokens_verify_cost_men ?? 200 })}</td>
-                    <td className="text-center px-4 py-3">{t('token_cost_n_tokens', { n: config.tokens_verify_cost_women ?? 200 })}</td>
+                    <td className="px-6 py-4 font-medium">{t('id_verification')}</td>
+                    <td className="text-center px-6 py-4">
+                      <div className="font-semibold">{t('token_cost_n_tokens', { n: config.tokens_verify_cost_men ?? 300 })}</div>
+                      <div className="text-xs text-muted-foreground">{t('token_cost_one_time')}</div>
+                    </td>
+                    <td className="text-center px-6 py-4">
+                      <div className="font-semibold">{t('token_cost_n_tokens', { n: config.tokens_verify_cost_women ?? 300 })}</div>
+                      <div className="text-xs text-muted-foreground">{t('token_cost_one_time')}</div>
+                    </td>
                   </tr>
                 </tbody>
               </table>
             </div>
-            <div className="px-6 py-3 border-t bg-muted/20">
-              <p className="text-xs text-muted-foreground text-center">{t('token_table_footer')}</p>
+            <div className="px-6 py-3 border-t">
+              <p className="text-xs text-muted-foreground">{t('token_table_footer')}</p>
             </div>
           </div>
         </div>
