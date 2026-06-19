@@ -168,8 +168,8 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="font-heading text-3xl sm:text-4xl font-bold mb-4">{t('token_pricing_title')}</h2>
-            <p className="text-muted-foreground text-lg whitespace-pre-line">
-              {t('token_pricing_subtitle_promo')}
+            <p className="text-muted-foreground text-lg">
+              Use Promo Code <span className="font-bold text-primary bg-primary/10 px-1.5 py-0.5 rounded">FUNDATES</span> with your first token purchase to get 1,000 free tokens.
             </p>
           </div>
 
