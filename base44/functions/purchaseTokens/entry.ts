@@ -1,12 +1,16 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
 
+const PROMO_CODES = {
+  FUNDATES: { tokens: 1000, description: '1,000 bonus tokens' },
+};
+
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const { cardNumber, cardExpiry, cardCvv, amount, packName, tokensToAdd } = await req.json();
+    const { cardNumber, cardExpiry, cardCvv, amount, packName, tokensToAdd, promoCode } = await req.json();
 
     if (!cardNumber || !cardExpiry || !cardCvv || !amount) {
       return Response.json({ error: 'Missing required payment fields.' }, { status: 400 });
@@ -71,36 +75,43 @@ Deno.serve(async (req) => {
     const profiles = await base44.asServiceRole.entities.MemberProfile.filter({ user_id: user.id });
     if (profiles.length > 0) {
       const profile = profiles[0];
-      const isFirstPurchase = !profile.has_purchased_tokens;
 
-      // Fetch site config to check first-purchase bonus settings (gender-specific)
-      const configs = await base44.asServiceRole.entities.SiteConfig.list();
-      const siteConfig = configs[0] || {};
+      // Validate promo code — no auto-bonus; only explicit promo codes are honored
+      const normalizedPromo = (promoCode || '').trim().toUpperCase();
+      const promoInfo = PROMO_CODES[normalizedPromo] || null;
 
-      const isMale = profile.gender === 'male';
-      let bonusEnabled, bonusTokens;
-      if (isMale) {
-        bonusEnabled = siteConfig.first_purchase_bonus_men_enabled !== false;
-        bonusTokens = siteConfig.first_purchase_bonus_men_tokens ?? siteConfig.first_purchase_bonus_tokens ?? 5000;
-      } else {
-        bonusEnabled = siteConfig.first_purchase_bonus_women_enabled === true;
-        bonusTokens = siteConfig.first_purchase_bonus_women_tokens ?? 0;
+      // Only allow each promo code to be used once per user (tracked via profile field)
+      let promoBonus = 0;
+      let promoApplied = null;
+      if (promoInfo) {
+        const usedCodes = profile.used_promo_codes || [];
+        if (!usedCodes.includes(normalizedPromo)) {
+          promoBonus = promoInfo.tokens;
+          promoApplied = normalizedPromo;
+        }
       }
 
-      const bonusToApply = (isFirstPurchase && bonusEnabled) ? bonusTokens : 0;
-      const totalTokens = (profile.tokens || 0) + tokensToAdd + bonusToApply;
+      const totalTokens = (profile.tokens || 0) + tokensToAdd + promoBonus;
 
-      await base44.asServiceRole.entities.MemberProfile.update(profile.id, {
+      const updates = {
         tokens: totalTokens,
         has_purchased_tokens: true,
-      });
+      };
+
+      if (promoApplied) {
+        const usedCodes = profile.used_promo_codes || [];
+        updates.used_promo_codes = [...usedCodes, promoApplied];
+      }
+
+      await base44.asServiceRole.entities.MemberProfile.update(profile.id, updates);
 
       return Response.json({
         success: true,
         transactionId: txResponse.transId,
         tokensAdded: tokensToAdd,
-        bonusTokens: bonusToApply,
-        isFirstPurchase,
+        bonusTokens: promoBonus,
+        promoApplied,
+        isFirstPurchase: !profile.has_purchased_tokens,
       });
     }
 

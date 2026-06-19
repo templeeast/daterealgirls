@@ -66,13 +66,33 @@ export default function MyProfile() {
   const [cardNumber, setCardNumber] = useState('');
   const [cardExpiry, setCardExpiry] = useState('');
   const [cardCvv, setCardCvv] = useState('');
+  const [purchasePromoCode, setPurchasePromoCode] = useState('');
   const [purchasing, setPurchasing] = useState(false);
+
+  // Verification promo code state
+  const [verifPromoCode, setVerifPromoCode] = useState('');
+  const [applyingVerifPromo, setApplyingVerifPromo] = useState(false);
 
   const handleBuyTokens = (pack) => {
     setBuyDialog({ open: true, pack });
     setCardNumber('');
     setCardExpiry('');
     setCardCvv('');
+    setPurchasePromoCode('');
+  };
+
+  const handleApplyVerifPromo = async () => {
+    if (!verifPromoCode.trim()) return;
+    setApplyingVerifPromo(true);
+    const res = await base44.functions.invoke('applyVerificationPromo', { promoCode: verifPromoCode.trim() });
+    setApplyingVerifPromo(false);
+    if (res.data?.success) {
+      toast({ title: `🎉 ${res.data.bonusTokens.toLocaleString()} bonus tokens added!` });
+      setVerifPromoCode('');
+      refetch();
+    } else {
+      toast({ title: res.data?.error || 'Invalid promo code', variant: 'destructive' });
+    }
   };
 
   const handlePurchaseSubmit = async () => {
@@ -88,6 +108,7 @@ export default function MyProfile() {
       amount: buyDialog.pack.price,
       packName: buyDialog.pack.name,
       tokensToAdd: buyDialog.pack.tokens,
+      promoCode: purchasePromoCode.trim() || null,
     });
     setPurchasing(false);
     if (res.data?.success) {
@@ -462,6 +483,32 @@ export default function MyProfile() {
         </Card>
       )}
 
+      {/* Verification Promo Code */}
+      {profile.verification_status === 'verified' && (
+        <Card className="mb-6 border-green-200 bg-green-50">
+          <CardContent className="pt-6">
+            <div className="flex items-start gap-3 mb-4">
+              <span className="text-2xl">🎉</span>
+              <div>
+                <p className="font-semibold text-green-800">Verified! Claim your bonus tokens</p>
+                <p className="text-sm text-green-700">Enter promo code <span className="font-mono font-bold">LAUNCH26</span> below to receive 5,000 free tokens.</p>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <Input
+                placeholder="Enter LAUNCH26"
+                value={verifPromoCode}
+                onChange={e => setVerifPromoCode(e.target.value.toUpperCase())}
+                className="font-mono flex-1"
+              />
+              <Button onClick={handleApplyVerifPromo} disabled={applyingVerifPromo || !verifPromoCode.trim()} className="shrink-0">
+                {applyingVerifPromo ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Apply'}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Buy Tokens */}
       <Card id="buy-tokens" className="mb-6 scroll-mt-20">
         <CardHeader>
@@ -471,26 +518,14 @@ export default function MyProfile() {
           <CardDescription>Purchase tokens to browse more profiles, send messages, and verify your identity.</CardDescription>
         </CardHeader>
         <CardContent>
-          {/* First Purchase Bonus Banner */}
-          {!profile.has_purchased_tokens && (() => {
-            const isMale = profile.gender === 'male';
-            const bonusEnabled = isMale
-              ? config.first_purchase_bonus_men_enabled !== false
-              : config.first_purchase_bonus_women_enabled === true;
-            const bonusTokens = isMale
-              ? (config.first_purchase_bonus_men_tokens ?? config.first_purchase_bonus_tokens ?? 5000)
-              : (config.first_purchase_bonus_women_tokens ?? 0);
-            if (!bonusEnabled || bonusTokens <= 0) return null;
-            return (
-              <div className="mb-5 flex items-center gap-3 bg-amber-50 border border-amber-200 text-amber-800 rounded-xl p-4">
-                <span className="text-2xl">🎁</span>
-                <div>
-                  <p className="font-semibold text-sm">First Purchase Bonus!</p>
-                  <p className="text-sm">Get <strong>{bonusTokens.toLocaleString()} bonus tokens</strong> added to any pack on your first purchase.</p>
-                </div>
-              </div>
-            );
-          })()}
+          {/* Promo Code Banner */}
+          <div className="mb-5 flex items-start gap-3 bg-amber-50 border border-amber-200 text-amber-800 rounded-xl p-4">
+            <span className="text-2xl">🎁</span>
+            <div className="space-y-1">
+              <p className="font-semibold text-sm">Use Promo Code <span className="font-mono bg-amber-100 px-1.5 py-0.5 rounded">FUNDATES</span> with your first token purchase to get <strong>1,000 free tokens</strong>.</p>
+              <p className="text-sm">Use Promo Code <span className="font-mono bg-amber-100 px-1.5 py-0.5 rounded">LAUNCH26</span> after ID Verification to get an additional <strong>5,000 free tokens</strong>.</p>
+            </div>
+          </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
             {[
               { name: 'Starter Pack', tokens: config.token_pack_starter_tokens ?? 500, price: config.token_pack_starter_price ?? 5.99 },
@@ -813,6 +848,15 @@ export default function MyProfile() {
                   />
                 </div>
               </div>
+            </div>
+            <div className="space-y-1.5">
+              <Label>Promo Code <span className="text-muted-foreground font-normal">(optional)</span></Label>
+              <Input
+                placeholder="e.g. FUNDATES"
+                value={purchasePromoCode}
+                onChange={e => setPurchasePromoCode(e.target.value.toUpperCase())}
+                className="font-mono"
+              />
             </div>
             <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted rounded-lg p-3">
               <Lock className="w-3.5 h-3.5 shrink-0" />

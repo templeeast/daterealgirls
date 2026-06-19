@@ -188,7 +188,7 @@
         "rejected"
       ],
       "default": "pending",
-      "description": "Admin profile review status \u2014 whether the profile has been reviewed and approved"
+      "description": "Admin profile review status"
     },
     "verification_status": {
       "type": "string",
@@ -263,6 +263,13 @@
       "type": "boolean",
       "default": false,
       "description": "Whether the user has ever completed a token purchase (used for first-purchase bonus)"
+    },
+    "used_promo_codes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of promo codes already redeemed by this user"
     },
     "browse_count_this_week": {
       "type": "number",
