@@ -206,10 +206,10 @@ export default function Landing() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b bg-muted/20">
-                    <th className="text-left px-6 py-3 font-medium">{t('token_table_action')}</th>
-                    <th className="text-center px-4 py-3 font-medium">{t('browse_men')}</th>
-                    <th className="text-center px-4 py-3 font-medium">{t('browse_women')}</th>
+                  <tr className="border-b">
+                    <th className="text-left px-6 py-3 font-medium text-muted-foreground">{t('token_table_action')}</th>
+                    <th className="text-center px-4 py-3 font-medium text-muted-foreground">{t('token_table_col_men')}</th>
+                    <th className="text-center px-4 py-3 font-medium text-muted-foreground">{t('token_table_col_women')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -218,8 +218,8 @@ export default function Landing() {
                     <td className="text-center px-4 py-3 text-green-600 font-medium">{t('free')}</td>
                     <td className="text-center px-4 py-3 text-green-600 font-medium">{t('free')}</td>
                   </tr>
-                  <tr className="border-b">
-                    <td className="px-6 py-3">{t('token_cost_browse_all')}</td>
+                  <tr className="border-b ring-2 ring-blue-500 ring-inset bg-blue-50/40">
+                    <td className="px-6 py-3 font-medium">{t('token_cost_browse_all')}</td>
                     <td className="text-center px-4 py-3">{t('token_cost_n_tokens_week', { n: config.tokens_browse_cost_men ?? 100 })}</td>
                     <td className="text-center px-4 py-3">{t('token_cost_n_tokens', { n: config.tokens_browse_cost_women ?? 0 })}</td>
                   </tr>
@@ -230,8 +230,8 @@ export default function Landing() {
                   </tr>
                   <tr>
                     <td className="px-6 py-3">{t('id_verification')}</td>
-                    <td className="text-center px-4 py-3">{t('token_cost_n_tokens', { n: config.tokens_verify_cost_men ?? 200 })}</td>
-                    <td className="text-center px-4 py-3">{t('token_cost_n_tokens', { n: config.tokens_verify_cost_women ?? 200 })}</td>
+                    <td className="text-center px-4 py-3">{t('token_cost_n_tokens', { n: config.tokens_verify_cost_men ?? 300 })}</td>
+                    <td className="text-center px-4 py-3">{t('token_cost_n_tokens', { n: config.tokens_verify_cost_women ?? 300 })}</td>
                   </tr>
                 </tbody>
               </table>
