@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { CheckSquare, Square, ChevronDown, ChevronRight, Shield, Users, CreditCard, MessageSquare, Heart, Settings, Bug, Globe, Trash2, RefreshCw } from 'lucide-react';
+import { CheckSquare, Square, ChevronDown, ChevronRight, Shield, Users, CreditCard, MessageSquare, Heart, Settings, Bug, Globe, Trash2, RefreshCw, Tag } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import useMyProfile from '@/hooks/useMyProfile';
 import { base44 } from '@/api/base44Client';
@@ -245,6 +245,38 @@ const sections = [
       { id: 'legal-5', label: 'Contact Us page renders and contact form submits correctly' },
       { id: 'legal-6', label: 'All footer links navigate to correct pages' },
       { id: 'legal-7', label: 'Footer copyright year is current year' },
+    ],
+  },
+  {
+    id: 'promo',
+    icon: Tag,
+    title: 'Promo Codes & Token History',
+    color: 'text-purple-500',
+    items: [
+      { id: 'promo-1', label: 'Admin: /admin/promo-codes page is accessible from Admin Dashboard header button' },
+      { id: 'promo-2', label: 'Admin: Non-admin user navigating to /admin/promo-codes is redirected away' },
+      { id: 'promo-3', label: 'Admin: Creating a new promo code saves to database with correct code (uppercased), tokens, type, and active status' },
+      { id: 'promo-4', label: 'Admin: Editing an existing promo code updates all fields correctly' },
+      { id: 'promo-5', label: 'Admin: Deactivating a promo code (toggle off) marks it inactive and it can no longer be redeemed' },
+      { id: 'promo-6', label: 'Admin: Reactivating a promo code (toggle on) allows redemption again' },
+      { id: 'promo-7', label: 'Admin: Deleting a promo code removes it from the list with confirmation prompt' },
+      { id: 'promo-8', label: 'Admin: "Times Used" counter increments correctly each time a code is redeemed' },
+      { id: 'promo-9', label: 'Admin: Setting max_uses and verifying the code is rejected once the limit is reached' },
+      { id: 'promo-10', label: 'Admin: Setting an expires_at date in the past causes code to be rejected at checkout' },
+      { id: 'promo-11', label: 'PURCHASE type code (e.g. FUNDATES): applying at token checkout grants correct bonus tokens' },
+      { id: 'promo-12', label: 'PURCHASE type code: applying the same code a second time on the same account is rejected' },
+      { id: 'promo-13', label: 'PURCHASE type code: applying a VERIFICATION-type code at checkout is rejected' },
+      { id: 'promo-14', label: 'VERIFICATION type code (e.g. LAUNCH26): applying after ID is verified grants correct bonus tokens' },
+      { id: 'promo-15', label: 'VERIFICATION type code: applying before ID is verified is rejected with appropriate error message' },
+      { id: 'promo-16', label: 'VERIFICATION type code: applying a PURCHASE-type code to the verification promo field is rejected' },
+      { id: 'promo-17', label: 'ANY type code: can be redeemed at both token checkout and verification promo fields' },
+      { id: 'promo-18', label: 'Invalid/non-existent promo code shows a clear error message to the user' },
+      { id: 'promo-19', label: 'Successful purchase without promo code creates a TokenTransaction record of type "purchase"' },
+      { id: 'promo-20', label: 'Successful promo redemption creates a TokenTransaction record of type "promo" with correct promo_code field' },
+      { id: 'promo-21', label: 'Payment History page: "Token Activity" tab shows purchase and promo transaction records for the current user' },
+      { id: 'promo-22', label: 'Payment History page: "Payment Records" tab shows external processor payment history' },
+      { id: 'promo-23', label: 'Payment History page: promo transactions display the promo code used in purple monospace text' },
+      { id: 'promo-24', label: 'Payment History page: token amounts show green for positive (earned) and orange for negative (spent)' },
     ],
   },
   {
