@@ -1,0 +1,46 @@
+{
+  "name": "TokenTransaction",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "description": "User ID who made the transaction"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "purchase",
+        "promo",
+        "spend",
+        "bonus"
+      ],
+      "description": "Transaction type"
+    },
+    "tokens": {
+      "type": "number",
+      "description": "Tokens added (positive) or spent (negative)"
+    },
+    "description": {
+      "type": "string",
+      "description": "Human-readable description"
+    },
+    "amount_paid": {
+      "type": "number",
+      "description": "USD amount paid (for purchase transactions)"
+    },
+    "transaction_id": {
+      "type": "string",
+      "description": "External payment transaction ID"
+    },
+    "promo_code": {
+      "type": "string",
+      "description": "Promo code used (if applicable)"
+    }
+  },
+  "required": [
+    "user_id",
+    "type",
+    "tokens",
+    "description"
+  ]
+}

@@ -1,9 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
 
-const PROMO_CODES = {
-  FUNDATES: { tokens: 1000, description: '1,000 bonus tokens' },
-};
-
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
@@ -76,18 +72,34 @@ Deno.serve(async (req) => {
     if (profiles.length > 0) {
       const profile = profiles[0];
 
-      // Validate promo code — no auto-bonus; only explicit promo codes are honored
+      // Look up promo code from database (purchase or any type)
       const normalizedPromo = (promoCode || '').trim().toUpperCase();
-      const promoInfo = PROMO_CODES[normalizedPromo] || null;
-
-      // Only allow each promo code to be used once per user (tracked via profile field)
       let promoBonus = 0;
       let promoApplied = null;
-      if (promoInfo) {
-        const usedCodes = profile.used_promo_codes || [];
-        if (!usedCodes.includes(normalizedPromo)) {
-          promoBonus = promoInfo.tokens;
-          promoApplied = normalizedPromo;
+      let promoDescription = null;
+
+      if (normalizedPromo) {
+        const promoCodes = await base44.asServiceRole.entities.PromoCode.filter({ code: normalizedPromo, is_active: true });
+        const promoRecord = promoCodes.find(p => p.type === 'purchase' || p.type === 'any');
+
+        if (promoRecord) {
+          // Check expiry
+          const expired = promoRecord.expires_at && new Date(promoRecord.expires_at) < new Date();
+          // Check max uses
+          const maxedOut = promoRecord.max_uses && promoRecord.times_used >= promoRecord.max_uses;
+          // Check if user already used it
+          const usedCodes = profile.used_promo_codes || [];
+          const alreadyUsed = usedCodes.includes(normalizedPromo);
+
+          if (!expired && !maxedOut && !alreadyUsed) {
+            promoBonus = promoRecord.tokens;
+            promoApplied = normalizedPromo;
+            promoDescription = promoRecord.description;
+            // Increment times_used
+            await base44.asServiceRole.entities.PromoCode.update(promoRecord.id, {
+              times_used: (promoRecord.times_used || 0) + 1,
+            });
+          }
         }
       }
 
@@ -104,6 +116,27 @@ Deno.serve(async (req) => {
       }
 
       await base44.asServiceRole.entities.MemberProfile.update(profile.id, updates);
+
+      // Log purchase transaction
+      await base44.asServiceRole.entities.TokenTransaction.create({
+        user_id: user.id,
+        type: 'purchase',
+        tokens: tokensToAdd,
+        description: `Purchased ${packName} (${tokensToAdd} tokens)`,
+        amount_paid: Number(amount),
+        transaction_id: txResponse.transId,
+      });
+
+      // Log promo transaction if applied
+      if (promoApplied) {
+        await base44.asServiceRole.entities.TokenTransaction.create({
+          user_id: user.id,
+          type: 'promo',
+          tokens: promoBonus,
+          description: promoDescription || `Promo code ${promoApplied} bonus`,
+          promo_code: promoApplied,
+        });
+      }
 
       return Response.json({
         success: true,

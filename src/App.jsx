@@ -20,6 +20,7 @@ import AdminDashboard from '@/pages/admin/AdminDashboard';
 import TestPlan from '@/pages/admin/TestPlan';
 import ContentReview from '@/pages/admin/ContentReview';
 import AdminTodo from '@/pages/admin/AdminTodo';
+import PromoCodes from '@/pages/admin/PromoCodes';
 import AppLayout from '@/components/layout/AppLayout';
 import useSiteConfig from '@/hooks/useSiteConfig';
 import ProfileCompleteGuard from '@/components/layout/ProfileCompleteGuard';
@@ -83,6 +84,7 @@ const AuthenticatedApp = () => {
         <Route path="/admin/test-plan" element={<TestPlan />} />
         <Route path="/admin/todo" element={<AdminTodo />} />
         <Route path="/admin/content-review" element={<ContentReview />} />
+        <Route path="/admin/promo-codes" element={<PromoCodes />} />
       </Route>
       <Route path="/privacy" element={<Privacy />} />
       <Route path="/terms" element={<Terms />} />

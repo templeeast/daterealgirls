@@ -1,0 +1,52 @@
+{
+  "name": "PromoCode",
+  "type": "object",
+  "properties": {
+    "code": {
+      "type": "string",
+      "description": "The promo code string (stored uppercase)"
+    },
+    "description": {
+      "type": "string",
+      "description": "Human-readable description of what the promo gives"
+    },
+    "tokens": {
+      "type": "number",
+      "description": "Number of bonus tokens granted when this code is redeemed"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "purchase",
+        "verification",
+        "any"
+      ],
+      "default": "purchase",
+      "description": "Where this code can be applied: on token purchase, after ID verification, or anywhere"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether this promo code is currently active"
+    },
+    "max_uses": {
+      "type": "number",
+      "description": "Maximum total redemptions allowed (leave empty for unlimited)"
+    },
+    "times_used": {
+      "type": "number",
+      "default": 0,
+      "description": "How many times this code has been redeemed"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date",
+      "description": "Expiry date (leave empty for no expiry)"
+    }
+  },
+  "required": [
+    "code",
+    "tokens",
+    "type"
+  ]
+}

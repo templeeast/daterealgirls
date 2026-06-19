@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Users, Shield, Flag, HelpCircle, Settings, MapPin, ClipboardList, ImageIcon, ListTodo } from 'lucide-react';
+import { Users, Shield, Flag, HelpCircle, Settings, MapPin, ClipboardList, ImageIcon, ListTodo, Tag } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import MemberManagement from '@/components/admin/MemberManagement';
 import VerificationQueue from '@/components/admin/VerificationQueue';
@@ -47,6 +47,11 @@ export default function AdminDashboard() {
           <Link to="/admin/todo">
             <button className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground border rounded-lg px-3 py-2 transition-colors">
               <ListTodo className="w-4 h-4" /> Admin To-Do
+            </button>
+          </Link>
+          <Link to="/admin/promo-codes">
+            <button className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground border rounded-lg px-3 py-2 transition-colors">
+              <Tag className="w-4 h-4" /> Promo Codes
             </button>
           </Link>
         </div>
