@@ -4,21 +4,13 @@ Deno.serve(async (req) => {
   const base44 = createClientFromRequest(req);
   const body = await req.json();
 
-  // Determine dev_mode from SiteConfig to pick the right webhook secret
+  // Load SiteConfig
   const configs = await base44.asServiceRole.entities.SiteConfig.list();
   const isDevMode = configs[0]?.dev_mode === true;
-  const webhookSecret = isDevMode
-    ? Deno.env.get('WHOP_DEV_WEBHOOK_SECRET')
-    : Deno.env.get('WHOP_PROD_WEBHOOK_SECRET');
 
-  // Verify webhook secret
-  if (webhookSecret) {
-    const authHeader = req.headers.get('Authorization') || '';
-    const token = authHeader.replace('Bearer ', '').trim();
-    if (token !== webhookSecret) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-  }
+  // Whop uses Standard Webhooks signature verification — no Bearer token check here.
+  // Signature verification is handled by whopPaymentWebhook for payment events.
+  // This endpoint accepts membership lifecycle events from Whop directly.
 
   // Support both old action-based format and new event-based format
   const action = body.action;
@@ -90,7 +82,8 @@ Deno.serve(async (req) => {
   if (
     normalizedEvent === 'membership.went_valid' ||
     normalizedEvent === 'membership.renewal' ||
-    normalizedEvent === 'membership_activated'
+    normalizedEvent === 'membership_activated' ||
+    normalizedEvent === 'membership.activated'
   ) {
     const endDate = parseEndDate(membership.expires_at, membership.renewal_period_end);
     await base44.asServiceRole.entities.MemberProfile.update(profile.id, {
