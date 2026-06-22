@@ -4,15 +4,13 @@ import { X, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 // Builds the Whop checkout iframe URL.
-// If we have a sessionId (checkout_configuration), use that. Otherwise fall back to planId direct URL.
+// Always uses whop.com as the base — the API base URL is only for backend calls.
 function buildCheckoutUrl(sessionId, planId, checkoutEmail, isDevMode) {
-  const base = sessionId
-    ? `https://whop.com/checkout/${sessionId}/`
-    : `https://whop.com/checkout/${planId}/`;
+  const id = sessionId || planId;
+  const base = `https://whop.com/checkout/${id}/`;
 
   const params = new URLSearchParams();
   params.set('d2c', 'true');
-  if (isDevMode) params.set('environment', 'sandbox');
   if (checkoutEmail) params.set('prefilled_email', checkoutEmail);
   return `${base}?${params.toString()}`;
 }
