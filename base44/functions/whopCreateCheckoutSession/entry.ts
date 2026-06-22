@@ -73,6 +73,12 @@ Deno.serve(async (req) => {
       if (response.ok) {
         const sessionConfig = JSON.parse(responseText);
         sessionId = sessionConfig.id;
+        // Capture whop member_id from response if present so webhook can match directly
+        if (sessionConfig.member_id) {
+          await base44.asServiceRole.entities.MemberProfile.update(memberProfile.id, {
+            whop_member_id: sessionConfig.member_id,
+          });
+        }
       }
     } catch (e) {
       console.error('checkout_configurations fetch error:', e.message, e.stack);

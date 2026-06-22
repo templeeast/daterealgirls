@@ -51,6 +51,21 @@ Deno.serve(async (req) => {
       }
     }
 
+    // Last resort for membership.activated: find the most recently updated profile
+    // that has a pending_whop_pack set (stored at checkout creation time).
+    // This handles the case where Whop doesn't pass metadata or checkout_configuration_id.
+    if (!profile && eventType === 'membership.activated') {
+      const pending = await base44.asServiceRole.entities.MemberProfile.filter(
+        { pending_whop_pack: { $exists: true, $ne: null } },
+        '-updated_date',
+        1
+      );
+      profile = pending[0] || null;
+      if (profile) {
+        console.log(`Matched profile ${profile.id} via pending_whop_pack fallback`);
+      }
+    }
+
     if (!profile) {
       console.log(`No profile found for membership ${membershipId}, whop_member_id ${whopMemberId}, user ${whopUserId}, email ${memberEmail}`);
       return Response.json({ message: 'Profile not found, ignoring' }, { status: 200 });
