@@ -1,132 +1,205 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
 
 Deno.serve(async (req) => {
-  const base44 = createClientFromRequest(req);
-  const body = await req.json();
+  try {
+    const base44 = createClientFromRequest(req);
+    const body = await req.json();
 
-  // Load SiteConfig
-  const configs = await base44.asServiceRole.entities.SiteConfig.list();
-  const isDevMode = configs[0]?.dev_mode === true;
+    // Load SiteConfig
+    const configs = await base44.asServiceRole.entities.SiteConfig.list();
+    const config = configs[0] || {};
 
-  // Whop uses Standard Webhooks signature verification — no Bearer token check here.
-  // Signature verification is handled by whopPaymentWebhook for payment events.
-  // This endpoint accepts membership lifecycle events from Whop directly.
+    // body.type is the event type in Whop's webhook format
+    const eventType = body.type || body.event || body.action;
+    // body.data is the membership object
+    const membership = body.data?.membership || body.data;
 
-  // Support both old action-based format and new event-based format
-  const action = body.action;
-  const event = body.event;
+    console.log('whopWebhook event:', eventType, '| membership id:', membership?.id);
 
-  // New format: body.event + body.data.membership
-  // Old format: body.action + body.data (membership object directly)
-  const membership = body.data?.membership || body.data;
-
-  if (!membership) {
-    return Response.json({ error: 'No data in payload' }, { status: 400 });
-  }
-
-  // Extract identifiers
-  const whopUserId = membership.user_id || membership.user?.id;
-  const membershipId = membership.id;
-  const memberEmail = membership.user?.email;
-
-  // Find profile: try whop_user_id first, then whop_membership_id, then email
-  let profile = null;
-
-  if (whopUserId) {
-    const results = await base44.asServiceRole.entities.MemberProfile.filter({ whop_user_id: whopUserId });
-    profile = results[0];
-  }
-
-  if (!profile && membershipId) {
-    const results = await base44.asServiceRole.entities.MemberProfile.filter({ whop_membership_id: membershipId });
-    profile = results[0];
-  }
-
-  if (!profile && memberEmail) {
-    const users = await base44.asServiceRole.entities.User.filter({ email: memberEmail });
-    if (users[0]) {
-      const byUser = await base44.asServiceRole.entities.MemberProfile.filter({ user_id: users[0].id });
-      profile = byUser[0];
+    if (!membership) {
+      return Response.json({ error: 'No data in payload' }, { status: 400 });
     }
-  }
 
-  if (!profile) {
-    console.log(`No profile found for membership ${membershipId}, user ${whopUserId}, email ${memberEmail}`);
-    return Response.json({ message: 'Profile not found, ignoring' }, { status: 200 });
-  }
+    const membershipId = membership.id;
+    const whopMemberId = membership.member?.id; // e.g. "mber_xxx"
+    const whopUserId = membership.user_id || membership.user?.id;
+    const memberEmail = membership.user?.email;
 
-  const today = new Date().toISOString().split('T')[0];
+    // Find profile: try whop_member_id, then whop_user_id, then whop_membership_id, then email
+    let profile = null;
 
-  // Normalize event type (support both formats)
-  const normalizedEvent = event || action;
-
-  // Helper to parse end date
-  const parseEndDate = (expiresAt, renewalPeriodEnd) => {
-    if (expiresAt) {
-      // Could be ISO string or unix timestamp
-      const d = typeof expiresAt === 'number'
-        ? new Date(expiresAt * 1000)
-        : new Date(expiresAt);
-      return d.toISOString().split('T')[0];
+    if (whopMemberId) {
+      const results = await base44.asServiceRole.entities.MemberProfile.filter({ whop_member_id: whopMemberId });
+      profile = results[0];
     }
-    if (renewalPeriodEnd) {
-      return new Date(renewalPeriodEnd * 1000).toISOString().split('T')[0];
+
+    if (!profile && whopUserId) {
+      const results = await base44.asServiceRole.entities.MemberProfile.filter({ whop_user_id: whopUserId });
+      profile = results[0];
     }
-    return new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
-  };
 
-  const baseUpdate = {};
-  if (membershipId) baseUpdate.whop_membership_id = membershipId;
-  if (whopUserId) baseUpdate.whop_user_id = whopUserId;
+    if (!profile && membershipId) {
+      const results = await base44.asServiceRole.entities.MemberProfile.filter({ whop_membership_id: membershipId });
+      profile = results[0];
+    }
 
-  if (
-    normalizedEvent === 'membership.went_valid' ||
-    normalizedEvent === 'membership.renewal' ||
-    normalizedEvent === 'membership_activated' ||
-    normalizedEvent === 'membership.activated'
-  ) {
-    const endDate = parseEndDate(membership.expires_at, membership.renewal_period_end);
-    await base44.asServiceRole.entities.MemberProfile.update(profile.id, {
-      ...baseUpdate,
-      subscription_status: 'active',
-      subscription_start_date: today,
-      subscription_end_date: endDate,
-    });
-    console.log(`Activated/renewed subscription for profile ${profile.id}, ends ${endDate}`);
+    if (!profile && memberEmail) {
+      const users = await base44.asServiceRole.entities.User.filter({ email: memberEmail });
+      if (users[0]) {
+        const byUser = await base44.asServiceRole.entities.MemberProfile.filter({ user_id: users[0].id });
+        profile = byUser[0];
+      }
+    }
 
-  } else if (
-    normalizedEvent === 'membership.went_invalid' ||
-    normalizedEvent === 'membership_deactivated'
-  ) {
-    await base44.asServiceRole.entities.MemberProfile.update(profile.id, {
-      ...baseUpdate,
-      subscription_status: 'expired',
-      subscription_end_date: today,
-    });
-    console.log(`Deactivated subscription for profile ${profile.id}`);
+    if (!profile) {
+      console.log(`No profile found for membership ${membershipId}, whop_member_id ${whopMemberId}, user ${whopUserId}, email ${memberEmail}`);
+      return Response.json({ message: 'Profile not found, ignoring' }, { status: 200 });
+    }
 
-  } else if (normalizedEvent === 'membership_cancel_at_period_end_changed') {
-    const cancelAtPeriodEnd = membership.cancel_at_period_end;
-    if (cancelAtPeriodEnd) {
-      const endDate = membership.renewal_period_end
-        ? new Date(membership.renewal_period_end * 1000).toISOString().split('T')[0]
-        : profile.subscription_end_date;
+    // Always store whop_member_id when we see it
+    const baseUpdate = {};
+    if (whopMemberId) baseUpdate.whop_member_id = whopMemberId;
+    if (membershipId) baseUpdate.whop_membership_id = membershipId;
+    if (whopUserId) baseUpdate.whop_user_id = whopUserId;
+
+    const today = new Date().toISOString().split('T')[0];
+
+    if (eventType === 'membership.activated') {
+      // Token pack purchase — grant tokens based on pending_whop_pack or plan id
+      const metadata = membership.checkout_configuration?.metadata || membership.checkout?.metadata || {};
+      const packName = metadata.pack_name || profile.pending_whop_pack;
+      const tokensFromMeta = parseInt(metadata.tokens_to_grant || '0', 10);
+
+      const tokenMap = {
+        starter: config.token_pack_starter_tokens || 500,
+        popular: config.token_pack_popular_tokens || 1500,
+        value:   config.token_pack_value_tokens   || 3500,
+        best:    config.token_pack_best_tokens    || 8000,
+      };
+      const tokensToGrant = tokensFromMeta > 0 ? tokensFromMeta : (tokenMap[packName] || 0);
+
+      if (!tokensToGrant || !packName) {
+        console.log(`membership.activated: no pack/tokens found for profile ${profile.id}, pending_whop_pack: ${profile.pending_whop_pack}`);
+        await base44.asServiceRole.entities.MemberProfile.update(profile.id, baseUpdate);
+        return Response.json({ success: true });
+      }
+
+      // Idempotency: check for existing payment record with this membership id
+      const existingPayments = await base44.asServiceRole.entities.Payment.filter({ whop_payment_id: membershipId });
+      if (existingPayments.length > 0) {
+        console.log('Token grant already recorded for membership:', membershipId);
+        return Response.json({ received: true });
+      }
+
+      const wasFirstPurchase = !profile.has_purchased_tokens;
+      const currentTokens = profile.tokens || 0;
+
       await base44.asServiceRole.entities.MemberProfile.update(profile.id, {
         ...baseUpdate,
-        subscription_status: 'cancelled',
-        subscription_end_date: endDate,
+        tokens: currentTokens + tokensToGrant,
+        has_purchased_tokens: true,
+        pending_whop_pack: null,
       });
-      console.log(`Marked subscription cancelled (access until ${endDate}) for profile ${profile.id}`);
-    } else {
+
+      await base44.asServiceRole.entities.TokenTransaction.create({
+        user_id: profile.user_id,
+        type: 'purchase',
+        tokens: tokensToGrant,
+        description: `Whop token pack purchase — ${packName}`,
+        transaction_id: membershipId,
+      });
+
+      // Create payment record for history
+      await base44.asServiceRole.entities.Payment.create({
+        user_id: profile.user_id,
+        member_profile_id: profile.id,
+        whop_payment_id: membershipId,
+        token_pack_name: packName,
+        tokens_purchased: tokensToGrant,
+        payment_status: 'succeeded',
+        raw_event_type: eventType,
+      });
+
+      console.log(`Granted ${tokensToGrant} tokens to profile ${profile.id} for pack ${packName}`);
+
+      // First purchase bonus
+      if (wasFirstPurchase) {
+        let bonusTokens = 0;
+        if (profile.gender === 'male' && config.first_purchase_bonus_men_enabled) {
+          bonusTokens = config.first_purchase_bonus_men_tokens || 0;
+        } else if (profile.gender === 'female' && config.first_purchase_bonus_women_enabled) {
+          bonusTokens = config.first_purchase_bonus_women_tokens || 0;
+        }
+        if (bonusTokens > 0) {
+          await base44.asServiceRole.entities.MemberProfile.update(profile.id, {
+            tokens: (currentTokens + tokensToGrant) + bonusTokens,
+          });
+          await base44.asServiceRole.entities.TokenTransaction.create({
+            user_id: profile.user_id,
+            type: 'bonus',
+            tokens: bonusTokens,
+            description: 'First purchase bonus',
+          });
+          console.log(`Granted ${bonusTokens} first-purchase bonus tokens to profile ${profile.id}`);
+        }
+      }
+
+    } else if (
+      eventType === 'membership.went_valid' ||
+      eventType === 'membership.renewal' ||
+      eventType === 'membership_activated'
+    ) {
+      const parseEndDate = (expiresAt, renewalPeriodEnd) => {
+        if (expiresAt) {
+          const d = typeof expiresAt === 'number' ? new Date(expiresAt * 1000) : new Date(expiresAt);
+          return d.toISOString().split('T')[0];
+        }
+        if (renewalPeriodEnd) return new Date(renewalPeriodEnd * 1000).toISOString().split('T')[0];
+        return new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+      };
+      const endDate = parseEndDate(membership.expires_at, membership.renewal_period_end);
       await base44.asServiceRole.entities.MemberProfile.update(profile.id, {
         ...baseUpdate,
         subscription_status: 'active',
+        subscription_start_date: today,
+        subscription_end_date: endDate,
       });
-      console.log(`Reinstated active subscription for profile ${profile.id}`);
-    }
-  } else {
-    console.log(`Unhandled Whop event: ${normalizedEvent}`);
-  }
+      console.log(`Activated/renewed subscription for profile ${profile.id}, ends ${endDate}`);
 
-  return Response.json({ success: true });
+    } else if (
+      eventType === 'membership.went_invalid' ||
+      eventType === 'membership_deactivated'
+    ) {
+      await base44.asServiceRole.entities.MemberProfile.update(profile.id, {
+        ...baseUpdate,
+        subscription_status: 'expired',
+        subscription_end_date: today,
+      });
+      console.log(`Deactivated subscription for profile ${profile.id}`);
+
+    } else if (eventType === 'membership_cancel_at_period_end_changed') {
+      if (membership.cancel_at_period_end) {
+        const endDate = membership.renewal_period_end
+          ? new Date(membership.renewal_period_end * 1000).toISOString().split('T')[0]
+          : profile.subscription_end_date;
+        await base44.asServiceRole.entities.MemberProfile.update(profile.id, {
+          ...baseUpdate, subscription_status: 'cancelled', subscription_end_date: endDate,
+        });
+      } else {
+        await base44.asServiceRole.entities.MemberProfile.update(profile.id, {
+          ...baseUpdate, subscription_status: 'active',
+        });
+      }
+    } else {
+      console.log(`Unhandled Whop event: ${eventType}`);
+      if (Object.keys(baseUpdate).length > 0) {
+        await base44.asServiceRole.entities.MemberProfile.update(profile.id, baseUpdate);
+      }
+    }
+
+    return Response.json({ success: true });
+  } catch (error) {
+    console.error('whopWebhook error:', error.message);
+    return Response.json({ error: error.message }, { status: 500 });
+  }
 });

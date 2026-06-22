@@ -49,12 +49,11 @@ Deno.serve(async (req) => {
       tokens_to_grant:    String(tokensToGrant),
     };
 
-    // Attempt to create a checkout configuration session (requires checkout_configurations permission on API key).
-    // If it fails, fall back to returning planId so the frontend can build a direct checkout URL.
+    // Attempt to create a checkout configuration session.
     let sessionId = null;
     try {
-      // checkout_configurations only exists on api.whop.com, not sandbox
-      const response = await fetch(`https://api.whop.com/api/v2/checkout_configurations`, {
+      const checkoutApiBase = isDevMode ? 'https://sandbox-api.whop.com' : 'https://api.whop.com';
+      const response = await fetch(`${checkoutApiBase}/api/v2/checkout_configurations`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${apiKey}`,
@@ -63,17 +62,21 @@ Deno.serve(async (req) => {
         body: JSON.stringify({ plan_id: planId, memberId: memberProfile.user_id, metadata }),
       });
 
+      const responseText = await response.text();
+      console.log('checkout_configurations response status:', response.status, '| body:', responseText, '| isDevMode:', isDevMode, '| apiBase:', checkoutApiBase);
       if (response.ok) {
-        const sessionConfig = await response.json();
+        const sessionConfig = JSON.parse(responseText);
         sessionId = sessionConfig.id;
-      } else {
-        const errText = await response.text();
-        const maskedKey = apiKey ? `${apiKey.slice(0, 8)}...${apiKey.slice(-4)}` : 'NOT SET';
-      console.warn('checkout_configurations failed, falling back to planId. Status:', response.status, errText, '| isDevMode:', isDevMode, '| apiKey:', maskedKey, '| apiBase:', apiBase);
       }
     } catch (e) {
-      console.warn('checkout_configurations request error, falling back to planId:', e.message);
+      console.error('checkout_configurations fetch error:', e.message, e.stack);
     }
+
+    // Store the pending pack on the profile so the webhook can look it up
+    // even when metadata isn't attached (e.g. when sessionId creation fails)
+    await base44.asServiceRole.entities.MemberProfile.update(memberProfile.id, {
+      pending_whop_pack: packName,
+    });
 
     return Response.json({
       sessionId,

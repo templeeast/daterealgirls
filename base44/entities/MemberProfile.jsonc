@@ -280,6 +280,20 @@
       "type": "string",
       "format": "date-time",
       "description": "Start of current 7-day browse window"
+    },
+    "whop_member_id": {
+      "type": "string",
+      "description": "Whop member ID (mber_...) linked to this profile"
+    },
+    "pending_whop_pack": {
+      "type": "string",
+      "enum": [
+        "starter",
+        "popular",
+        "value",
+        "best"
+      ],
+      "description": "Token pack selected at checkout, pending webhook confirmation"
     }
   },
   "required": [
