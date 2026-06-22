@@ -87,6 +87,10 @@
       "type": "string",
       "description": "Whop plan ID for the Best Deal token pack"
     },
+    "whop_api_base_url": {
+      "type": "string",
+      "description": "Whop API base URL override (e.g. https://sandbox-api.whop.com or https://api.whop.com)"
+    },
     "juicyads_enabled": {
       "type": "boolean",
       "default": false

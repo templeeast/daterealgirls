@@ -50,6 +50,7 @@ export default function SiteSettings() {
     whop_plan_popular: '',
     whop_plan_value: '',
     whop_plan_best: '',
+    whop_api_base_url: '',
     app_disabled: false,
     app_disabled_message: "The application is temporarily unavailable due to maintenance. We'll be back online shortly. Thank you for your patience.",
     juicyads_enabled: false,
@@ -106,6 +107,7 @@ export default function SiteSettings() {
         whop_plan_popular: existingConfig.whop_plan_popular || '',
         whop_plan_value: existingConfig.whop_plan_value || '',
         whop_plan_best: existingConfig.whop_plan_best || '',
+        whop_api_base_url: existingConfig.whop_api_base_url || '',
         app_disabled: existingConfig.app_disabled || false,
         app_disabled_message: existingConfig.app_disabled_message || "The application is temporarily unavailable due to maintenance. We'll be back online shortly. Thank you for your patience.",
         juicyads_enabled: existingConfig.juicyads_enabled || false,
@@ -400,6 +402,15 @@ export default function SiteSettings() {
               <div className="space-y-1">
                 <Label className="text-xs">Whop Plan ID — Best Deal</Label>
                 <Input value={form.whop_plan_best} onChange={e => updateField('whop_plan_best', e.target.value)} placeholder="plan_xxxxxxxxxxxx" />
+              </div>
+              <div className="space-y-1 border-t pt-3">
+                <Label className="text-xs font-semibold">API Base URL</Label>
+                <Input
+                  value={form.whop_api_base_url}
+                  onChange={e => updateField('whop_api_base_url', e.target.value)}
+                  placeholder="https://sandbox-api.whop.com or https://api.whop.com"
+                />
+                <p className="text-xs text-muted-foreground">Leave blank to use the default based on Dev Mode. Sandbox: <code className="bg-muted px-1 rounded">https://sandbox-api.whop.com</code> — Production: <code className="bg-muted px-1 rounded">https://api.whop.com</code></p>
               </div>
             </div>
             <p className="text-xs text-muted-foreground">Subscription Webhook URL: <code className="bg-muted px-1 rounded">/api/functions/whopWebhook</code></p>
