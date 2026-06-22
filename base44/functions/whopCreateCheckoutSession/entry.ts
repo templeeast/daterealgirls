@@ -68,7 +68,7 @@ Deno.serve(async (req) => {
       } else {
         const errText = await response.text();
         const maskedKey = apiKey ? `${apiKey.slice(0, 8)}...${apiKey.slice(-4)}` : 'NOT SET';
-      console.warn('checkout_configurations failed, falling back to planId. Status:', response.status, errText, '| isDevMode:', isDevMode, '| apiKey:', maskedKey);
+      console.warn('checkout_configurations failed, falling back to planId. Status:', response.status, errText, '| isDevMode:', isDevMode, '| apiKey:', maskedKey, '| apiBase:', apiBase);
       }
     } catch (e) {
       console.warn('checkout_configurations request error, falling back to planId:', e.message);
