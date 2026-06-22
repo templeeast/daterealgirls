@@ -59,7 +59,13 @@ Deno.serve(async (req) => {
           'Authorization': `Bearer ${apiKey}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ plan_id: planId, memberId: memberProfile.user_id, metadata }),
+        body: JSON.stringify({
+          plan_id: planId,
+          member_id: memberProfile.user_id,
+          email: checkoutEmail,
+          hide_email: true,
+          metadata,
+        }),
       });
 
       const responseText = await response.text();
