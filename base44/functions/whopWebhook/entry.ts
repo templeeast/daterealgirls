@@ -31,9 +31,9 @@ Deno.serve(async (req) => {
     console.log('membership.metadata:', JSON.stringify(membership.metadata));
 
     const metadata =
+      body.data?.metadata ||
       membership.checkout_configuration?.metadata ||
       membership.checkout?.metadata ||
-      membership.checkout_configuration?.checkout?.metadata ||
       membership.metadata ||
       {};
 
