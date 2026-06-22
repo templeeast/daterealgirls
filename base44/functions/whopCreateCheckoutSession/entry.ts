@@ -60,7 +60,7 @@ Deno.serve(async (req) => {
           'Authorization': `Bearer ${apiKey}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ plan_id: planId, metadata }),
+        body: JSON.stringify({ plan_id: planId, memberId: memberProfile.user_id, metadata }),
       });
 
       if (response.ok) {

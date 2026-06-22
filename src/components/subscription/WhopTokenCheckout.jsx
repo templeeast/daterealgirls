@@ -23,6 +23,7 @@ export default function WhopTokenCheckout({ packName, devMode, onClose, onComple
         if (!data?.planId && !data?.sessionId) { setError('No checkout data returned'); setLoading(false); return; }
         setCheckoutData(data);
         setLoading(false);
+        // Use isDevMode from backend response to keep environment in sync
       })
       .catch(err => {
         if (cancelled) return;
@@ -34,7 +35,7 @@ export default function WhopTokenCheckout({ packName, devMode, onClose, onComple
   }, [packName]);
 
   const returnUrl = `${window.location.origin}/whop-return`;
-  const environment = devMode ? 'sandbox' : 'production';
+  const environment = (checkoutData?.isDevMode ?? devMode) ? 'sandbox' : 'production';
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-background">
