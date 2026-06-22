@@ -142,7 +142,7 @@ Deno.serve(async (req) => {
         type: 'purchase',
         tokens: tokensToGrant,
         description: `Whop token pack purchase — ${packName}`,
-        amount_paid: (data.total || 0) / 100,
+        amount_paid: data.total || 0,
         transaction_id: whopPaymentId,
       });
 
