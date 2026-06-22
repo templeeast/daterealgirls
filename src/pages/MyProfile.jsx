@@ -83,6 +83,10 @@ export default function MyProfile() {
   const [verifPromoCode, setVerifPromoCode] = useState('');
   const [applyingVerifPromo, setApplyingVerifPromo] = useState(false);
 
+  // General promo code state
+  const [generalPromoCode, setGeneralPromoCode] = useState('');
+  const [applyingGeneralPromo, setApplyingGeneralPromo] = useState(false);
+
   const handleBuyTokens = (pack) => {
     if (config.payment_processor === 'whop') {
       const pn = packNameMap[pack.name] || 'starter';
@@ -111,6 +115,20 @@ export default function MyProfile() {
     if (res.data?.success) {
       toast({ title: `🎉 ${res.data.bonusTokens.toLocaleString()} bonus tokens added!` });
       setVerifPromoCode('');
+      refetch();
+    } else {
+      toast({ title: res.data?.error || 'Invalid promo code', variant: 'destructive' });
+    }
+  };
+
+  const handleApplyGeneralPromo = async () => {
+    if (!generalPromoCode.trim()) return;
+    setApplyingGeneralPromo(true);
+    const res = await base44.functions.invoke('applyVerificationPromo', { promoCode: generalPromoCode.trim() });
+    setApplyingGeneralPromo(false);
+    if (res.data?.success) {
+      toast({ title: `🎉 ${res.data.bonusTokens.toLocaleString()} bonus tokens added!` });
+      setGeneralPromoCode('');
       refetch();
     } else {
       toast({ title: res.data?.error || 'Invalid promo code', variant: 'destructive' });
@@ -535,6 +553,30 @@ export default function MyProfile() {
           </CardContent>
         </Card>
       )}
+
+      {/* General Promo Code */}
+      <Card className="mb-6 border-blue-200 bg-blue-50">
+        <CardContent className="pt-6">
+          <div className="flex items-start gap-3 mb-4">
+            <span className="text-2xl">🎁</span>
+            <div>
+              <p className="font-semibold text-blue-800">Have a promo code?</p>
+              <p className="text-sm text-blue-700">Enter any promo code to claim bonus tokens.</p>
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <Input
+              placeholder="Enter promo code"
+              value={generalPromoCode}
+              onChange={e => setGeneralPromoCode(e.target.value.toUpperCase())}
+              className="font-mono flex-1"
+            />
+            <Button onClick={handleApplyGeneralPromo} disabled={applyingGeneralPromo || !generalPromoCode.trim()} className="shrink-0">
+              {applyingGeneralPromo ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Apply'}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Buy Tokens */}
       <Card id="buy-tokens" className="mb-6 scroll-mt-20">
