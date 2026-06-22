@@ -22,8 +22,20 @@ Deno.serve(async (req) => {
 
     const membershipId = membership.id;
 
-    // Primary: use internal_member_id (our user_id) from checkout metadata
-    const metadata = membership.checkout_configuration?.metadata || membership.checkout?.metadata || membership.metadata || {};
+    // Extract metadata — Whop attaches it under checkout_configuration.metadata
+    // Log the full raw paths so we can diagnose exactly where it lands
+    console.log('membership.checkout_configuration:', JSON.stringify(membership.checkout_configuration));
+    console.log('membership.checkout:', JSON.stringify(membership.checkout));
+    console.log('membership.metadata:', JSON.stringify(membership.metadata));
+
+    const metadata =
+      membership.checkout_configuration?.metadata ||
+      membership.checkout?.metadata ||
+      membership.checkout_configuration?.checkout?.metadata ||
+      membership.metadata ||
+      {};
+
+    console.log('resolved metadata:', JSON.stringify(metadata));
     const internalUserId = metadata.internal_member_id;
 
     let profile = null;
@@ -34,19 +46,9 @@ Deno.serve(async (req) => {
       if (profile) console.log(`Matched profile ${profile.id} via metadata internal_member_id`);
     }
 
-    // Fallback for membership.activated: find the most recently updated profile with pending_whop_pack set
-    if (!profile && eventType === 'membership.activated') {
-      const pending = await base44.asServiceRole.entities.MemberProfile.filter(
-        { pending_whop_pack: { $exists: true, $ne: null } },
-        '-updated_date',
-        1
-      );
-      profile = pending[0] || null;
-      if (profile) console.log(`Matched profile ${profile.id} via pending_whop_pack fallback`);
-    }
-
     if (!profile) {
-      console.log(`No profile found for membership ${membershipId}, internal_member_id: ${internalUserId}`);
+      console.log(`No profile found — membership ${membershipId}, internal_member_id: ${internalUserId}`);
+      console.log('Full membership payload:', JSON.stringify(membership));
       return Response.json({ message: 'Profile not found, ignoring' }, { status: 200 });
     }
 

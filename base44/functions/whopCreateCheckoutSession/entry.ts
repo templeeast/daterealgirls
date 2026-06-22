@@ -39,7 +39,6 @@ Deno.serve(async (req) => {
     if (!planId) return Response.json({ error: `Plan ID not configured for pack: ${packName}` }, { status: 400 });
 
     const tokensToGrant = tokenCountMap[packName] || 500;
-    const apiBase = (config.whop_api_base_url || '').trim() || 'https://api.whop.com';
     const apiKey = isDevMode ? Deno.env.get('WHOP_DEV_API_KEY') : Deno.env.get('WHOP_PROD_API_KEY');
 
     const metadata = {
@@ -76,11 +75,9 @@ Deno.serve(async (req) => {
       console.error('checkout_configurations fetch error:', e.message, e.stack);
     }
 
-    // Store the pending pack on the profile so the webhook can look it up
-    // even when metadata isn't attached (e.g. when sessionId creation fails)
-    await base44.asServiceRole.entities.MemberProfile.update(memberProfile.id, {
-      pending_whop_pack: packName,
-    });
+    if (!sessionId) {
+      return Response.json({ error: 'Failed to create Whop checkout session — check server logs' }, { status: 500 });
+    }
 
     return Response.json({
       sessionId,
