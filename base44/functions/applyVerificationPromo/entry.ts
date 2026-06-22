@@ -38,9 +38,14 @@ Deno.serve(async (req) => {
 
     const profile = profiles[0];
 
-    // Must be verified to use verification promos (purchase and any can always be used)
+    // Verification type requires ID verification
     if (promoRecord.type === 'verification' && profile.verification_status !== 'verified') {
       return Response.json({ error: 'Your ID must be verified before applying this promo code.' }, { status: 400 });
+    }
+
+    // Purchase type requires at least one purchase
+    if (promoRecord.type === 'purchase' && !profile.has_purchased_tokens) {
+      return Response.json({ error: 'This promo code can only be used after making a purchase.' }, { status: 400 });
     }
 
     // Check if already used
