@@ -52,7 +52,7 @@ Deno.serve(async (req) => {
     let sessionId = null;
     try {
       const checkoutApiBase = isDevMode ? 'https://sandbox-api.whop.com' : 'https://api.whop.com';
-      const response = await fetch(`${checkoutApiBase}/api/v2/checkout_configurations`, {
+      const response = await fetch(`${checkoutApiBase}/api/v1/checkout_configurations`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${apiKey}`,
