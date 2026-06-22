@@ -59,85 +59,8 @@ Deno.serve(async (req) => {
     const today = new Date().toISOString().split('T')[0];
 
     if (eventType === 'membership.activated') {
-      // Token pack purchase — grant tokens based on metadata pack_name or pending_whop_pack fallback
-      const packName = metadata.pack_name || profile.pending_whop_pack;
-      const tokensFromMeta = parseInt(metadata.tokens_to_grant || '0', 10);
-
-      const tokenMap = {
-        starter: config.token_pack_starter_tokens || 500,
-        popular: config.token_pack_popular_tokens || 1500,
-        value:   config.token_pack_value_tokens   || 3500,
-        best:    config.token_pack_best_tokens    || 8000,
-      };
-      const tokensToGrant = tokensFromMeta > 0 ? tokensFromMeta : (tokenMap[packName] || 0);
-
-      if (!tokensToGrant || !packName) {
-        console.log(`membership.activated: no pack/tokens found for profile ${profile.id}, pending_whop_pack: ${profile.pending_whop_pack}`);
-        await base44.asServiceRole.entities.MemberProfile.update(profile.id, baseUpdate);
-        return Response.json({ success: true });
-      }
-
-      // Idempotency: check for existing payment record with this membership id
-      const existingPayments = await base44.asServiceRole.entities.Payment.filter({ whop_payment_id: membershipId });
-      if (existingPayments.length > 0) {
-        console.log('Token grant already recorded for membership:', membershipId);
-        return Response.json({ received: true });
-      }
-
-      const wasFirstPurchase = !profile.has_purchased_tokens;
-      const currentTokens = profile.tokens || 0;
-
-      await base44.asServiceRole.entities.MemberProfile.update(profile.id, {
-        ...baseUpdate,
-        tokens: currentTokens + tokensToGrant,
-        has_purchased_tokens: true,
-        pending_whop_pack: null,
-      });
-
-      await base44.asServiceRole.entities.TokenTransaction.create({
-        user_id: profile.user_id,
-        type: 'purchase',
-        tokens: tokensToGrant,
-        description: `Whop token pack purchase — ${packName}`,
-        transaction_id: membershipId,
-      });
-
-      // Create payment record for history
-      await base44.asServiceRole.entities.Payment.create({
-        user_id: profile.user_id,
-        member_profile_id: profile.id,
-        whop_payment_id: membershipId,
-        whop_receipt_id: body.id || null,
-        whop_session_id: body.data?.checkout_configuration_id || null,
-        token_pack_name: packName,
-        tokens_purchased: tokensToGrant,
-        payment_status: 'succeeded',
-        raw_event_type: eventType,
-      });
-
-      console.log(`Granted ${tokensToGrant} tokens to profile ${profile.id} for pack ${packName}`);
-
-      // First purchase bonus
-      if (wasFirstPurchase) {
-        let bonusTokens = 0;
-        if (profile.gender === 'male' && config.first_purchase_bonus_men_enabled) {
-          bonusTokens = config.first_purchase_bonus_men_tokens || 0;
-        } else if (profile.gender === 'female' && config.first_purchase_bonus_women_enabled) {
-          bonusTokens = config.first_purchase_bonus_women_tokens || 0;
-        }
-        if (bonusTokens > 0) {
-          await base44.asServiceRole.entities.MemberProfile.update(profile.id, {
-            tokens: (currentTokens + tokensToGrant) + bonusTokens,
-          });
-          await base44.asServiceRole.entities.TokenTransaction.create({
-            user_id: profile.user_id,
-            type: 'bonus',
-            tokens: bonusTokens,
-            description: 'First purchase bonus',
-          });
-          console.log(`Granted ${bonusTokens} first-purchase bonus tokens to profile ${profile.id}`);
-        }
-      }
+      // Token grants are handled by whopPaymentWebhook on payment.succeeded — nothing to do here
+      console.log(`membership.activated received for profile ${profile.id} — token grant handled by payment webhook`);
 
     } else if (
       eventType === 'membership.went_valid' ||
