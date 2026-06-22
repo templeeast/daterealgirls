@@ -60,7 +60,6 @@ Deno.serve(async (req) => {
         },
         body: JSON.stringify({
           plan_id: planId,
-          email: checkoutEmail,
           metadata,
         }),
       });
