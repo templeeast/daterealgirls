@@ -377,21 +377,19 @@ export default function BonusesAndPromos() {
                 />
                 <label htmlFor="award_all" className="text-sm font-medium cursor-pointer flex-1">Award to all members</label>
               </div>
-              {!awardToAll && (
-                <div>
-                  <label className="text-sm font-medium mb-2 block">Select Member *</label>
-                  <Select value={bonusForm.user_id} onValueChange={v => setBonusForm(f => ({ ...f, user_id: v }))}>
-                    <SelectTrigger><SelectValue placeholder={profilesLoading ? 'Loading members...' : 'Select a member...'} /></SelectTrigger>
-                    <SelectContent>
-                      {profiles.map(p => (
-                        <SelectItem key={p.id} value={p.id}>
-                          {p.display_name} ({p.user_id?.slice(0, 8)}) — {(p.tokens || 0).toLocaleString()} tokens
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
+              <div>
+                <label className="text-sm font-medium mb-2 block">Select Member {!awardToAll && '*'}</label>
+                <Select value={bonusForm.user_id} onValueChange={v => setBonusForm(f => ({ ...f, user_id: v }))} disabled={awardToAll}>
+                  <SelectTrigger><SelectValue placeholder={profilesLoading ? 'Loading members...' : awardToAll ? 'Awarding to all' : 'Select a member...'} /></SelectTrigger>
+                  <SelectContent>
+                    {profiles.map(p => (
+                      <SelectItem key={p.id} value={p.id}>
+                        {p.display_name} ({p.user_id?.slice(0, 8)}) — {(p.tokens || 0).toLocaleString()} tokens
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
               <div>
                 <label className="text-sm font-medium mb-1 block">Bonus Tokens *</label>
                 <Input
