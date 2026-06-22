@@ -11,8 +11,10 @@ Deno.serve(async (req) => {
 
     // body.type is the event type in Whop's webhook format
     const eventType = body.type || body.event || body.action;
-    // body.data is the membership object
-    const membership = body.data?.membership || body.data;
+    // Whop webhook payloads vary by event — log the raw data to diagnose structure
+    console.log('whopWebhook raw body.data:', JSON.stringify(body.data));
+    // body.data may contain membership, product, or be the object itself
+    const membership = body.data?.membership || body.data?.product || body.data;
 
     console.log('whopWebhook event:', eventType, '| membership id:', membership?.id);
 

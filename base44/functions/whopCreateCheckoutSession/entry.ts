@@ -70,13 +70,12 @@ Deno.serve(async (req) => {
       if (response.ok) {
         const sessionConfig = JSON.parse(responseText);
         sessionId = sessionConfig.id;
+        console.log('checkout session created:', sessionId, '| metadata sent:', JSON.stringify(metadata));
+      } else if (response.status === 401) {
+        console.error('WHOP API KEY lacks permission for checkout_configurations — metadata will NOT be attached to this purchase. Grant the checkout_configurations scope to the API key in the Whop dashboard.');
       }
     } catch (e) {
       console.error('checkout_configurations fetch error:', e.message, e.stack);
-    }
-
-    if (!sessionId) {
-      return Response.json({ error: 'Failed to create Whop checkout session — check server logs' }, { status: 500 });
     }
 
     return Response.json({
