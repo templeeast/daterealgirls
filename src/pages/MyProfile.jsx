@@ -110,28 +110,34 @@ export default function MyProfile() {
   const handleApplyVerifPromo = async () => {
     if (!verifPromoCode.trim()) return;
     setApplyingVerifPromo(true);
-    const res = await base44.functions.invoke('applyVerificationPromo', { promoCode: verifPromoCode.trim() });
-    setApplyingVerifPromo(false);
-    if (res.data?.success) {
-      toast({ title: `🎉 ${res.data.bonusTokens.toLocaleString()} bonus tokens added!` });
-      setVerifPromoCode('');
-      refetch();
-    } else {
-      toast({ title: res.data?.error || 'Invalid promo code', variant: 'destructive' });
+    try {
+      const res = await base44.functions.invoke('applyVerificationPromo', { promoCode: verifPromoCode.trim() });
+      if (res.data?.success) {
+        toast({ title: `🎉 ${res.data.bonusTokens.toLocaleString()} bonus tokens added!` });
+        setVerifPromoCode('');
+        refetch();
+      } else {
+        toast({ title: res.data?.error || 'Invalid promo code', variant: 'destructive' });
+      }
+    } finally {
+      setApplyingVerifPromo(false);
     }
   };
 
   const handleApplyGeneralPromo = async () => {
     if (!generalPromoCode.trim()) return;
     setApplyingGeneralPromo(true);
-    const res = await base44.functions.invoke('applyVerificationPromo', { promoCode: generalPromoCode.trim() });
-    setApplyingGeneralPromo(false);
-    if (res.data?.success) {
-      toast({ title: `🎉 ${res.data.bonusTokens.toLocaleString()} bonus tokens added!` });
-      setGeneralPromoCode('');
-      refetch();
-    } else {
-      toast({ title: res.data?.error || 'Invalid promo code', variant: 'destructive' });
+    try {
+      const res = await base44.functions.invoke('applyVerificationPromo', { promoCode: generalPromoCode.trim() });
+      if (res.data?.success) {
+        toast({ title: `🎉 ${res.data.bonusTokens.toLocaleString()} bonus tokens added!` });
+        setGeneralPromoCode('');
+        refetch();
+      } else {
+        toast({ title: res.data?.error || 'Invalid promo code', variant: 'destructive' });
+      }
+    } finally {
+      setApplyingGeneralPromo(false);
     }
   };
 
