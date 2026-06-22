@@ -107,6 +107,8 @@ Deno.serve(async (req) => {
         user_id: profile.user_id,
         member_profile_id: profile.id,
         whop_payment_id: membershipId,
+        whop_receipt_id: body.id || null,
+        whop_session_id: body.data?.checkout_configuration_id || null,
         token_pack_name: packName,
         tokens_purchased: tokensToGrant,
         payment_status: 'succeeded',
