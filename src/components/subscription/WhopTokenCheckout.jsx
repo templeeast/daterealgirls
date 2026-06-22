@@ -1,32 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
 import { X, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-// Builds the Whop checkout iframe URL.
-// Always uses whop.com as the base — the API base URL is only for backend calls.
-function buildCheckoutUrl(sessionId, planId, checkoutEmail, isDevMode) {
-  const id = sessionId || planId;
-  const storefrontBase = isDevMode ? 'https://sandbox.whop.com' : 'https://whop.com';
-  const base = `${storefrontBase}/checkout/${id}/`;
-
-  const params = new URLSearchParams();
-  params.set('d2c', 'true');
-  if (checkoutEmail) params.set('prefilled_email', checkoutEmail);
-  return `${base}?${params.toString()}`;
-}
-
 export default function WhopTokenCheckout({ packName, devMode, onClose, onComplete }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [iframeUrl, setIframeUrl] = useState(null);
+  const [checkoutData, setCheckoutData] = useState(null);
   const [retryCount, setRetryCount] = useState(0);
+  const divRef = useRef(null);
 
+  // Fetch session from backend
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
     setError(null);
-    setIframeUrl(null);
+    setCheckoutData(null);
 
     base44.functions.invoke('whopCreateCheckoutSession', { packName })
       .then(res => {
@@ -37,9 +26,8 @@ export default function WhopTokenCheckout({ packName, devMode, onClose, onComple
           setLoading(false);
           return;
         }
-        if (data?.planId || data?.sessionId) {
-          const url = buildCheckoutUrl(data.sessionId, data.planId, data.checkoutEmail, data.isDevMode);
-          setIframeUrl(url);
+        if (data?.sessionId || data?.planId) {
+          setCheckoutData(data);
           setLoading(false);
         } else {
           setError('Failed to create checkout session');
@@ -55,6 +43,30 @@ export default function WhopTokenCheckout({ packName, devMode, onClose, onComple
     return () => { cancelled = true; };
   }, [packName, retryCount]);
 
+  // Inject Whop loader script once we have a sessionId and the div is mounted
+  useEffect(() => {
+    const id = checkoutData?.sessionId || checkoutData?.planId;
+    if (!id || !divRef.current) return;
+
+    if (checkoutData.checkoutEmail) {
+      divRef.current.setAttribute('data-whop-checkout-prefill-email', checkoutData.checkoutEmail);
+    }
+
+    // Remove any stale loader script
+    const old = document.querySelector('script[data-whop-loader]');
+    if (old) old.remove();
+
+    const script = document.createElement('script');
+    script.src = 'https://js.whop.com/static/checkout/loader.js';
+    script.async = true;
+    script.defer = true;
+    script.setAttribute('data-whop-loader', '1');
+    document.body.appendChild(script);
+
+    return () => { script.remove(); };
+  }, [checkoutData, retryCount]);
+
+  // Listen for checkout completion postMessage
   useEffect(() => {
     const handleMessage = (event) => {
       if (
@@ -68,6 +80,8 @@ export default function WhopTokenCheckout({ packName, devMode, onClose, onComple
     window.addEventListener('message', handleMessage);
     return () => window.removeEventListener('message', handleMessage);
   }, [onComplete]);
+
+  const checkoutId = checkoutData?.sessionId || checkoutData?.planId;
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-background">
@@ -106,12 +120,12 @@ export default function WhopTokenCheckout({ packName, devMode, onClose, onComple
           </div>
         )}
 
-        {iframeUrl && !loading && !error && (
-          <iframe
-            src={iframeUrl}
-            className="w-full h-full border-0"
-            allow="payment"
-            title="Whop Checkout"
+        {checkoutId && !loading && !error && (
+          <div
+            ref={divRef}
+            data-whop-checkout-session-id={checkoutData?.sessionId}
+            data-whop-checkout-plan-id={!checkoutData?.sessionId ? checkoutData?.planId : undefined}
+            className="w-full h-full"
           />
         )}
       </div>
