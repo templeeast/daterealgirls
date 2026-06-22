@@ -74,7 +74,9 @@ export default function WhopTokenCheckout({ packName, devMode, onClose, onComple
             {...(checkoutData.sessionId ? { sessionId: checkoutData.sessionId } : { planId: checkoutData.planId })}
             environment={environment}
             returnUrl={returnUrl}
-            prefill={checkoutData.checkoutEmail ? { email: checkoutData.checkoutEmail, hideEmail: true } : undefined}
+            prefill={checkoutData.checkoutEmail ? { email: checkoutData.checkoutEmail } : undefined}
+            hideEmail={true}
+            disableEmail={true}
             onComplete={(planId, receiptId) => onComplete()}
             fallback={
               <div className="flex items-center justify-center h-64 text-muted-foreground text-sm">
