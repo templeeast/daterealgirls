@@ -10,7 +10,7 @@ export default function WhopTokenCheckout({ packName, devMode, onClose, onComple
   const [retryCount, setRetryCount] = useState(0);
   const divRef = useRef(null);
 
-  // Fetch session from backend
+  // Fetch plan ID from backend
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
@@ -21,18 +21,9 @@ export default function WhopTokenCheckout({ packName, devMode, onClose, onComple
       .then(res => {
         if (cancelled) return;
         const data = res.data;
-        if (data?.error) {
-          setError(data.error);
-          setLoading(false);
-          return;
-        }
-        if (data?.sessionId || data?.planId) {
-          setCheckoutData(data);
-          setLoading(false);
-        } else {
-          setError('Failed to create checkout session');
-          setLoading(false);
-        }
+        if (data?.error) { setError(data.error); setLoading(false); return; }
+        if (data?.planId) { setCheckoutData(data); setLoading(false); }
+        else { setError('Failed to get checkout plan'); setLoading(false); }
       })
       .catch(err => {
         if (cancelled) return;
@@ -43,16 +34,14 @@ export default function WhopTokenCheckout({ packName, devMode, onClose, onComple
     return () => { cancelled = true; };
   }, [packName, retryCount]);
 
-  // Inject Whop loader script once we have a sessionId and the div is mounted
+  // Inject Whop loader script once planId is ready and div is mounted
   useEffect(() => {
-    const id = checkoutData?.sessionId || checkoutData?.planId;
-    if (!id || !divRef.current) return;
+    if (!checkoutData?.planId || !divRef.current) return;
 
     if (checkoutData.checkoutEmail) {
       divRef.current.setAttribute('data-whop-checkout-prefill-email', checkoutData.checkoutEmail);
     }
 
-    // Remove any stale loader script
     const old = document.querySelector('script[data-whop-loader]');
     if (old) old.remove();
 
@@ -66,7 +55,7 @@ export default function WhopTokenCheckout({ packName, devMode, onClose, onComple
     return () => { script.remove(); };
   }, [checkoutData, retryCount]);
 
-  // Listen for checkout completion postMessage
+  // Listen for checkout completion
   useEffect(() => {
     const handleMessage = (event) => {
       if (
@@ -81,8 +70,6 @@ export default function WhopTokenCheckout({ packName, devMode, onClose, onComple
     return () => window.removeEventListener('message', handleMessage);
   }, [onComplete]);
 
-  const checkoutId = checkoutData?.sessionId || checkoutData?.planId;
-
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-background">
       {/* Header */}
@@ -93,17 +80,13 @@ export default function WhopTokenCheckout({ packName, devMode, onClose, onComple
             <span className="text-xs bg-amber-100 text-amber-700 border border-amber-300 px-2 py-0.5 rounded-full font-medium">Sandbox</span>
           )}
         </div>
-        <button
-          onClick={onClose}
-          className="p-2 rounded-full hover:bg-muted transition-colors"
-          aria-label="Close"
-        >
+        <button onClick={onClose} className="p-2 rounded-full hover:bg-muted transition-colors" aria-label="Close">
           <X className="w-5 h-5" />
         </button>
       </div>
 
       {/* Content */}
-      <div className="flex-1 relative">
+      <div className="flex-1 relative overflow-y-auto">
         {loading && (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
             <Loader2 className="w-8 h-8 animate-spin text-primary" />
@@ -114,19 +97,17 @@ export default function WhopTokenCheckout({ packName, devMode, onClose, onComple
         {error && (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 px-6 text-center">
             <p className="text-destructive font-medium">{error}</p>
-            <Button onClick={() => setRetryCount(c => c + 1)} variant="outline">
-              Try Again
-            </Button>
+            <Button onClick={() => setRetryCount(c => c + 1)} variant="outline">Try Again</Button>
           </div>
         )}
 
-        {checkoutId && !loading && !error && (
-          <div
-            ref={divRef}
-            data-whop-checkout-session-id={checkoutData?.sessionId}
-            data-whop-checkout-plan-id={!checkoutData?.sessionId ? checkoutData?.planId : undefined}
-            className="w-full h-full"
-          />
+        {checkoutData?.planId && !loading && !error && (
+          <div className="p-4">
+            <div
+              ref={divRef}
+              data-whop-checkout-plan-id={checkoutData.planId}
+            />
+          </div>
         )}
       </div>
     </div>
