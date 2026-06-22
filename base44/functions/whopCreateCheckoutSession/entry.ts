@@ -39,8 +39,9 @@ Deno.serve(async (req) => {
     if (!planId) return Response.json({ error: `Plan ID not configured for pack: ${packName}` }, { status: 400 });
 
     const tokensToGrant = tokenCountMap[packName] || 500;
-    const defaultApiBase = isDevMode ? 'https://sandbox-api.whop.com' : 'https://api.whop.com';
-    const apiBase = (config.whop_api_base_url || '').trim() || defaultApiBase;
+    // Whop sandbox uses the same api.whop.com base URL — sandbox-api.whop.com returns 401 for this endpoint.
+    // Allow manual override via whop_api_base_url in SiteConfig, otherwise always use api.whop.com.
+    const apiBase = (config.whop_api_base_url || '').trim() || 'https://api.whop.com';
     const apiKey = isDevMode ? Deno.env.get('WHOP_DEV_API_KEY') : Deno.env.get('WHOP_PROD_API_KEY');
 
     const metadata = {
