@@ -7,7 +7,8 @@ import { Button } from '@/components/ui/button';
 // Always uses whop.com as the base — the API base URL is only for backend calls.
 function buildCheckoutUrl(sessionId, planId, checkoutEmail, isDevMode) {
   const id = sessionId || planId;
-  const base = `https://whop.com/checkout/${id}/`;
+  const storefrontBase = isDevMode ? 'https://sandbox.whop.com' : 'https://whop.com';
+  const base = `${storefrontBase}/checkout/${id}/`;
 
   const params = new URLSearchParams();
   params.set('d2c', 'true');
