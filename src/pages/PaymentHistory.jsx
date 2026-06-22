@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
@@ -36,6 +36,13 @@ export default function PaymentHistory() {
   const [payments, setPayments] = useState(null);
   const [paymentsLoading, setPaymentsLoading] = useState(false);
   const [paymentsError, setPaymentsError] = useState(null);
+
+  // Pending purchase promos (registered but not yet awarded)
+  const pendingPromos = useMemo(() => {
+    if (!profile?.used_promo_codes || profile?.has_purchased_tokens) return [];
+    const used = profile.used_promo_codes || [];
+    return used;
+  }, [profile]);
 
   useEffect(() => {
     if (profileLoading || configLoading || !profile || !config) return;
@@ -115,6 +122,24 @@ export default function PaymentHistory() {
           Payment & Token History
         </h1>
       </div>
+
+      {/* Pending Promos Banner */}
+      {pendingPromos.length > 0 && (
+        <Card className="mb-6 border-amber-200 bg-amber-50">
+          <CardContent className="pt-4 pb-4">
+            <div className="flex items-start gap-3">
+              <span className="text-xl">⏳</span>
+              <div className="flex-1">
+                <p className="font-semibold text-amber-900 text-sm">{pendingPromos.length} promo code{pendingPromos.length !== 1 ? 's' : ''} pending</p>
+                <p className="text-xs text-amber-800 mt-1">
+                  {pendingPromos.map(code => <span key={code} className="inline-block font-mono bg-amber-100 px-1.5 py-0.5 rounded mr-1 mb-1">{code}</span>)}
+                </p>
+                <p className="text-xs text-amber-700 mt-2">These promo code{pendingPromos.length !== 1 ? 's' : ''} will be applied to your next token purchase.</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Tabs */}
       <div className="flex gap-2 mb-6">
