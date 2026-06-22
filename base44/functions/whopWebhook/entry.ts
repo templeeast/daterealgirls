@@ -21,39 +21,20 @@ Deno.serve(async (req) => {
     }
 
     const membershipId = membership.id;
-    const whopMemberId = membership.member?.id; // e.g. "mber_xxx"
-    const whopUserId = membership.user_id || membership.user?.id;
-    const memberEmail = membership.user?.email;
 
-    // Find profile: try whop_member_id, then whop_user_id, then whop_membership_id, then email
+    // Primary: use internal_member_id (our user_id) from checkout metadata
+    const metadata = membership.checkout_configuration?.metadata || membership.checkout?.metadata || membership.metadata || {};
+    const internalUserId = metadata.internal_member_id;
+
     let profile = null;
 
-    if (whopMemberId) {
-      const results = await base44.asServiceRole.entities.MemberProfile.filter({ whop_member_id: whopMemberId });
+    if (internalUserId) {
+      const results = await base44.asServiceRole.entities.MemberProfile.filter({ user_id: internalUserId });
       profile = results[0];
+      if (profile) console.log(`Matched profile ${profile.id} via metadata internal_member_id`);
     }
 
-    if (!profile && whopUserId) {
-      const results = await base44.asServiceRole.entities.MemberProfile.filter({ whop_user_id: whopUserId });
-      profile = results[0];
-    }
-
-    if (!profile && membershipId) {
-      const results = await base44.asServiceRole.entities.MemberProfile.filter({ whop_membership_id: membershipId });
-      profile = results[0];
-    }
-
-    if (!profile && memberEmail) {
-      const users = await base44.asServiceRole.entities.User.filter({ email: memberEmail });
-      if (users[0]) {
-        const byUser = await base44.asServiceRole.entities.MemberProfile.filter({ user_id: users[0].id });
-        profile = byUser[0];
-      }
-    }
-
-    // Last resort for membership.activated: find the most recently updated profile
-    // that has a pending_whop_pack set (stored at checkout creation time).
-    // This handles the case where Whop doesn't pass metadata or checkout_configuration_id.
+    // Fallback for membership.activated: find the most recently updated profile with pending_whop_pack set
     if (!profile && eventType === 'membership.activated') {
       const pending = await base44.asServiceRole.entities.MemberProfile.filter(
         { pending_whop_pack: { $exists: true, $ne: null } },
@@ -61,27 +42,20 @@ Deno.serve(async (req) => {
         1
       );
       profile = pending[0] || null;
-      if (profile) {
-        console.log(`Matched profile ${profile.id} via pending_whop_pack fallback`);
-      }
+      if (profile) console.log(`Matched profile ${profile.id} via pending_whop_pack fallback`);
     }
 
     if (!profile) {
-      console.log(`No profile found for membership ${membershipId}, whop_member_id ${whopMemberId}, user ${whopUserId}, email ${memberEmail}`);
+      console.log(`No profile found for membership ${membershipId}, internal_member_id: ${internalUserId}`);
       return Response.json({ message: 'Profile not found, ignoring' }, { status: 200 });
     }
 
-    // Always store whop_member_id when we see it
     const baseUpdate = {};
-    if (whopMemberId) baseUpdate.whop_member_id = whopMemberId;
-    if (membershipId) baseUpdate.whop_membership_id = membershipId;
-    if (whopUserId) baseUpdate.whop_user_id = whopUserId;
 
     const today = new Date().toISOString().split('T')[0];
 
     if (eventType === 'membership.activated') {
-      // Token pack purchase — grant tokens based on pending_whop_pack or plan id
-      const metadata = membership.checkout_configuration?.metadata || membership.checkout?.metadata || {};
+      // Token pack purchase — grant tokens based on metadata pack_name or pending_whop_pack fallback
       const packName = metadata.pack_name || profile.pending_whop_pack;
       const tokensFromMeta = parseInt(metadata.tokens_to_grant || '0', 10);
 
