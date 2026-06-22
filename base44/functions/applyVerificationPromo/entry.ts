@@ -43,20 +43,32 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Your ID must be verified before applying this promo code.' }, { status: 400 });
     }
 
-    // Purchase type requires at least one purchase
-    if (promoRecord.type === 'purchase' && !profile.has_purchased_tokens) {
-      return Response.json({ error: 'This promo code can only be used after making a purchase.' }, { status: 400 });
-    }
-
     // Check if already used
     const usedCodes = profile.used_promo_codes || [];
     if (usedCodes.includes(normalizedPromo)) {
       return Response.json({ error: 'This promo code has already been used.' }, { status: 400 });
     }
 
-    const newTokens = (profile.tokens || 0) + promoRecord.tokens;
+    // For purchase-type promos before first purchase, register but don't award tokens yet
+    const isPurchasePromoBeforePurchase = promoRecord.type === 'purchase' && !profile.has_purchased_tokens;
     const newUsedCodes = [...usedCodes, normalizedPromo];
 
+    if (isPurchasePromoBeforePurchase) {
+      // Just register the promo, tokens will be awarded on first purchase
+      await base44.asServiceRole.entities.MemberProfile.update(profile.id, {
+        used_promo_codes: newUsedCodes,
+      });
+      return Response.json({
+        success: true,
+        bonusTokens: 0,
+        newBalance: profile.tokens || 0,
+        pending: true,
+        message: 'Promo applied! Your tokens will be awarded when you make your first purchase.',
+      });
+    }
+
+    // Award tokens immediately for verification-type and 'any' promos
+    const newTokens = (profile.tokens || 0) + promoRecord.tokens;
     await base44.asServiceRole.entities.MemberProfile.update(profile.id, {
       tokens: newTokens,
       used_promo_codes: newUsedCodes,

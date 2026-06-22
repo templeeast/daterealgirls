@@ -113,9 +113,13 @@ export default function MyProfile() {
     try {
       const res = await base44.functions.invoke('applyVerificationPromo', { promoCode: verifPromoCode.trim() });
       if (res.data?.success) {
-        toast({ title: `🎉 ${res.data.bonusTokens.toLocaleString()} bonus tokens added!` });
+        if (res.data?.pending) {
+          toast({ title: res.data.message || 'Promo applied! Tokens will be awarded on your first purchase.' });
+        } else {
+          toast({ title: `🎉 ${res.data.bonusTokens.toLocaleString()} bonus tokens added!` });
+          refetch();
+        }
         setVerifPromoCode('');
-        refetch();
       } else {
         toast({ title: res.data?.error || 'Invalid promo code', variant: 'destructive' });
       }
@@ -130,9 +134,13 @@ export default function MyProfile() {
     try {
       const res = await base44.functions.invoke('applyVerificationPromo', { promoCode: generalPromoCode.trim() });
       if (res.data?.success) {
-        toast({ title: `🎉 ${res.data.bonusTokens.toLocaleString()} bonus tokens added!` });
+        if (res.data?.pending) {
+          toast({ title: res.data.message || 'Promo applied! Tokens will be awarded on your first purchase.' });
+        } else {
+          toast({ title: `🎉 ${res.data.bonusTokens.toLocaleString()} bonus tokens added!` });
+          refetch();
+        }
         setGeneralPromoCode('');
-        refetch();
       } else {
         toast({ title: res.data?.error || 'Invalid promo code', variant: 'destructive' });
       }

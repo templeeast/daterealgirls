@@ -132,16 +132,31 @@ Deno.serve(async (req) => {
       const wasFirstPurchase = !memberProfile.has_purchased_tokens;
       const currentTokens = memberProfile.tokens || 0;
 
+      // Check for pending purchase-type promos to apply on first purchase
+      let pendingPromoTokens = 0;
+      if (wasFirstPurchase) {
+        const usedCodes = memberProfile.used_promo_codes || [];
+        for (const codeName of usedCodes) {
+          const promos = await base44.asServiceRole.entities.PromoCode.filter({ code: codeName, is_active: true });
+          if (promos.length > 0) {
+            const promo = promos[0];
+            if (promo.type === 'purchase') {
+              pendingPromoTokens += promo.tokens || 0;
+            }
+          }
+        }
+      }
+
       await base44.asServiceRole.entities.MemberProfile.update(memberProfile.id, {
-        tokens: currentTokens + tokensToGrant,
+        tokens: currentTokens + tokensToGrant + pendingPromoTokens,
         has_purchased_tokens: true,
       });
 
       await base44.asServiceRole.entities.TokenTransaction.create({
         user_id: userId,
         type: 'purchase',
-        tokens: tokensToGrant,
-        description: `Whop token pack purchase — ${packName}`,
+        tokens: tokensToGrant + pendingPromoTokens,
+        description: `Whop token pack purchase — ${packName}` + (pendingPromoTokens > 0 ? ` + ${pendingPromoTokens} pending promo tokens` : ''),
         amount_paid: data.total || 0,
         transaction_id: whopPaymentId,
       });
