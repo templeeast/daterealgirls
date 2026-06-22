@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
+import { WhopCheckoutEmbed } from '@whop/checkout/react';
 import { base44 } from '@/api/base44Client';
 import { X, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -7,10 +8,7 @@ export default function WhopTokenCheckout({ packName, devMode, onClose, onComple
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [checkoutData, setCheckoutData] = useState(null);
-  const [retryCount, setRetryCount] = useState(0);
-  const divRef = useRef(null);
 
-  // Fetch plan ID from backend
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
@@ -22,8 +20,9 @@ export default function WhopTokenCheckout({ packName, devMode, onClose, onComple
         if (cancelled) return;
         const data = res.data;
         if (data?.error) { setError(data.error); setLoading(false); return; }
-        if (data?.planId) { setCheckoutData(data); setLoading(false); }
-        else { setError('Failed to get checkout plan'); setLoading(false); }
+        if (!data?.planId && !data?.sessionId) { setError('No checkout data returned'); setLoading(false); return; }
+        setCheckoutData(data);
+        setLoading(false);
       })
       .catch(err => {
         if (cancelled) return;
@@ -32,43 +31,10 @@ export default function WhopTokenCheckout({ packName, devMode, onClose, onComple
       });
 
     return () => { cancelled = true; };
-  }, [packName, retryCount]);
+  }, [packName]);
 
-  // Inject Whop loader script once planId is ready and div is mounted
-  useEffect(() => {
-    if (!checkoutData?.planId || !divRef.current) return;
-
-    if (checkoutData.checkoutEmail) {
-      divRef.current.setAttribute('data-whop-checkout-prefill-email', checkoutData.checkoutEmail);
-    }
-
-    const old = document.querySelector('script[data-whop-loader]');
-    if (old) old.remove();
-
-    const script = document.createElement('script');
-    script.src = 'https://js.whop.com/static/checkout/loader.js';
-    script.async = true;
-    script.defer = true;
-    script.setAttribute('data-whop-loader', '1');
-    document.body.appendChild(script);
-
-    return () => { script.remove(); };
-  }, [checkoutData, retryCount]);
-
-  // Listen for checkout completion
-  useEffect(() => {
-    const handleMessage = (event) => {
-      if (
-        event.data?.type === 'checkout.complete' ||
-        event.data?.type === 'whop:checkout:complete' ||
-        event.data?.status === 'complete'
-      ) {
-        onComplete();
-      }
-    };
-    window.addEventListener('message', handleMessage);
-    return () => window.removeEventListener('message', handleMessage);
-  }, [onComplete]);
+  const returnUrl = `${window.location.origin}/whop-return`;
+  const environment = devMode ? 'sandbox' : 'production';
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-background">
@@ -97,17 +63,24 @@ export default function WhopTokenCheckout({ packName, devMode, onClose, onComple
         {error && (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 px-6 text-center">
             <p className="text-destructive font-medium">{error}</p>
-            <Button onClick={() => setRetryCount(c => c + 1)} variant="outline">Try Again</Button>
+            <Button onClick={onClose} variant="outline">Close</Button>
           </div>
         )}
 
-        {checkoutData?.planId && !loading && !error && (
-          <div className="p-4">
-            <div
-              ref={divRef}
-              data-whop-checkout-plan-id={checkoutData.planId}
-            />
-          </div>
+        {checkoutData && !loading && !error && (
+          <WhopCheckoutEmbed
+            key={checkoutData.sessionId || checkoutData.planId}
+            {...(checkoutData.sessionId ? { sessionId: checkoutData.sessionId } : { planId: checkoutData.planId })}
+            environment={environment}
+            returnUrl={returnUrl}
+            prefill={checkoutData.checkoutEmail ? { email: checkoutData.checkoutEmail } : undefined}
+            onComplete={(planId, receiptId) => onComplete()}
+            fallback={
+              <div className="flex items-center justify-center h-64 text-muted-foreground text-sm">
+                Loading checkout…
+              </div>
+            }
+          />
         )}
       </div>
     </div>
