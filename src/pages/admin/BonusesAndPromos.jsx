@@ -26,6 +26,7 @@ export default function BonusesAndPromos() {
   const [promoForm, setPromoForm] = useState(emptyPromoForm);
   const [bonusForm, setBonusForm] = useState(emptyBonusForm);
   const [awardingBonus, setAwardingBonus] = useState(false);
+  const [awardToAll, setAwardToAll] = useState(false);
 
   const { data: codes = [], isLoading: codesLoading } = useQuery({
     queryKey: ['promo-codes'],
@@ -76,36 +77,57 @@ export default function BonusesAndPromos() {
 
   const awardBonusMutation = useMutation({
     mutationFn: async (data) => {
-      const profileId = data.user_id;
       const tokensToAdd = Number(data.tokens);
       const reason = data.reason.trim();
 
-      if (!profileId || !tokensToAdd || !reason) {
-        throw new Error('All fields required');
+      if (!tokensToAdd || !reason) {
+        throw new Error('Tokens and reason required');
       }
 
-      const profile = profiles.find(p => p.id === profileId);
-      if (!profile) throw new Error('Profile not found');
+      if (awardToAll) {
+        if (!profiles || profiles.length === 0) throw new Error('No members to award');
+        await Promise.all(
+          profiles.map(async (profile) => {
+            const currentTokens = profile.tokens || 0;
+            await base44.asServiceRole.entities.MemberProfile.update(profile.id, {
+              tokens: currentTokens + tokensToAdd,
+            });
+            await base44.asServiceRole.entities.TokenTransaction.create({
+              user_id: profile.user_id,
+              type: 'bonus',
+              tokens: tokensToAdd,
+              description: reason,
+            });
+          })
+        );
+      } else {
+        const profileId = data.user_id;
+        if (!profileId) throw new Error('Member selection required');
 
-      const currentTokens = profile.tokens || 0;
-      await base44.asServiceRole.entities.MemberProfile.update(profileId, {
-        tokens: currentTokens + tokensToAdd,
-      });
+        const profile = profiles.find(p => p.id === profileId);
+        if (!profile) throw new Error('Profile not found');
 
-      await base44.asServiceRole.entities.TokenTransaction.create({
-        user_id: profile.user_id,
-        type: 'bonus',
-        tokens: tokensToAdd,
-        description: reason,
-      });
+        const currentTokens = profile.tokens || 0;
+        await base44.asServiceRole.entities.MemberProfile.update(profileId, {
+          tokens: currentTokens + tokensToAdd,
+        });
+
+        await base44.asServiceRole.entities.TokenTransaction.create({
+          user_id: profile.user_id,
+          type: 'bonus',
+          tokens: tokensToAdd,
+          description: reason,
+        });
+      }
 
       return { success: true };
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['member-profiles'] });
       setBonusForm(emptyBonusForm);
+      setAwardToAll(false);
       setAwardingBonus(false);
-      toast({ title: 'Bonus awarded successfully!' });
+      toast({ title: `Bonus awarded to ${awardToAll ? 'all members' : 'member'} successfully!` });
     },
     onError: (err) => {
       toast({ title: err.message || 'Failed to award bonus', variant: 'destructive' });
@@ -342,23 +364,34 @@ export default function BonusesAndPromos() {
               <CardDescription>Manually award bonus tokens to a member</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div>
-                <label className="text-sm font-medium mb-1 block">Select Member *</label>
-                <Select value={bonusForm.user_id} onValueChange={v => setBonusForm(f => ({ ...f, user_id: v }))}>
-                  <SelectTrigger><SelectValue placeholder="Search member..." /></SelectTrigger>
-                  <SelectContent>
-                    {profilesLoading ? (
-                      <div className="p-2 text-sm text-muted-foreground">Loading...</div>
-                    ) : (
-                      profiles.map(p => (
+              <div className="flex items-center gap-3 p-3 bg-muted rounded-lg">
+                <input
+                  type="checkbox"
+                  id="award_all"
+                  checked={awardToAll}
+                  onChange={e => {
+                    setAwardToAll(e.target.checked);
+                    if (e.target.checked) setBonusForm(f => ({ ...f, user_id: '' }));
+                  }}
+                  className="w-4 h-4 accent-primary"
+                />
+                <label htmlFor="award_all" className="text-sm font-medium cursor-pointer flex-1">Award to all members</label>
+              </div>
+              {!awardToAll && (
+                <div>
+                  <label className="text-sm font-medium mb-2 block">Select Member *</label>
+                  <Select value={bonusForm.user_id} onValueChange={v => setBonusForm(f => ({ ...f, user_id: v }))}>
+                    <SelectTrigger><SelectValue placeholder={profilesLoading ? 'Loading members...' : 'Select a member...'} /></SelectTrigger>
+                    <SelectContent>
+                      {profiles.map(p => (
                         <SelectItem key={p.id} value={p.id}>
                           {p.display_name} ({p.user_id?.slice(0, 8)}) — {(p.tokens || 0).toLocaleString()} tokens
                         </SelectItem>
-                      ))
-                    )}
-                  </SelectContent>
-                </Select>
-              </div>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
               <div>
                 <label className="text-sm font-medium mb-1 block">Bonus Tokens *</label>
                 <Input
@@ -379,13 +412,13 @@ export default function BonusesAndPromos() {
               </div>
               <Button
                 onClick={() => awardBonusMutation.mutate(bonusForm)}
-                disabled={awardBonusMutation.isPending || !bonusForm.user_id || !bonusForm.tokens || !bonusForm.reason.trim()}
+                disabled={awardBonusMutation.isPending || (!awardToAll && !bonusForm.user_id) || !bonusForm.tokens || !bonusForm.reason.trim()}
                 className="w-full gap-2"
               >
                 {awardBonusMutation.isPending ? (
                   <><Loader2 className="w-4 h-4 animate-spin" /> Awarding...</>
                 ) : (
-                  <><Gift className="w-4 h-4" /> Award Bonus</>
+                  <><Gift className="w-4 h-4" /> Award Bonus {awardToAll && `to All (${profiles?.length || 0})`}</>
                 )}
               </Button>
             </CardContent>
