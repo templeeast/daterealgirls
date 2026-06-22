@@ -19,63 +19,67 @@ Deno.serve(async (req) => {
     const config = configs[0] || {};
 
     const isDevMode = config.dev_mode === true;
-    const checkoutEmail = config.whop_checkout_email || 'drgpayments@clevo.testinator.com';
+    const checkoutEmail = config.whop_checkout_email || '';
 
     // Get pack-specific plan ID and token count
     const planIdMap = {
       starter: config.whop_plan_starter,
       popular: config.whop_plan_popular,
-      value: config.whop_plan_value,
-      best: config.whop_plan_best,
+      value:   config.whop_plan_value,
+      best:    config.whop_plan_best,
     };
     const tokenCountMap = {
       starter: config.token_pack_starter_tokens || 500,
       popular: config.token_pack_popular_tokens || 1500,
-      value: config.token_pack_value_tokens || 3500,
-      best: config.token_pack_best_tokens || 8000,
+      value:   config.token_pack_value_tokens   || 3500,
+      best:    config.token_pack_best_tokens    || 8000,
     };
 
     const planId = planIdMap[packName];
     if (!planId) return Response.json({ error: `Plan ID not configured for pack: ${packName}` }, { status: 400 });
 
     const tokensToGrant = tokenCountMap[packName] || 500;
-    // Whop sandbox uses the same api.whop.com base URL — sandbox-api.whop.com returns 401 for this endpoint.
-    // Allow manual override via whop_api_base_url in SiteConfig, otherwise always use api.whop.com.
     const apiBase = (config.whop_api_base_url || '').trim() || 'https://api.whop.com';
     const apiKey = isDevMode ? Deno.env.get('WHOP_DEV_API_KEY') : Deno.env.get('WHOP_PROD_API_KEY');
 
     const metadata = {
       internal_member_id: memberProfile.user_id,
-      member_profile_id: memberProfile.id,
-      pack_name: packName,
-      tokens_to_grant: String(tokensToGrant),
-      checkout_email: checkoutEmail,
+      member_profile_id:  memberProfile.id,
+      pack_name:          packName,
+      tokens_to_grant:    String(tokensToGrant),
     };
 
-    const response = await fetch(`${apiBase}/api/v2/checkout_configurations`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ plan_id: planId, metadata }),
-    });
+    // Attempt to create a checkout configuration session (requires checkout_configurations permission on API key).
+    // If it fails, fall back to returning planId so the frontend can build a direct checkout URL.
+    let sessionId = null;
+    try {
+      const response = await fetch(`${apiBase}/api/v2/checkout_configurations`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ plan_id: planId, metadata }),
+      });
 
-    if (!response.ok) {
-      const errText = await response.text();
-      console.error('Whop API error:', errText);
-      return Response.json({ error: `Whop API error: ${errText}` }, { status: 502 });
+      if (response.ok) {
+        const sessionConfig = await response.json();
+        sessionId = sessionConfig.id;
+      } else {
+        const errText = await response.text();
+        console.warn('checkout_configurations failed, falling back to planId. Status:', response.status, errText);
+      }
+    } catch (e) {
+      console.warn('checkout_configurations request error, falling back to planId:', e.message);
     }
 
-    const sessionConfig = await response.json();
-
     return Response.json({
-      sessionId: sessionConfig.id,
-      purchaseUrl: sessionConfig.purchase_url,
+      sessionId,
+      planId,
       checkoutEmail,
       tokensToGrant,
-      planId,
       metadata,
+      isDevMode,
     });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });

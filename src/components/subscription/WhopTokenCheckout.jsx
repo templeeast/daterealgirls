@@ -3,6 +3,20 @@ import { base44 } from '@/api/base44Client';
 import { X, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
+// Builds the Whop checkout iframe URL.
+// If we have a sessionId (checkout_configuration), use that. Otherwise fall back to planId direct URL.
+function buildCheckoutUrl(sessionId, planId, checkoutEmail, isDevMode) {
+  const base = sessionId
+    ? `https://whop.com/checkout/${sessionId}/`
+    : `https://whop.com/checkout/${planId}/`;
+
+  const params = new URLSearchParams();
+  params.set('d2c', 'true');
+  if (isDevMode) params.set('environment', 'sandbox');
+  if (checkoutEmail) params.set('prefilled_email', checkoutEmail);
+  return `${base}?${params.toString()}`;
+}
+
 export default function WhopTokenCheckout({ packName, devMode, onClose, onComplete }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -18,14 +32,18 @@ export default function WhopTokenCheckout({ packName, devMode, onClose, onComple
     base44.functions.invoke('whopCreateCheckoutSession', { packName })
       .then(res => {
         if (cancelled) return;
-        if (res.data?.purchaseUrl) {
-          const url = res.data.purchaseUrl;
-          const email = res.data.checkoutEmail || '';
-          const separator = url.includes('?') ? '&' : '?';
-          setIframeUrl(url + separator + 'prefilled_email=' + encodeURIComponent(email));
+        const data = res.data;
+        if (data?.error) {
+          setError(data.error);
+          setLoading(false);
+          return;
+        }
+        if (data?.planId || data?.sessionId) {
+          const url = buildCheckoutUrl(data.sessionId, data.planId, data.checkoutEmail, data.isDevMode);
+          setIframeUrl(url);
           setLoading(false);
         } else {
-          setError(res.data?.error || 'Failed to create checkout session');
+          setError('Failed to create checkout session');
           setLoading(false);
         }
       })
@@ -40,7 +58,11 @@ export default function WhopTokenCheckout({ packName, devMode, onClose, onComple
 
   useEffect(() => {
     const handleMessage = (event) => {
-      if (event.data?.type === 'checkout.complete' || event.data?.type === 'whop:checkout:complete') {
+      if (
+        event.data?.type === 'checkout.complete' ||
+        event.data?.type === 'whop:checkout:complete' ||
+        event.data?.status === 'complete'
+      ) {
         onComplete();
       }
     };
