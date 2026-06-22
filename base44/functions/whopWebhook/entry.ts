@@ -163,26 +163,7 @@ Deno.serve(async (req) => {
 
       console.log(`Granted ${tokensToGrant} tokens to user ${userId} for pack ${packName}`);
 
-      if (wasFirstPurchase) {
-        let bonusTokens = 0;
-        if (memberProfile.gender === 'male' && config.first_purchase_bonus_men_enabled) {
-          bonusTokens = config.first_purchase_bonus_men_tokens || 0;
-        } else if (memberProfile.gender === 'female' && config.first_purchase_bonus_women_enabled) {
-          bonusTokens = config.first_purchase_bonus_women_tokens || 0;
-        }
-        if (bonusTokens > 0) {
-          await base44.asServiceRole.entities.MemberProfile.update(memberProfile.id, {
-            tokens: (currentTokens + tokensToGrant) + bonusTokens,
-          });
-          await base44.asServiceRole.entities.TokenTransaction.create({
-            user_id: userId,
-            type: 'bonus',
-            tokens: bonusTokens,
-            description: 'First purchase bonus',
-          });
-          console.log(`Granted ${bonusTokens} first-purchase bonus tokens to user ${userId}`);
-        }
-      }
+      // First purchase bonus disabled — admin awards bonuses manually
 
     } else if (eventType === 'payment.failed') {
       const existing = await base44.asServiceRole.entities.Payment.filter({ whop_payment_id: data.id });
