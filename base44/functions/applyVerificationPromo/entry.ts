@@ -13,9 +13,9 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'No promo code provided.' }, { status: 400 });
     }
 
-    // Look up promo code from database (verification or any type)
+    // Look up promo code from database (any type)
     const promoCodes = await base44.asServiceRole.entities.PromoCode.filter({ code: normalizedPromo, is_active: true });
-    const promoRecord = promoCodes.find(p => p.type === 'verification' || p.type === 'any');
+    const promoRecord = promoCodes.find(p => p.type === 'verification' || p.type === 'purchase' || p.type === 'any');
 
     if (!promoRecord) {
       return Response.json({ error: 'Invalid promo code.' }, { status: 400 });
@@ -38,7 +38,7 @@ Deno.serve(async (req) => {
 
     const profile = profiles[0];
 
-    // Must be verified to use verification promo
+    // Must be verified to use verification promos (purchase and any can always be used)
     if (promoRecord.type === 'verification' && profile.verification_status !== 'verified') {
       return Response.json({ error: 'Your ID must be verified before applying this promo code.' }, { status: 400 });
     }

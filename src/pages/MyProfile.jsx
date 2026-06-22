@@ -928,15 +928,7 @@ export default function MyProfile() {
                 </div>
               </div>
             </div>
-            <div className="space-y-1.5">
-              <Label>Promo Code <span className="text-muted-foreground font-normal">(optional)</span></Label>
-              <Input
-                placeholder="e.g. FUNDATES"
-                value={purchasePromoCode}
-                onChange={e => setPurchasePromoCode(e.target.value.toUpperCase())}
-                className="font-mono"
-              />
-            </div>
+
             <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted rounded-lg p-3">
               <Lock className="w-3.5 h-3.5 shrink-0" />
               <span>Your payment info is encrypted and secure. Powered by Authorize.net.</span>
