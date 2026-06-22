@@ -53,7 +53,8 @@ Deno.serve(async (req) => {
     // If it fails, fall back to returning planId so the frontend can build a direct checkout URL.
     let sessionId = null;
     try {
-      const response = await fetch(`${apiBase}/api/v2/checkout_configurations`, {
+      // checkout_configurations only exists on api.whop.com, not sandbox
+      const response = await fetch(`https://api.whop.com/api/v2/checkout_configurations`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${apiKey}`,
