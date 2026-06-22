@@ -1,0 +1,80 @@
+{
+  "name": "Payment",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "description": "Base44 User.id of the buyer"
+    },
+    "member_profile_id": {
+      "type": "string",
+      "description": "MemberProfile.id of the buyer"
+    },
+    "whop_session_id": {
+      "type": "string",
+      "description": "Whop checkout configuration ID (from Create Session response)"
+    },
+    "whop_payment_id": {
+      "type": "string",
+      "description": "Whop payment ID from the webhook data.id"
+    },
+    "whop_receipt_id": {
+      "type": "string",
+      "description": "Whop receipt ID if present in webhook data"
+    },
+    "token_pack_name": {
+      "type": "string",
+      "enum": [
+        "starter",
+        "popular",
+        "value",
+        "best"
+      ],
+      "description": "Which pack was purchased"
+    },
+    "tokens_purchased": {
+      "type": "number",
+      "description": "Token count granted for this purchase"
+    },
+    "amount_paid": {
+      "type": "number",
+      "description": "Amount in cents (e.g. 599 = $5.99)"
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD"
+    },
+    "payment_method": {
+      "type": "string",
+      "description": "e.g. card"
+    },
+    "payment_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "succeeded",
+        "failed",
+        "refunded"
+      ],
+      "default": "pending",
+      "description": "Payment status"
+    },
+    "failure_reason": {
+      "type": "string",
+      "description": "Populated on payment.failed"
+    },
+    "webhook_verified": {
+      "type": "boolean",
+      "default": false,
+      "description": "True if Standard Webhooks signature passed"
+    },
+    "raw_event_type": {
+      "type": "string",
+      "description": "The raw Whop event type string (e.g. payment.succeeded)"
+    }
+  },
+  "required": [
+    "user_id",
+    "payment_status"
+  ]
+}

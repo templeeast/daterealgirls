@@ -45,6 +45,11 @@ export default function SiteSettings() {
     dev_mode: true,
     whop_men_plan_id: '',
     whop_women_plan_id: '',
+    whop_checkout_email: 'drgpayments@clevo.testinator.com',
+    whop_plan_starter: '',
+    whop_plan_popular: '',
+    whop_plan_value: '',
+    whop_plan_best: '',
     app_disabled: false,
     app_disabled_message: "The application is temporarily unavailable due to maintenance. We'll be back online shortly. Thank you for your patience.",
     juicyads_enabled: false,
@@ -96,6 +101,11 @@ export default function SiteSettings() {
         dev_mode: existingConfig.dev_mode !== false,
         whop_men_plan_id: existingConfig.whop_men_plan_id || '',
         whop_women_plan_id: existingConfig.whop_women_plan_id || '',
+        whop_checkout_email: existingConfig.whop_checkout_email || 'drgpayments@clevo.testinator.com',
+        whop_plan_starter: existingConfig.whop_plan_starter || '',
+        whop_plan_popular: existingConfig.whop_plan_popular || '',
+        whop_plan_value: existingConfig.whop_plan_value || '',
+        whop_plan_best: existingConfig.whop_plan_best || '',
         app_disabled: existingConfig.app_disabled || false,
         app_disabled_message: existingConfig.app_disabled_message || "The application is temporarily unavailable due to maintenance. We'll be back online shortly. Thank you for your patience.",
         juicyads_enabled: existingConfig.juicyads_enabled || false,
@@ -361,15 +371,39 @@ export default function SiteSettings() {
             </p>
             <div className="grid grid-cols-1 gap-3">
               <div className="space-y-1">
-                <Label className="text-xs">Men's Plan ID</Label>
+                <Label className="text-xs">Men's Plan ID (Subscription)</Label>
                 <Input value={form.whop_men_plan_id} onChange={e => updateField('whop_men_plan_id', e.target.value)} placeholder="plan_xxxxxxxxxxxx" />
               </div>
               <div className="space-y-1">
-                <Label className="text-xs">Women's Plan ID</Label>
+                <Label className="text-xs">Women's Plan ID (Subscription)</Label>
                 <Input value={form.whop_women_plan_id} onChange={e => updateField('whop_women_plan_id', e.target.value)} placeholder="plan_xxxxxxxxxxxx" />
               </div>
+              <div className="space-y-1 border-t pt-3">
+                <Label className="text-xs font-semibold">Token Pack Plan IDs</Label>
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs">Checkout Email (pre-filled in Whop checkout)</Label>
+                <Input value={form.whop_checkout_email} onChange={e => updateField('whop_checkout_email', e.target.value)} placeholder="drgpayments@clevo.testinator.com" />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs">Whop Plan ID — Starter</Label>
+                <Input value={form.whop_plan_starter} onChange={e => updateField('whop_plan_starter', e.target.value)} placeholder="plan_xxxxxxxxxxxx" />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs">Whop Plan ID — Popular</Label>
+                <Input value={form.whop_plan_popular} onChange={e => updateField('whop_plan_popular', e.target.value)} placeholder="plan_xxxxxxxxxxxx" />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs">Whop Plan ID — Value</Label>
+                <Input value={form.whop_plan_value} onChange={e => updateField('whop_plan_value', e.target.value)} placeholder="plan_xxxxxxxxxxxx" />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs">Whop Plan ID — Best Deal</Label>
+                <Input value={form.whop_plan_best} onChange={e => updateField('whop_plan_best', e.target.value)} placeholder="plan_xxxxxxxxxxxx" />
+              </div>
             </div>
-            <p className="text-xs text-muted-foreground">Webhook URL: <code className="bg-muted px-1 rounded">/api/functions/whopWebhook</code></p>
+            <p className="text-xs text-muted-foreground">Subscription Webhook URL: <code className="bg-muted px-1 rounded">/api/functions/whopWebhook</code></p>
+            <p className="text-xs text-muted-foreground">Token Payment Webhook URL: <code className="bg-muted px-1 rounded">/api/functions/whopPaymentWebhook</code></p>
           </div>
 
           {/* Authorize.net Info */}

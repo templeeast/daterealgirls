@@ -25,14 +25,21 @@ export default function PaymentHistory() {
     enabled: !!user?.id,
   });
 
-  // Payment history (processor-specific, only for those with purchases)
+  // Whop Payment entity records
+  const { data: whopPayments = [], isLoading: whopPaymentsLoading } = useQuery({
+    queryKey: ['whop-payments', user?.id],
+    queryFn: () => base44.entities.Payment.filter({ user_id: user?.id }, '-created_date', 50),
+    enabled: !!user?.id && config?.payment_processor === 'whop',
+  });
+
+  // External payment history (authorizenet / old whop subscription)
   const [payments, setPayments] = useState(null);
   const [paymentsLoading, setPaymentsLoading] = useState(false);
   const [paymentsError, setPaymentsError] = useState(null);
 
   useEffect(() => {
     if (profileLoading || configLoading || !profile || !config) return;
-    // Only fetch external payment history if they've made purchases
+    if (config.payment_processor === 'whop') return; // handled by entity query
     if (!profile.has_purchased_tokens) return;
     const fn = config.payment_processor === 'authorizenet' ? 'authorizeNetPaymentHistory' : 'whopPaymentHistory';
     setPaymentsLoading(true);
@@ -43,6 +50,21 @@ export default function PaymentHistory() {
   }, [profileLoading, configLoading, profile, config]);
 
   const isAuthNet = config?.payment_processor === 'authorizenet';
+  const isWhop = config?.payment_processor === 'whop';
+
+  const packLabel = (rec) => {
+    const labels = { starter: 'Starter Pack', popular: 'Popular Pack', value: 'Value Pack', best: 'Best Deal Pack' };
+    const name = labels[rec.token_pack_name] || rec.token_pack_name || 'Token Pack';
+    return rec.tokens_purchased ? `${name} — ${rec.tokens_purchased.toLocaleString()} tokens` : name;
+  };
+
+  const whopStatusBadge = (status) => {
+    if (status === 'succeeded') return <Badge className="bg-green-100 text-green-700">Succeeded</Badge>;
+    if (status === 'failed') return <Badge className="bg-destructive/10 text-destructive">Failed</Badge>;
+    if (status === 'pending') return <Badge className="bg-yellow-100 text-yellow-700">Pending</Badge>;
+    if (status === 'refunded') return <Badge className="bg-gray-100 text-gray-600">Refunded</Badge>;
+    return <Badge variant="outline">{status}</Badge>;
+  };
 
   const statusBadge = (status) => {
     if (!status) return <Badge variant="outline">Unknown</Badge>;
@@ -161,59 +183,109 @@ export default function PaymentHistory() {
       {/* Payment Records Tab */}
       {activeTab === 'payments' && (
         <>
-          {paymentsLoading ? (
-            <div className="space-y-3">
-              {[1, 2, 3].map(i => <Skeleton key={i} className="h-16 rounded-xl" />)}
-            </div>
-          ) : paymentsError ? (
-            <Card>
-              <CardContent className="pt-6 text-center text-muted-foreground">
-                <p>{paymentsError}</p>
-              </CardContent>
-            </Card>
-          ) : !payments || payments.length === 0 ? (
-            <Card>
-              <CardContent className="pt-8 pb-8 text-center text-muted-foreground">
-                <CreditCard className="w-10 h-10 mx-auto mb-3 opacity-30" />
-                <p>No payment records found.</p>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="space-y-3">
-              {payments.map((payment) => (
-                <Card key={payment.id}>
-                  <CardContent className="pt-4 pb-4 flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-3">
-                      <CheckCircle2 className="w-4 h-4 text-green-500" />
-                      <div>
-                        <p className="font-medium text-sm">
-                          {isAuthNet
-                            ? (payment.description || 'Token Purchase')
-                            : (payment.plan_id || payment.membership_id || 'Subscription')}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          {formatDate(isAuthNet ? payment.submitted_at : payment.created_at)}
-                        </p>
-                        {isAuthNet && payment.account_number && (
-                          <p className="text-xs text-muted-foreground">
-                            {payment.account_type} ···{payment.account_number.replace(/X/g, '')}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3 shrink-0">
-                      <span className="font-semibold text-sm">
-                        {formatAmount(
-                          isAuthNet ? payment.amount : (payment.final_amount || payment.amount),
-                          payment.currency
-                        )}
-                      </span>
-                      {statusBadge(payment.status)}
-                    </div>
+          {/* Whop Payment entity records */}
+          {isWhop && (
+            <>
+              {whopPaymentsLoading ? (
+                <div className="space-y-3">
+                  {[1, 2, 3].map(i => <Skeleton key={i} className="h-16 rounded-xl" />)}
+                </div>
+              ) : whopPayments.length === 0 ? (
+                <Card>
+                  <CardContent className="pt-8 pb-8 text-center text-muted-foreground">
+                    <CreditCard className="w-10 h-10 mx-auto mb-3 opacity-30" />
+                    <p>No payment records yet.</p>
                   </CardContent>
                 </Card>
-              ))}
-            </div>
+              ) : (
+                <div className="space-y-3">
+                  {whopPayments.map((rec) => (
+                    <Card key={rec.id}>
+                      <CardContent className="pt-4 pb-4 flex items-center justify-between gap-4">
+                        <div className="flex items-center gap-3">
+                          <CreditCard className="w-4 h-4 text-primary" />
+                          <div>
+                            <p className="font-medium text-sm">{packLabel(rec)}</p>
+                            <p className="text-xs text-muted-foreground">{formatDate(rec.created_date)}</p>
+                            {rec.whop_payment_id && (
+                              <p className="text-xs text-muted-foreground font-mono">{rec.whop_payment_id}</p>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3 shrink-0">
+                          <span className="font-semibold text-sm">
+                            {rec.amount_paid != null
+                              ? new Intl.NumberFormat(undefined, { style: 'currency', currency: rec.currency || 'USD' }).format(rec.amount_paid / 100)
+                              : '—'}
+                          </span>
+                          {whopStatusBadge(rec.payment_status)}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </>
+          )}
+
+          {/* Non-Whop: external payment history */}
+          {!isWhop && (
+            <>
+              {paymentsLoading ? (
+                <div className="space-y-3">
+                  {[1, 2, 3].map(i => <Skeleton key={i} className="h-16 rounded-xl" />)}
+                </div>
+              ) : paymentsError ? (
+                <Card>
+                  <CardContent className="pt-6 text-center text-muted-foreground">
+                    <p>{paymentsError}</p>
+                  </CardContent>
+                </Card>
+              ) : !payments || payments.length === 0 ? (
+                <Card>
+                  <CardContent className="pt-8 pb-8 text-center text-muted-foreground">
+                    <CreditCard className="w-10 h-10 mx-auto mb-3 opacity-30" />
+                    <p>No payment records found.</p>
+                  </CardContent>
+                </Card>
+              ) : (
+                <div className="space-y-3">
+                  {payments.map((payment) => (
+                    <Card key={payment.id}>
+                      <CardContent className="pt-4 pb-4 flex items-center justify-between gap-4">
+                        <div className="flex items-center gap-3">
+                          <CheckCircle2 className="w-4 h-4 text-green-500" />
+                          <div>
+                            <p className="font-medium text-sm">
+                              {isAuthNet
+                                ? (payment.description || 'Token Purchase')
+                                : (payment.plan_id || payment.membership_id || 'Subscription')}
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              {formatDate(isAuthNet ? payment.submitted_at : payment.created_at)}
+                            </p>
+                            {isAuthNet && payment.account_number && (
+                              <p className="text-xs text-muted-foreground">
+                                {payment.account_type} ···{payment.account_number.replace(/X/g, '')}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3 shrink-0">
+                          <span className="font-semibold text-sm">
+                            {formatAmount(
+                              isAuthNet ? payment.amount : (payment.final_amount || payment.amount),
+                              payment.currency
+                            )}
+                          </span>
+                          {statusBadge(payment.status)}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </>
           )}
         </>
       )}

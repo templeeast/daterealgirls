@@ -10,7 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
-import { Upload, Shield, Camera, Save, Trash2, Eye, EyeOff, AlertTriangle, Smile, ExternalLink, Coins, ShoppingCart, CreditCard, Lock, Loader2 } from 'lucide-react';
+import { Upload, Shield, Camera, Save, Trash2, Eye, EyeOff, AlertTriangle, Smile, ExternalLink, Coins, ShoppingCart, CreditCard, Lock, Loader2, History } from 'lucide-react';
+import WhopTokenCheckout from '@/components/subscription/WhopTokenCheckout';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { formatDistanceToNow } from 'date-fns';
 import { enUS, es, th, zhCN, de, vi as viLocale, pt } from 'date-fns/locale';
@@ -63,22 +64,43 @@ export default function MyProfile() {
 
   // Token purchase dialog state
   const [buyDialog, setBuyDialog] = useState({ open: false, pack: null });
+  const [showWhopCheckout, setShowWhopCheckout] = useState(false);
+  const [whopPackName, setWhopPackName] = useState(null);
   const [cardNumber, setCardNumber] = useState('');
   const [cardExpiry, setCardExpiry] = useState('');
   const [cardCvv, setCardCvv] = useState('');
   const [purchasePromoCode, setPurchasePromoCode] = useState('');
   const [purchasing, setPurchasing] = useState(false);
 
+  const packNameMap = {
+    'Starter Pack': 'starter',
+    'Popular Pack': 'popular',
+    'Value Pack': 'value',
+    'Best Deal Pack': 'best',
+  };
+
   // Verification promo code state
   const [verifPromoCode, setVerifPromoCode] = useState('');
   const [applyingVerifPromo, setApplyingVerifPromo] = useState(false);
 
   const handleBuyTokens = (pack) => {
-    setBuyDialog({ open: true, pack });
-    setCardNumber('');
-    setCardExpiry('');
-    setCardCvv('');
-    setPurchasePromoCode('');
+    if (config.payment_processor === 'whop') {
+      const pn = packNameMap[pack.name] || 'starter';
+      setWhopPackName(pn);
+      setShowWhopCheckout(true);
+    } else {
+      setBuyDialog({ open: true, pack });
+      setCardNumber('');
+      setCardExpiry('');
+      setCardCvv('');
+      setPurchasePromoCode('');
+    }
+  };
+
+  const handleWhopComplete = () => {
+    setShowWhopCheckout(false);
+    toast({ title: 'Purchase complete! Your tokens will appear shortly.' });
+    setTimeout(() => refetch(), 3000);
   };
 
   const handleApplyVerifPromo = async () => {
@@ -342,9 +364,14 @@ export default function MyProfile() {
                 <p className="text-3xl font-bold">{(profile.tokens ?? 0).toLocaleString()}</p>
               </div>
             </div>
-            <Button className="rounded-full gap-2" onClick={() => document.getElementById('buy-tokens')?.scrollIntoView({ behavior: 'smooth' })}>
-              <ShoppingCart className="w-4 h-4" /> Buy Tokens
-            </Button>
+            <div className="flex flex-col gap-2">
+              <Button className="rounded-full gap-2" onClick={() => document.getElementById('buy-tokens')?.scrollIntoView({ behavior: 'smooth' })}>
+                <ShoppingCart className="w-4 h-4" /> Buy Tokens
+              </Button>
+              <Button variant="outline" size="sm" className="rounded-full gap-2" onClick={() => navigate('/payment-history')}>
+                <History className="w-4 h-4" /> History
+              </Button>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -799,7 +826,17 @@ export default function MyProfile() {
         {saving ? t('saving') : t('save_profile')}
       </Button>
 
-      {/* Buy Tokens Dialog */}
+      {/* Whop Checkout Modal */}
+      {showWhopCheckout && (
+        <WhopTokenCheckout
+          packName={whopPackName}
+          devMode={config.dev_mode === true}
+          onClose={() => setShowWhopCheckout(false)}
+          onComplete={handleWhopComplete}
+        />
+      )}
+
+      {/* Buy Tokens Dialog (non-Whop processors) */}
       <Dialog open={buyDialog.open} onOpenChange={(v) => !v && setBuyDialog({ open: false, pack: null })}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
