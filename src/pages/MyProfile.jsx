@@ -511,7 +511,7 @@ export default function MyProfile() {
       )}
 
       {/* Verification Promo Code */}
-      {profile.verification_status === 'verified' && (
+      {profile.verification_status === 'verified' && !profile.used_promo_codes?.includes('LAUNCH26') && (
         <Card className="mb-6 border-green-200 bg-green-50">
           <CardContent className="pt-6">
             <div className="flex items-start gap-3 mb-4">
