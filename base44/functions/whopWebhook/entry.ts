@@ -22,7 +22,7 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'No data in payload' }, { status: 400 });
     }
 
-    const membershipId = membership.id;
+    const membershipId = body.data?.id || membership.id;
 
     // Extract metadata — Whop attaches it under checkout_configuration.metadata
     // Log the full raw paths so we can diagnose exactly where it lands
