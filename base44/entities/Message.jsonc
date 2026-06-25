@@ -26,6 +26,22 @@
       "type": "boolean",
       "default": false,
       "description": "Whether the message has been read"
+    },
+    "message_type": {
+      "type": "string",
+      "enum": [
+        "text",
+        "image",
+        "private_photo_request",
+        "private_photo_access_granted",
+        "private_photo_access_denied"
+      ],
+      "default": "text",
+      "description": "Type of message"
+    },
+    "private_photo_access_id": {
+      "type": "string",
+      "description": "PrivatePhotoAccess.id \u2014 set for private photo request/response messages"
     }
   },
   "required": [

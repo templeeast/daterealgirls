@@ -3,7 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Upload, Trash2, Loader2 } from 'lucide-react';
+import { Upload, Trash2, Loader2, UserCheck, UserX } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import VerificationRequiredModal from '@/components/shared/VerificationRequiredModal';
 import { useNavigate } from 'react-router-dom';
@@ -18,6 +18,8 @@ export default function PrivatePhotosSection({ profile, onRefetch }) {
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState('');
   const [showVerifModal, setShowVerifModal] = useState(false);
+  const [respondingId, setRespondingId] = useState(null);
+  const [revokingId, setRevokingId] = useState(null);
 
   const { data: privatePhotos = [], refetch } = useQuery({
     queryKey: ['privatePhotos', profile.id],
@@ -25,15 +27,40 @@ export default function PrivatePhotosSection({ profile, onRefetch }) {
     enabled: !!profile.id,
   });
 
+  const { data: pendingRequests = [], refetch: refetchPending } = useQuery({
+    queryKey: ['privatePhotoAccessPending', profile.id],
+    queryFn: () => base44.entities.PrivatePhotoAccess.filter({ owner_member_id: profile.id, status: 'pending' }),
+    enabled: !!profile.id,
+  });
+
+  const { data: grantedAccess = [], refetch: refetchGranted } = useQuery({
+    queryKey: ['privatePhotoAccessGranted', profile.id],
+    queryFn: () => base44.entities.PrivatePhotoAccess.filter({ owner_member_id: profile.id, status: 'granted' }),
+    enabled: !!profile.id,
+  });
+
+  // Fetch viewer profiles for pending requests + granted
+  const allAccessIds = [...pendingRequests, ...grantedAccess].map(r => r.viewer_member_id);
+  const { data: viewerProfiles = [] } = useQuery({
+    queryKey: ['viewerProfiles', allAccessIds.join(',')],
+    queryFn: async () => {
+      if (allAccessIds.length === 0) return [];
+      const results = await Promise.all(
+        allAccessIds.map(id => base44.entities.MemberProfile.filter({ id }).then(r => r[0]).catch(() => null))
+      );
+      return results.filter(Boolean);
+    },
+    enabled: allAccessIds.length > 0,
+  });
+
+  const getViewerProfile = (viewerMemberId) => viewerProfiles.find(p => p.id === viewerMemberId);
+
   const isMale = profile.gender === 'male';
   const uploadCost = isMale ? 10 : 0;
 
   const handleUploadClick = () => {
     setUploadError('');
-    if (!requiresIdVerification(profile)) {
-      setShowVerifModal(true);
-      return;
-    }
+    if (!requiresIdVerification(profile)) { setShowVerifModal(true); return; }
     if (isMale && (profile.tokens || 0) < 10) {
       setUploadError('You need 10 tokens to post a private photo.');
       return;
@@ -45,63 +72,26 @@ export default function PrivatePhotosSection({ profile, onRefetch }) {
     const file = e.target.files?.[0];
     if (!file) return;
     e.target.value = '';
-
-    // 10-photo limit (count non-rejected)
     const nonRejected = privatePhotos.filter(p => p.status !== 'rejected');
     if (nonRejected.length >= 10) {
       setUploadError("You've reached the maximum of 10 private photos. Delete an existing private photo to upload a new one.");
       return;
     }
-
     setUploading(true);
     setUploadError('');
-
     const reader = new FileReader();
     reader.onload = async () => {
       const base64 = reader.result.split(',')[1];
       const res = await base44.functions.invoke('uploadToCloudinary', { file: base64, filename: file.name });
       const imageUrl = res.data?.url;
-      if (!imageUrl) {
-        setUploadError('Upload failed. Please try again.');
-        setUploading(false);
-        return;
-      }
-
+      if (!imageUrl) { setUploadError('Upload failed. Please try again.'); setUploading(false); return; }
       const tokenCostToView = isMale ? 5 : 0;
-
-      // Deduct upload cost for men
       if (isMale && uploadCost > 0) {
-        await base44.entities.MemberProfile.update(profile.id, {
-          tokens: Math.max(0, (profile.tokens || 0) - uploadCost),
-        });
-        await base44.entities.TokenTransaction.create({
-          user_id: profile.user_id,
-          type: 'spend',
-          tokens: -uploadCost,
-          description: 'Private photo upload fee',
-        });
+        await base44.entities.MemberProfile.update(profile.id, { tokens: Math.max(0, (profile.tokens || 0) - uploadCost) });
+        await base44.entities.TokenTransaction.create({ user_id: profile.user_id, type: 'spend', tokens: -uploadCost, description: 'Private photo upload fee' });
       }
-
-      // Create PrivatePhoto record
-      await base44.entities.PrivatePhoto.create({
-        member_id: profile.id,
-        photo_url: imageUrl,
-        status: 'pending_review',
-        token_cost_to_view: tokenCostToView,
-        uploaded_at: new Date().toISOString(),
-      });
-
-      // Submit to content review pipeline
-      await base44.entities.PhotoReview.create({
-        photo_url: imageUrl,
-        source_type: 'private',
-        source_description: `Private photo of ${profile.display_name || 'Unknown'}`,
-        source_profile_id: profile.id,
-        source_user_id: profile.user_id,
-        source_field: 'private_photo',
-        review_status: 'pending',
-      });
-
+      await base44.entities.PrivatePhoto.create({ member_id: profile.id, photo_url: imageUrl, status: 'pending_review', token_cost_to_view: tokenCostToView, uploaded_at: new Date().toISOString() });
+      await base44.entities.PhotoReview.create({ photo_url: imageUrl, source_type: 'private', source_description: `Private photo of ${profile.display_name || 'Unknown'}`, source_profile_id: profile.id, source_user_id: profile.user_id, source_field: 'private_photo', review_status: 'pending' });
       toast({ title: 'Your private photo has been submitted for review and will be visible once approved.' });
       refetch();
       if (onRefetch) onRefetch();
@@ -115,42 +105,55 @@ export default function PrivatePhotosSection({ profile, onRefetch }) {
     refetch();
   };
 
+  const handleRespond = async (accessId, response) => {
+    setRespondingId(accessId);
+    const res = await base44.functions.invoke('respondToPrivatePhotoAccess', { accessId, response });
+    const data = res.data ?? res;
+    setRespondingId(null);
+    if (data.success) {
+      toast({ title: response === 'granted' ? 'Access granted!' : 'Request denied.' });
+      refetchPending();
+      refetchGranted();
+      queryClient.invalidateQueries({ queryKey: ['viewerProfiles'] });
+    } else {
+      toast({ title: data.error || 'Error', variant: 'destructive' });
+    }
+  };
+
+  const handleRevoke = async (viewerMemberId, accessId) => {
+    setRevokingId(accessId);
+    const res = await base44.functions.invoke('revokePrivatePhotoAccess', { viewerMemberId });
+    const data = res.data ?? res;
+    setRevokingId(null);
+    if (data.success) {
+      toast({ title: 'Access revoked.' });
+      refetchGranted();
+    } else {
+      toast({ title: data.error || 'Error', variant: 'destructive' });
+    }
+  };
+
   const displayPhotos = privatePhotos.filter(p => p.status !== 'rejected');
 
   return (
     <>
-      <VerificationRequiredModal
-        open={showVerifModal}
-        onClose={() => setShowVerifModal(false)}
-        onVerify={() => navigate('/onboarding')}
-      />
+      <VerificationRequiredModal open={showVerifModal} onClose={() => setShowVerifModal(false)} onVerify={() => navigate('/onboarding')} />
       <Card className="mb-6">
         <CardHeader>
-          <CardTitle className="font-heading text-lg flex items-center gap-2">
-            🔒 Private Photos
-          </CardTitle>
-          <CardDescription>
-            Private photos are only visible to verified members. Men pay 5 tokens to view each one.
-          </CardDescription>
+          <CardTitle className="font-heading text-lg flex items-center gap-2">🔒 Private Photos</CardTitle>
+          <CardDescription>Private photos are only visible to verified members with granted access. Men pay 5 tokens to view each one.</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
           {uploadError && (
-            <div className="mb-3 text-sm text-destructive bg-destructive/10 rounded-lg px-3 py-2">
+            <div className="text-sm text-destructive bg-destructive/10 rounded-lg px-3 py-2">
               {uploadError}
               {uploadError.includes('tokens') && (
-                <button className="ml-2 underline text-primary" onClick={() => document.getElementById('buy-tokens')?.scrollIntoView({ behavior: 'smooth' })}>
-                  Get Tokens →
-                </button>
+                <button className="ml-2 underline text-primary" onClick={() => document.getElementById('buy-tokens')?.scrollIntoView({ behavior: 'smooth' })}>Get Tokens →</button>
               )}
             </div>
           )}
 
-          <Button
-            variant="outline"
-            className="gap-2 mb-4"
-            onClick={handleUploadClick}
-            disabled={uploading}
-          >
+          <Button variant="outline" className="gap-2" onClick={handleUploadClick} disabled={uploading}>
             {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
             {uploading ? 'Uploading...' : `Upload Private Photo${isMale ? ' (10 tokens)' : ''}`}
           </Button>
@@ -166,14 +169,66 @@ export default function PrivatePhotosSection({ profile, onRefetch }) {
                       <span className="text-white text-xs font-medium text-center px-1">⏳ Under Review</span>
                     </div>
                   )}
-                  <button
-                    onClick={() => handleDelete(photo)}
-                    className="absolute top-1 right-1 hidden group-hover:flex items-center justify-center w-7 h-7 rounded-full bg-black/60 text-white"
-                  >
+                  <button onClick={() => handleDelete(photo)} className="absolute top-1 right-1 hidden group-hover:flex items-center justify-center w-7 h-7 rounded-full bg-black/60 text-white">
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>
                 </div>
               ))}
+            </div>
+          )}
+
+          {/* Pending Access Requests */}
+          {pendingRequests.length > 0 && (
+            <div className="border-t pt-4 space-y-3">
+              <p className="text-sm font-semibold">Pending Access Requests</p>
+              {pendingRequests.map(req => {
+                const viewer = getViewerProfile(req.viewer_member_id);
+                return (
+                  <div key={req.id} className="flex items-center justify-between gap-3 bg-muted rounded-xl px-3 py-2">
+                    <div className="flex items-center gap-2">
+                      {viewer?.photo_1 ? (
+                        <img src={viewer.photo_1} className="w-8 h-8 rounded-full object-cover" alt="" />
+                      ) : (
+                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-xs">👤</div>
+                      )}
+                      <span className="text-sm font-medium">{viewer?.display_name || 'Unknown'}</span>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button size="sm" variant="outline" className="h-7 text-xs gap-1 border-green-300 text-green-700 hover:bg-green-50" disabled={respondingId === req.id} onClick={() => handleRespond(req.id, 'granted')}>
+                        {respondingId === req.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <UserCheck className="w-3 h-3" />} Grant
+                      </Button>
+                      <Button size="sm" variant="outline" className="h-7 text-xs gap-1 border-red-300 text-red-700 hover:bg-red-50" disabled={respondingId === req.id} onClick={() => handleRespond(req.id, 'denied')}>
+                        <UserX className="w-3 h-3" /> Deny
+                      </Button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Access Granted To */}
+          {grantedAccess.length > 0 && (
+            <div className="border-t pt-4 space-y-3">
+              <p className="text-sm font-semibold">Access Granted To</p>
+              {grantedAccess.map(acc => {
+                const viewer = getViewerProfile(acc.viewer_member_id);
+                return (
+                  <div key={acc.id} className="flex items-center justify-between gap-3 bg-muted rounded-xl px-3 py-2">
+                    <div className="flex items-center gap-2">
+                      {viewer?.photo_1 ? (
+                        <img src={viewer.photo_1} className="w-8 h-8 rounded-full object-cover" alt="" />
+                      ) : (
+                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-xs">👤</div>
+                      )}
+                      <span className="text-sm font-medium">{viewer?.display_name || 'Unknown'}</span>
+                    </div>
+                    <Button size="sm" variant="outline" className="h-7 text-xs text-destructive border-destructive/30 hover:bg-destructive/10" disabled={revokingId === acc.id} onClick={() => handleRevoke(acc.viewer_member_id, acc.id)}>
+                      {revokingId === acc.id ? <Loader2 className="w-3 h-3 animate-spin" /> : 'Revoke'}
+                    </Button>
+                  </div>
+                );
+              })}
             </div>
           )}
         </CardContent>

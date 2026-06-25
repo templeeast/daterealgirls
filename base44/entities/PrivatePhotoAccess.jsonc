@@ -1,0 +1,39 @@
+{
+  "name": "PrivatePhotoAccess",
+  "type": "object",
+  "properties": {
+    "owner_member_id": {
+      "type": "string",
+      "description": "MemberProfile.id of the member whose photos are being requested"
+    },
+    "viewer_member_id": {
+      "type": "string",
+      "description": "MemberProfile.id of the member requesting access"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "granted",
+        "denied",
+        "revoked"
+      ],
+      "default": "pending",
+      "description": "Access status"
+    },
+    "requested_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the request was made"
+    },
+    "responded_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the owner responded"
+    }
+  },
+  "required": [
+    "owner_member_id",
+    "viewer_member_id"
+  ]
+}

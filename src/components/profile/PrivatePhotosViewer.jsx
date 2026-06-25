@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Lock, Loader2 } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { useNavigate } from 'react-router-dom';
-import VerificationRequiredModal from '@/components/shared/VerificationRequiredModal';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 
 const requiresIdVerification = (p) => p?.didit_verification_status === 'Approved';
@@ -14,7 +13,8 @@ const requiresIdVerification = (p) => p?.didit_verification_status === 'Approved
 export default function PrivatePhotosViewer({ ownerProfileId, myProfile }) {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const [showVerifModal, setShowVerifModal] = useState(false);
+  const queryClient = useQueryClient();
+  const [requesting, setRequesting] = useState(false);
   const [confirmPhoto, setConfirmPhoto] = useState(null);
   const [unlocking, setUnlocking] = useState(false);
   const [unlockedIds, setUnlockedIds] = useState(new Set());
@@ -25,6 +25,15 @@ export default function PrivatePhotosViewer({ ownerProfileId, myProfile }) {
     enabled: !!ownerProfileId,
   });
 
+  const { data: accessRecords = [], refetch: refetchAccess } = useQuery({
+    queryKey: ['privatePhotoAccess', ownerProfileId, myProfile?.id],
+    queryFn: () => base44.entities.PrivatePhotoAccess.filter({
+      owner_member_id: ownerProfileId,
+      viewer_member_id: myProfile.id,
+    }),
+    enabled: !!ownerProfileId && !!myProfile?.id,
+  });
+
   const { data: myViews = [] } = useQuery({
     queryKey: ['myPrivatePhotoViews', myProfile?.id],
     queryFn: () => base44.entities.PrivatePhotoView.filter({ viewer_member_id: myProfile.id }),
@@ -32,47 +41,47 @@ export default function PrivatePhotosViewer({ ownerProfileId, myProfile }) {
   });
 
   const approvedPhotos = photos.filter(p => p.status === 'approved');
-  if (approvedPhotos.length === 0) return null;
-
+  const accessRecord = accessRecords[0];
   const isViewerMale = myProfile?.gender === 'male';
-  const viewCost = isViewerMale ? 5 : 0;
   const paidViewSet = new Set(myViews.map(v => v.private_photo_id));
-
   const isUnlocked = (photo) => paidViewSet.has(photo.id) || unlockedIds.has(photo.id);
 
-  // Not verified at all — show gate message
+  if (approvedPhotos.length === 0 && !accessRecord) return null;
+
   if (!requiresIdVerification(myProfile)) {
     return (
-      <>
-        <VerificationRequiredModal
-          open={showVerifModal}
-          onClose={() => setShowVerifModal(false)}
-          onVerify={() => navigate('/onboarding')}
-        />
-        <Card className="mt-6">
-          <CardHeader>
-            <CardTitle className="font-heading text-lg">🔒 Private Photos</CardTitle>
-          </CardHeader>
-          <CardContent className="text-center py-6">
-            <Lock className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
-            <p className="text-sm text-muted-foreground mb-3">Verify your identity to view private photos.</p>
-            <Button onClick={() => setShowVerifModal(true)}>Verify Now →</Button>
-          </CardContent>
-        </Card>
-      </>
+      <Card className="mt-6">
+        <CardHeader><CardTitle className="font-heading text-lg">Private Photos</CardTitle></CardHeader>
+        <CardContent className="text-center py-6">
+          <Lock className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
+          <p className="text-sm text-muted-foreground mb-3">Verify your identity to request access to private photos.</p>
+          <Button onClick={() => navigate('/onboarding')}>Verify Now</Button>
+        </CardContent>
+      </Card>
     );
   }
 
+  const handleRequestAccess = async () => {
+    setRequesting(true);
+    const res = await base44.functions.invoke('requestPrivatePhotoAccess', { ownerMemberId: ownerProfileId });
+    const data = res.data ?? res;
+    setRequesting(false);
+    if (data.alreadyGranted) {
+      toast({ title: 'You already have access.' });
+    } else if (data.alreadyPending) {
+      toast({ title: 'Your request is already pending.' });
+    } else if (data.success) {
+      toast({ title: "Access request sent! You'll be notified when they respond." });
+    } else {
+      toast({ title: data.error || 'Could not send request.', variant: 'destructive' });
+    }
+    refetchAccess();
+    queryClient.invalidateQueries({ queryKey: ['privatePhotoAccess'] });
+  };
+
   const handlePhotoClick = async (photo) => {
     if (isUnlocked(photo)) return;
-
-    if (!requiresIdVerification(myProfile)) {
-      setShowVerifModal(true);
-      return;
-    }
-
     if (!isViewerMale) {
-      // Free for women — record view and unlock immediately
       await base44.entities.PrivatePhotoView.create({
         private_photo_id: photo.id,
         viewer_member_id: myProfile.id,
@@ -82,22 +91,18 @@ export default function PrivatePhotosViewer({ ownerProfileId, myProfile }) {
       setUnlockedIds(prev => new Set([...prev, photo.id]));
       return;
     }
-
-    // Male — show confirm dialog
     setConfirmPhoto(photo);
   };
 
   const handleConfirmPurchase = async () => {
     if (!confirmPhoto) return;
     setUnlocking(true);
-
     if ((myProfile.tokens || 0) < 5) {
       toast({ title: 'You need 5 tokens to view this photo.', variant: 'destructive' });
       setUnlocking(false);
       setConfirmPhoto(null);
       return;
     }
-
     await base44.entities.MemberProfile.update(myProfile.id, {
       tokens: Math.max(0, (myProfile.tokens || 0) - 5),
     });
@@ -113,20 +118,89 @@ export default function PrivatePhotosViewer({ ownerProfileId, myProfile }) {
       viewed_at: new Date().toISOString(),
       tokens_spent: 5,
     });
-
     setUnlockedIds(prev => new Set([...prev, confirmPhoto.id]));
     setConfirmPhoto(null);
     setUnlocking(false);
   };
 
+  const renderContent = () => {
+    const status = accessRecord?.status;
+
+    if (status === 'granted') {
+      if (approvedPhotos.length === 0) {
+        return <p className="text-sm text-muted-foreground">No approved private photos yet.</p>;
+      }
+      return (
+        <div className="grid grid-cols-3 gap-3">
+          {approvedPhotos.map(photo => {
+            const unlocked = isUnlocked(photo);
+            return (
+              <div key={photo.id} className="relative aspect-square rounded-xl overflow-hidden border cursor-pointer" onClick={() => handlePhotoClick(photo)}>
+                <img src={photo.photo_url} alt="" className={`w-full h-full object-cover transition-all ${unlocked ? '' : 'blur-xl scale-110'}`} />
+                {!unlocked && (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/30">
+                    <Lock className="w-6 h-6 text-white mb-1" />
+                    <span className="text-white text-xs font-medium">{isViewerMale ? '5 tokens to unlock' : 'Tap to view'}</span>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      );
+    }
+
+    if (status === 'pending') {
+      return (
+        <div className="text-center py-4 space-y-2">
+          <div className="grid grid-cols-3 gap-3 mb-3 opacity-30 pointer-events-none select-none">
+            {Array(Math.min(approvedPhotos.length || 3, 3)).fill(0).map((_, i) => (
+              <div key={i} className="aspect-square rounded-xl bg-muted" />
+            ))}
+          </div>
+          <p className="text-sm text-muted-foreground">
+            This member has {approvedPhotos.length} private photo{approvedPhotos.length !== 1 ? 's' : ''}.
+          </p>
+          <p className="text-sm text-amber-600 font-medium">Your access request is pending their approval.</p>
+        </div>
+      );
+    }
+
+    if (status === 'denied') {
+      return (
+        <div className="text-center py-4 space-y-3">
+          <p className="text-sm text-muted-foreground">Your access request was declined.</p>
+          <Button size="sm" variant="outline" onClick={() => navigate(-1)}>Send Message</Button>
+        </div>
+      );
+    }
+
+    // No record or revoked
+    return (
+      <div className="text-center py-4 space-y-3">
+        <div className="grid grid-cols-3 gap-3 mb-3 opacity-20 pointer-events-none select-none">
+          {Array(Math.min(approvedPhotos.length || 3, 3)).fill(0).map((_, i) => (
+            <div key={i} className="aspect-square rounded-xl bg-muted" />
+          ))}
+        </div>
+        {approvedPhotos.length > 0 && (
+          <p className="text-sm text-muted-foreground">
+            This member has {approvedPhotos.length} private photo{approvedPhotos.length !== 1 ? 's' : ''}.
+          </p>
+        )}
+        {status === 'revoked' && (
+          <p className="text-xs text-muted-foreground">Your previous access was revoked. You may request again.</p>
+        )}
+        <Button onClick={handleRequestAccess} disabled={requesting} className="gap-2">
+          {requesting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Lock className="w-4 h-4" />}
+          Request Access
+        </Button>
+      </div>
+    );
+  };
+
   return (
     <>
-      <VerificationRequiredModal
-        open={showVerifModal}
-        onClose={() => setShowVerifModal(false)}
-        onVerify={() => navigate('/onboarding')}
-      />
-
       <Dialog open={!!confirmPhoto} onOpenChange={(v) => { if (!v) setConfirmPhoto(null); }}>
         <DialogContent className="max-w-sm">
           <DialogHeader>
@@ -138,45 +212,14 @@ export default function PrivatePhotosViewer({ ownerProfileId, myProfile }) {
               {unlocking ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
               Confirm (5 tokens)
             </Button>
-            <Button variant="outline" className="w-full" onClick={() => setConfirmPhoto(null)} disabled={unlocking}>
-              Cancel
-            </Button>
+            <Button variant="outline" className="w-full" onClick={() => setConfirmPhoto(null)} disabled={unlocking}>Cancel</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
       <Card className="mt-6">
-        <CardHeader>
-          <CardTitle className="font-heading text-lg">🔒 Private Photos</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-3 gap-3">
-            {approvedPhotos.map(photo => {
-              const unlocked = isUnlocked(photo);
-              return (
-                <div
-                  key={photo.id}
-                  className="relative aspect-square rounded-xl overflow-hidden border cursor-pointer"
-                  onClick={() => handlePhotoClick(photo)}
-                >
-                  <img
-                    src={photo.photo_url}
-                    alt=""
-                    className={`w-full h-full object-cover transition-all ${unlocked ? '' : 'blur-xl scale-110'}`}
-                  />
-                  {!unlocked && (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/30">
-                      <Lock className="w-6 h-6 text-white mb-1" />
-                      <span className="text-white text-xs font-medium">
-                        {isViewerMale ? '🔒 5 tokens to unlock' : 'Tap to view'}
-                      </span>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </CardContent>
+        <CardHeader><CardTitle className="font-heading text-lg">Private Photos</CardTitle></CardHeader>
+        <CardContent>{renderContent()}</CardContent>
       </Card>
     </>
   );

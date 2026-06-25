@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ArrowLeft, Send, User, Image as ImageIcon, Trash2, Coins } from 'lucide-react';
+import { ArrowLeft, Send, User, Image as ImageIcon, Trash2, Coins, Lock, CheckCircle, XCircle } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import useMyProfile from '@/hooks/useMyProfile';
 import useSiteConfig from '@/hooks/useSiteConfig';
@@ -15,6 +15,53 @@ import VerificationRequiredModal from '@/components/shared/VerificationRequiredM
 const requiresIdVerification = (memberProfile) =>
   memberProfile?.didit_verification_status === 'Approved';
 
+function PrivatePhotoRequestCard({ msg, isMe, onRespond }) {
+  const { data: accessRecords = [] } = useQuery({
+    queryKey: ['accessRecord', msg.private_photo_access_id],
+    queryFn: () => base44.entities.PrivatePhotoAccess.filter({ id: msg.private_photo_access_id }),
+    enabled: !!msg.private_photo_access_id,
+    refetchInterval: 5000,
+  });
+  const access = accessRecords[0];
+  const isPending = !access || access.status === 'pending';
+
+  if (isMe) {
+    return (
+      <div className="flex justify-end">
+        <div className="max-w-[75%] bg-muted rounded-2xl rounded-br-md px-4 py-3 text-sm text-muted-foreground">
+          <Lock className="w-4 h-4 inline mr-1" />
+          You requested access to their private photos.
+          {isPending ? ' (Awaiting response)' : access?.status === 'granted' ? ' ✅ Granted!' : ' Declined.'}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex justify-start">
+      <div className="max-w-[85%] bg-primary/5 border border-primary/20 rounded-2xl rounded-bl-md px-4 py-3 space-y-3">
+        <p className="text-sm font-medium flex items-center gap-2">
+          <Lock className="w-4 h-4 text-primary" />
+          {msg.sender_name} would like to view your private photos.
+        </p>
+        {isPending ? (
+          <div className="flex gap-2">
+            <Button size="sm" className="gap-1 bg-green-600 hover:bg-green-700" onClick={() => onRespond('granted')}>
+              <CheckCircle className="w-3.5 h-3.5" /> Grant Access
+            </Button>
+            <Button size="sm" variant="outline" className="gap-1 text-destructive border-destructive/30" onClick={() => onRespond('denied')}>
+              <XCircle className="w-3.5 h-3.5" /> Decline
+            </Button>
+          </div>
+        ) : (
+          <p className="text-xs text-muted-foreground">
+            {access?.status === 'granted' ? '✅ You granted access.' : 'You declined this request.'}
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
 
 export default function Chat() {
   const conversationId = window.location.pathname.split('/chat/')[1];
@@ -247,6 +294,44 @@ export default function Chat() {
         ) : (
           messages.map(msg => {
             const isMe = msg.sender_id === user?.id;
+
+            // Private photo request card
+            if (msg.message_type === 'private_photo_request') {
+              return (
+                <PrivatePhotoRequestCard
+                  key={msg.id}
+                  msg={msg}
+                  isMe={isMe}
+                  onRespond={(response) => {
+                    base44.functions.invoke('respondToPrivatePhotoAccess', {
+                      accessId: msg.private_photo_access_id,
+                      response,
+                    }).then(() => queryClient.invalidateQueries({ queryKey: ['messages', conversationId] }));
+                  }}
+                />
+              );
+            }
+
+            if (msg.message_type === 'private_photo_access_granted') {
+              return (
+                <div key={msg.id} className="flex justify-center">
+                  <div className="flex items-center gap-2 bg-green-50 border border-green-200 text-green-700 rounded-xl px-4 py-2 text-sm font-medium">
+                    <CheckCircle className="w-4 h-4" /> Private photo access granted!
+                  </div>
+                </div>
+              );
+            }
+
+            if (msg.message_type === 'private_photo_access_denied') {
+              return (
+                <div key={msg.id} className="flex justify-center">
+                  <div className="flex items-center gap-2 bg-muted border rounded-xl px-4 py-2 text-sm text-muted-foreground">
+                    <Lock className="w-4 h-4" /> Private photo access was declined.
+                  </div>
+                </div>
+              );
+            }
+
             return (
               <div key={msg.id} className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
                 <div className={`max-w-[75%] ${isMe ? 'order-1' : ''}`}>
