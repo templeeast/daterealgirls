@@ -3,37 +3,49 @@ import { base44 } from '@/api/base44Client';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle, XCircle, ExternalLink, Loader2, ArrowLeft } from 'lucide-react';
+import { CheckCircle, XCircle, Loader2, ArrowLeft } from 'lucide-react';
 
-async function getSignedUrl(fileUri) {
-  const { signed_url } = await base44.integrations.Core.CreateFileSignedUrl({ file_uri: fileUri });
-  return signed_url;
+function DiditStatusBadge({ profile: p }) {
+  if (!p.didit_session_id) {
+    return <Badge variant="secondary" className="text-xs">Didit Not Started</Badge>;
+  }
+  const s = p.didit_verification_status;
+  if (s === 'Approved') return <Badge className="bg-green-100 text-green-700 border-green-300 text-xs">✅ Auto-Verified by Didit</Badge>;
+  if (s === 'Declined') return <Badge className="bg-red-100 text-red-700 border-red-300 text-xs">❌ Declined by Didit</Badge>;
+  if (s === 'pending')  return <Badge variant="secondary" className="text-xs">⏳ Didit Pending</Badge>;
+  return <Badge variant="secondary" className="text-xs">⏳ Didit Pending</Badge>;
+}
+
+function ImageCol({ label, url }) {
+  return (
+    <div className="space-y-2">
+      <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{label}</p>
+      {url ? (
+        <img src={url} className="w-full rounded-xl border object-contain bg-muted" style={{ maxHeight: 300 }} alt={label} />
+      ) : (
+        <div className="w-full rounded-xl bg-muted flex items-center justify-center" style={{ height: 200 }}>
+          <p className="text-xs text-muted-foreground">Image not available</p>
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default function VerificationDetail({ profile: p, onBack, onVerify }) {
-  const [loadingDoc, setLoadingDoc] = useState(null);
-  const [urls, setUrls] = useState({});
+  const [diditImages, setDiditImages]   = useState(null);
+  const [diditLoading, setDiditLoading] = useState(false);
+  const [diditError, setDiditError]     = useState(null);
 
   useEffect(() => {
-    const load = async () => {
-      const loaded = {};
-      if (p.selfie_url)            loaded.selfie   = await getSignedUrl(p.selfie_url).catch(() => null);
-      if (p.selfie_url_2)          loaded.selfie2  = await getSignedUrl(p.selfie_url_2).catch(() => null);
-      if (p.id_document_url)       loaded.idFront  = await getSignedUrl(p.id_document_url).catch(() => null);
-      if (p.id_document_back_url)  loaded.idBack   = await getSignedUrl(p.id_document_back_url).catch(() => null);
-      if (p.id_document_url_2)     loaded.idFront2 = await getSignedUrl(p.id_document_url_2).catch(() => null);
-      if (p.id_document_back_url_2) loaded.idBack2 = await getSignedUrl(p.id_document_back_url_2).catch(() => null);
-      setUrls(loaded);
-    };
-    load();
-  }, [p.id]);
-
-  const openDoc = async (key, fileUri) => {
-    setLoadingDoc(key);
-    const url = await getSignedUrl(fileUri).catch(() => null);
-    setLoadingDoc(null);
-    if (url) window.open(url, '_blank');
-  };
+    if (!p.didit_session_id) return;
+    setDiditLoading(true);
+    setDiditImages(null);
+    setDiditError(null);
+    base44.functions.invoke('fetchDiditSession', { sessionId: p.didit_session_id })
+      .then(res  => setDiditImages(res.data ?? res))
+      .catch(err => setDiditError(err.message))
+      .finally(() => setDiditLoading(false));
+  }, [p.didit_session_id]);
 
   return (
     <div className="space-y-4">
@@ -45,9 +57,10 @@ export default function VerificationDetail({ profile: p, onBack, onVerify }) {
         <CardContent className="pt-6 space-y-4">
           {/* Header */}
           <div className="flex items-start justify-between gap-4">
-            <div>
+            <div className="space-y-1">
               <h3 className="font-medium text-base">{p.display_name}, {p.age}</h3>
               <p className="text-sm text-muted-foreground capitalize">{p.gender} · {[p.location_city, p.location_country].filter(Boolean).join(', ')}</p>
+              <DiditStatusBadge profile={p} />
             </div>
             <div className="flex gap-2 shrink-0">
               <Button size="sm" className="gap-1" onClick={() => onVerify(p.id, 'approved', 'verified')}>
@@ -59,103 +72,24 @@ export default function VerificationDetail({ profile: p, onBack, onVerify }) {
             </div>
           </div>
 
-          {/* Selfies */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Original Selfie</p>
-              {urls.selfie ? (
-                <img src={urls.selfie} className="w-full h-48 object-cover rounded-xl border" alt="Original selfie" />
-              ) : (
-                <div className="w-full h-48 rounded-xl bg-muted flex items-center justify-center">
-                  <p className="text-xs text-muted-foreground">Not uploaded</p>
-                </div>
-              )}
+          {/* Didit Images */}
+          {!p.didit_session_id ? (
+            <div className="w-full rounded-xl bg-muted flex items-center justify-center py-10">
+              <p className="text-sm text-muted-foreground">No Didit session on file for this member.</p>
             </div>
-            <div className="space-y-2">
-              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground flex items-center gap-1">
-                Re-uploaded Selfie
-                {urls.selfie2 && <Badge className="bg-amber-100 text-amber-700 text-xs ml-1">New</Badge>}
-              </p>
-              {urls.selfie2 ? (
-                <img src={urls.selfie2} className="w-full h-48 object-cover rounded-xl border border-amber-300" alt="Updated selfie" />
-              ) : (
-                <div className="w-full h-48 rounded-xl bg-muted flex items-center justify-center">
-                  <p className="text-xs text-muted-foreground italic">No re-upload</p>
-                </div>
-              )}
+          ) : diditLoading ? (
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
             </div>
-          </div>
-
-          {/* Original Govt. ID */}
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">Original Govt. ID</p>
-            <div className="grid grid-cols-2 gap-4">
-              {[
-                { field: 'id_document_url', urlKey: 'idFront', key: 'id1', label: 'Front' },
-                { field: 'id_document_back_url', urlKey: 'idBack', key: 'idb1', label: 'Back' },
-              ].map(({ field, urlKey, key, label }) => (
-                <div key={field} className="space-y-2">
-                  <p className="text-xs text-muted-foreground">{label}</p>
-                  {urls[urlKey] ? (
-                    <div className="relative group">
-                      <img src={urls[urlKey]} className="w-full h-48 object-cover rounded-xl border" alt={`Govt ID ${label}`} />
-                      <button onClick={() => openDoc(key, p[field])} disabled={loadingDoc === key}
-                        className="absolute top-2 right-2 bg-white/90 rounded-lg p-1.5 shadow opacity-0 group-hover:opacity-100 transition-opacity">
-                        {loadingDoc === key ? <Loader2 className="w-4 h-4 animate-spin" /> : <ExternalLink className="w-4 h-4 text-primary" />}
-                      </button>
-                    </div>
-                  ) : p[field] ? (
-                    <div className="w-full h-48 rounded-xl bg-muted flex items-center justify-center">
-                      <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
-                    </div>
-                  ) : (
-                    <div className="w-full h-48 rounded-xl bg-muted flex items-center justify-center">
-                      <p className="text-xs text-muted-foreground">Not submitted</p>
-                    </div>
-                  )}
-                </div>
-              ))}
+          ) : diditError ? (
+            <div className="rounded-xl bg-destructive/10 text-destructive text-sm p-4">
+              Could not load Didit images: {diditError}
             </div>
-          </div>
-
-          {/* Re-uploaded Govt. ID */}
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2 flex items-center gap-1">
-              Re-uploaded Govt. ID
-              {(p.id_document_url_2 || p.id_document_back_url_2) && <Badge className="bg-amber-100 text-amber-700 text-xs ml-1">New</Badge>}
-            </p>
-            <div className="grid grid-cols-2 gap-4">
-              {[
-                { field: 'id_document_url_2', urlKey: 'idFront2', key: 'id2', label: 'Front' },
-                { field: 'id_document_back_url_2', urlKey: 'idBack2', key: 'idb2', label: 'Back' },
-              ].map(({ field, urlKey, key, label }) => (
-                <div key={field} className="space-y-2">
-                  <p className="text-xs text-muted-foreground">{label}</p>
-                  {urls[urlKey] ? (
-                    <div className="relative group">
-                      <img src={urls[urlKey]} className="w-full h-48 object-cover rounded-xl border border-amber-300" alt={`New Govt ID ${label}`} />
-                      <button onClick={() => openDoc(key, p[field])} disabled={loadingDoc === key}
-                        className="absolute top-2 right-2 bg-white/90 rounded-lg p-1.5 shadow opacity-0 group-hover:opacity-100 transition-opacity">
-                        {loadingDoc === key ? <Loader2 className="w-4 h-4 animate-spin" /> : <ExternalLink className="w-4 h-4 text-amber-700" />}
-                      </button>
-                    </div>
-                  ) : p[field] ? (
-                    <div className="w-full h-48 rounded-xl bg-muted flex items-center justify-center">
-                      <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
-                    </div>
-                  ) : (
-                    <div className="w-full h-48 rounded-xl bg-muted flex items-center justify-center">
-                      <p className="text-xs text-muted-foreground italic">No re-upload</p>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {(p.selfie_url_2 || p.id_document_url_2 || p.id_document_back_url_2) && (
-            <div className="text-xs bg-amber-50 border border-amber-200 text-amber-800 rounded-lg p-3">
-              ⚠ This member has re-uploaded one or more documents. Compare originals vs. new uploads to verify identity consistency.
+          ) : (
+            <div className="grid grid-cols-3 gap-4">
+              <ImageCol label="Member Selfie"   url={diditImages?.selfie_image} />
+              <ImageCol label="Govt ID — Front" url={diditImages?.id_front_image} />
+              <ImageCol label="Govt ID — Back"  url={diditImages?.id_back_image} />
             </div>
           )}
         </CardContent>
