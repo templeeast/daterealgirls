@@ -447,6 +447,36 @@ export default function SiteSettings() {
         </CardContent>
       </Card>
 
+      {/* Didit Identity Verification */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="font-heading text-lg">Didit Identity Verification</CardTitle>
+          <CardDescription>
+            Hosted identity verification (document scan + liveness). Credentials are stored as Base44 Secrets and selected by Dev Mode above.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <p className="text-xs text-muted-foreground">
+            DEV secrets:{" "}
+            <code className="bg-muted px-1 rounded">DIDIT_API_KEY_DEV</code>,{" "}
+            <code className="bg-muted px-1 rounded">DIDIT_WORKFLOW_ID_DEV</code>,{" "}
+            <code className="bg-muted px-1 rounded">DIDIT_WEBHOOK_SECRET_DEV</code>
+          </p>
+          <p className="text-xs text-muted-foreground">
+            PROD secrets:{" "}
+            <code className="bg-muted px-1 rounded">DIDIT_API_KEY_PROD</code>,{" "}
+            <code className="bg-muted px-1 rounded">DIDIT_WORKFLOW_ID_PROD</code>,{" "}
+            <code className="bg-muted px-1 rounded">DIDIT_WEBHOOK_SECRET_PROD</code>
+          </p>
+          <p className="text-xs text-muted-foreground">
+            Webhook URL: <code className="bg-muted px-1 rounded">/api/webhooks/didit</code>
+          </p>
+          <p className="text-xs text-muted-foreground">
+            Callback URL: <code className="bg-muted px-1 rounded">/verify/complete</code>
+          </p>
+        </CardContent>
+      </Card>
+
       {/* Emergency Disable */}
       <Card className="border-destructive/40 bg-destructive/5">
         <CardHeader>

@@ -200,29 +200,18 @@
       "default": "unverified",
       "description": "ID verification status"
     },
-    "selfie_url": {
+    "didit_session_id": {
       "type": "string",
-      "description": "ORIGINAL selfie \u2014 set once, never overwritten"
+      "description": "Didit verification session UUID \u2014 set at session creation"
     },
-    "selfie_url_2": {
+    "didit_verification_status": {
       "type": "string",
-      "description": "Most recent re-upload selfie"
+      "description": "Didit session outcome: not_started | pending | Approved | Declined"
     },
-    "id_document_url": {
+    "didit_verified_at": {
       "type": "string",
-      "description": "ORIGINAL govt ID front URI (private)"
-    },
-    "id_document_url_2": {
-      "type": "string",
-      "description": "Most recent re-upload govt ID front URI"
-    },
-    "id_document_back_url": {
-      "type": "string",
-      "description": "ORIGINAL govt ID back URI (private)"
-    },
-    "id_document_back_url_2": {
-      "type": "string",
-      "description": "Most recent re-upload govt ID back URI"
+      "format": "date-time",
+      "description": "Timestamp when Didit returned an Approved status"
     },
     "is_active": {
       "type": "boolean",
