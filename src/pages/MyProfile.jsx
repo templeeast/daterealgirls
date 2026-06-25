@@ -22,6 +22,7 @@ import useSiteConfig from '@/hooks/useSiteConfig';
 import { useTranslation } from 'react-i18next';
 import i18n from '@/lib/i18n';
 import StripeIdentityCard from '@/components/profile/StripeIdentityCard';
+import DiditVerificationCard from '@/components/profile/DiditVerificationCard';
 import CountryCitySelector from '@/components/shared/CountryCitySelector';
 import PrivatePhotosSection from '@/components/profile/PrivatePhotosSection';
 
@@ -410,7 +411,7 @@ export default function MyProfile() {
       </Card>
 
       {/* Incomplete profile banner */}
-      {(!profile.profile_complete || !profile.selfie_url) && (
+      {(!profile.profile_complete || profile.didit_verification_status !== 'Approved') && (
         <div className="mb-6 flex items-start gap-3 bg-amber-50 border border-amber-200 text-amber-800 rounded-xl p-4">
           <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5 text-amber-500" />
           <div>
@@ -428,119 +429,7 @@ export default function MyProfile() {
           onRefetch={refetch}
         />
       ) : (
-        <Card className="mb-6">
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="font-heading text-lg font-semibold flex items-center gap-2">
-                  <Shield className="w-5 h-5 text-primary" />
-                  {t('id_verification_title')}
-                </h3>
-                <p className="text-sm text-muted-foreground mt-1">
-                  {profile.verification_status === 'unverified' && t('id_verification_unverified')}
-                  {profile.verification_status === 'pending' && t('id_verification_pending')}
-                  {profile.verification_status === 'verified' && t('id_verification_verified')}
-                  {profile.verification_status === 'rejected' && t('id_verification_rejected')}
-                </p>
-              </div>
-              <Badge className={verificationColors[profile.verification_status]}>
-                {t(`verif_status_${profile.verification_status}`)}
-              </Badge>
-            </div>
-            {true && (
-              <div className="mt-4 space-y-4">
-                <div className="flex items-start gap-2 text-xs text-muted-foreground bg-muted rounded-lg p-3">
-                  <Shield className="w-3.5 h-3.5 shrink-0 mt-0.5 text-primary" />
-                  <span>{t('id_docs_privacy_notice')}</span>
-                </div>
-
-                {/* Eligibility notice */}
-                <div className="text-xs text-muted-foreground bg-muted rounded-lg p-3 space-y-1">
-                  <p className="font-semibold text-foreground" dangerouslySetInnerHTML={{ __html: t('verif_eligibility_both_required') }} />
-                  <p dangerouslySetInnerHTML={{ __html: t('verif_eligibility_no_id_needed') }} />
-                  <p className="text-amber-700 font-medium">{t('verif_eligibility_reset_warning')}</p>
-                </div>
-
-                {/* Selfie upload */}
-                <div className={`border-2 rounded-xl p-4 space-y-2 ${!profile.selfie_url ? 'border-primary/60 bg-accent/30' : 'border-border'}`}>
-                  <div className="flex items-center gap-2">
-                    <p className="text-sm font-medium">{t('verif_selfie_title')}</p>
-                    <Badge className="bg-primary text-primary-foreground text-xs px-2 py-0.5">{t('verif_selfie_badge')}</Badge>
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    {profile.selfie_url ? t('verif_selfie_on_file') : t('verif_selfie_no_file')}
-                  </p>
-                  <div className="flex items-center gap-3">
-                    <label>
-                      <Button variant={profile.selfie_url ? 'outline' : 'default'} size="sm" className="gap-2" asChild>
-                        <span>
-                          <Camera className="w-4 h-4" />
-                          {profile.selfie_url ? t('verif_selfie_reupload_btn') : t('verif_selfie_upload_btn')}
-                        </span>
-                      </Button>
-                      <input type="file" accept="image/*" className="hidden" onChange={handleSelfieUpload} />
-                    </label>
-                    {profile.selfie_url_2 && (
-                      <span className="text-xs text-amber-600 font-medium">{t('verif_selfie_updated_tag')}</span>
-                    )}
-                  </div>
-                </div>
-
-                {/* Govt ID — Front */}
-                <div className={`border-2 rounded-xl p-4 space-y-2 ${!profile.id_document_url ? 'border-amber-300 bg-amber-50' : 'border-border'}`}>
-                  <div className="flex items-center gap-2">
-                    <p className="text-sm font-medium">{t('govt_id_front_title')}</p>
-                    <Badge variant="outline" className="text-xs px-2 py-0.5">{t('optional_badge')}</Badge>
-                    <Badge className="bg-primary text-primary-foreground text-xs px-2 py-0.5">{t('verif_id_required_badge')}</Badge>
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    {profile.id_document_url ? t('govt_id_front_on_file') : t('govt_id_front_no_file')}
-                  </p>
-                  <div className="flex items-center gap-3">
-                    <label>
-                      <Button variant={profile.id_document_url ? 'outline' : 'secondary'} size="sm" className="gap-2" asChild>
-                        <span>
-                          <Upload className="w-4 h-4" />
-                          {profile.id_document_url ? t('govt_id_front_reupload_btn') : t('govt_id_front_upload_btn')}
-                        </span>
-                      </Button>
-                      <input type="file" accept="image/*,.pdf" className="hidden" onChange={handleIdFrontUpload} />
-                    </label>
-                    {profile.id_document_url_2 && (
-                      <span className="text-xs text-amber-600 font-medium">{t('verif_id_updated_tag')}</span>
-                    )}
-                  </div>
-                </div>
-
-                {/* Govt ID — Back */}
-                <div className={`border-2 rounded-xl p-4 space-y-2 ${!profile.id_document_back_url ? 'border-amber-300/60 bg-amber-50/50' : 'border-border'}`}>
-                  <div className="flex items-center gap-2">
-                    <p className="text-sm font-medium">{t('govt_id_back_title')}</p>
-                    <Badge variant="outline" className="text-xs px-2 py-0.5">{t('optional_badge')}</Badge>
-                    <Badge className="bg-primary text-primary-foreground text-xs px-2 py-0.5">{t('verif_id_required_badge')}</Badge>
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    {profile.id_document_back_url ? t('govt_id_back_on_file') : t('govt_id_back_no_file')}
-                  </p>
-                  <div className="flex items-center gap-3">
-                    <label>
-                      <Button variant={profile.id_document_back_url ? 'outline' : 'secondary'} size="sm" className="gap-2" asChild>
-                        <span>
-                          <Upload className="w-4 h-4" />
-                          {profile.id_document_back_url ? t('govt_id_back_reupload_btn') : t('govt_id_back_upload_btn')}
-                        </span>
-                      </Button>
-                      <input type="file" accept="image/*,.pdf" className="hidden" onChange={handleIdBackUpload} />
-                    </label>
-                    {profile.id_document_back_url_2 && (
-                      <span className="text-xs text-amber-600 font-medium">{t('verif_id_updated_tag')}</span>
-                    )}
-                  </div>
-                </div>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+        <DiditVerificationCard profile={profile} onRefetch={refetch} />
       )}
 
       {/* Verification Promo Code */}
