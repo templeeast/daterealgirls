@@ -120,7 +120,7 @@ export default function Onboarding() {
 
     setSaving(true);
     const me = await base44.auth.me();
-    await base44.entities.MemberProfile.create({
+    const newProfile = await base44.entities.MemberProfile.create({
       ...form,
       user_id: me.id,
       age,
@@ -131,7 +131,15 @@ export default function Onboarding() {
       tokens: config.welcome_tokens ?? 5000,
     });
 
-    toast({ title: t('profile_created', { siteName: config.site_name }) });
+    // Award GODATE26 welcome bonus (non-blocking)
+    try {
+      await base44.functions.invoke('awardGodate26Promo', { memberId: newProfile.id });
+      toast({ title: '🎉 Welcome! Your GODATE26 bonus of 1,000 tokens has been added to your account.' });
+    } catch (e) {
+      console.warn('GODATE26 award failed:', e.message);
+      toast({ title: t('profile_created', { siteName: config.site_name }) });
+    }
+
     navigate('/browse');
   };
 
