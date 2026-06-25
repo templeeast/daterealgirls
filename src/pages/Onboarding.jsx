@@ -15,7 +15,7 @@ import { useTranslation } from 'react-i18next';
 
 import CountryCitySelector from '@/components/shared/CountryCitySelector';
 import StripeIdentityStep from '@/components/onboarding/StripeIdentityStep';
-import OnboardingVerificationStep from '@/components/onboarding/OnboardingVerificationStep.jsx';
+import DiditVerificationStep from '@/components/onboarding/DiditVerificationStep';
 
 const INTERESTS = [
   'Travel', 'Music', 'Movies', 'Cooking', 'Fitness', 'Reading',
@@ -51,9 +51,6 @@ export default function Onboarding() {
     })();
   }, [navigate]);
   const [identityVerified, setIdentityVerified] = useState(false);
-  const [selfieUri, setSelfieUri] = useState('');
-  const [idDocUri, setIdDocUri] = useState('');
-  const [idDocBackUri, setIdDocBackUri] = useState('');
   const [form, setForm] = useState({
     display_name: '',
     gender: '',
@@ -127,10 +124,7 @@ export default function Onboarding() {
       ...form,
       user_id: me.id,
       age,
-      selfie_url: selfieUri || undefined,
-      id_document_url: idDocUri || undefined,
-      id_document_back_url: idDocBackUri || undefined,
-      verification_status: identityVerified ? 'pending' : (selfieUri || idDocUri ? 'pending' : 'unverified'),
+      verification_status: 'unverified',
       is_active: true,
       is_suspended: false,
       profile_complete: true,
@@ -233,15 +227,7 @@ export default function Onboarding() {
         onSkip={() => setStep(s => s + 1)}
       />
     ] : [
-      <OnboardingVerificationStep
-        key="verify"
-        selfieUploaded={!!selfieUri}
-        idFrontUploaded={!!idDocUri}
-        idBackUploaded={!!idDocBackUri}
-        onSelfieUploaded={setSelfieUri}
-        onIdFrontUploaded={setIdDocUri}
-        onIdBackUploaded={setIdDocBackUri}
-      />
+      <DiditVerificationStep key="verify" />,
     ]),
 
     // Step 3: Photos & Social
@@ -284,9 +270,7 @@ export default function Onboarding() {
   const verifyStepIndex = 2;
   const canProceed = step === 0
     ? form.display_name && form.gender && form.date_of_birth && !isUnderAge
-    : step === verifyStepIndex && !requireStripeIdentity
-      ? !!selfieUri
-      : true;
+    : true;
 
   if (checkingProfile) {
     return (

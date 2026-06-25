@@ -32,6 +32,7 @@ import ShippingPolicy from '@/pages/ShippingPolicy';
 import ContactUs from '@/pages/ContactUs';
 import WhopReturn from '@/pages/WhopReturn';
 import PaymentHistory from '@/pages/PaymentHistory';
+import VerifyComplete from '@/pages/VerifyComplete';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin, user } = useAuth();
@@ -92,6 +93,7 @@ const AuthenticatedApp = () => {
       <Route path="/shipping-policy" element={<ShippingPolicy />} />
       <Route path="/contact" element={<ContactUs />} />
       <Route path="/whop-return" element={<WhopReturn />} />
+      <Route path="/verify/complete" element={<VerifyComplete />} />
       <Route path="/payment-history" element={<PaymentHistory />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
