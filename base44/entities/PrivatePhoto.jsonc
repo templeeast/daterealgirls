@@ -1,0 +1,37 @@
+{
+  "name": "PrivatePhoto",
+  "type": "object",
+  "properties": {
+    "member_id": {
+      "type": "string",
+      "description": "MemberProfile.id \u2014 owner of the photo"
+    },
+    "photo_url": {
+      "type": "string",
+      "description": "Stored image URL"
+    },
+    "uploaded_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the photo was uploaded"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending_review",
+        "approved",
+        "rejected"
+      ],
+      "default": "pending_review",
+      "description": "Review status"
+    },
+    "token_cost_to_view": {
+      "type": "number",
+      "description": "Tokens required to view \u2014 5 for male uploaders, 0 for female"
+    }
+  },
+  "required": [
+    "member_id",
+    "photo_url"
+  ]
+}

@@ -33,8 +33,11 @@ export default function PhotoReviewCard({ review, onApprove, onReject }) {
         <Badge className={`absolute top-2 right-2 ${status.className}`}>
           {status.label}
         </Badge>
-        <Badge variant="secondary" className="absolute top-2 left-2 text-xs">
-          {review.source_type === 'profile' ? 'Profile' : 'Chat'}
+        <Badge
+          variant="secondary"
+          className={`absolute top-2 left-2 text-xs ${review.source_type === 'private' ? 'bg-amber-100 text-amber-700 border-amber-300' : ''}`}
+        >
+          {review.source_type === 'profile' ? 'Profile' : review.source_type === 'private' ? '🔒 Private Photo' : 'Chat'}
         </Badge>
       </div>
 

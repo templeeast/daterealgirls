@@ -1,0 +1,27 @@
+{
+  "name": "PrivatePhotoView",
+  "type": "object",
+  "properties": {
+    "private_photo_id": {
+      "type": "string",
+      "description": "PrivatePhoto.id"
+    },
+    "viewer_member_id": {
+      "type": "string",
+      "description": "MemberProfile.id of the viewer"
+    },
+    "viewed_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the view occurred"
+    },
+    "tokens_spent": {
+      "type": "number",
+      "description": "0 for women, 5 for men"
+    }
+  },
+  "required": [
+    "private_photo_id",
+    "viewer_member_id"
+  ]
+}

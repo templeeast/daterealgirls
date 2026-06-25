@@ -135,6 +135,11 @@ export default function ContentReview() {
       } else {
         await base44.entities.PhotoReview.create(data);
       }
+      // Sync PrivatePhoto status
+      if (photo.source_type === 'private') {
+        const privPhotos = await base44.entities.PrivatePhoto.filter({ photo_url: photo.photo_url });
+        if (privPhotos[0]) await base44.entities.PrivatePhoto.update(privPhotos[0].id, { status: 'approved' });
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['photoReviews'] });
@@ -153,6 +158,9 @@ export default function ContentReview() {
         await base44.entities.Message.update(photo.source_message_id, {
           image_url: '',
         });
+      } else if (photo.source_type === 'private') {
+        const privPhotos = await base44.entities.PrivatePhoto.filter({ photo_url: photo.photo_url });
+        if (privPhotos[0]) await base44.entities.PrivatePhoto.update(privPhotos[0].id, { status: 'rejected' });
       }
 
       // 2. Create/update PhotoReview record

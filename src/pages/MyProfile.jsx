@@ -23,6 +23,7 @@ import { useTranslation } from 'react-i18next';
 import i18n from '@/lib/i18n';
 import StripeIdentityCard from '@/components/profile/StripeIdentityCard';
 import CountryCitySelector from '@/components/shared/CountryCitySelector';
+import PrivatePhotosSection from '@/components/profile/PrivatePhotosSection';
 
 const INTERESTS = [
   { key: 'Travel', tKey: 'interest_travel' },
@@ -751,6 +752,9 @@ export default function MyProfile() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Private Photos */}
+      <PrivatePhotosSection profile={profile} onRefetch={refetch} />
 
       {/* Profile Info */}
       <Card className="mb-6">

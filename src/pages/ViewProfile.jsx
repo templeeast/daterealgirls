@@ -9,6 +9,7 @@ import { MapPin, Shield, Star, MessageCircle, Flag, Heart, ArrowLeft, Instagram,
 import WinkButton from '@/components/profile/WinkButton';
 import { Skeleton } from '@/components/ui/skeleton';
 import useMyProfile from '@/hooks/useMyProfile';
+import PrivatePhotosViewer from '@/components/profile/PrivatePhotosViewer';
 import { useToast } from '@/components/ui/use-toast';
 import { useTranslation } from 'react-i18next';
 import useSiteConfig from '@/hooks/useSiteConfig';
@@ -274,6 +275,11 @@ export default function ViewProfile() {
             </div>
           </CardContent>
         </Card>
+      )}
+
+      {/* Private Photos — only show on other people's profiles */}
+      {myProfile && profile.user_id !== user?.id && (
+        <PrivatePhotosViewer ownerProfileId={profile.id} myProfile={myProfile} />
       )}
     </div>
   );
