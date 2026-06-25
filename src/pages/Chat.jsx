@@ -10,6 +10,10 @@ import useMyProfile from '@/hooks/useMyProfile';
 import useSiteConfig from '@/hooks/useSiteConfig';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
+import VerificationRequiredModal from '@/components/shared/VerificationRequiredModal';
+
+const requiresIdVerification = (memberProfile) =>
+  memberProfile?.didit_verification_status === 'Approved';
 
 
 export default function Chat() {
@@ -21,6 +25,7 @@ export default function Chat() {
   const queryClient = useQueryClient();
   const [text, setText] = useState('');
   const [rateLimited, setRateLimited] = useState(false);
+  const [showVerifModal, setShowVerifModal] = useState(false);
   const messageTimes = useRef([]);
   const messagesEndRef = useRef(null);
 
@@ -124,6 +129,10 @@ export default function Chat() {
 
   const handleSend = () => {
     if (!text.trim()) return;
+    if (!requiresIdVerification(profile)) {
+      setShowVerifModal(true);
+      return;
+    }
     if (!checkRateLimit()) return;
     sendMutation.mutate(text.trim());
   };
@@ -131,6 +140,11 @@ export default function Chat() {
   const handleImageSend = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (!requiresIdVerification(profile)) {
+      setShowVerifModal(true);
+      e.target.value = '';
+      return;
+    }
 
     // Check if user can afford the photo token cost
     const canAffordPhoto = !isMale || tokens >= photoTokenCost;
@@ -178,6 +192,8 @@ export default function Chat() {
 
   if (!conversation) return null;
 
+  
+
   const isP1 = conversation.participant_1_id === user?.id;
   const otherName = isP1 ? conversation.participant_2_name : conversation.participant_1_name;
   const otherPhoto = isP1 ? conversation.participant_2_photo : conversation.participant_1_photo;
@@ -185,6 +201,11 @@ export default function Chat() {
 
   return (
     <div className="flex flex-col h-[calc(100vh-4rem)]">
+      <VerificationRequiredModal
+        open={showVerifModal}
+        onClose={() => setShowVerifModal(false)}
+        onVerify={() => navigate('/onboarding')}
+      />
       {/* Header */}
       <div className="border-b bg-card px-4 py-3 flex items-center gap-3">
         <Button variant="ghost" size="icon" onClick={() => navigate('/messages')}>
