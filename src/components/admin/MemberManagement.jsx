@@ -287,8 +287,12 @@ export default function MemberManagement() {
 
               {/* Status Badges */}
               <div className="flex flex-wrap gap-2">
-                <Badge className={verificationColors[detailMember.verification_status]}>
-                  Verification: {detailMember.verification_status}
+                <Badge
+                  className={verificationColors[detailMember.verification_status] + ' cursor-pointer hover:opacity-80 transition-opacity'}
+                  onClick={() => { setDetailMember(null); setVerifyDialog(detailMember); }}
+                  title="Click to view verification details"
+                >
+                  <Shield className="w-3 h-3 mr-1" /> Verification: {detailMember.verification_status}
                 </Badge>
                 <Badge variant={detailMember.is_suspended ? 'destructive' : 'secondary'}>
                   {detailMember.is_suspended ? 'Suspended' : 'Active'}
