@@ -253,6 +253,17 @@ export default function Landing() {
                       <div className="text-xs text-muted-foreground">{t('token_cost_per_photo')}</div>
                     </td>
                   </tr>
+                  <tr className="border-b">
+                    <td className="px-6 py-4 font-medium">View private photos</td>
+                    <td className="text-center px-6 py-4">
+                      <div className="font-semibold">5 tokens</div>
+                      <div className="text-xs text-muted-foreground">per photo</div>
+                    </td>
+                    <td className="text-center px-6 py-4">
+                      <div className="font-semibold text-green-600">Free</div>
+                      <div className="text-xs text-muted-foreground">per photo</div>
+                    </td>
+                  </tr>
                   <tr>
                     <td className="px-6 py-4 font-medium">{t('id_verification')}</td>
                     <td className="text-center px-6 py-4">

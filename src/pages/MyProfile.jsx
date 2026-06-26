@@ -538,6 +538,10 @@ export default function MyProfile() {
                 <span>{profile.gender === 'male' ? (config.tokens_msg_cost_men ?? 2) : (config.tokens_msg_cost_women ?? 0)} tokens</span>
               </div>
               <div className="flex justify-between">
+                <span>View private photos</span>
+                <span>{profile.gender === 'male' ? '5 tokens / photo' : 'Free'}</span>
+              </div>
+              <div className="flex justify-between">
                 <span>ID Verification</span>
                 <span>{profile.gender === 'male' ? (config.tokens_verify_cost_men ?? 200) : (config.tokens_verify_cost_women ?? 200)} tokens</span>
               </div>
