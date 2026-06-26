@@ -154,7 +154,8 @@ export default function Browse() {
       )}
 
       {/* New site notice */}
-      <div className="mb-6 bg-blue-50 border border-blue-200 rounded-xl p-4 text-sm text-blue-800">
+      <div className="mb-6 bg-blue-50 border border-blue-200 rounded-xl p-4 text-sm text-blue-800 flex items-center gap-3">
+        <span className="text-2xl">🎉</span>
         {t('browse_new_site_notice')}
       </div>
 
