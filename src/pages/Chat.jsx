@@ -407,6 +407,15 @@ export default function Chat() {
                   <Coins className="w-3 h-3" /> {t('chat_token_cost_photo', { n: photoTokenCost })}
                 </span>
               )}
+              {(() => {
+                const stripeEnabled = isMale ? config?.stripe_payment_link_enabled_men : config?.stripe_payment_link_enabled_women;
+                const linkCost = config?.stripe_link_message_credit_cost ?? 5;
+                return stripeEnabled && linkCost > 0 ? (
+                  <span className="text-xs text-muted-foreground flex items-center gap-1">
+                    <Coins className="w-3 h-3" /> {t('stripe.payment_link.chat_cost_hint', { n: linkCost })}
+                  </span>
+                ) : null;
+              })()}
               <span className="text-xs text-muted-foreground">· {t('chat_token_balance', { n: tokens.toLocaleString() })}</span>
             </div>
           ) : null}
