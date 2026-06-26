@@ -1,4 +1,4 @@
-import { createClient } from 'npm:@base44/sdk@0.8.31';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
 
 function extractPublicId(url) {
   if (!url) return null;
@@ -33,7 +33,7 @@ async function deleteCloudinaryImage(cloudName, apiKey, apiSecret, publicId) {
 
 Deno.serve(async (req) => {
   try {
-    const base44 = createClient({ appId: Deno.env.get('BASE44_APP_ID') });
+    const base44 = createClientFromRequest(req);
 
     // This function should only run via automation (service role)
     const payload = await req.json();
