@@ -153,6 +153,11 @@ export default function Browse() {
         </div>
       )}
 
+      {/* New site notice */}
+      <div className="mb-6 bg-blue-50 border border-blue-200 rounded-xl p-4 text-sm text-blue-800">
+        {t('browse_new_site_notice')}
+      </div>
+
       {/* Search & Filters */}
       <div className="mb-8">
         <h1 className="font-heading text-3xl font-bold mb-6">{t('browse_title')}</h1>
