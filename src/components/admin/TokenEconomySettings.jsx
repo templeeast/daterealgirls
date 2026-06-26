@@ -158,6 +158,37 @@ export default function TokenEconomySettings({ form, updateField }) {
         </CardContent>
       </Card>
 
+      {/* Stripe Payment Links */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="font-heading text-lg">Stripe Payment Links in Chat</CardTitle>
+          <CardDescription>Allow ID-verified members to embed a Stripe payment link in chat messages. Set the token cost per message that includes a payment link.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="font-medium text-sm">Enable for Men</p>
+              <p className="text-xs text-muted-foreground">Allow verified male members to embed payment links in messages.</p>
+            </div>
+            <Switch checked={form.stripe_payment_link_enabled_men || false} onCheckedChange={v => toggle('stripe_payment_link_enabled_men', v)} />
+          </div>
+          <div className="flex items-center justify-between border-t pt-4">
+            <div>
+              <p className="font-medium text-sm">Enable for Women</p>
+              <p className="text-xs text-muted-foreground">Allow verified female members to embed payment links in messages.</p>
+            </div>
+            <Switch checked={form.stripe_payment_link_enabled_women || false} onCheckedChange={v => toggle('stripe_payment_link_enabled_women', v)} />
+          </div>
+          <div className="grid grid-cols-2 gap-4 border-t pt-4">
+            <div className="space-y-2">
+              <Label>Token Cost per Message with Payment Link</Label>
+              <Input type="number" value={form.stripe_link_message_credit_cost ?? 5} onChange={e => num('stripe_link_message_credit_cost', e.target.value)} />
+              <p className="text-xs text-muted-foreground">Deducted from the sender's balance each time they embed a payment link in a message.</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Token Packs */}
       <Card>
         <CardHeader>

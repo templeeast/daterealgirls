@@ -79,6 +79,9 @@ export default function SiteSettings() {
     token_pack_value_price: 29.99,
     token_pack_best_tokens: 8000,
     token_pack_best_price: 59.99,
+    stripe_payment_link_enabled_men: false,
+    stripe_payment_link_enabled_women: false,
+    stripe_link_message_credit_cost: 5,
   });
 
   useEffect(() => {
@@ -137,6 +140,9 @@ export default function SiteSettings() {
         token_pack_value_price: existingConfig.token_pack_value_price ?? 29.99,
         token_pack_best_tokens: existingConfig.token_pack_best_tokens ?? 8000,
         token_pack_best_price: existingConfig.token_pack_best_price ?? 59.99,
+        stripe_payment_link_enabled_men: existingConfig.stripe_payment_link_enabled_men || false,
+        stripe_payment_link_enabled_women: existingConfig.stripe_payment_link_enabled_women || false,
+        stripe_link_message_credit_cost: existingConfig.stripe_link_message_credit_cost ?? 5,
       });
     }
   }, [existingConfig]);
