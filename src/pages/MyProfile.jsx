@@ -212,6 +212,7 @@ export default function MyProfile() {
         location_city: profile.location_city || '',
         location_country: profile.location_country || '',
         looking_for: profile.looking_for || '',
+        marital_status: profile.marital_status || '',
         interests: profile.interests || [],
         ...Object.fromEntries(
           Array.from({ length: 15 }, (_, i) => i + 1).flatMap(n => [
@@ -735,6 +736,20 @@ export default function MyProfile() {
               </SelectContent>
             </Select>
           </div>
+          <div className="space-y-2">
+            <Label>Marital Status</Label>
+            <Select value={form.marital_status} onValueChange={v => updateField('marital_status', v)}>
+              <SelectTrigger><SelectValue placeholder="Select marital status" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="single">Single</SelectItem>
+                <SelectItem value="divorced">Divorced</SelectItem>
+                <SelectItem value="widowed">Widowed</SelectItem>
+                <SelectItem value="separated">Separated</SelectItem>
+                <SelectItem value="rather_not_say">Rather not say</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
           <div className="space-y-2">
             <Label>{t('interests_label')}</Label>
             <div className="flex flex-wrap gap-2">

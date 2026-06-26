@@ -48,6 +48,17 @@
       "type": "string",
       "description": "Profile bio (max 500 chars)"
     },
+    "marital_status": {
+      "type": "string",
+      "enum": [
+        "single",
+        "divorced",
+        "widowed",
+        "separated",
+        "rather_not_say"
+      ],
+      "description": "Marital status of the member"
+    },
     "photo_1": {
       "type": "string",
       "description": "Photo 1 URL"
