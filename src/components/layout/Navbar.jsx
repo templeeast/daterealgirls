@@ -17,7 +17,11 @@ export default function Navbar() {
   const { t } = useTranslation();
 
   const isAdmin = user?.role === 'admin';
-  const profileComplete = profile?.profile_complete && profile?.selfie_url;
+  const profileComplete = profile?.profile_complete && (
+    profile?.selfie_url ||
+    profile?.didit_verification_status === 'Approved' ||
+    profile?.verification_status === 'verified'
+  );
 
   const navItems = [
     { path: '/browse', label: t('nav_browse'), icon: Search, restricted: true },
