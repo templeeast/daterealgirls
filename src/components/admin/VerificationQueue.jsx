@@ -13,13 +13,13 @@ export default function VerificationQueue({ profileId }) {
   const { data: pending, isLoading } = useQuery({
     queryKey: ['pendingVerifications'],
     queryFn: async () => {
-      const [pendingReview, unverifiedProfiles] = await Promise.all([
-        base44.entities.MemberProfile.filter({ profile_review_status: 'pending' }),
-        base44.entities.MemberProfile.filter({ verification_status: 'unverified' }),
+      const [diditPending, diditDeclined] = await Promise.all([
+        base44.entities.MemberProfile.filter({ didit_verification_status: 'pending' }),
+        base44.entities.MemberProfile.filter({ didit_verification_status: 'Declined' }),
       ]);
-      // Include unverified members who have uploaded at least a selfie
-      const unverifiedWithDocs = unverifiedProfiles.filter(p => p.selfie_url || p.id_document_url);
-      return [...pendingReview, ...unverifiedWithDocs];
+      // Deduplicate by id
+      const seen = new Set();
+      return [...diditPending, ...diditDeclined].filter(p => seen.has(p.id) ? false : seen.add(p.id));
     },
     initialData: [],
   });
@@ -36,6 +36,9 @@ export default function VerificationQueue({ profileId }) {
       setSelectedId(null);
     },
   });
+
+  const handleVerify = (id, reviewStatus, verificationStatus) =>
+    verifyMutation.mutate({ id, reviewStatus, verificationStatus });
 
   if (isLoading) return <div className="text-center py-16"><Loader2 className="w-8 h-8 animate-spin mx-auto text-muted-foreground" /></div>;
 
@@ -55,7 +58,7 @@ export default function VerificationQueue({ profileId }) {
       <VerificationDetail
         profile={selected}
         onBack={() => setSelectedId(null)}
-        onVerify={(id, status) => verifyMutation.mutate({ id, status })}
+        onVerify={handleVerify}
       />
     );
   }
@@ -81,8 +84,10 @@ export default function VerificationQueue({ profileId }) {
               <p className="font-medium text-sm">{p.display_name}, {p.age}</p>
               <p className="text-xs text-muted-foreground capitalize">{p.gender} · {[p.location_city, p.location_country].filter(Boolean).join(', ')}</p>
             </div>
-            {(p.selfie_url_2 || p.id_document_url_2 || p.id_document_back_url_2) && (
-              <Badge className="bg-amber-100 text-amber-700 shrink-0">Re-uploaded</Badge>
+            {p.didit_verification_status === 'Declined' ? (
+              <Badge className="bg-red-100 text-red-700 shrink-0">Declined by Didit</Badge>
+            ) : (
+              <Badge className="bg-amber-100 text-amber-700 shrink-0">Didit Pending</Badge>
             )}
             <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
           </CardContent>
