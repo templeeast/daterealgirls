@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
@@ -11,6 +12,7 @@ import { useNavigate } from 'react-router-dom';
 const requiresIdVerification = (p) => p?.didit_verification_status === 'Approved';
 
 export default function PrivatePhotosSection({ profile, onRefetch, maxPrivatePhotos = 10 }) {
+  const { t } = useTranslation();
   const { toast } = useToast();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -141,7 +143,7 @@ export default function PrivatePhotosSection({ profile, onRefetch, maxPrivatePho
       <Card className="mb-6">
         <CardHeader>
           <CardTitle className="font-heading text-lg flex items-center gap-2">🔒 Private Photos</CardTitle>
-          <CardDescription>Only verified members you approve can see your private photos — they pay 5 tokens per peek. Upload up to {maxPrivatePhotos}.</CardDescription>
+          <CardDescription>{t('private_photos_desc', { n: maxPrivatePhotos })}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {uploadError && (
