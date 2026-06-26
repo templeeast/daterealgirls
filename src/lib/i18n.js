@@ -325,6 +325,13 @@ const en = {
   contact_thanks_title: 'Message Received!',
   contact_thanks_desc: 'Thank you for reaching out. Our team will respond to your inquiry within 24–48 hours.',
   contact_also_support: 'You can also submit a detailed support ticket via our',
+  marital_status_label: 'Marital Status',
+  marital_status_placeholder: 'Select marital status',
+  marital_single: 'Single',
+  marital_divorced: 'Divorced',
+  marital_widowed: 'Widowed',
+  marital_separated: 'Separated',
+  marital_rather_not_say: 'Rather not say',
 };
 
 const es = {
@@ -612,6 +619,13 @@ const es = {
   contact_thanks_title: '¡Mensaje Recibido!',
   contact_thanks_desc: 'Gracias por contactarnos. Nuestro equipo responderá en 24–48 horas.',
   contact_also_support: 'También puede enviar un ticket de soporte detallado a través de nuestro',
+  marital_status_label: 'Estado Civil',
+  marital_status_placeholder: 'Seleccionar estado civil',
+  marital_single: 'Soltero/a',
+  marital_divorced: 'Divorciado/a',
+  marital_widowed: 'Viudo/a',
+  marital_separated: 'Separado/a',
+  marital_rather_not_say: 'Prefiero no decir',
 };
 
 const th = {
@@ -899,6 +913,13 @@ const th = {
   contact_thanks_title: 'ได้รับข้อความแล้ว!',
   contact_thanks_desc: 'ขอบคุณที่ติดต่อเรา ทีมของเราจะตอบกลับภายใน 24–48 ชั่วโมง',
   contact_also_support: 'คุณยังสามารถส่งตั๋วสนับสนุนผ่าน',
+  marital_status_label: 'สถานภาพสมรส',
+  marital_status_placeholder: 'เลือกสถานภาพสมรส',
+  marital_single: 'โสด',
+  marital_divorced: 'หย่าร้าง',
+  marital_widowed: 'หม้าย',
+  marital_separated: 'แยกกันอยู่',
+  marital_rather_not_say: 'ไม่ต้องการบอก',
 };
 
 const zh = {
@@ -1186,6 +1207,13 @@ const zh = {
   contact_thanks_title: '消息已收到！',
   contact_thanks_desc: '感谢您联系我们。我们的团队将在24–48小时内回复您的咨询。',
   contact_also_support: '您也可以通过我们的',
+  marital_status_label: '婚姻状况',
+  marital_status_placeholder: '选择婚姻状况',
+  marital_single: '单身',
+  marital_divorced: '离异',
+  marital_widowed: '丧偶',
+  marital_separated: '分居',
+  marital_rather_not_say: '不愿透露',
 };
 
 const de = {
@@ -1473,6 +1501,13 @@ const de = {
   contact_thanks_title: 'Nachricht erhalten!',
   contact_thanks_desc: 'Danke, dass Sie sich gemeldet haben. Unser Team wird Ihre Anfrage innerhalb von 24–48 Stunden beantworten.',
   contact_also_support: 'Sie können auch ein detailliertes Support-Ticket über unser',
+  marital_status_label: 'Familienstand',
+  marital_status_placeholder: 'Familienstand auswählen',
+  marital_single: 'Ledig',
+  marital_divorced: 'Geschieden',
+  marital_widowed: 'Verwitwet',
+  marital_separated: 'Getrennt lebend',
+  marital_rather_not_say: 'Keine Angabe',
 };
 
 const vi = {
@@ -1760,6 +1795,13 @@ const vi = {
   contact_thanks_title: 'Đã Nhận Tin Nhắn!',
   contact_thanks_desc: 'Cảm ơn bạn đã liên hệ. Nhóm của chúng tôi sẽ phản hồi trong 24–48 giờ.',
   contact_also_support: 'Bạn cũng có thể gửi phiếu hỗ trợ qua',
+  marital_status_label: 'Tình Trạng Hôn Nhân',
+  marital_status_placeholder: 'Chọn tình trạng hôn nhân',
+  marital_single: 'Độc thân',
+  marital_divorced: 'Đã ly hôn',
+  marital_widowed: 'Góa',
+  marital_separated: 'Đang ly thân',
+  marital_rather_not_say: 'Không muốn tiết lộ',
 };
 
 const pt = {
@@ -2047,6 +2089,13 @@ const pt = {
   contact_thanks_title: 'Mensagem Recebida!',
   contact_thanks_desc: 'Obrigado por entrar em contato. Nossa equipe responderá em 24–48 horas.',
   contact_also_support: 'Você também pode enviar um ticket de suporte detalhado pelo nosso',
+  marital_status_label: 'Estado Civil',
+  marital_status_placeholder: 'Selecionar estado civil',
+  marital_single: 'Solteiro/a',
+  marital_divorced: 'Divorciado/a',
+  marital_widowed: 'Viúvo/a',
+  marital_separated: 'Separado/a',
+  marital_rather_not_say: 'Prefiro não dizer',
 };
 
 const tl = {
@@ -2298,6 +2347,13 @@ const tl = {
   creating: 'Ginagawa...',
   age_error: 'Kailangan mong maging 18 taong gulang o mas matanda para sumali',
   profile_created: 'Nagawa na ang profile! Maligayang pagdating sa {{siteName}}',
+  marital_status_label: 'Katayuang Sibil',
+  marital_status_placeholder: 'Pumili ng katayuang sibil',
+  marital_single: 'Walang asawa',
+  marital_divorced: 'Diborsyado/a',
+  marital_widowed: 'Biyudo/a',
+  marital_separated: 'Hiwalay',
+  marital_rather_not_say: 'Ayaw sabihin',
 };
 
 const resources = {

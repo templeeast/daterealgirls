@@ -737,15 +737,15 @@ export default function MyProfile() {
             </Select>
           </div>
           <div className="space-y-2">
-            <Label>Marital Status</Label>
+            <Label>{t('marital_status_label')}</Label>
             <Select value={form.marital_status} onValueChange={v => updateField('marital_status', v)}>
-              <SelectTrigger><SelectValue placeholder="Select marital status" /></SelectTrigger>
+              <SelectTrigger><SelectValue placeholder={t('marital_status_placeholder')} /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="single">Single</SelectItem>
-                <SelectItem value="divorced">Divorced</SelectItem>
-                <SelectItem value="widowed">Widowed</SelectItem>
-                <SelectItem value="separated">Separated</SelectItem>
-                <SelectItem value="rather_not_say">Rather not say</SelectItem>
+                <SelectItem value="single">{t('marital_single')}</SelectItem>
+                <SelectItem value="divorced">{t('marital_divorced')}</SelectItem>
+                <SelectItem value="widowed">{t('marital_widowed')}</SelectItem>
+                <SelectItem value="separated">{t('marital_separated')}</SelectItem>
+                <SelectItem value="rather_not_say">{t('marital_rather_not_say')}</SelectItem>
               </SelectContent>
             </Select>
           </div>
