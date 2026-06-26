@@ -109,6 +109,13 @@ export default function MyProfile() {
     setTimeout(() => refetch(), 3000);
   };
 
+  const getPromoErrorMessage = (error) => {
+    if (!error) return t('promo_already_used');
+    if (error.includes('already been used')) return t('promo_already_used');
+    if (error.includes('usage limit')) return t('promo_usage_limit_reached');
+    return error;
+  };
+
   const handleApplyVerifPromo = async () => {
     if (!verifPromoCode.trim()) return;
     setApplyingVerifPromo(true);
@@ -123,7 +130,7 @@ export default function MyProfile() {
         }
         setVerifPromoCode('');
       } else {
-        toast({ title: res.data?.error || 'Invalid promo code', variant: 'destructive' });
+        toast({ title: getPromoErrorMessage(res.data?.error), variant: 'destructive' });
       }
     } finally {
       setApplyingVerifPromo(false);
@@ -144,7 +151,7 @@ export default function MyProfile() {
         }
         setGeneralPromoCode('');
       } else {
-        toast({ title: res.data?.error || 'Invalid promo code', variant: 'destructive' });
+        toast({ title: getPromoErrorMessage(res.data?.error), variant: 'destructive' });
       }
     } finally {
       setApplyingGeneralPromo(false);
