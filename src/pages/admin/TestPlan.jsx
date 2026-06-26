@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { CheckSquare, Square, ChevronDown, ChevronRight, Shield, Users, CreditCard, MessageSquare, Heart, Settings, Bug, Globe, Trash2, RefreshCw, Tag, Camera, Lock, Image, Key } from 'lucide-react';
+import { CheckSquare, Square, ChevronDown, ChevronRight, Shield, Users, CreditCard, MessageSquare, Heart, Settings, Bug, Globe, Trash2, RefreshCw, Tag, Camera, Lock, Image, Key, Link } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import useMyProfile from '@/hooks/useMyProfile';
 import { base44 } from '@/api/base44Client';
@@ -422,6 +422,41 @@ const sections = [
       { id: 'admdidit-9',  label: 'VerificationDetail: didit_verification_status="Declined" shows red ❌ "Declined by Didit" badge' },
       { id: 'admdidit-10', label: 'VerificationDetail: admin Approve and Reject override buttons function correctly regardless of Didit status' },
       { id: 'admdidit-11', label: 'fetchDiditSession uses getActiveDiditCredentials() — does NOT call Deno.env.get() directly' },
+    ],
+  },
+  {
+    id: 'stripe_payment_link',
+    icon: Link,
+    title: 'Stripe Payment Link Integration',
+    color: 'text-violet-500',
+    items: [
+      // --- Profile Field ---
+      { id: 'spl-001', label: 'TC-SPL-001 | PROFILE FIELD: Stripe Payment Link field is NOT visible or editable when admin has enabled the feature but user is NOT yet ID-verified' },
+      { id: 'spl-002', label: 'TC-SPL-002 | PROFILE FIELD: Stripe Payment Link input field and instructions section ARE visible and editable when admin has enabled the feature AND user IS ID-verified' },
+      { id: 'spl-003', label: 'TC-SPL-003 | PROFILE FIELD: Valid URL beginning with https://buy.stripe.com/ is accepted and saved without a validation error' },
+      { id: 'spl-004', label: 'TC-SPL-004 | PROFILE FIELD: URL that does NOT begin with https://buy.stripe.com/ (e.g. https://paypal.me/example) is rejected with a validation error and not saved' },
+      { id: 'spl-005', label: 'TC-SPL-005 | PROFILE FIELD: Step-by-step instructions for creating a Stripe Payment Link are displayed beneath the input field when field is visible' },
+      // --- Admin Controls ---
+      { id: 'spl-010', label: 'TC-SPL-010 | ADMIN: Toggling stripe_payment_link_enabled_men to true allows ID-verified male members to see/use the field; female members are unaffected' },
+      { id: 'spl-011', label: 'TC-SPL-011 | ADMIN: Toggling stripe_payment_link_enabled_women to true allows ID-verified female members to see/use the field; male members are unaffected' },
+      { id: 'spl-012', label: 'TC-SPL-012 | ADMIN: Disabling the toggle for a gender hides the Profile field AND removes the "Send a Payment" button from those users\' public profiles' },
+      { id: 'spl-013', label: 'TC-SPL-013 | ADMIN: Updating stripe_link_message_credit_cost saves correctly; embedding a payment link in chat now costs the new credit amount and cost_notice reflects it' },
+      // --- Public Profile ---
+      { id: 'spl-020', label: 'TC-SPL-020 | PUBLIC PROFILE: "Send a Payment" button is displayed and links to the user\'s Stripe URL when: user is ID-verified, has a saved link, feature is admin-enabled, and "Show on public profile" is ON' },
+      { id: 'spl-021', label: 'TC-SPL-021 | PUBLIC PROFILE: "Send a Payment" button is NOT displayed when "Show on public profile" toggle is OFF' },
+      { id: 'spl-022', label: 'TC-SPL-022 | PUBLIC PROFILE: "Send a Payment" button is NOT displayed when user has a saved link and toggle is ON but user is NOT ID-verified' },
+      { id: 'spl-023', label: 'TC-SPL-023 | PUBLIC PROFILE: "Send a Payment" button is NOT displayed when user is ID-verified and toggle is ON but admin has disabled the feature for that gender' },
+      { id: 'spl-024', label: 'TC-SPL-024 | PUBLIC PROFILE: "Show my payment link on my public profile" toggle is NOT available or is disabled when user is not ID-verified (or feature is admin-disabled)' },
+      // --- Message Embed ---
+      { id: 'spl-030', label: 'TC-SPL-030 | MESSAGE EMBED: Payment link embed button is visible and enabled in the chat composer when user is ID-verified, has a saved link, feature is admin-enabled, and has sufficient credits' },
+      { id: 'spl-031', label: 'TC-SPL-031 | MESSAGE EMBED: Clicking embed button and sending message inserts the Stripe link as a tappable link in the sent message AND deducts the configured credit amount from the user\'s balance' },
+      { id: 'spl-032', label: 'TC-SPL-032 | MESSAGE EMBED: Clicking embed button when user has fewer credits than the configured cost shows an insufficient-credits error; message is not sent with the link' },
+      { id: 'spl-033', label: 'TC-SPL-033 | MESSAGE EMBED: Button is disabled with a prompt directing user to profile settings when no Stripe Payment Link has been saved' },
+      { id: 'spl-034', label: 'TC-SPL-034 | MESSAGE EMBED: Button is disabled with not_verified tooltip when user has a saved link but is NOT ID-verified' },
+      { id: 'spl-035', label: 'TC-SPL-035 | MESSAGE EMBED: Button is disabled with not_enabled tooltip when user is ID-verified and has a saved link but admin has disabled the feature for their gender' },
+      // --- i18n ---
+      { id: 'spl-040', label: 'TC-SPL-040 | i18n: All new Stripe Payment Link strings (labels, instructions, tooltips, cost notices, admin labels) render correctly in all 8 supported languages with no untranslated fallback keys' },
+      { id: 'spl-041', label: 'TC-SPL-041 | i18n: The {{n}} credit cost variable in the cost_notice string is replaced with the correct numeric value in all 8 supported languages' },
     ],
   },
   {
