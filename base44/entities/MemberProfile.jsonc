@@ -191,6 +191,11 @@
       "type": "string",
       "description": "TikTok username"
     },
+    "show_social_media": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether to show social media links on the public profile (requires verified status)"
+    },
     "profile_review_status": {
       "type": "string",
       "enum": [

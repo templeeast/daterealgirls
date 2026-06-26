@@ -224,6 +224,7 @@ export default function MyProfile() {
         facebook: profile.facebook || '',
         tiktok: profile.tiktok || '',
         show_tag_id: profile.show_tag_id !== false,
+        show_social_media: profile.show_social_media === true,
       });
     }
   }, [profile, isLoading, form, navigate]);
@@ -778,6 +779,13 @@ export default function MyProfile() {
           <CardTitle className="font-heading text-lg">{t('social_media_title')}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
+          {/* Verified-only notice */}
+          {profile.verification_status !== 'verified' && (
+            <div className="flex items-start gap-2 bg-amber-50 border border-amber-200 text-amber-800 rounded-lg p-3 text-sm">
+              <Shield className="w-4 h-4 shrink-0 mt-0.5 text-amber-500" />
+              <span>{t('social_media_verified_required')}</span>
+            </div>
+          )}
           <div className="space-y-2">
             <Label>{t('instagram_label')}</Label>
             <Input placeholder={t('username_placeholder')} value={form.instagram} onChange={e => updateField('instagram', e.target.value)} />
@@ -789,6 +797,18 @@ export default function MyProfile() {
           <div className="space-y-2">
             <Label>{t('tiktok_label')}</Label>
             <Input placeholder={t('username_placeholder')} value={form.tiktok} onChange={e => updateField('tiktok', e.target.value)} />
+          </div>
+          {/* Show on public profile toggle */}
+          <div className="flex items-center justify-between pt-2 border-t border-border">
+            <div>
+              <p className="text-sm font-medium">{t('social_media_show_public')}</p>
+              <p className="text-xs text-muted-foreground">{t('social_media_show_public_desc')}</p>
+            </div>
+            <Switch
+              checked={form.show_social_media === true}
+              disabled={profile.verification_status !== 'verified'}
+              onCheckedChange={v => updateField('show_social_media', v)}
+            />
           </div>
         </CardContent>
       </Card>

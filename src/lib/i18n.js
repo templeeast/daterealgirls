@@ -334,6 +334,9 @@ const en = {
   marital_widowed: 'Widowed',
   marital_separated: 'Separated',
   marital_rather_not_say: 'Rather not say',
+  social_media_verified_required: 'You must be ID verified to show your social media links on your public profile.',
+  social_media_show_public: 'Show on public profile',
+  social_media_show_public_desc: 'Requires ID verification to enable.',
 };
 
 const es = {
@@ -630,6 +633,9 @@ const es = {
   marital_widowed: 'Viudo/a',
   marital_separated: 'Separado/a',
   marital_rather_not_say: 'Prefiero no decir',
+  social_media_verified_required: 'Debes estar verificado con ID para mostrar tus redes sociales en tu perfil público.',
+  social_media_show_public: 'Mostrar en perfil público',
+  social_media_show_public_desc: 'Requiere verificación de identidad para activar.',
 };
 
 const th = {
@@ -926,6 +932,9 @@ const th = {
   marital_widowed: 'หม้าย',
   marital_separated: 'แยกกันอยู่',
   marital_rather_not_say: 'ไม่ต้องการบอก',
+  social_media_verified_required: 'คุณต้องยืนยันตัวตนด้วย ID เพื่อแสดงโซเชียลมีเดียบนโปรไฟล์สาธารณะของคุณ',
+  social_media_show_public: 'แสดงในโปรไฟล์สาธารณะ',
+  social_media_show_public_desc: 'ต้องยืนยันตัวตนจึงจะเปิดใช้งานได้',
 };
 
 const zh = {
@@ -1222,6 +1231,9 @@ const zh = {
   marital_widowed: '丧偶',
   marital_separated: '分居',
   marital_rather_not_say: '不愿透露',
+  social_media_verified_required: '您必须通过身份证验证才能在公开资料中显示社交媒体链接。',
+  social_media_show_public: '在公开资料中显示',
+  social_media_show_public_desc: '需要完成身份验证才能启用。',
 };
 
 const de = {
@@ -1518,6 +1530,9 @@ const de = {
   marital_widowed: 'Verwitwet',
   marital_separated: 'Getrennt lebend',
   marital_rather_not_say: 'Keine Angabe',
+  social_media_verified_required: 'Du musst mit einem Ausweis verifiziert sein, um deine Social-Media-Links im öffentlichen Profil anzuzeigen.',
+  social_media_show_public: 'Im öffentlichen Profil anzeigen',
+  social_media_show_public_desc: 'Erfordert ID-Verifizierung zum Aktivieren.',
 };
 
 const vi = {
@@ -1814,6 +1829,9 @@ const vi = {
   marital_widowed: 'Góa',
   marital_separated: 'Đang ly thân',
   marital_rather_not_say: 'Không muốn tiết lộ',
+  social_media_verified_required: 'Bạn phải được xác minh ID để hiển thị liên kết mạng xã hội trên hồ sơ công khai.',
+  social_media_show_public: 'Hiển thị trên hồ sơ công khai',
+  social_media_show_public_desc: 'Yêu cầu xác minh ID để bật.',
 };
 
 const pt = {
@@ -2110,6 +2128,9 @@ const pt = {
   marital_widowed: 'Viúvo/a',
   marital_separated: 'Separado/a',
   marital_rather_not_say: 'Prefiro não dizer',
+  social_media_verified_required: 'Você precisa ter ID verificado para exibir seus links de redes sociais no perfil público.',
+  social_media_show_public: 'Mostrar no perfil público',
+  social_media_show_public_desc: 'Requer verificação de ID para ativar.',
 };
 
 const tl = {
@@ -2370,6 +2391,9 @@ const tl = {
   marital_widowed: 'Biyudo/a',
   marital_separated: 'Hiwalay',
   marital_rather_not_say: 'Ayaw sabihin',
+  social_media_verified_required: 'Kailangan mong ma-verify ang iyong ID para ipakita ang iyong mga social media link sa pampublikong profile.',
+  social_media_show_public: 'Ipakita sa pampublikong profile',
+  social_media_show_public_desc: 'Nangangailangan ng ID verification para i-enable.',
 };
 
 const resources = {
