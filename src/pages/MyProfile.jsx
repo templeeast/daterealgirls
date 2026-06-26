@@ -225,6 +225,8 @@ export default function MyProfile() {
         tiktok: profile.tiktok || '',
         show_tag_id: profile.show_tag_id !== false,
         show_social_media: profile.show_social_media === true,
+        stripe_payment_link: profile.stripe_payment_link || '',
+        show_stripe_payment_link: profile.show_stripe_payment_link === true,
       });
     }
   }, [profile, isLoading, form, navigate]);
@@ -819,6 +821,45 @@ export default function MyProfile() {
         </CardContent>
       </Card>
 
+
+      {/* Stripe Payment Link */}
+      {((profile.gender === 'male' && config.stripe_payment_link_enabled_men) || (profile.gender === 'female' && config.stripe_payment_link_enabled_women)) && (
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle className="font-heading text-lg flex items-center gap-2">
+              <ExternalLink className="w-5 h-5 text-primary" /> Payment Link
+            </CardTitle>
+            <CardDescription>
+              Add your Stripe Payment Link so members can send you payments. It will appear on your profile and can be embedded in chat messages.
+              {profile.verification_status !== 'verified' && (
+                <span className="block mt-1 text-amber-600 font-medium">⚠ ID verification required to display this on your profile.</span>
+              )}
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label>Your Stripe Payment Link URL</Label>
+              <Input
+                placeholder="https://buy.stripe.com/..."
+                value={form.stripe_payment_link || ''}
+                onChange={e => updateField('stripe_payment_link', e.target.value)}
+              />
+              <p className="text-xs text-muted-foreground">Must start with <code className="bg-muted px-1 rounded">https://buy.stripe.com/</code>. Create one in your Stripe Dashboard → Payment Links.</p>
+            </div>
+            <div className="flex items-center justify-between border-t pt-3">
+              <div>
+                <p className="text-sm font-medium">Show on public profile</p>
+                <p className="text-xs text-muted-foreground">Only visible to other verified members.</p>
+              </div>
+              <Switch
+                checked={form.show_stripe_payment_link === true}
+                disabled={profile.verification_status !== 'verified'}
+                onCheckedChange={v => updateField('show_stripe_payment_link', v)}
+              />
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Save */}
       <Button className="w-full gap-2 rounded-full" size="lg" onClick={handleSave} disabled={saving}>
