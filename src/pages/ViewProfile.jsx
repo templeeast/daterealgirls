@@ -141,6 +141,13 @@ export default function ViewProfile() {
     marriage: t('vp_marriage'),
   };
 
+  const maritalStatusLabels = {
+    single: t('marital_single'),
+    divorced: t('marital_divorced'),
+    widowed: t('marital_widowed'),
+    separated: t('marital_separated'),
+  };
+
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
       <Button variant="ghost" className="mb-4" onClick={() => navigate(-1)}>
@@ -233,6 +240,12 @@ export default function ViewProfile() {
               <div>
                 <p className="text-sm text-muted-foreground">{t('looking_for_detail')}</p>
                 <p className="font-medium">{lookingForLabels[profile.looking_for]}</p>
+              </div>
+            )}
+            {profile.marital_status && profile.marital_status !== 'rather_not_say' && (
+              <div>
+                <p className="text-sm text-muted-foreground">{t('marital_status_label')}</p>
+                <p className="font-medium">{maritalStatusLabels[profile.marital_status]}</p>
               </div>
             )}
             {profile.interests?.length > 0 && (
