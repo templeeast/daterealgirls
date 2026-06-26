@@ -497,6 +497,7 @@ export default function MyProfile() {
             <div className="space-y-1">
               <p className="font-semibold text-sm">Use Promo Code <span className="font-mono bg-amber-100 px-1.5 py-0.5 rounded">FUNDATES</span> with your first token purchase to get <strong>1,000 free tokens</strong>.</p>
               <p className="text-sm">Use Promo Code <span className="font-mono bg-amber-100 px-1.5 py-0.5 rounded">LAUNCH26</span> after ID Verification to get an additional <strong>5,000 free tokens</strong>.</p>
+              <p className="text-sm">Use Promo Code <span className="font-mono bg-amber-100 px-1.5 py-0.5 rounded">GODATE26</span> as a profile completion welcome bonus for <strong>1,000 free tokens</strong>.</p>
             </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
