@@ -337,6 +337,9 @@ const en = {
   social_media_verified_required: 'You must be ID verified to show your social media links on your public profile.',
   social_media_show_public: 'Show on public profile',
   social_media_show_public_desc: 'Requires ID verification to enable.',
+  'token.action.embed_payment_link': 'Embed payment link in message',
+  'token.action.embed_payment_link.sublabel': 'per message',
+  'token.embed_payment_link.not_available': 'Not available',
 };
 
 const es = {
@@ -636,6 +639,9 @@ const es = {
   social_media_verified_required: 'Debes estar verificado con ID para mostrar tus redes sociales en tu perfil público.',
   social_media_show_public: 'Mostrar en perfil público',
   social_media_show_public_desc: 'Requiere verificación de identidad para activar.',
+  'token.action.embed_payment_link': 'Insertar enlace de pago en mensaje',
+  'token.action.embed_payment_link.sublabel': 'por mensaje',
+  'token.embed_payment_link.not_available': 'No disponible',
 };
 
 const th = {
@@ -935,6 +941,9 @@ const th = {
   social_media_verified_required: 'คุณต้องยืนยันตัวตนด้วย ID เพื่อแสดงโซเชียลมีเดียบนโปรไฟล์สาธารณะของคุณ',
   social_media_show_public: 'แสดงในโปรไฟล์สาธารณะ',
   social_media_show_public_desc: 'ต้องยืนยันตัวตนจึงจะเปิดใช้งานได้',
+  'token.action.embed_payment_link': 'แทรกลิงก์การชำระเงินในข้อความ',
+  'token.action.embed_payment_link.sublabel': 'ต่อข้อความ',
+  'token.embed_payment_link.not_available': 'ไม่พร้อมใช้งาน',
 };
 
 const zh = {
@@ -1234,6 +1243,9 @@ const zh = {
   social_media_verified_required: '您必须通过身份证验证才能在公开资料中显示社交媒体链接。',
   social_media_show_public: '在公开资料中显示',
   social_media_show_public_desc: '需要完成身份验证才能启用。',
+  'token.action.embed_payment_link': '在消息中嵌入收款链接',
+  'token.action.embed_payment_link.sublabel': '每条消息',
+  'token.embed_payment_link.not_available': '不可用',
 };
 
 const de = {
@@ -1533,6 +1545,9 @@ const de = {
   social_media_verified_required: 'Du musst mit einem Ausweis verifiziert sein, um deine Social-Media-Links im öffentlichen Profil anzuzeigen.',
   social_media_show_public: 'Im öffentlichen Profil anzeigen',
   social_media_show_public_desc: 'Erfordert ID-Verifizierung zum Aktivieren.',
+  'token.action.embed_payment_link': 'Zahlungslink in Nachricht einbetten',
+  'token.action.embed_payment_link.sublabel': 'pro Nachricht',
+  'token.embed_payment_link.not_available': 'Nicht verfügbar',
 };
 
 const vi = {
@@ -1832,6 +1847,9 @@ const vi = {
   social_media_verified_required: 'Bạn phải được xác minh ID để hiển thị liên kết mạng xã hội trên hồ sơ công khai.',
   social_media_show_public: 'Hiển thị trên hồ sơ công khai',
   social_media_show_public_desc: 'Yêu cầu xác minh ID để bật.',
+  'token.action.embed_payment_link': 'Nhúng liên kết thanh toán vào tin nhắn',
+  'token.action.embed_payment_link.sublabel': 'mỗi tin nhắn',
+  'token.embed_payment_link.not_available': 'Không khả dụng',
 };
 
 const pt = {
@@ -2131,6 +2149,9 @@ const pt = {
   social_media_verified_required: 'Você precisa ter ID verificado para exibir seus links de redes sociais no perfil público.',
   social_media_show_public: 'Mostrar no perfil público',
   social_media_show_public_desc: 'Requer verificação de ID para ativar.',
+  'token.action.embed_payment_link': 'Incorporar link de pagamento na mensagem',
+  'token.action.embed_payment_link.sublabel': 'por mensagem',
+  'token.embed_payment_link.not_available': 'Não disponível',
 };
 
 const tl = {
@@ -2394,6 +2415,9 @@ const tl = {
   social_media_verified_required: 'Kailangan mong ma-verify ang iyong ID para ipakita ang iyong mga social media link sa pampublikong profile.',
   social_media_show_public: 'Ipakita sa pampublikong profile',
   social_media_show_public_desc: 'Nangangailangan ng ID verification para i-enable.',
+  'token.action.embed_payment_link': 'Mag-embed ng payment link sa mensahe',
+  'token.action.embed_payment_link.sublabel': 'bawat mensahe',
+  'token.embed_payment_link.not_available': 'Hindi available',
 };
 
 const resources = {

@@ -544,6 +544,12 @@ export default function MyProfile() {
                 <span>{t('token_cost_send_message')} <span className="text-xs text-amber-600 font-medium">({t('token_cost_verification_required')})</span></span>
                 <span>{profile.gender === 'male' ? (config.tokens_msg_cost_men ?? 2) : (config.tokens_msg_cost_women ?? 0)} tokens</span>
               </div>
+              {((profile.gender === 'male' && config.stripe_payment_link_enabled_men) || (profile.gender === 'female' && config.stripe_payment_link_enabled_women)) && (
+              <div className="flex justify-between">
+                <span>{t('token.action.embed_payment_link')} <span className="text-xs text-amber-600 font-medium">({t('token_cost_verification_required')})</span></span>
+                <span>{config.stripe_link_message_credit_cost ?? 5} tokens</span>
+              </div>
+              )}
               <div className="flex justify-between">
                 <span>{t('token_cost_view_private_photos')} <span className="text-xs text-amber-600 font-medium">({t('token_cost_verification_required')})</span></span>
                 <span>{profile.gender === 'male' ? '5 tokens / photo' : 'Free'}</span>

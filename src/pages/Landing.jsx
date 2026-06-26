@@ -253,6 +253,33 @@ export default function Landing() {
                       <div className="text-xs text-muted-foreground">{t('token_cost_per_photo')}</div>
                     </td>
                   </tr>
+                  {(config.stripe_payment_link_enabled_men || config.stripe_payment_link_enabled_women) && (
+                  <tr className="border-b">
+                    <td className="px-6 py-4 font-medium">
+                      {t('token.action.embed_payment_link')} <span className="text-xs text-amber-600 font-medium">({t('token_cost_verification_required')})</span>
+                    </td>
+                    <td className="text-center px-6 py-4">
+                      {config.stripe_payment_link_enabled_men ? (
+                        <>
+                          <div className="font-semibold">{t('token_cost_n_tokens', { n: config.stripe_link_message_credit_cost ?? 5 })}</div>
+                          <div className="text-xs text-muted-foreground">{t('token.action.embed_payment_link.sublabel')}</div>
+                        </>
+                      ) : (
+                        <span className="text-muted-foreground" aria-label={t('token.embed_payment_link.not_available')}>—</span>
+                      )}
+                    </td>
+                    <td className="text-center px-6 py-4">
+                      {config.stripe_payment_link_enabled_women ? (
+                        <>
+                          <div className="font-semibold">{t('token_cost_n_tokens', { n: config.stripe_link_message_credit_cost ?? 5 })}</div>
+                          <div className="text-xs text-muted-foreground">{t('token.action.embed_payment_link.sublabel')}</div>
+                        </>
+                      ) : (
+                        <span className="text-muted-foreground" aria-label={t('token.embed_payment_link.not_available')}>—</span>
+                      )}
+                    </td>
+                  </tr>
+                  )}
                   <tr className="border-b">
                     <td className="px-6 py-4 font-medium">
                       {t('token_cost_view_private_photos')} <span className="text-xs text-amber-600 font-medium">({t('token_cost_verification_required')})</span>
