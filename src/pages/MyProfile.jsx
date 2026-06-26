@@ -121,17 +121,16 @@ export default function MyProfile() {
     setApplyingVerifPromo(true);
     try {
       const res = await base44.functions.invoke('applyVerificationPromo', { promoCode: verifPromoCode.trim() });
-      if (res.data?.success) {
-        if (res.data?.pending) {
-          toast({ title: res.data.message || 'Promo applied! Tokens will be awarded on your first purchase.' });
-        } else {
-          toast({ title: `🎉 ${res.data.bonusTokens.toLocaleString()} bonus tokens added!` });
-          refetch();
-        }
-        setVerifPromoCode('');
+      if (res.data?.pending) {
+        toast({ title: res.data.message || 'Promo applied! Tokens will be awarded on your first purchase.' });
       } else {
-        toast({ title: getPromoErrorMessage(res.data?.error), variant: 'destructive' });
+        toast({ title: `🎉 ${res.data.bonusTokens.toLocaleString()} bonus tokens added!` });
+        refetch();
       }
+      setVerifPromoCode('');
+    } catch (err) {
+      const errorMsg = err?.response?.data?.error || err?.message || 'Invalid promo code';
+      toast({ title: getPromoErrorMessage(errorMsg), variant: 'destructive' });
     } finally {
       setApplyingVerifPromo(false);
     }
@@ -142,17 +141,16 @@ export default function MyProfile() {
     setApplyingGeneralPromo(true);
     try {
       const res = await base44.functions.invoke('applyVerificationPromo', { promoCode: generalPromoCode.trim() });
-      if (res.data?.success) {
-        if (res.data?.pending) {
-          toast({ title: res.data.message || 'Promo applied! Tokens will be awarded on your first purchase.' });
-        } else {
-          toast({ title: `🎉 ${res.data.bonusTokens.toLocaleString()} bonus tokens added!` });
-          refetch();
-        }
-        setGeneralPromoCode('');
+      if (res.data?.pending) {
+        toast({ title: res.data.message || 'Promo applied! Tokens will be awarded on your first purchase.' });
       } else {
-        toast({ title: getPromoErrorMessage(res.data?.error), variant: 'destructive' });
+        toast({ title: `🎉 ${res.data.bonusTokens.toLocaleString()} bonus tokens added!` });
+        refetch();
       }
+      setGeneralPromoCode('');
+    } catch (err) {
+      const errorMsg = err?.response?.data?.error || err?.message || 'Invalid promo code';
+      toast({ title: getPromoErrorMessage(errorMsg), variant: 'destructive' });
     } finally {
       setApplyingGeneralPromo(false);
     }
