@@ -25,13 +25,8 @@ export default function ProfileCompleteGuard({ children }) {
     return <Navigate to="/onboarding" replace />;
   }
 
-  // Profile exists but incomplete → send to my-profile to finish
-  if (!isExempt && profile && !profile.profile_complete) {
-    return <Navigate to="/my-profile" replace />;
-  }
-
-  // Profile complete but selfie not yet uploaded → send to my-profile to upload
-  if (!isExempt && profile && profile.profile_complete && !profile.selfie_url) {
+  // Profile exists but missing required fields → send to my-profile to finish
+  if (!isExempt && profile && (!profile.display_name || !profile.gender)) {
     return <Navigate to="/my-profile" replace />;
   }
 
