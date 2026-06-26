@@ -534,11 +534,11 @@ export default function MyProfile() {
                 <span>{profile.gender === 'male' ? (config.tokens_browse_cost_men ?? 100) : (config.tokens_browse_cost_women ?? 0)} tokens</span>
               </div>
               <div className="flex justify-between">
-                <span>{t('token_cost_send_message')} <span className="text-xs text-amber-600 font-medium">(verification required)</span></span>
+                <span>{t('token_cost_send_message')} <span className="text-xs text-amber-600 font-medium">({t('token_cost_verification_required')})</span></span>
                 <span>{profile.gender === 'male' ? (config.tokens_msg_cost_men ?? 2) : (config.tokens_msg_cost_women ?? 0)} tokens</span>
               </div>
               <div className="flex justify-between">
-                <span>View private photos <span className="text-xs text-amber-600 font-medium">(verification required)</span></span>
+                <span>{t('token_cost_view_private_photos')} <span className="text-xs text-amber-600 font-medium">({t('token_cost_verification_required')})</span></span>
                 <span>{profile.gender === 'male' ? '5 tokens / photo' : 'Free'}</span>
               </div>
               <div className="flex justify-between">

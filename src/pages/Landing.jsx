@@ -232,7 +232,9 @@ export default function Landing() {
                     </td>
                   </tr>
                   <tr className="border-b">
-                    <td className="px-6 py-4 font-medium">{t('token_cost_send_message')}</td>
+                    <td className="px-6 py-4 font-medium">
+                      {t('token_cost_send_message')} <span className="text-xs text-amber-600 font-medium">({t('token_cost_verification_required')})</span>
+                    </td>
                     <td className="text-center px-6 py-4">
                       <div className="font-semibold">{t('token_cost_n_tokens', { n: config.tokens_msg_cost_men ?? 2 })}</div>
                       <div className="text-xs text-muted-foreground">{t('token_cost_per_message')}</div>
@@ -254,14 +256,16 @@ export default function Landing() {
                     </td>
                   </tr>
                   <tr className="border-b">
-                    <td className="px-6 py-4 font-medium">View private photos</td>
-                    <td className="text-center px-6 py-4">
-                      <div className="font-semibold">5 tokens</div>
-                      <div className="text-xs text-muted-foreground">per photo</div>
+                    <td className="px-6 py-4 font-medium">
+                      {t('token_cost_view_private_photos')} <span className="text-xs text-amber-600 font-medium">({t('token_cost_verification_required')})</span>
                     </td>
                     <td className="text-center px-6 py-4">
-                      <div className="font-semibold text-green-600">Free</div>
-                      <div className="text-xs text-muted-foreground">per photo</div>
+                      <div className="font-semibold">{t('token_cost_n_tokens', { n: 5 })}</div>
+                      <div className="text-xs text-muted-foreground">{t('token_cost_per_photo')}</div>
+                    </td>
+                    <td className="text-center px-6 py-4">
+                      <div className="font-semibold text-green-600">{t('free')}</div>
+                      <div className="text-xs text-muted-foreground">{t('token_cost_per_photo')}</div>
                     </td>
                   </tr>
                   <tr>
