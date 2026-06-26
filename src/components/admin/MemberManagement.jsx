@@ -73,8 +73,11 @@ export default function MemberManagement() {
   });
 
   const verifyMutation = useMutation({
-    mutationFn: ({ id, status }) =>
-      base44.entities.MemberProfile.update(id, { verification_status: status }),
+    mutationFn: ({ id, reviewStatus, verificationStatus }) =>
+      base44.entities.MemberProfile.update(id, {
+        profile_review_status: reviewStatus,
+        verification_status: verificationStatus,
+      }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['allProfiles'] });
       setVerifyDialog(null);
@@ -391,7 +394,7 @@ export default function MemberManagement() {
             <VerificationDetail
               profile={verifyDialog}
               onBack={() => setVerifyDialog(null)}
-              onVerify={(id, status) => verifyMutation.mutate({ id, status })}
+              onVerify={(id, reviewStatus, verificationStatus) => verifyMutation.mutate({ id, reviewStatus, verificationStatus })}
             />
           )}
         </DialogContent>
