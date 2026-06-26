@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 
 const requiresIdVerification = (p) => p?.didit_verification_status === 'Approved';
 
-export default function PrivatePhotosSection({ profile, onRefetch }) {
+export default function PrivatePhotosSection({ profile, onRefetch, maxPrivatePhotos = 10 }) {
   const { toast } = useToast();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -73,8 +73,8 @@ export default function PrivatePhotosSection({ profile, onRefetch }) {
     if (!file) return;
     e.target.value = '';
     const nonRejected = privatePhotos.filter(p => p.status !== 'rejected');
-    if (nonRejected.length >= 10) {
-      setUploadError("You've reached the maximum of 10 private photos. Delete an existing private photo to upload a new one.");
+    if (nonRejected.length >= maxPrivatePhotos) {
+      setUploadError(`You've reached the maximum of ${maxPrivatePhotos} private photos. Delete an existing private photo to upload a new one.`);
       return;
     }
     setUploading(true);
@@ -141,7 +141,7 @@ export default function PrivatePhotosSection({ profile, onRefetch }) {
       <Card className="mb-6">
         <CardHeader>
           <CardTitle className="font-heading text-lg flex items-center gap-2">🔒 Private Photos</CardTitle>
-          <CardDescription>Private photos are only visible to verified members with granted access. Men pay 5 tokens to view each one. You can upload up to 10 private photos.</CardDescription>
+          <CardDescription>Private photos are only visible to verified members with granted access. Men pay 5 tokens to view each one. You can upload up to {maxPrivatePhotos} private photos.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {uploadError && (

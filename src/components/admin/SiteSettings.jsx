@@ -31,6 +31,7 @@ export default function SiteSettings() {
     target_audience: '',
     logo_url: '',
     max_photos: 3,
+    max_private_photos: 10,
     bio_max_length: 500,
     msg_rate_limit_count: 5,
     msg_rate_limit_seconds: 10,
@@ -88,6 +89,7 @@ export default function SiteSettings() {
         target_audience: existingConfig.target_audience || '',
         logo_url: existingConfig.logo_url || '',
         max_photos: existingConfig.max_photos || 3,
+        max_private_photos: existingConfig.max_private_photos ?? 10,
         bio_max_length: existingConfig.bio_max_length || 500,
         msg_rate_limit_count: existingConfig.msg_rate_limit_count ?? 5,
         msg_rate_limit_seconds: existingConfig.msg_rate_limit_seconds ?? 10,
@@ -251,8 +253,12 @@ export default function SiteSettings() {
         <CardContent className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>Max Photos Per Profile</Label>
+              <Label>Max Public Photos Per Profile</Label>
               <Input type="number" value={form.max_photos} onChange={e => updateField('max_photos', Number(e.target.value))} />
+            </div>
+            <div className="space-y-2">
+              <Label>Max Private Photos Per Profile</Label>
+              <Input type="number" value={form.max_private_photos} onChange={e => updateField('max_private_photos', Number(e.target.value))} />
             </div>
             <div className="space-y-2">
               <Label>Max Bio Length (characters)</Label>

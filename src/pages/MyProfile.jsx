@@ -654,7 +654,7 @@ export default function MyProfile() {
       </Card>
 
       {/* Private Photos */}
-      <PrivatePhotosSection profile={profile} onRefetch={refetch} />
+      <PrivatePhotosSection profile={profile} onRefetch={refetch} maxPrivatePhotos={config.max_private_photos ?? 10} />
 
       {/* Profile Info */}
       <Card className="mb-6">
