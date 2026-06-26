@@ -26,7 +26,7 @@ export default function Terms() {
 
         <h1 className="font-heading text-4xl font-bold mb-1">{t('terms_page_title')}</h1>
         <p className="text-sm text-muted-foreground mb-1">{t('terms_operated_by')}</p>
-        <p className="text-muted-foreground mb-2">{t('terms_effective_date')}</p>
+        <p className="text-muted-foreground mb-2">{t('terms.header.last_revised')}</p>
         <p className="text-sm bg-amber-50 border border-amber-200 text-amber-800 rounded-lg px-4 py-3 mb-10 leading-relaxed">
           {t('terms_arbitration_notice')}
         </p>
@@ -152,6 +152,28 @@ export default function Terms() {
           </section>
 
           <section>
+            <h2 className="font-heading text-xl font-semibold mb-3">{t('terms.section_8a.title')}</h2>
+            <p className="text-muted-foreground leading-relaxed mb-4">{t('terms.section_8a.intro')}</p>
+            <h3 className="font-semibold mb-2">{t('terms.section_8a.8a1.heading')}</h3>
+            <p className="text-muted-foreground leading-relaxed mb-4">{t('terms.section_8a.8a1.body')}</p>
+            <h3 className="font-semibold mb-2">{t('terms.section_8a.8a2.heading')}</h3>
+            <p className="text-muted-foreground leading-relaxed mb-4">{t('terms.section_8a.8a2.body')}</p>
+            <h3 className="font-semibold mb-2">{t('terms.section_8a.8a3.heading')}</h3>
+            <p className="text-muted-foreground leading-relaxed mb-4">{t('terms.section_8a.8a3.body')}</p>
+            <h3 className="font-semibold mb-2">{t('terms.section_8a.8a4.heading')}</h3>
+            <p className="text-muted-foreground leading-relaxed mb-4">{t('terms.section_8a.8a4.body')}</p>
+            <h3 className="font-semibold mb-2">{t('terms.section_8a.8a5.heading')}</h3>
+            <p className="text-muted-foreground leading-relaxed mb-4">{t('terms.section_8a.8a5.body')}</p>
+            <h3 className="font-semibold mb-2">{t('terms.section_8a.8a6.heading')}</h3>
+            <p className="text-muted-foreground leading-relaxed mb-4 uppercase text-sm font-medium">{t('terms.section_8a.8a6.body')}</p>
+            <h3 className="font-semibold mb-2">{t('terms.section_8a.8a7.heading')}</h3>
+            <p className="text-muted-foreground leading-relaxed mb-4">{t('terms.section_8a.8a7.body')}</p>
+            <h3 className="font-semibold mb-2">{t('terms.section_8a.8a8.heading')}</h3>
+            <p className="text-muted-foreground leading-relaxed mb-4">{t('terms.section_8a.8a8.body')}</p>
+            <p className="text-xs text-muted-foreground mt-2 italic">{t('terms.section_8a.last_updated')}</p>
+          </section>
+
+          <section>
             <h2 className="font-heading text-xl font-semibold mb-3">9. {t('terms_s9_title')}</h2>
             <p className="text-muted-foreground leading-relaxed mb-2 uppercase text-sm font-medium">{t('terms_s9_p1')}</p>
             <p className="text-muted-foreground leading-relaxed">{t('terms_s9_p2')}</p>
@@ -175,7 +197,7 @@ export default function Terms() {
             <h3 className="font-semibold mb-2">12.2 {t('terms_s12_2_title')}</h3>
             <p className="text-muted-foreground leading-relaxed mb-4">{t('terms_s12_2_desc')}</p>
             <h3 className="font-semibold mb-2">12.3 {t('terms_s12_3_title')}</h3>
-            <p className="text-muted-foreground leading-relaxed mb-4">{t('terms_s12_3_desc')}</p>
+            <p className="text-muted-foreground leading-relaxed mb-4">{t('terms.section_12_3.survival_list')}</p>
             <h3 className="font-semibold mb-2">12.4 {t('terms_s12_4_title')}</h3>
             <p className="text-muted-foreground leading-relaxed">{t('terms_s12_4_desc')}</p>
           </section>

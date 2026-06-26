@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ArrowLeft, Send, User, Image as ImageIcon, Trash2, Coins, Lock, CheckCircle, XCircle } from 'lucide-react';
+import { ArrowLeft, Send, User, Image as ImageIcon, Trash2, Coins, Lock, CheckCircle, XCircle, Link as LinkIcon } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import useMyProfile from '@/hooks/useMyProfile';
 import useSiteConfig from '@/hooks/useSiteConfig';
@@ -396,6 +396,18 @@ export default function Chat() {
               <span className="text-xs text-muted-foreground">· {t('chat_token_balance', { n: tokens.toLocaleString() })}</span>
             </div>
           ) : null}
+          {/* Payment link legal disclaimer */}
+          {(() => {
+            const isVerified = requiresIdVerification(profile);
+            const stripeEnabled = isMale ? config?.stripe_payment_link_enabled_men : config?.stripe_payment_link_enabled_women;
+            const hasPaymentLink = !!profile?.stripe_payment_link;
+            const showPaymentBtn = isVerified && stripeEnabled;
+            return showPaymentBtn ? (
+              <p className="text-xs text-gray-400 text-center mb-1 max-w-3xl mx-auto px-1">
+                {t('stripe.payment_link.composer.legal_disclaimer')}
+              </p>
+            ) : null;
+          })()}
           <div className="flex gap-2 items-center max-w-3xl mx-auto">
             <label>
               <Button variant="ghost" size="icon" className="shrink-0" asChild>
@@ -403,6 +415,53 @@ export default function Chat() {
               </Button>
               <input type="file" accept="image/*" className="hidden" onChange={handleImageSend} />
             </label>
+            {/* Payment link embed button */}
+            {(() => {
+              const isVerified = requiresIdVerification(profile);
+              const stripeEnabled = isMale ? config?.stripe_payment_link_enabled_men : config?.stripe_payment_link_enabled_women;
+              const hasPaymentLink = !!profile?.stripe_payment_link;
+              const linkCost = config?.stripe_link_message_credit_cost ?? 5;
+              let tooltipMsg = '';
+              let btnDisabled = true;
+              if (!isVerified) tooltipMsg = t('stripe.payment_link.not_verified.tooltip');
+              else if (!stripeEnabled) tooltipMsg = t('stripe.payment_link.not_enabled.tooltip');
+              else if (!hasPaymentLink) tooltipMsg = t('stripe.payment_link.missing.prompt');
+              else if (tokens < linkCost) tooltipMsg = t('stripe.payment_link.message_embed.cost_notice', { n: linkCost });
+              else btnDisabled = false;
+              if (!isVerified && !stripeEnabled) return null;
+              const handleEmbedPaymentLink = async () => {
+                if (btnDisabled) { if (tooltipMsg) alert(tooltipMsg); return; }
+                const myProfile = (await base44.entities.MemberProfile.filter({ user_id: user.id }))[0];
+                await base44.entities.MemberProfile.update(myProfile.id, { tokens: Math.max(0, tokens - linkCost) });
+                await base44.entities.Message.create({
+                  conversation_id: conversationId,
+                  sender_id: user.id,
+                  sender_name: myProfile?.display_name || 'User',
+                  content: profile.stripe_payment_link,
+                });
+                const isP1 = conversation.participant_1_id === user.id;
+                await base44.entities.Conversation.update(conversationId, {
+                  last_message: profile.stripe_payment_link,
+                  last_message_date: new Date().toISOString(),
+                  [isP1 ? 'unread_count_2' : 'unread_count_1']:
+                    (isP1 ? (conversation.unread_count_2 || 0) : (conversation.unread_count_1 || 0)) + 1,
+                });
+                queryClient.invalidateQueries({ queryKey: ['messages', conversationId] });
+                queryClient.invalidateQueries({ queryKey: ['myProfile'] });
+              };
+              return (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="shrink-0"
+                  title={btnDisabled ? tooltipMsg : t('stripe.payment_link.message_embed.tooltip')}
+                  disabled={btnDisabled}
+                  onClick={handleEmbedPaymentLink}
+                >
+                  <LinkIcon className="w-5 h-5" />
+                </Button>
+              );
+            })()}
             <Input
               placeholder={rateLimited ? `Slow down — too many messages` : t('type_message')}
               value={text}
