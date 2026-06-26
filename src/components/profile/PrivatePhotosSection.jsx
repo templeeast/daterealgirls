@@ -141,7 +141,7 @@ export default function PrivatePhotosSection({ profile, onRefetch }) {
       <Card className="mb-6">
         <CardHeader>
           <CardTitle className="font-heading text-lg flex items-center gap-2">🔒 Private Photos</CardTitle>
-          <CardDescription>Private photos are only visible to verified members with granted access. Men pay 5 tokens to view each one.</CardDescription>
+          <CardDescription>Private photos are only visible to verified members with granted access. Men pay 5 tokens to view each one. You can upload up to 10 private photos.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {uploadError && (
