@@ -20,6 +20,9 @@ export const stripePaymentLinkTranslations = {
     'admin.stripe_payment_link.men_enabled.label': 'Enable Stripe Payment Links for male members',
     'admin.stripe_payment_link.women_enabled.label': 'Enable Stripe Payment Links for female members',
     'admin.stripe_payment_link.message_credit_cost.label': 'Credit cost to embed a payment link in a message',
+    'token.action.embed_payment_link': 'Embed payment link in chat',
+    'token.action.embed_payment_link.sublabel': 'per link sent',
+    'token.embed_payment_link.not_available': 'Not available',
   },
   es: {
     'stripe.payment_link.label': 'Tu enlace de pago de Stripe',
@@ -41,6 +44,9 @@ export const stripePaymentLinkTranslations = {
     'admin.stripe_payment_link.men_enabled.label': 'Habilitar enlaces de pago Stripe para miembros masculinos',
     'admin.stripe_payment_link.women_enabled.label': 'Habilitar enlaces de pago Stripe para miembros femeninos',
     'admin.stripe_payment_link.message_credit_cost.label': 'Creditos necesarios para insertar un enlace de pago en un mensaje',
+    'token.action.embed_payment_link': 'Insertar enlace de pago en el chat',
+    'token.action.embed_payment_link.sublabel': 'por enlace enviado',
+    'token.embed_payment_link.not_available': 'No disponible',
   },
   th: {
     'stripe.payment_link.label': '\u0e25\u0e34\u0e07\u0e01\u0e4c\u0e01\u0e32\u0e23\u0e0a\u0e33\u0e23\u0e30\u0e40\u0e07\u0e34\u0e19 Stripe \u0e02\u0e2d\u0e07\u0e04\u0e38\u0e13',
@@ -62,6 +68,9 @@ export const stripePaymentLinkTranslations = {
     'admin.stripe_payment_link.men_enabled.label': '\u0e40\u0e1b\u0e34\u0e14\u0e43\u0e0a\u0e49\u0e07\u0e32\u0e19\u0e25\u0e34\u0e07\u0e01\u0e4c\u0e01\u0e32\u0e23\u0e0a\u0e33\u0e23\u0e30\u0e40\u0e07\u0e34\u0e19 Stripe \u0e2a\u0e33\u0e2b\u0e23\u0e31\u0e1a\u0e2a\u0e21\u0e32\u0e0a\u0e34\u0e01\u0e0a\u0e32\u0e22',
     'admin.stripe_payment_link.women_enabled.label': '\u0e40\u0e1b\u0e34\u0e14\u0e43\u0e0a\u0e49\u0e07\u0e32\u0e19\u0e25\u0e34\u0e07\u0e01\u0e4c\u0e01\u0e32\u0e23\u0e0a\u0e33\u0e23\u0e30\u0e40\u0e07\u0e34\u0e19 Stripe \u0e2a\u0e33\u0e2b\u0e23\u0e31\u0e1a\u0e2a\u0e21\u0e32\u0e0a\u0e34\u0e01\u0e2b\u0e0d\u0e34\u0e07',
     'admin.stripe_payment_link.message_credit_cost.label': '\u0e08\u0e33\u0e19\u0e27\u0e19\u0e40\u0e04\u0e23\u0e14\u0e34\u0e15\u0e17\u0e35\u0e48\u0e43\u0e0a\u0e49\u0e41\u0e17\u0e23\u0e01\u0e25\u0e34\u0e07\u0e01\u0e4c\u0e01\u0e32\u0e23\u0e0a\u0e33\u0e23\u0e30\u0e40\u0e07\u0e34\u0e19\u0e43\u0e19\u0e02\u0e49\u0e2d\u0e04\u0e27\u0e32\u0e21',
+    'token.action.embed_payment_link': '\u0e41\u0e17\u0e23\u0e01\u0e25\u0e34\u0e07\u0e01\u0e4c\u0e01\u0e32\u0e23\u0e0a\u0e33\u0e23\u0e30\u0e40\u0e07\u0e34\u0e19\u0e43\u0e19\u0e41\u0e0a\u0e17',
+    'token.action.embed_payment_link.sublabel': '\u0e15\u0e48\u0e2d\u0e25\u0e34\u0e07\u0e01\u0e4c\u0e17\u0e35\u0e48\u0e2a\u0e48\u0e07',
+    'token.embed_payment_link.not_available': '\u0e44\u0e21\u0e48\u0e1e\u0e23\u0e49\u0e2d\u0e21\u0e43\u0e0a\u0e49\u0e07\u0e32\u0e19',
   },
   zh: {
     'stripe.payment_link.label': '\u60a8\u7684 Stripe \u6536\u6b3e\u94fe\u63a5',
@@ -83,6 +92,9 @@ export const stripePaymentLinkTranslations = {
     'admin.stripe_payment_link.men_enabled.label': '\u4e3a\u7537\u6027\u4f1a\u5458\u542f\u7528 Stripe \u6536\u6b3e\u94fe\u63a5',
     'admin.stripe_payment_link.women_enabled.label': '\u4e3a\u5973\u6027\u4f1a\u5458\u542f\u7528 Stripe \u6536\u6b3e\u94fe\u63a5',
     'admin.stripe_payment_link.message_credit_cost.label': '\u5728\u6d88\u606f\u4e2d\u5d4c\u5165\u6536\u6b3e\u94fe\u63a5\u6240\u9700\u79ef\u5206',
+    'token.action.embed_payment_link': '\u5728\u804a\u5929\u4e2d\u5d4c\u5165\u6536\u6b3e\u94fe\u63a5',
+    'token.action.embed_payment_link.sublabel': '\u6bcf\u6761\u94fe\u63a5',
+    'token.embed_payment_link.not_available': '\u4e0d\u53ef\u7528',
   },
   de: {
     'stripe.payment_link.label': 'Dein Stripe-Zahlungslink',
@@ -104,6 +116,9 @@ export const stripePaymentLinkTranslations = {
     'admin.stripe_payment_link.men_enabled.label': 'Stripe-Zahlungslinks fuer maennliche Mitglieder aktivieren',
     'admin.stripe_payment_link.women_enabled.label': 'Stripe-Zahlungslinks fuer weibliche Mitglieder aktivieren',
     'admin.stripe_payment_link.message_credit_cost.label': 'Credit-Kosten fuer das Einbetten eines Zahlungslinks in eine Nachricht',
+    'token.action.embed_payment_link': 'Zahlungslink im Chat einbetten',
+    'token.action.embed_payment_link.sublabel': 'pro gesendeten Link',
+    'token.embed_payment_link.not_available': 'Nicht verfuegbar',
   },
   vi: {
     'stripe.payment_link.label': 'Lien ket thanh toan Stripe cua ban',
@@ -125,6 +140,9 @@ export const stripePaymentLinkTranslations = {
     'admin.stripe_payment_link.men_enabled.label': 'Bat lien ket thanh toan Stripe cho thanh vien nam',
     'admin.stripe_payment_link.women_enabled.label': 'Bat lien ket thanh toan Stripe cho thanh vien nu',
     'admin.stripe_payment_link.message_credit_cost.label': 'Chi phi tin dung de nhung lien ket thanh toan vao tin nhan',
+    'token.action.embed_payment_link': 'Nhung lien ket thanh toan vao chat',
+    'token.action.embed_payment_link.sublabel': 'moi lien ket gui',
+    'token.embed_payment_link.not_available': 'Khong kha dung',
   },
   pt: {
     'stripe.payment_link.label': 'Seu link de pagamento Stripe',
@@ -146,6 +164,9 @@ export const stripePaymentLinkTranslations = {
     'admin.stripe_payment_link.men_enabled.label': 'Habilitar links de pagamento Stripe para membros masculinos',
     'admin.stripe_payment_link.women_enabled.label': 'Habilitar links de pagamento Stripe para membros femininos',
     'admin.stripe_payment_link.message_credit_cost.label': 'Custo em creditos para incorporar um link de pagamento em uma mensagem',
+    'token.action.embed_payment_link': 'Incorporar link de pagamento no chat',
+    'token.action.embed_payment_link.sublabel': 'por link enviado',
+    'token.embed_payment_link.not_available': 'Nao disponivel',
   },
   tl: {
     'stripe.payment_link.label': 'Ang iyong Stripe Payment Link',
@@ -167,5 +188,8 @@ export const stripePaymentLinkTranslations = {
     'admin.stripe_payment_link.men_enabled.label': 'I-enable ang Stripe Payment Links para sa mga lalaking miyembro',
     'admin.stripe_payment_link.women_enabled.label': 'I-enable ang Stripe Payment Links para sa mga babaeng miyembro',
     'admin.stripe_payment_link.message_credit_cost.label': 'Gastos sa credits para i-embed ang payment link sa mensahe',
+    'token.action.embed_payment_link': 'Mag-embed ng payment link sa chat',
+    'token.action.embed_payment_link.sublabel': 'bawat link na ipinadala',
+    'token.embed_payment_link.not_available': 'Hindi available',
   },
 };
