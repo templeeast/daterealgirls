@@ -355,7 +355,21 @@ export default function Chat() {
                         )}
                       </div>
                     )}
-                    <p className="text-sm">{msg.content !== '📷 Photo' ? msg.content : ''}</p>
+                    {msg.content && msg.content !== '📷 Photo' && (
+                      msg.content.startsWith('https://buy.stripe.com/') ? (
+                        <a
+                          href={msg.content}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={`text-sm underline break-all ${isMe ? 'text-primary-foreground' : 'text-primary'}`}
+                          onClick={e => e.stopPropagation()}
+                        >
+                          {msg.content}
+                        </a>
+                      ) : (
+                        <p className="text-sm">{msg.content}</p>
+                      )
+                    )}
                   </div>
                   <p className={`text-[10px] text-muted-foreground mt-1 ${isMe ? 'text-right' : ''}`}>
                     {msg.created_date && format(new Date(msg.created_date), 'h:mm a')}
