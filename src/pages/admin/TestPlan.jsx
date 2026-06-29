@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { CheckSquare, Square, ChevronDown, ChevronRight, Shield, Users, CreditCard, MessageSquare, Heart, Settings, Bug, Globe, Trash2, RefreshCw, Tag, Camera, Lock, Image, Key, Link } from 'lucide-react';
+import { CheckSquare, Square, ChevronDown, ChevronRight, Shield, Users, CreditCard, MessageSquare, Heart, Settings, Bug, Globe, Trash2, RefreshCw, Tag, Camera, Lock, Image, Key, Link, Monitor } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import useMyProfile from '@/hooks/useMyProfile';
 import { base44 } from '@/api/base44Client';
@@ -476,6 +476,78 @@ const sections = [
       { id: 'cmp-9',  label: 'Modal: Approve button calls onApprove and closes the modal' },
       { id: 'cmp-10', label: 'Modal: Reject button calls onReject and closes the modal' },
       { id: 'cmp-11', label: 'Modal: on mobile (< md) images stack vertically without layout breakage' },
+    ],
+  },
+  {
+    id: 'ads',
+    icon: Monitor,
+    title: 'Ad Integrations (JuicyAds & Adsterra)',
+    color: 'text-cyan-500',
+    items: [
+      // --- JuicyAds Admin Settings ---
+      { id: 'ads-j1', label: 'JUICYADS ADMIN: Enable Embedded Ads (JuicyAds) toggle saves to SiteConfig and persists on page reload' },
+      { id: 'ads-j2', label: 'JUICYADS ADMIN: JuicyAds API Key field saves correctly and is retrievable from SiteConfig' },
+      { id: 'ads-j3', label: 'JUICYADS ADMIN: "Show Ads to Men" toggle saves correctly (juicyads_show_men field)' },
+      { id: 'ads-j4', label: 'JUICYADS ADMIN: "Show Ads to Women" toggle saves correctly (juicyads_show_women field)' },
+      { id: 'ads-j5', label: 'JUICYADS ADMIN: Browse Page Zone ID field accepts input and saves to juicyads_zone_browse' },
+      { id: 'ads-j6', label: 'JUICYADS ADMIN: Profile Page Zone ID field accepts input and saves to juicyads_zone_profile' },
+      { id: 'ads-j7', label: 'JUICYADS ADMIN: Messages Page Zone ID field accepts input and saves to juicyads_zone_messages' },
+      { id: 'ads-j8', label: 'JUICYADS ADMIN: JuicyAds sub-controls (gender toggles + zone ID fields) are hidden when juicyads_enabled is OFF' },
+      { id: 'ads-j9', label: 'JUICYADS ADMIN: JuicyAds sub-controls appear when juicyads_enabled is toggled ON' },
+
+      // --- JuicyAds Browse Page ---
+      { id: 'ads-j10', label: 'JUICYADS BROWSE: Male user (juicyads_enabled ON, show_men ON, zone ID set) sees JuicyAds embed on /browse page' },
+      { id: 'ads-j11', label: 'JUICYADS BROWSE: Female user (show_women OFF) does NOT see JuicyAds on /browse page' },
+      { id: 'ads-j12', label: 'JUICYADS BROWSE: Female user (show_women ON) sees JuicyAds on /browse page' },
+      { id: 'ads-j13', label: 'JUICYADS BROWSE: No ad renders when juicyads_zone_browse is blank, even if juicyads_enabled is ON' },
+      { id: 'ads-j14', label: 'JUICYADS BROWSE: No ad renders when juicyads_enabled is OFF, even if zone ID and show_men are set' },
+
+      // --- JuicyAds Profile Page ---
+      { id: 'ads-j15', label: 'JUICYADS PROFILE: Male user (show_men ON, zone ID set) sees JuicyAds embed on /profile/:id page' },
+      { id: 'ads-j16', label: 'JUICYADS PROFILE: Female user (show_women OFF) does NOT see JuicyAds on /profile/:id page' },
+      { id: 'ads-j17', label: 'JUICYADS PROFILE: No ad renders when juicyads_zone_profile is blank' },
+      { id: 'ads-j18', label: 'JUICYADS PROFILE: Ad embed appears below photo gallery and above profile name/bio' },
+
+      // --- JuicyAds Messages Page ---
+      { id: 'ads-j19', label: 'JUICYADS MESSAGES: Male user (show_men ON, zone ID set) sees JuicyAds embed on /messages page' },
+      { id: 'ads-j20', label: 'JUICYADS MESSAGES: Female user (show_women OFF) does NOT see JuicyAds on /messages page' },
+      { id: 'ads-j21', label: 'JUICYADS MESSAGES: No ad renders when juicyads_zone_messages is blank' },
+      { id: 'ads-j22', label: 'JUICYADS MESSAGES: Ad embed appears below the page title and above the conversation list' },
+
+      // --- Adsterra Admin Settings ---
+      { id: 'ads-a1', label: 'ADSTERRA ADMIN: Enable Adsterra Ads toggle saves to SiteConfig and persists on page reload' },
+      { id: 'ads-a2', label: 'ADSTERRA ADMIN: "Show Ads to Men" toggle saves correctly (adsterra_show_men field)' },
+      { id: 'ads-a3', label: 'ADSTERRA ADMIN: "Show Ads to Women" toggle saves correctly (adsterra_show_women field)' },
+      { id: 'ads-a4', label: 'ADSTERRA ADMIN: Browse Page Script URL field accepts full src URL and saves to adsterra_script_browse' },
+      { id: 'ads-a5', label: 'ADSTERRA ADMIN: Profile Page Script URL field accepts full src URL and saves to adsterra_script_profile' },
+      { id: 'ads-a6', label: 'ADSTERRA ADMIN: Messages Page Script URL field accepts full src URL and saves to adsterra_script_messages' },
+      { id: 'ads-a7', label: 'ADSTERRA ADMIN: Adsterra sub-controls (gender toggles + script URL fields) are hidden when adsterra_enabled is OFF' },
+      { id: 'ads-a8', label: 'ADSTERRA ADMIN: Adsterra sub-controls appear when adsterra_enabled is toggled ON' },
+
+      // --- Adsterra Browse Page ---
+      { id: 'ads-a9', label: 'ADSTERRA BROWSE: Male user (adsterra_enabled ON, show_men ON, script URL set) sees Adsterra embed on /browse page' },
+      { id: 'ads-a10', label: 'ADSTERRA BROWSE: Female user (show_women OFF) does NOT see Adsterra on /browse page' },
+      { id: 'ads-a11', label: 'ADSTERRA BROWSE: Female user (show_women ON) sees Adsterra on /browse page' },
+      { id: 'ads-a12', label: 'ADSTERRA BROWSE: No ad renders when adsterra_script_browse is blank, even if adsterra_enabled is ON' },
+      { id: 'ads-a13', label: 'ADSTERRA BROWSE: No ad renders when adsterra_enabled is OFF, even if script URL and show_men are set' },
+
+      // --- Adsterra Profile Page ---
+      { id: 'ads-a14', label: 'ADSTERRA PROFILE: Male user (show_men ON, script URL set) sees Adsterra embed on /profile/:id page' },
+      { id: 'ads-a15', label: 'ADSTERRA PROFILE: Female user (show_women OFF) does NOT see Adsterra on /profile/:id page' },
+      { id: 'ads-a16', label: 'ADSTERRA PROFILE: No ad renders when adsterra_script_profile is blank' },
+      { id: 'ads-a17', label: 'ADSTERRA PROFILE: Ad embed appears below photo gallery and above profile name/bio' },
+
+      // --- Adsterra Messages Page ---
+      { id: 'ads-a18', label: 'ADSTERRA MESSAGES: Male user (show_men ON, script URL set) sees Adsterra embed on /messages page' },
+      { id: 'ads-a19', label: 'ADSTERRA MESSAGES: Female user (show_women OFF) does NOT see Adsterra on /messages page' },
+      { id: 'ads-a20', label: 'ADSTERRA MESSAGES: No ad renders when adsterra_script_messages is blank' },
+      { id: 'ads-a21', label: 'ADSTERRA MESSAGES: Ad embed appears below the page title and above the conversation list' },
+
+      // --- Both Networks Running Together ---
+      { id: 'ads-b1', label: 'BOTH NETWORKS: JuicyAds and Adsterra can both be enabled simultaneously — both render on the same page without conflict' },
+      { id: 'ads-b2', label: 'BOTH NETWORKS: Disabling JuicyAds does not affect Adsterra display, and vice versa' },
+      { id: 'ads-b3', label: 'BOTH NETWORKS: Gender settings for each network are independent — e.g. JuicyAds show_men ON and Adsterra show_men OFF shows only JuicyAds to male users' },
+      { id: 'ads-b4', label: 'BOTH NETWORKS: All six ad placements (3 pages × 2 networks) can be active simultaneously with no layout breakage' },
     ],
   },
 ];
