@@ -72,28 +72,22 @@
     },
     "whop_checkout_email": {
       "type": "string",
-      "default": "drgpayments@clevo.testinator.com",
-      "description": "Email pre-filled in the Whop checkout iframe"
+      "default": "drgpayments@clevo.testinator.com"
     },
     "whop_plan_starter": {
-      "type": "string",
-      "description": "Whop plan ID for the Starter token pack"
+      "type": "string"
     },
     "whop_plan_popular": {
-      "type": "string",
-      "description": "Whop plan ID for the Popular token pack"
+      "type": "string"
     },
     "whop_plan_value": {
-      "type": "string",
-      "description": "Whop plan ID for the Value token pack"
+      "type": "string"
     },
     "whop_plan_best": {
-      "type": "string",
-      "description": "Whop plan ID for the Best Deal token pack"
+      "type": "string"
     },
     "whop_api_base_url": {
-      "type": "string",
-      "description": "Whop API base URL override"
+      "type": "string"
     },
     "juicyads_enabled": {
       "type": "boolean",
@@ -104,25 +98,47 @@
     },
     "juicyads_show_men": {
       "type": "boolean",
-      "default": true,
-      "description": "When true, JuicyAds ads are shown to male users"
+      "default": true
     },
     "juicyads_show_women": {
       "type": "boolean",
-      "default": false,
-      "description": "When true, JuicyAds ads are shown to female users"
+      "default": false
     },
     "juicyads_zone_browse": {
-      "type": "string",
-      "description": "JuicyAds Zone/Spot ID for the /browse page ad placement"
+      "type": "string"
     },
     "juicyads_zone_profile": {
-      "type": "string",
-      "description": "JuicyAds Zone/Spot ID for the /profile/:id page ad placement"
+      "type": "string"
     },
     "juicyads_zone_messages": {
+      "type": "string"
+    },
+    "adsterra_enabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Master toggle for Adsterra ads"
+    },
+    "adsterra_show_men": {
+      "type": "boolean",
+      "default": true,
+      "description": "Show Adsterra ads to male users"
+    },
+    "adsterra_show_women": {
+      "type": "boolean",
+      "default": false,
+      "description": "Show Adsterra ads to female users"
+    },
+    "adsterra_script_browse": {
       "type": "string",
-      "description": "JuicyAds Zone/Spot ID for the /messages page ad placement"
+      "description": "Adsterra script src URL for the /browse page placement"
+    },
+    "adsterra_script_profile": {
+      "type": "string",
+      "description": "Adsterra script src URL for the /profile/:id page placement"
+    },
+    "adsterra_script_messages": {
+      "type": "string",
+      "description": "Adsterra script src URL for the /messages page placement"
     },
     "msg_rate_limit_count": {
       "type": "number",
@@ -150,13 +166,11 @@
     },
     "first_purchase_bonus_enabled": {
       "type": "boolean",
-      "default": true,
-      "description": "Legacy: Grant bonus tokens on first purchase"
+      "default": true
     },
     "first_purchase_bonus_tokens": {
       "type": "number",
-      "default": 5000,
-      "description": "Legacy: Bonus tokens on first purchase"
+      "default": 5000
     },
     "first_purchase_bonus_men_enabled": {
       "type": "boolean",
@@ -260,18 +274,15 @@
     },
     "stripe_payment_link_enabled_men": {
       "type": "boolean",
-      "default": false,
-      "description": "Enable Stripe Payment Link feature for male members"
+      "default": false
     },
     "stripe_payment_link_enabled_women": {
       "type": "boolean",
-      "default": false,
-      "description": "Enable Stripe Payment Link feature for female members"
+      "default": false
     },
     "stripe_link_message_credit_cost": {
       "type": "number",
-      "default": 5,
-      "description": "Token cost to embed a Stripe payment link in a chat message"
+      "default": 5
     }
   },
   "required": [

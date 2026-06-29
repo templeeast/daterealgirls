@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next';
 import useSiteConfig from '@/hooks/useSiteConfig';
 import CountryCitySelector from '@/components/shared/CountryCitySelector';
 import JuicyAdsEmbed from '@/components/shared/JuicyAdsEmbed';
+import AdsterraEmbed from '@/components/shared/AdsterraEmbed';
 
 export default function Browse() {
   const navigate = useNavigate();
@@ -236,6 +237,8 @@ export default function Browse() {
 
       {/* JuicyAds — Browse page */}
       <JuicyAdsEmbed zone={config?.juicyads_zone_browse} />
+      {/* Adsterra — Browse page */}
+      <AdsterraEmbed scriptSrc={config?.adsterra_script_browse} />
 
       {/* Results */}
       {isLoading ? (
