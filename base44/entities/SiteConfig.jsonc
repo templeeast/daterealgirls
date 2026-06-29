@@ -93,7 +93,7 @@
     },
     "whop_api_base_url": {
       "type": "string",
-      "description": "Whop API base URL override (e.g. https://sandbox-api.whop.com or https://api.whop.com)"
+      "description": "Whop API base URL override"
     },
     "juicyads_enabled": {
       "type": "boolean",
@@ -101,6 +101,28 @@
     },
     "juicyads_api_key": {
       "type": "string"
+    },
+    "juicyads_show_men": {
+      "type": "boolean",
+      "default": true,
+      "description": "When true, JuicyAds ads are shown to male users"
+    },
+    "juicyads_show_women": {
+      "type": "boolean",
+      "default": false,
+      "description": "When true, JuicyAds ads are shown to female users"
+    },
+    "juicyads_zone_browse": {
+      "type": "string",
+      "description": "JuicyAds Zone/Spot ID for the /browse page ad placement"
+    },
+    "juicyads_zone_profile": {
+      "type": "string",
+      "description": "JuicyAds Zone/Spot ID for the /profile/:id page ad placement"
+    },
+    "juicyads_zone_messages": {
+      "type": "string",
+      "description": "JuicyAds Zone/Spot ID for the /messages page ad placement"
     },
     "msg_rate_limit_count": {
       "type": "number",
@@ -235,6 +257,21 @@
     "token_pack_best_price": {
       "type": "number",
       "default": 59.99
+    },
+    "stripe_payment_link_enabled_men": {
+      "type": "boolean",
+      "default": false,
+      "description": "Enable Stripe Payment Link feature for male members"
+    },
+    "stripe_payment_link_enabled_women": {
+      "type": "boolean",
+      "default": false,
+      "description": "Enable Stripe Payment Link feature for female members"
+    },
+    "stripe_link_message_credit_cost": {
+      "type": "number",
+      "default": 5,
+      "description": "Token cost to embed a Stripe payment link in a chat message"
     }
   },
   "required": [

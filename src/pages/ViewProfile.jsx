@@ -13,6 +13,7 @@ import PrivatePhotosViewer from '@/components/profile/PrivatePhotosViewer';
 import { useToast } from '@/components/ui/use-toast';
 import { useTranslation } from 'react-i18next';
 import useSiteConfig from '@/hooks/useSiteConfig';
+import JuicyAdsEmbed from '@/components/shared/JuicyAdsEmbed';
 
 export default function ViewProfile() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -168,6 +169,9 @@ export default function ViewProfile() {
           <Heart className="w-16 h-16 text-primary/20" />
         </div>
       )}
+
+      {/* JuicyAds — Profile page */}
+      <JuicyAdsEmbed zone={config?.juicyads_zone_profile} />
 
       {/* Info */}
       <div className="flex items-start justify-between mb-4">

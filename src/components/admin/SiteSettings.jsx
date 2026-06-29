@@ -56,6 +56,11 @@ export default function SiteSettings() {
     app_disabled_message: "The application is temporarily unavailable due to maintenance. We'll be back online shortly. Thank you for your patience.",
     juicyads_enabled: false,
     juicyads_api_key: '',
+    juicyads_show_men: true,
+    juicyads_show_women: false,
+    juicyads_zone_browse: '',
+    juicyads_zone_profile: '',
+    juicyads_zone_messages: '',
     chat_retention_days: 90,
     welcome_tokens: 5000,
     tokens_browse_men_enabled: true,
@@ -117,6 +122,11 @@ export default function SiteSettings() {
         app_disabled_message: existingConfig.app_disabled_message || "The application is temporarily unavailable due to maintenance. We'll be back online shortly. Thank you for your patience.",
         juicyads_enabled: existingConfig.juicyads_enabled || false,
         juicyads_api_key: existingConfig.juicyads_api_key || '',
+        juicyads_show_men: existingConfig.juicyads_show_men !== false,
+        juicyads_show_women: existingConfig.juicyads_show_women || false,
+        juicyads_zone_browse: existingConfig.juicyads_zone_browse || '',
+        juicyads_zone_profile: existingConfig.juicyads_zone_profile || '',
+        juicyads_zone_messages: existingConfig.juicyads_zone_messages || '',
         chat_retention_days: existingConfig.chat_retention_days ?? 90,
         welcome_tokens: existingConfig.welcome_tokens ?? 5000,
         tokens_browse_men_enabled: existingConfig.tokens_browse_men_enabled !== false,
@@ -338,14 +348,50 @@ export default function SiteSettings() {
             />
           </div>
           {form.juicyads_enabled && (
-            <div className="space-y-2 pt-2 border-t">
-              <Label>JuicyAds API Key</Label>
-              <Input
-                value={form.juicyads_api_key}
-                onChange={e => updateField('juicyads_api_key', e.target.value)}
-                placeholder="Enter your JuicyAds API key..."
-              />
-              <p className="text-xs text-muted-foreground">Get your API key from JuicyAds Dashboard → Account Settings → API Keys.</p>
+            <div className="space-y-4 pt-2 border-t">
+              <div className="space-y-2">
+                <Label>JuicyAds API Key</Label>
+                <Input
+                  value={form.juicyads_api_key}
+                  onChange={e => updateField('juicyads_api_key', e.target.value)}
+                  placeholder="Enter your JuicyAds API key..."
+                />
+                <p className="text-xs text-muted-foreground">Get your API key from JuicyAds Dashboard → Account Settings → API Keys.</p>
+              </div>
+
+              <div className="border-t pt-4 space-y-3">
+                <p className="text-sm font-semibold">Audience — Who Sees Ads</p>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium">Show Ads to Men</p>
+                    <p className="text-xs text-muted-foreground">Recommended — men are the paying audience</p>
+                  </div>
+                  <Switch checked={form.juicyads_show_men} onCheckedChange={v => updateField('juicyads_show_men', v)} />
+                </div>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium">Show Ads to Women</p>
+                  </div>
+                  <Switch checked={form.juicyads_show_women} onCheckedChange={v => updateField('juicyads_show_women', v)} />
+                </div>
+              </div>
+
+              <div className="border-t pt-4 space-y-3">
+                <p className="text-sm font-semibold">Zone / Spot IDs by Page</p>
+                <div className="space-y-1">
+                  <Label className="text-xs">Browse Page Zone ID</Label>
+                  <Input value={form.juicyads_zone_browse} onChange={e => updateField('juicyads_zone_browse', e.target.value)} placeholder="e.g. 123456" />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs">Profile Page Zone ID</Label>
+                  <Input value={form.juicyads_zone_profile} onChange={e => updateField('juicyads_zone_profile', e.target.value)} placeholder="e.g. 123457" />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs">Messages Page Zone ID</Label>
+                  <Input value={form.juicyads_zone_messages} onChange={e => updateField('juicyads_zone_messages', e.target.value)} placeholder="e.g. 123458" />
+                </div>
+                <p className="text-xs text-muted-foreground">Zone IDs are found in your JuicyAds Dashboard → My Spots. Leave a zone blank to disable the ad on that page.</p>
+              </div>
             </div>
           )}
         </CardContent>

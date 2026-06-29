@@ -8,10 +8,13 @@ import { Badge } from '@/components/ui/badge';
 import useMyProfile from '@/hooks/useMyProfile';
 import { formatDistanceToNow } from 'date-fns';
 import { useTranslation } from 'react-i18next';
+import useSiteConfig from '@/hooks/useSiteConfig';
+import JuicyAdsEmbed from '@/components/shared/JuicyAdsEmbed';
 
 export default function Messages() {
   const { user } = useMyProfile();
   const { t } = useTranslation();
+  const { config } = useSiteConfig();
 
   const { data: conversations, isLoading } = useQuery({
     queryKey: ['conversations', user?.id],
@@ -45,6 +48,9 @@ export default function Messages() {
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
       <h1 className="font-heading text-3xl font-bold mb-6">{t('messages_title')}</h1>
+
+      {/* JuicyAds — Messages page */}
+      <JuicyAdsEmbed zone={config?.juicyads_zone_messages} />
 
       {isLoading ? (
         <div className="space-y-3">
