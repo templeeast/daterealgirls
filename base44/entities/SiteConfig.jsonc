@@ -141,6 +141,10 @@
       "type": "string",
       "description": "Adsterra script src URL for the /profile/:id page placement"
     },
+    "adsterra_script_profile_mobile": {
+      "type": "string",
+      "description": "Adsterra script src URL for the /profile/:id page \u2014 mobile placement (160x300)"
+    },
     "adsterra_script_messages": {
       "type": "string",
       "description": "Adsterra script src URL for the /messages page placement"

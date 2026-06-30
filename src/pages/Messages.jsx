@@ -53,7 +53,7 @@ export default function Messages() {
       {/* JuicyAds — Messages page */}
       <JuicyAdsEmbed zone={config?.juicyads_zone_messages} />
       {/* Adsterra — Messages page */}
-      <AdsterraEmbed scriptSrc={config?.adsterra_script_messages} />
+      <AdsterraEmbed scriptSrc={config?.adsterra_script_messages} mode="pagefx" />
 
       {isLoading ? (
         <div className="space-y-3">

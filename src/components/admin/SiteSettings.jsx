@@ -67,6 +67,7 @@ export default function SiteSettings() {
     adsterra_show_women: false,
     adsterra_script_browse: '',
     adsterra_script_profile: '',
+    adsterra_script_profile_mobile: '',
     adsterra_script_messages: '',
     chat_retention_days: 90,
     welcome_tokens: 5000,
@@ -140,6 +141,7 @@ export default function SiteSettings() {
         adsterra_show_women: existingConfig.adsterra_show_women || false,
         adsterra_script_browse: existingConfig.adsterra_script_browse || '',
         adsterra_script_profile: existingConfig.adsterra_script_profile || '',
+        adsterra_script_profile_mobile: existingConfig.adsterra_script_profile_mobile || '',
         adsterra_script_messages: existingConfig.adsterra_script_messages || '',
         chat_retention_days: existingConfig.chat_retention_days ?? 90,
         welcome_tokens: existingConfig.welcome_tokens ?? 5000,
@@ -461,6 +463,11 @@ export default function SiteSettings() {
                 <div className="space-y-1">
                   <Label className="text-xs">Profile Page Script URL</Label>
                   <Input value={form.adsterra_script_profile} onChange={e => updateField('adsterra_script_profile', e.target.value)} placeholder="//pl123....highperformanceformat.com/hash/invoke.js" />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs">Profile Page Script URL (Mobile 160x300)</Label>
+                  <Input value={form.adsterra_script_profile_mobile} onChange={e => updateField('adsterra_script_profile_mobile', e.target.value)} placeholder="//www.highperformanceformat.com/.../invoke.js" />
+                  <p className="text-xs text-muted-foreground">Adsterra script URL for the mobile placement on profile pages (160x300 portrait banner).</p>
                 </div>
                 <div className="space-y-1">
                   <Label className="text-xs">Messages Page Script URL</Label>
