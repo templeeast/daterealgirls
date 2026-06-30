@@ -10,7 +10,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import useSiteConfig from '@/hooks/useSiteConfig';
 import JuicyAdsEmbed from '@/components/shared/JuicyAdsEmbed';
-import AdsterraScriptOnly from '@/components/shared/AdsterraScriptOnly';
+import AdsterraEmbed from '@/components/shared/AdsterraEmbed';
 
 export default function Messages() {
   const { user } = useMyProfile();
@@ -52,8 +52,8 @@ export default function Messages() {
 
       {/* JuicyAds — Messages page */}
       <JuicyAdsEmbed zone={config?.juicyads_zone_messages} />
-      {/* Adsterra — Messages page (Popunder / Social Bar — script-only) */}
-      <AdsterraScriptOnly scriptUrl={config?.adsterra_script_messages} adUnitId="messages" />
+      {/* Adsterra — Messages page */}
+      <AdsterraEmbed scriptSrc={config?.adsterra_script_messages} />
 
       {isLoading ? (
         <div className="space-y-3">

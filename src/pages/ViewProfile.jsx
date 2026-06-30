@@ -14,8 +14,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { useTranslation } from 'react-i18next';
 import useSiteConfig from '@/hooks/useSiteConfig';
 import JuicyAdsEmbed from '@/components/shared/JuicyAdsEmbed';
-import AdsterraBanner from '@/components/shared/AdsterraBanner';
-import { useIsMobile } from '@/hooks/use-mobile';
+import AdsterraEmbed from '@/components/shared/AdsterraEmbed';
 
 export default function ViewProfile() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -28,7 +27,6 @@ export default function ViewProfile() {
 
   const { profile: myProfile } = useMyProfile();
   const { config } = useSiteConfig();
-  const isMobile = useIsMobile();
 
   const { data: profile, isLoading } = useQuery({
     queryKey: ['profile', profileId],
@@ -175,17 +173,8 @@ export default function ViewProfile() {
 
       {/* JuicyAds — Profile page (desktop: 728x90, mobile: 300x100) */}
       <JuicyAdsEmbed zone={config?.juicyads_zone_profile} zoneMobile={config?.juicyads_zone_profile_mobile} />
-      {/* Adsterra — Profile page (desktop: 300x250, mobile: 160x300) */}
-      {!isMobile && (
-        <div className="flex justify-center mb-6">
-          <AdsterraBanner scriptUrl={config?.adsterra_script_profile} adUnitId="profile-desktop" width={300} height={250} isMobile={false} />
-        </div>
-      )}
-      {isMobile && (
-        <div className="flex justify-center mb-6">
-          <AdsterraBanner scriptUrl={config?.adsterra_script_profile} adUnitId="profile-mobile" width={160} height={300} isMobile={true} />
-        </div>
-      )}
+      {/* Adsterra — Profile page */}
+      <AdsterraEmbed scriptSrc={config?.adsterra_script_profile} />
 
       {/* Info */}
       <div className="flex items-start justify-between mb-4">
