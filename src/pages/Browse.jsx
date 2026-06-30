@@ -235,11 +235,6 @@ export default function Browse() {
         )}
       </div>
 
-      {/* JuicyAds — Browse page */}
-      <JuicyAdsEmbed zone={config?.juicyads_zone_browse} />
-      {/* Adsterra — Browse page */}
-      <AdsterraEmbed scriptSrc={config?.adsterra_script_browse} />
-
       {/* Results */}
       {isLoading ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
@@ -290,6 +285,11 @@ export default function Browse() {
           )}
         </>
       )}
+
+      {/* JuicyAds — Browse page (after results) */}
+      <JuicyAdsEmbed zone={config?.juicyads_zone_browse} />
+      {/* Adsterra — Browse page */}
+      <AdsterraEmbed scriptSrc={config?.adsterra_script_browse} />
     </div>
   );
 }

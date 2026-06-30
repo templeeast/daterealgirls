@@ -25,7 +25,7 @@ export default function JuicyAdsEmbed({ zone, zoneMobile }) {
   useEffect(() => {
     if (!shouldRender || !activeZone) return;
 
-    // 1. Load the JuicyAds loader script once per page
+    // 1. Load the JuicyAds loader script once
     if (!document.getElementById('juicyads-jads-loader')) {
       const loader = document.createElement('script');
       loader.id = 'juicyads-jads-loader';
@@ -36,10 +36,14 @@ export default function JuicyAdsEmbed({ zone, zoneMobile }) {
       document.head.appendChild(loader);
     }
 
-    // 2. Push the ad zone to the adsbyjuicy queue — triggers ad rendering
-    //    into the <ins> element below. The adzone value must be a number.
-    window.adsbyjuicy = window.adsbyjuicy || [];
-    window.adsbyjuicy.push({ adzone: Number(activeZone) });
+    // 2. Push the ad zone after a brief tick — ensures the <ins> element
+    //    is in the DOM and jads.js has had time to initialize its push handler.
+    const timer = setTimeout(() => {
+      window.adsbyjuicy = window.adsbyjuicy || [];
+      window.adsbyjuicy.push({ adzone: Number(activeZone) });
+    }, 100);
+
+    return () => clearTimeout(timer);
   }, [activeZone, shouldRender]);
 
   if (!shouldRender) return null;
@@ -49,6 +53,8 @@ export default function JuicyAdsEmbed({ zone, zoneMobile }) {
       <ins
         ref={insRef}
         id={String(activeZone)}
+        data-width="300"
+        data-height="250"
       />
     </div>
   );
