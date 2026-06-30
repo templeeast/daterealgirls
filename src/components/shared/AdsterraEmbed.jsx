@@ -23,12 +23,31 @@ export default function AdsterraEmbed({ scriptSrc }) {
 
   if (!shouldRender || !fullSrc) return null;
 
-  // Use srcdoc so the iframe inherits the parent origin — this avoids
-  // ERR_SSL_PROTOCOL_ERROR caused by the null origin of about:blank iframes.
+  // Adsterra invoke.js ads require atOptions to be set BEFORE the script loads.
+  // Without it, the script redirects to a fallback domain (effectivecontentnetwork.com)
+  // that has SSL issues. We extract the 32-char hex key from the URL and build atOptions.
+  const isInvokeJs = fullSrc.includes('invoke.js');
+  const keyMatch = fullSrc.match(/([a-f0-9]{32})/i);
+  const key = keyMatch ? keyMatch[1] : '';
+
+  const atOptionsScript =
+    isInvokeJs && key
+      ? '<script type="text/javascript">' +
+        'atOptions = {' +
+        '"key" : "' + key + '",' +
+        '"format" : "iframe",' +
+        '"height" : 90,' +
+        '"width" : 728,' +
+        '"params" : {}' +
+        '};' +
+        '<\/script>'
+      : '';
+
   const srcDoc =
     '<!DOCTYPE html><html><head><meta charset="utf-8">' +
-    '<style>body{margin:0;padding:0;overflow:hidden;}</style>' +
+    '<style>body{margin:0;padding:0;}</style>' +
     '</head><body>' +
+    atOptionsScript +
     '<script type="text/javascript" src="' + fullSrc + '" data-cfasync="false"><\/script>' +
     '</body></html>';
 
