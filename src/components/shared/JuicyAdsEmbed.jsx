@@ -23,12 +23,18 @@ export default function JuicyAdsEmbed({ zone, zoneMobile }) {
 
   useEffect(() => {
     if (!shouldRender) return;
-    const script = document.createElement('script');
-    script.src = `https://cdn.juicyads.com/jp.js?t=${activeZone}`;
-    script.async = true;
-    const container = document.getElementById(`juicyads-embed-${activeZone}`);
-    if (container) container.appendChild(script);
+
+    // Load the JuicyAds loader script once per page
+    if (!document.getElementById('juicyads-jam-loader')) {
+      const loader = document.createElement('script');
+      loader.id = 'juicyads-jam-loader';
+      loader.async = true;
+      loader.src = 'https://cdn.juicyads.com/js/jam.js';
+      document.head.appendChild(loader);
+    }
+
     return () => {
+      const container = document.getElementById(`juicyads-zone-${activeZone}`);
       if (container) container.innerHTML = '';
     };
   }, [activeZone, shouldRender]);
@@ -37,7 +43,12 @@ export default function JuicyAdsEmbed({ zone, zoneMobile }) {
 
   return (
     <div className="my-4 flex justify-center">
-      <div id={`juicyads-embed-${activeZone}`} />
+      <ins
+        id={`juicyads-zone-${activeZone}`}
+        className="adsbyjuicy"
+        data-zone-id={activeZone}
+        style={{ display: 'block' }}
+      />
     </div>
   );
 }
