@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import useSiteConfig from '@/hooks/useSiteConfig';
 import useMyProfile from '@/hooks/useMyProfile';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -7,6 +7,7 @@ export default function JuicyAdsEmbed({ zone, zoneMobile }) {
   const { config } = useSiteConfig();
   const { profile } = useMyProfile();
   const isMobile = useIsMobile();
+  const insRef = useRef(null);
 
   const activeZone = (zoneMobile && isMobile) ? zoneMobile : zone;
 
@@ -22,21 +23,26 @@ export default function JuicyAdsEmbed({ zone, zoneMobile }) {
     !(gender === 'female' && !showWomen);
 
   useEffect(() => {
-    if (!shouldRender) return;
+    if (!shouldRender || !activeZone) return;
 
-    // Load the JuicyAds loader script once per page
-    if (!document.getElementById('juicyads-jam-loader')) {
+    // 1. Load the JuicyAds loader script once per page
+    if (!document.getElementById('juicyads-jads-loader')) {
       const loader = document.createElement('script');
-      loader.id = 'juicyads-jam-loader';
+      loader.id = 'juicyads-jads-loader';
+      loader.type = 'text/javascript';
       loader.async = true;
       loader.setAttribute('data-cfasync', 'false');
-      loader.src = 'https://cdn.juicyads.com/js/jam.js';
+      loader.src = 'https://adserver.juicyads.com/js/jads.js';
       document.head.appendChild(loader);
     }
 
+    // 2. Push the ad zone to the adsbyjuicy queue — triggers ad rendering
+    //    into the <ins> element below.
+    window.adsbyjuicy = window.adsbyjuicy || [];
+    window.adsbyjuicy.push({ adzone: activeZone });
+
     return () => {
-      const container = document.getElementById(`juicyads-zone-${activeZone}`);
-      if (container) container.innerHTML = '';
+      if (insRef.current) insRef.current.innerHTML = '';
     };
   }, [activeZone, shouldRender]);
 
@@ -45,10 +51,10 @@ export default function JuicyAdsEmbed({ zone, zoneMobile }) {
   return (
     <div className="my-4 flex justify-center">
       <ins
+        ref={insRef}
         id={`juicyads-zone-${activeZone}`}
-        className="adsbyjuicy"
-        data-zone-id={activeZone}
-        style={{ display: 'block' }}
+        data-width="728"
+        data-height="90"
       />
     </div>
   );
