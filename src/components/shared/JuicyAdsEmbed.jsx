@@ -24,20 +24,21 @@ export default function JuicyAdsEmbed({ zone, zoneMobile }) {
   useEffect(() => {
     if (!shouldRender || !activeZone) return;
 
-    // 1. Load the JuicyAds loader script once
-    if (!document.getElementById('juicyads-jads-loader')) {
-      const loader = document.createElement('script');
-      loader.id = 'juicyads-jads-loader';
-      loader.type = 'text/javascript';
-      loader.async = true;
-      loader.setAttribute('data-cfasync', 'false');
-      loader.src = 'https://adserver.juicyads.com/js/jads.js';
-      document.head.appendChild(loader);
-    }
+    // Remove any existing loader so jads.js re-initializes and processes
+    // the queue fresh — required for SPA page navigations.
+    const existing = document.getElementById('juicyads-jads-loader');
+    if (existing) existing.remove();
 
-    // 2. Push the ad zone to render the ad into the <ins> element
-    window.adsbyjuicy = window.adsbyjuicy || [];
-    window.adsbyjuicy.push({ adzone: Number(activeZone) });
+    // Reset the queue with just the current zone
+    window.adsbyjuicy = [{ adzone: Number(activeZone) }];
+
+    const loader = document.createElement('script');
+    loader.id = 'juicyads-jads-loader';
+    loader.type = 'text/javascript';
+    loader.async = true;
+    loader.setAttribute('data-cfasync', 'false');
+    loader.src = 'https://adserver.juicyads.com/js/jads.js';
+    document.head.appendChild(loader);
   }, [activeZone, shouldRender]);
 
   if (!shouldRender) return null;

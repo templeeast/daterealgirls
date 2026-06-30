@@ -252,15 +252,21 @@ export default function Browse() {
       ) : (
         <>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-            {visibleProfiles.map(p => (
-              <ProfileCard
-                key={p.id}
-                profile={p}
-                isFavorited={favoritedIds.has(p.id)}
-                onFavorite={() => favMutation.mutate(p)}
-                myProfile={profile}
-                hasWinked={winkedIds.has(p.id)}
-              />
+            {visibleProfiles.map((p, i) => (
+              <React.Fragment key={p.id}>
+                <ProfileCard
+                  profile={p}
+                  isFavorited={favoritedIds.has(p.id)}
+                  onFavorite={() => favMutation.mutate(p)}
+                  myProfile={profile}
+                  hasWinked={winkedIds.has(p.id)}
+                />
+                {i === 3 && (
+                  <div className="col-span-2 sm:col-span-3 lg:col-span-4 flex items-center justify-center rounded-2xl border bg-card/50 py-2">
+                    <JuicyAdsEmbed zone={config?.juicyads_zone_browse} />
+                  </div>
+                )}
+              </React.Fragment>
             ))}
             {/* Blurred locked cards for token-gated browsing */}
             {shouldGateBrowsing && filtered.slice(browseLimit - effectiveBrowseCount).map((p, i) => (
@@ -286,8 +292,6 @@ export default function Browse() {
         </>
       )}
 
-      {/* JuicyAds — Browse page (after results) */}
-      <JuicyAdsEmbed zone={config?.juicyads_zone_browse} />
       {/* Adsterra — Browse page */}
       <AdsterraEmbed scriptSrc={config?.adsterra_script_browse} />
     </div>
