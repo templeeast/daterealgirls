@@ -37,13 +37,9 @@ export default function JuicyAdsEmbed({ zone, zoneMobile }) {
     }
 
     // 2. Push the ad zone to the adsbyjuicy queue — triggers ad rendering
-    //    into the <ins> element below.
+    //    into the <ins> element below. The adzone value must be a number.
     window.adsbyjuicy = window.adsbyjuicy || [];
-    window.adsbyjuicy.push({ adzone: activeZone });
-
-    return () => {
-      if (insRef.current) insRef.current.innerHTML = '';
-    };
+    window.adsbyjuicy.push({ adzone: Number(activeZone) });
   }, [activeZone, shouldRender]);
 
   if (!shouldRender) return null;
@@ -52,9 +48,7 @@ export default function JuicyAdsEmbed({ zone, zoneMobile }) {
     <div className="my-4 flex justify-center">
       <ins
         ref={insRef}
-        id={`juicyads-zone-${activeZone}`}
-        data-width="728"
-        data-height="90"
+        id={String(activeZone)}
       />
     </div>
   );
