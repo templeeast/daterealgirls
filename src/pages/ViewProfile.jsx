@@ -171,8 +171,8 @@ export default function ViewProfile() {
         </div>
       )}
 
-      {/* JuicyAds — Profile page */}
-      <JuicyAdsEmbed zone={config?.juicyads_zone_profile} />
+      {/* JuicyAds — Profile page (desktop: 728x90, mobile: 300x100) */}
+      <JuicyAdsEmbed zone={config?.juicyads_zone_profile} zoneMobile={config?.juicyads_zone_profile_mobile} />
       {/* Adsterra — Profile page */}
       <AdsterraEmbed scriptSrc={config?.adsterra_script_profile} />
 

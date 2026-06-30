@@ -548,6 +548,17 @@ const sections = [
       { id: 'ads-b2', label: 'BOTH NETWORKS: Disabling JuicyAds does not affect Adsterra display, and vice versa' },
       { id: 'ads-b3', label: 'BOTH NETWORKS: Gender settings for each network are independent — e.g. JuicyAds show_men ON and Adsterra show_men OFF shows only JuicyAds to male users' },
       { id: 'ads-b4', label: 'BOTH NETWORKS: All six ad placements (3 pages × 2 networks) can be active simultaneously with no layout breakage' },
+
+      // --- JuicyAds Profile Mobile Zone ---
+      { id: 'ads-jm1', label: 'JUICYADS ADMIN: "Profile Page Zone ID — Desktop (728×90 Leaderboard)" label is shown for the existing profile zone field' },
+      { id: 'ads-jm2', label: 'JUICYADS ADMIN: "Profile Page Zone ID — Mobile (300×100)" field appears below the desktop field and saves to juicyads_zone_profile_mobile' },
+      { id: 'ads-jm3', label: 'JUICYADS ADMIN: Mobile zone field placeholder shows "e.g. 1120981" and helper text explains the 768px breakpoint' },
+      { id: 'ads-jm4', label: 'JUICYADS PROFILE DESKTOP: On a screen wider than 768px, the 728×90 desktop zone (juicyads_zone_profile) is served on the profile page' },
+      { id: 'ads-jm5', label: 'JUICYADS PROFILE MOBILE: On a screen narrower than 768px, the 300×100 mobile zone (juicyads_zone_profile_mobile) is served on the profile page' },
+      { id: 'ads-jm6', label: 'JUICYADS PROFILE FALLBACK: When juicyads_zone_profile_mobile is blank, the desktop zone renders on mobile screens instead of showing nothing' },
+      { id: 'ads-jm7', label: 'JUICYADS PROFILE FALLBACK: When juicyads_zone_profile (desktop) is blank but mobile is set, no ad renders on desktop and mobile zone renders on mobile' },
+      { id: 'ads-jm8', label: 'JUICYADS BROWSE/MESSAGES: Browse and Messages page embeds are unaffected — they still use single zone prop with no mobile/desktop split' },
+      { id: 'ads-jm9', label: 'JUICYADS PROFILE: Resizing browser window across 768px breakpoint switches between desktop and mobile zones without page reload' },
     ],
   },
 ];

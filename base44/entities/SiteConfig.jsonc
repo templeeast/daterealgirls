@@ -108,7 +108,12 @@
       "type": "string"
     },
     "juicyads_zone_profile": {
-      "type": "string"
+      "type": "string",
+      "description": "JuicyAds Zone/Spot ID for the /profile page \u2014 desktop placement (728x90 Leaderboard)"
+    },
+    "juicyads_zone_profile_mobile": {
+      "type": "string",
+      "description": "JuicyAds Zone/Spot ID for the /profile page \u2014 mobile placement (300x100)"
     },
     "juicyads_zone_messages": {
       "type": "string"
