@@ -1,12 +1,11 @@
-import React, { useEffect, useId } from 'react';
+import React, { useEffect, useRef } from 'react';
 import useSiteConfig from '@/hooks/useSiteConfig';
 import useMyProfile from '@/hooks/useMyProfile';
 
 export default function AdsterraEmbed({ scriptSrc }) {
   const { config } = useSiteConfig();
   const { profile } = useMyProfile();
-  const reactId = useId();
-  const containerId = `adsterra-${reactId.replace(/[^a-zA-Z0-9]/g, '')}`;
+  const iframeRef = useRef(null);
 
   const gender = profile?.gender;
   const enabled = config?.adsterra_enabled;
@@ -19,28 +18,37 @@ export default function AdsterraEmbed({ scriptSrc }) {
     !(gender === 'male' && !showMen) &&
     !(gender === 'female' && !showWomen);
 
+  const fullSrc = scriptSrc
+    ? (scriptSrc.startsWith('//') ? 'https:' + scriptSrc : scriptSrc)
+    : '';
+
   useEffect(() => {
-    if (!shouldRender || !scriptSrc) return;
-    const container = document.getElementById(containerId);
-    if (!container) return;
+    if (!shouldRender || !fullSrc || !iframeRef.current) return;
 
-    const fullSrc = scriptSrc.startsWith('//') ? 'https:' + scriptSrc : scriptSrc;
-    const script = document.createElement('script');
-    script.src = fullSrc;
-    script.async = true;
-    script.setAttribute('data-cfasync', 'false');
-    container.appendChild(script);
+    const iframe = iframeRef.current;
+    const doc = iframe.contentWindow?.document;
+    if (!doc) return;
 
-    return () => {
-      if (container) container.innerHTML = '';
-    };
-  }, [scriptSrc, shouldRender, containerId]);
+    // Write the ad script into the iframe so document.write() calls
+    // inside the Adsterra script render into the iframe, not the host page.
+    doc.open();
+    doc.write(
+      '<html><head><style>body{margin:0;padding:0;}</style></head><body>' +
+      '<script type="text/javascript" src="' + fullSrc + '" data-cfasync="false"><\/script>' +
+      '</body></html>'
+    );
+    doc.close();
+  }, [fullSrc, shouldRender]);
 
   if (!shouldRender) return null;
 
   return (
-    <div className="flex justify-center">
-      <div id={containerId} style={{ minHeight: '90px', minWidth: '100%' }} />
+    <div className="flex justify-center w-full">
+      <iframe
+        ref={iframeRef}
+        title="ad"
+        style={{ width: '100%', minHeight: '100px', border: 'none', display: 'block' }}
+      />
     </div>
   );
 }
