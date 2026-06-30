@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import useSiteConfig from '@/hooks/useSiteConfig';
 import useMyProfile from '@/hooks/useMyProfile';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -7,7 +7,6 @@ export default function JuicyAdsEmbed({ zone, zoneMobile }) {
   const { config } = useSiteConfig();
   const { profile } = useMyProfile();
   const isMobile = useIsMobile();
-  const insRef = useRef(null);
 
   const activeZone = (zoneMobile && isMobile) ? zoneMobile : zone;
 
@@ -36,14 +35,9 @@ export default function JuicyAdsEmbed({ zone, zoneMobile }) {
       document.head.appendChild(loader);
     }
 
-    // 2. Push the ad zone after a brief tick — ensures the <ins> element
-    //    is in the DOM and jads.js has had time to initialize its push handler.
-    const timer = setTimeout(() => {
-      window.adsbyjuicy = window.adsbyjuicy || [];
-      window.adsbyjuicy.push({ adzone: Number(activeZone) });
-    }, 100);
-
-    return () => clearTimeout(timer);
+    // 2. Push the ad zone to render the ad into the <ins> element
+    window.adsbyjuicy = window.adsbyjuicy || [];
+    window.adsbyjuicy.push({ adzone: Number(activeZone) });
   }, [activeZone, shouldRender]);
 
   if (!shouldRender) return null;
@@ -51,10 +45,9 @@ export default function JuicyAdsEmbed({ zone, zoneMobile }) {
   return (
     <div className="my-4 flex justify-center">
       <ins
-        ref={insRef}
         id={String(activeZone)}
-        data-width="300"
-        data-height="250"
+        className="block"
+        style={{ display: 'block', minHeight: '90px' }}
       />
     </div>
   );
