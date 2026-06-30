@@ -14,7 +14,7 @@ import { useTranslation } from 'react-i18next';
 import useSiteConfig from '@/hooks/useSiteConfig';
 import CountryCitySelector from '@/components/shared/CountryCitySelector';
 import JuicyAdsEmbed from '@/components/shared/JuicyAdsEmbed';
-import AdsterraEmbed from '@/components/shared/AdsterraEmbed';
+import AdsterraScriptOnly from '@/components/shared/AdsterraScriptOnly';
 
 export default function Browse() {
   const navigate = useNavigate();
@@ -235,6 +235,9 @@ export default function Browse() {
         )}
       </div>
 
+      {/* Adsterra — Native Banner (script-only, self-renders) */}
+      <AdsterraScriptOnly scriptUrl={config?.adsterra_script_browse} adUnitId="browse" />
+
       {/* Results */}
       {isLoading ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
@@ -264,7 +267,6 @@ export default function Browse() {
                 {i === 3 && (
                   <div className="col-span-2 sm:col-span-3 lg:col-span-4 flex flex-col items-center justify-center gap-2 rounded-2xl border bg-card/50 py-2">
                     <JuicyAdsEmbed zone={config?.juicyads_zone_browse} />
-                    <AdsterraEmbed scriptSrc={config?.adsterra_script_browse} />
                   </div>
                 )}
               </React.Fragment>
