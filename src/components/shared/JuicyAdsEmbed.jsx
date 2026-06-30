@@ -29,6 +29,7 @@ export default function JuicyAdsEmbed({ zone, zoneMobile }) {
       const loader = document.createElement('script');
       loader.id = 'juicyads-jam-loader';
       loader.async = true;
+      loader.setAttribute('data-cfasync', 'false');
       loader.src = 'https://cdn.juicyads.com/js/jam.js';
       document.head.appendChild(loader);
     }
