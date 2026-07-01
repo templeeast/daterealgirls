@@ -59,6 +59,8 @@ export default function SiteSettings() {
     juicyads_show_men: true,
     juicyads_show_women: false,
     juicyads_zone_browse: '',
+    juicyads_zone_browse_2: '',
+    juicyads_zone_browse_3: '',
     juicyads_zone_profile: '',
     juicyads_zone_profile_mobile: '',
     juicyads_zone_messages: '',
@@ -130,6 +132,8 @@ export default function SiteSettings() {
         juicyads_show_men: existingConfig.juicyads_show_men !== false,
         juicyads_show_women: existingConfig.juicyads_show_women || false,
         juicyads_zone_browse: existingConfig.juicyads_zone_browse || '',
+        juicyads_zone_browse_2: existingConfig.juicyads_zone_browse_2 || '',
+        juicyads_zone_browse_3: existingConfig.juicyads_zone_browse_3 || '',
         juicyads_zone_profile: existingConfig.juicyads_zone_profile || '',
         juicyads_zone_profile_mobile: existingConfig.juicyads_zone_profile_mobile || '',
         juicyads_zone_messages: existingConfig.juicyads_zone_messages || '',
@@ -389,8 +393,16 @@ export default function SiteSettings() {
               <div className="border-t pt-4 space-y-3">
                 <p className="text-sm font-semibold">Zone / Spot IDs by Page</p>
                 <div className="space-y-1">
-                  <Label className="text-xs">Browse Page Zone ID</Label>
-                  <Input value={form.juicyads_zone_browse} onChange={e => updateField('juicyads_zone_browse', e.target.value)} placeholder="e.g. 123456" />
+                  <Label className="text-xs">Browse Page Zone ID — 300x250 Image (after 4th card)</Label>
+                  <Input value={form.juicyads_zone_browse} onChange={e => updateField('juicyads_zone_browse', e.target.value)} placeholder="e.g. 1120832" />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs">Browse Page Zone ID — 150x150 Img + Title (after 8th card)</Label>
+                  <Input value={form.juicyads_zone_browse_2} onChange={e => updateField('juicyads_zone_browse_2', e.target.value)} placeholder="e.g. 1121256" />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs">Browse Page Zone ID — 150x150 Img + Title (after 12th card)</Label>
+                  <Input value={form.juicyads_zone_browse_3} onChange={e => updateField('juicyads_zone_browse_3', e.target.value)} placeholder="e.g. 1121257" />
                 </div>
                 <div className="space-y-1">
                   <Label className="text-xs">Profile Page Zone ID — Desktop (728×90 Leaderboard)</Label>
