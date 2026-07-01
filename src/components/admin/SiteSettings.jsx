@@ -62,6 +62,10 @@ export default function SiteSettings() {
     juicyads_zone_profile: '',
     juicyads_zone_profile_mobile: '',
     juicyads_zone_messages: '',
+    admaven_enabled: false,
+    admaven_push_script: '',
+    admaven_show_men: true,
+    admaven_show_women: false,
     chat_retention_days: 90,
     welcome_tokens: 5000,
     tokens_browse_men_enabled: true,
@@ -129,6 +133,10 @@ export default function SiteSettings() {
         juicyads_zone_profile: existingConfig.juicyads_zone_profile || '',
         juicyads_zone_profile_mobile: existingConfig.juicyads_zone_profile_mobile || '',
         juicyads_zone_messages: existingConfig.juicyads_zone_messages || '',
+        admaven_enabled: existingConfig.admaven_enabled || false,
+        admaven_push_script: existingConfig.admaven_push_script || '',
+        admaven_show_men: existingConfig.admaven_show_men !== false,
+        admaven_show_women: existingConfig.admaven_show_women || false,
         chat_retention_days: existingConfig.chat_retention_days ?? 90,
         welcome_tokens: existingConfig.welcome_tokens ?? 5000,
         tokens_browse_men_enabled: existingConfig.tokens_browse_men_enabled !== false,
@@ -398,6 +406,56 @@ export default function SiteSettings() {
                   <Input value={form.juicyads_zone_messages} onChange={e => updateField('juicyads_zone_messages', e.target.value)} placeholder="e.g. 123458" />
                 </div>
                 <p className="text-xs text-muted-foreground">Zone IDs are found in your JuicyAds Dashboard → My Spots. Leave a zone blank to disable the ad on that page.</p>
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Monetization — AdMaven Push Notifications */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="font-heading text-lg">Monetization — AdMaven Push Notifications</CardTitle>
+          <CardDescription>AdMaven push notification ads. When enabled, visitors are prompted to subscribe to browser push notifications, creating a long-term revenue stream. Runs site-wide alongside JuicyAds.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="font-medium text-sm">Enable AdMaven Push Notifications</p>
+              <p className="text-xs text-muted-foreground mt-0.5">Injects the AdMaven push script globally. Requires the push notification script URL below.</p>
+            </div>
+            <Switch
+              checked={form.admaven_enabled}
+              onCheckedChange={v => updateField('admaven_enabled', v)}
+            />
+          </div>
+          {form.admaven_enabled && (
+            <div className="space-y-4 pt-2 border-t">
+              <div className="space-y-2">
+                <Label>Push Notification Script URL</Label>
+                <Input
+                  value={form.admaven_push_script}
+                  onChange={e => updateField('admaven_push_script', e.target.value)}
+                  placeholder="//admaven.net/.../push.js"
+                />
+                <p className="text-xs text-muted-foreground">Paste the full <code className="bg-muted px-1 rounded">src</code> URL from your AdMaven push placement code snippet. Found in AdMaven Dashboard → your site → placement → Get Code.</p>
+              </div>
+
+              <div className="border-t pt-4 space-y-3">
+                <p className="text-sm font-semibold">Audience — Who Sees Push Prompts</p>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium">Show to Men</p>
+                    <p className="text-xs text-muted-foreground">Recommended — men are the paying audience</p>
+                  </div>
+                  <Switch checked={form.admaven_show_men} onCheckedChange={v => updateField('admaven_show_men', v)} />
+                </div>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium">Show to Women</p>
+                  </div>
+                  <Switch checked={form.admaven_show_women} onCheckedChange={v => updateField('admaven_show_women', v)} />
+                </div>
               </div>
             </div>
           )}
