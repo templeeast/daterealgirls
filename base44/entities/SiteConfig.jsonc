@@ -118,37 +118,6 @@
     "juicyads_zone_messages": {
       "type": "string"
     },
-    "adsterra_enabled": {
-      "type": "boolean",
-      "default": false,
-      "description": "Master toggle for Adsterra ads"
-    },
-    "adsterra_show_men": {
-      "type": "boolean",
-      "default": true,
-      "description": "Show Adsterra ads to male users"
-    },
-    "adsterra_show_women": {
-      "type": "boolean",
-      "default": false,
-      "description": "Show Adsterra ads to female users"
-    },
-    "adsterra_script_browse": {
-      "type": "string",
-      "description": "Adsterra script src URL for the /browse page placement"
-    },
-    "adsterra_script_profile": {
-      "type": "string",
-      "description": "Adsterra script src URL for the /profile/:id page placement"
-    },
-    "adsterra_script_profile_mobile": {
-      "type": "string",
-      "description": "Adsterra script src URL for the /profile/:id page \u2014 mobile placement (160x300)"
-    },
-    "adsterra_script_messages": {
-      "type": "string",
-      "description": "Adsterra script src URL for the /messages page placement"
-    },
     "msg_rate_limit_count": {
       "type": "number",
       "default": 5

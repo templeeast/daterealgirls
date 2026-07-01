@@ -14,7 +14,6 @@ import { useTranslation } from 'react-i18next';
 import useSiteConfig from '@/hooks/useSiteConfig';
 import CountryCitySelector from '@/components/shared/CountryCitySelector';
 import JuicyAdsEmbed from '@/components/shared/JuicyAdsEmbed';
-import AdsterraEmbed from '@/components/shared/AdsterraEmbed';
 
 export default function Browse() {
   const navigate = useNavigate();
@@ -264,7 +263,6 @@ export default function Browse() {
                 {i === 3 && (
                   <div className="col-span-2 sm:col-span-3 lg:col-span-4 flex flex-col items-center justify-center gap-2 rounded-2xl border bg-card/50 py-2">
                     <JuicyAdsEmbed zone={config?.juicyads_zone_browse} />
-                    <AdsterraEmbed scriptSrc={config?.adsterra_script_browse} mode="native" />
                   </div>
                 )}
               </React.Fragment>

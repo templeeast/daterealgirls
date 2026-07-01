@@ -14,7 +14,6 @@ import { useToast } from '@/components/ui/use-toast';
 import { useTranslation } from 'react-i18next';
 import useSiteConfig from '@/hooks/useSiteConfig';
 import JuicyAdsEmbed from '@/components/shared/JuicyAdsEmbed';
-import AdsterraEmbed from '@/components/shared/AdsterraEmbed';
 
 export default function ViewProfile() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -173,14 +172,6 @@ export default function ViewProfile() {
 
       {/* JuicyAds — Profile page (desktop: 728x90, mobile: 300x100) */}
       <JuicyAdsEmbed zone={config?.juicyads_zone_profile} zoneMobile={config?.juicyads_zone_profile_mobile} />
-      {/* Adsterra — Profile page desktop (300x250) */}
-      <div className="hidden sm:block">
-        <AdsterraEmbed scriptSrc={config?.adsterra_script_profile} mode="banner" width={300} height={250} />
-      </div>
-      {/* Adsterra — Profile page mobile (160x300) */}
-      <div className="block sm:hidden">
-        <AdsterraEmbed scriptSrc={config?.adsterra_script_profile_mobile} mode="banner" width={160} height={300} />
-      </div>
 
       {/* Info */}
       <div className="flex items-start justify-between mb-4">

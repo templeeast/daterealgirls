@@ -62,13 +62,6 @@ export default function SiteSettings() {
     juicyads_zone_profile: '',
     juicyads_zone_profile_mobile: '',
     juicyads_zone_messages: '',
-    adsterra_enabled: false,
-    adsterra_show_men: true,
-    adsterra_show_women: false,
-    adsterra_script_browse: '',
-    adsterra_script_profile: '',
-    adsterra_script_profile_mobile: '',
-    adsterra_script_messages: '',
     chat_retention_days: 90,
     welcome_tokens: 5000,
     tokens_browse_men_enabled: true,
@@ -136,13 +129,6 @@ export default function SiteSettings() {
         juicyads_zone_profile: existingConfig.juicyads_zone_profile || '',
         juicyads_zone_profile_mobile: existingConfig.juicyads_zone_profile_mobile || '',
         juicyads_zone_messages: existingConfig.juicyads_zone_messages || '',
-        adsterra_enabled: existingConfig.adsterra_enabled || false,
-        adsterra_show_men: existingConfig.adsterra_show_men !== false,
-        adsterra_show_women: existingConfig.adsterra_show_women || false,
-        adsterra_script_browse: existingConfig.adsterra_script_browse || '',
-        adsterra_script_profile: existingConfig.adsterra_script_profile || '',
-        adsterra_script_profile_mobile: existingConfig.adsterra_script_profile_mobile || '',
-        adsterra_script_messages: existingConfig.adsterra_script_messages || '',
         chat_retention_days: existingConfig.chat_retention_days ?? 90,
         welcome_tokens: existingConfig.welcome_tokens ?? 5000,
         tokens_browse_men_enabled: existingConfig.tokens_browse_men_enabled !== false,
@@ -412,68 +398,6 @@ export default function SiteSettings() {
                   <Input value={form.juicyads_zone_messages} onChange={e => updateField('juicyads_zone_messages', e.target.value)} placeholder="e.g. 123458" />
                 </div>
                 <p className="text-xs text-muted-foreground">Zone IDs are found in your JuicyAds Dashboard → My Spots. Leave a zone blank to disable the ad on that page.</p>
-              </div>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Monetization — Adsterra Ads */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="font-heading text-lg">Monetization — Adsterra Ads</CardTitle>
-          <CardDescription>Mainstream ad network serving dating, apps, games, and more. Tamer content than JuicyAds. Both networks can run simultaneously.</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="font-medium text-sm">Enable Adsterra Ads</p>
-              <p className="text-xs text-muted-foreground mt-0.5">Shows banner ads on Browse, Profile, and Messages pages per your zone configuration below.</p>
-            </div>
-            <Switch
-              checked={form.adsterra_enabled}
-              onCheckedChange={v => updateField('adsterra_enabled', v)}
-            />
-          </div>
-          {form.adsterra_enabled && (
-            <div className="space-y-4 pt-2 border-t">
-              <div className="border-t pt-4 space-y-3">
-                <p className="text-sm font-semibold">Audience — Who Sees Ads</p>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium">Show Ads to Men</p>
-                    <p className="text-xs text-muted-foreground">Recommended — men are the paying audience</p>
-                  </div>
-                  <Switch checked={form.adsterra_show_men} onCheckedChange={v => updateField('adsterra_show_men', v)} />
-                </div>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium">Show Ads to Women</p>
-                  </div>
-                  <Switch checked={form.adsterra_show_women} onCheckedChange={v => updateField('adsterra_show_women', v)} />
-                </div>
-              </div>
-
-              <div className="border-t pt-4 space-y-3">
-                <p className="text-sm font-semibold">Ad Script URLs by Page</p>
-                <div className="space-y-1">
-                  <Label className="text-xs">Browse Page Script URL</Label>
-                  <Input value={form.adsterra_script_browse} onChange={e => updateField('adsterra_script_browse', e.target.value)} placeholder="//pl123....highperformanceformat.com/hash/invoke.js" />
-                </div>
-                <div className="space-y-1">
-                  <Label className="text-xs">Profile Page Script URL</Label>
-                  <Input value={form.adsterra_script_profile} onChange={e => updateField('adsterra_script_profile', e.target.value)} placeholder="//pl123....highperformanceformat.com/hash/invoke.js" />
-                </div>
-                <div className="space-y-1">
-                  <Label className="text-xs">Profile Page Script URL (Mobile 160x300)</Label>
-                  <Input value={form.adsterra_script_profile_mobile} onChange={e => updateField('adsterra_script_profile_mobile', e.target.value)} placeholder="//www.highperformanceformat.com/.../invoke.js" />
-                  <p className="text-xs text-muted-foreground">Adsterra script URL for the mobile placement on profile pages (160x300 portrait banner).</p>
-                </div>
-                <div className="space-y-1">
-                  <Label className="text-xs">Messages Page Script URL</Label>
-                  <Input value={form.adsterra_script_messages} onChange={e => updateField('adsterra_script_messages', e.target.value)} placeholder="//pl123....highperformanceformat.com/hash/invoke.js" />
-                </div>
-                <p className="text-xs text-muted-foreground">Paste the full <code className="bg-muted px-1 rounded">src</code> URL from each Adsterra ad unit code snippet. Found in Adsterra Dashboard → your site → ad unit → Get Code. Leave a field blank to disable the ad on that page.</p>
               </div>
             </div>
           )}
