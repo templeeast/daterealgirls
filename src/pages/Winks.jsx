@@ -4,11 +4,14 @@ import { base44 } from '@/api/base44Client';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import useMyProfile from '@/hooks/useMyProfile';
+import useSiteConfig from '@/hooks/useSiteConfig';
+import StickyAdBar from '@/components/shared/StickyAdBar';
 import { formatDistanceToNow } from 'date-fns';
 
 export default function Winks() {
   const navigate = useNavigate();
   const { profile, isLoading: profileLoading } = useMyProfile();
+  const { config } = useSiteConfig();
   const [winks, setWinks] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -32,6 +35,9 @@ export default function Winks() {
 
   return (
     <div className="max-w-xl mx-auto px-4 py-8">
+      {/* Sticky JuicyAds bar — stays visible while scrolling */}
+      <StickyAdBar zone={config?.juicyads_zone_browse} />
+
       <h1 className="font-heading text-3xl font-bold mb-6 flex items-center gap-2">
         😉 Winks Received
         {winks && winks.length > 0 && (

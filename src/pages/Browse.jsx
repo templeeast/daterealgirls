@@ -13,7 +13,7 @@ import { useAuth } from '@/lib/AuthContext';
 import { useTranslation } from 'react-i18next';
 import useSiteConfig from '@/hooks/useSiteConfig';
 import CountryCitySelector from '@/components/shared/CountryCitySelector';
-import JuicyAdsEmbed from '@/components/shared/JuicyAdsEmbed';
+import StickyAdBar from '@/components/shared/StickyAdBar';
 
 export default function Browse() {
   const navigate = useNavigate();
@@ -143,6 +143,9 @@ export default function Browse() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Sticky JuicyAds bar — stays visible while scrolling */}
+      <StickyAdBar zone={config?.juicyads_zone_browse} />
+
       {/* Token balance banner */}
       {currentTokens < 200 && (
         <div className="mb-6 bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-center justify-between">
@@ -260,11 +263,7 @@ export default function Browse() {
                   myProfile={profile}
                   hasWinked={winkedIds.has(p.id)}
                 />
-                {i === 3 && (
-                  <div className="col-span-2 sm:col-span-3 lg:col-span-4 flex flex-col items-center justify-center gap-2 rounded-2xl border bg-card/50 py-2">
-                    <JuicyAdsEmbed zone={config?.juicyads_zone_browse} />
-                  </div>
-                )}
+
               </React.Fragment>
             ))}
             {/* Blurred locked cards for token-gated browsing */}

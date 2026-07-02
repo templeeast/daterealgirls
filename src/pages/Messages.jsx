@@ -9,7 +9,7 @@ import useMyProfile from '@/hooks/useMyProfile';
 import { formatDistanceToNow } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import useSiteConfig from '@/hooks/useSiteConfig';
-import JuicyAdsEmbed from '@/components/shared/JuicyAdsEmbed';
+import StickyAdBar from '@/components/shared/StickyAdBar';
 
 export default function Messages() {
   const { user } = useMyProfile();
@@ -49,8 +49,8 @@ export default function Messages() {
     <div className="max-w-2xl mx-auto px-4 py-8">
       <h1 className="font-heading text-3xl font-bold mb-6">{t('messages_title')}</h1>
 
-      {/* JuicyAds — Messages page */}
-      <JuicyAdsEmbed zone={config?.juicyads_zone_messages} />
+      {/* Sticky JuicyAds bar — stays visible while scrolling */}
+      <StickyAdBar zone={config?.juicyads_zone_messages} />
 
       {isLoading ? (
         <div className="space-y-3">

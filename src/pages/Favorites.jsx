@@ -6,11 +6,14 @@ import { Star, User, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import useMyProfile from '@/hooks/useMyProfile';
+import useSiteConfig from '@/hooks/useSiteConfig';
+import StickyAdBar from '@/components/shared/StickyAdBar';
 import { useTranslation } from 'react-i18next';
 
 export default function Favorites() {
   const { user } = useMyProfile();
   const { t } = useTranslation();
+  const { config } = useSiteConfig();
   const queryClient = useQueryClient();
 
   const { data: favorites, isLoading } = useQuery({
@@ -27,6 +30,9 @@ export default function Favorites() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
+      {/* Sticky JuicyAds bar — stays visible while scrolling */}
+      <StickyAdBar zone={config?.juicyads_zone_browse} />
+
       <h1 className="font-heading text-3xl font-bold mb-6">{t('favorites_title')}</h1>
 
       {isLoading ? (

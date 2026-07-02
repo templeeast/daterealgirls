@@ -13,7 +13,7 @@ import PrivatePhotosViewer from '@/components/profile/PrivatePhotosViewer';
 import { useToast } from '@/components/ui/use-toast';
 import { useTranslation } from 'react-i18next';
 import useSiteConfig from '@/hooks/useSiteConfig';
-import JuicyAdsEmbed from '@/components/shared/JuicyAdsEmbed';
+import StickyAdBar from '@/components/shared/StickyAdBar';
 
 export default function ViewProfile() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -151,6 +151,9 @@ export default function ViewProfile() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
+      {/* Sticky JuicyAds bar — stays visible while scrolling */}
+      <StickyAdBar zone={config?.juicyads_zone_profile} zoneMobile={config?.juicyads_zone_profile_mobile} />
+
       <Button variant="ghost" className="mb-4" onClick={() => navigate(-1)}>
         <ArrowLeft className="w-4 h-4 mr-2" /> {t('back')}
       </Button>
@@ -170,8 +173,7 @@ export default function ViewProfile() {
         </div>
       )}
 
-      {/* JuicyAds — Profile page (desktop: 728x90, mobile: 300x100) */}
-      <JuicyAdsEmbed zone={config?.juicyads_zone_profile} zoneMobile={config?.juicyads_zone_profile_mobile} />
+
 
       {/* Info */}
       <div className="flex items-start justify-between mb-4">
