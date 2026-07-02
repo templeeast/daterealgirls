@@ -299,6 +299,15 @@
         "best"
       ],
       "description": "Token pack selected at checkout, pending webhook confirmation"
+    },
+    "stripe_payment_link": {
+      "type": "string",
+      "description": "Stripe Payment Link URL for receiving payments from other members"
+    },
+    "show_stripe_payment_link": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether to show the Stripe payment link on the public profile (requires verified status)"
     }
   },
   "required": [
