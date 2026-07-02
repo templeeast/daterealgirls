@@ -198,6 +198,14 @@ export default function Landing() {
             ))}
           </div>
 
+          {/* New site notice */}
+          <div className="max-w-3xl mx-auto mb-10 bg-accent border border-primary/20 rounded-2xl p-5 text-center">
+            <div className="flex items-center justify-center gap-3">
+              <span className="text-2xl">🎉</span>
+              <p className="text-sm text-accent-foreground font-medium">{t('browse_new_site_notice')}</p>
+            </div>
+          </div>
+
           {/* Cost Breakdown Table */}
           <div className="max-w-3xl mx-auto bg-card border rounded-2xl overflow-hidden">
             <div className="px-6 py-5">
