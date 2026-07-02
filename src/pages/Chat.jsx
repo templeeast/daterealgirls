@@ -451,7 +451,7 @@ export default function Chat() {
               else if (!hasPaymentLink) tooltipMsg = t('stripe.payment_link.missing.prompt');
               else if (tokens < linkCost) tooltipMsg = t('stripe.payment_link.message_embed.cost_notice', { n: linkCost });
               else btnDisabled = false;
-              if (!isVerified && !stripeEnabled) return null;
+              if (!stripeEnabled) return null;
               const handleEmbedPaymentLink = async () => {
                 if (btnDisabled) { if (tooltipMsg) alert(tooltipMsg); return; }
                 const myProfile = (await base44.entities.MemberProfile.filter({ user_id: user.id }))[0];
