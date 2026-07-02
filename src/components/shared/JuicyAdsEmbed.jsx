@@ -25,14 +25,13 @@ export default function JuicyAdsEmbed({ zone, zoneMobile }) {
     if (!shouldRender || !activeZone) return;
 
     // Remove any existing loader so jads.js re-initializes and processes
-    // the zone fresh — required for SPA page navigations.
+    // the <ins> element fresh — required for SPA page navigations.
     const existing = document.getElementById('juicyads-jads-loader');
     if (existing) existing.remove();
 
-    // Use the standard JuicyAds async queue (push, not replace)
-    window.adsbyjuicy = window.adsbyjuicy || [];
-    window.adsbyjuicy.push({ adzone: Number(activeZone) });
-
+    // Standard JuicyAds embed: jads.js auto-discovers .adsbyjuicy[data-adzone]
+    // elements and renders the full zone config (including multi-column layout).
+    // No queue push — that creates a separate single-ad insertion.
     const loader = document.createElement('script');
     loader.id = 'juicyads-jads-loader';
     loader.type = 'text/javascript';
