@@ -11,16 +11,9 @@ export default function WinkButton({ myProfile, targetProfileId, existingWink, o
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(!!existingWink);
 
-  const isPremium = myProfile?.subscription_status === 'active' || myProfile?.gender === 'female';
-
   const handleWink = async (e) => {
     e.preventDefault();
     e.stopPropagation();
-
-    if (!isPremium) {
-      toast({ title: t('wink_premium_required'), variant: 'destructive' });
-      return;
-    }
 
     if (sent) {
       toast({ title: t('wink_already_sent') });
