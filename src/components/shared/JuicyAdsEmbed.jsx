@@ -45,12 +45,12 @@ export default function JuicyAdsEmbed({ zone, zoneMobile }) {
   if (!shouldRender) return null;
 
   return (
-    <div className="my-4 flex justify-center">
+    <div className="my-4 w-full flex justify-center">
       <ins
         id={String(activeZone)}
         className="adsbyjuicy"
         data-adzone={String(activeZone)}
-        style={{ display: 'block', minHeight: '90px' }}
+        style={{ display: 'block', width: '100%', minHeight: '250px' }}
       />
     </div>
   );
