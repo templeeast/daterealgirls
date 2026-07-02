@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Heart, MessageCircle, User, Search, Menu, X, Star, Shield, LogOut, Settings, Coins } from 'lucide-react';
+import { Heart, MessageCircle, User, Search, Menu, X, Star, Shield, LogOut, Settings, Coins, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import useSiteConfig from '@/hooks/useSiteConfig';
 import useMyProfile from '@/hooks/useMyProfile';
 import { base44 } from '@/api/base44Client';
 import { useTranslation } from 'react-i18next';
+import { useQuery } from '@tanstack/react-query';
 import LanguageSelector from '@/components/layout/LanguageSelector';
 
 export default function Navbar() {
@@ -23,8 +24,16 @@ export default function Navbar() {
     profile?.verification_status === 'verified'
   );
 
+  const { data: winks } = useQuery({
+    queryKey: ['winks-count', profile?.id],
+    queryFn: () => base44.entities.Wink.filter({ recipient_profile_id: profile.id }),
+    enabled: !!profile?.id,
+  });
+  const winksCount = winks?.length ?? 0;
+
   const navItems = [
     { path: '/browse', label: t('nav_browse'), icon: Search, restricted: true },
+    { path: '/winks', label: t('nav_winks', 'Winks'), icon: Zap, restricted: true, badge: winksCount },
     { path: '/messages', label: t('nav_messages'), icon: MessageCircle, restricted: true },
     { path: '/favorites', label: t('nav_favorites'), icon: Star, restricted: true },
     { path: '/my-profile', label: t('nav_profile'), icon: User, restricted: false },
@@ -48,7 +57,7 @@ export default function Navbar() {
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-1">
-            {navItems.map(({ path, label, icon: Icon, restricted }) => {
+            {navItems.map(({ path, label, icon: Icon, restricted, badge }) => {
               const disabled = restricted && !profileComplete;
               return disabled ? (
                 <Button key={path} variant="ghost" size="sm" className="gap-2 opacity-40 cursor-not-allowed" disabled>
@@ -56,7 +65,7 @@ export default function Navbar() {
                   {label}
                 </Button>
               ) : (
-                <Link key={path} to={path}>
+                <Link key={path} to={path} className="relative">
                   <Button
                     variant={location.pathname === path ? 'default' : 'ghost'}
                     size="sm"
@@ -65,6 +74,11 @@ export default function Navbar() {
                     <Icon className="w-4 h-4" />
                     {label}
                   </Button>
+                  {badge > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-[10px] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">
+                      {badge > 99 ? '99+' : badge}
+                    </span>
+                  )}
                 </Link>
               );
             })}
@@ -129,7 +143,7 @@ export default function Navbar() {
                       </div>
                     </div>
                   )}
-                  {navItems.map(({ path, label, icon: Icon, restricted }) => {
+                  {navItems.map(({ path, label, icon: Icon, restricted, badge }) => {
                     const disabled = restricted && !profileComplete;
                     return disabled ? (
                       <Button key={path} variant="ghost" className="w-full justify-start gap-3 opacity-40 cursor-not-allowed" disabled>
@@ -137,13 +151,18 @@ export default function Navbar() {
                         {label}
                       </Button>
                     ) : (
-                      <Link key={path} to={path} onClick={() => setOpen(false)}>
+                      <Link key={path} to={path} onClick={() => setOpen(false)} className="relative">
                         <Button
                           variant={location.pathname === path ? 'default' : 'ghost'}
                           className="w-full justify-start gap-3"
                         >
                           <Icon className="w-4 h-4" />
                           {label}
+                          {badge > 0 && (
+                            <span className="ml-auto bg-primary text-primary-foreground text-[10px] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">
+                              {badge > 99 ? '99+' : badge}
+                            </span>
+                          )}
                         </Button>
                       </Link>
                     );
