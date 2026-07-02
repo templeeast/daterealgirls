@@ -2,7 +2,6 @@ import React from 'react';
 import { Outlet } from 'react-router-dom';
 import Navbar from './Navbar';
 import StripeIdentityGate from './StripeIdentityGate';
-import AdMavenEmbed from '@/components/shared/AdMavenEmbed';
 
 export default function AppLayout() {
   return (
@@ -12,7 +11,6 @@ export default function AppLayout() {
         <Outlet />
       </main>
       <StripeIdentityGate />
-      <AdMavenEmbed />
     </div>
   );
 }

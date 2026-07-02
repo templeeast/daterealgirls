@@ -118,22 +118,6 @@
     "juicyads_zone_messages": {
       "type": "string"
     },
-    "admaven_enabled": {
-      "type": "boolean",
-      "default": false
-    },
-    "admaven_push_script": {
-      "type": "string",
-      "description": "AdMaven push notification script URL (full src from AdMaven placement code)"
-    },
-    "admaven_show_men": {
-      "type": "boolean",
-      "default": true
-    },
-    "admaven_show_women": {
-      "type": "boolean",
-      "default": false
-    },
     "msg_rate_limit_count": {
       "type": "number",
       "default": 5
