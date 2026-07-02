@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ArrowLeft, Send, User, Image as ImageIcon, Trash2, Coins, Lock, CheckCircle, XCircle, Link as LinkIcon } from 'lucide-react';
+import { ArrowLeft, Send, User, Image as ImageIcon, Trash2, Coins, Lock, CheckCircle, XCircle, BadgeDollarSign } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import useMyProfile from '@/hooks/useMyProfile';
 import useSiteConfig from '@/hooks/useSiteConfig';
@@ -481,7 +481,7 @@ export default function Chat() {
                   disabled={btnDisabled}
                   onClick={handleEmbedPaymentLink}
                 >
-                  <LinkIcon className="w-5 h-5" />
+                  <BadgeDollarSign className="w-5 h-5" />
                 </Button>
               );
             })()}
