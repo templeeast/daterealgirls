@@ -443,19 +443,19 @@ export default function Chat() {
               const isVerified = requiresIdVerification(profile);
               const stripeEnabled = isMale ? config?.stripe_payment_link_enabled_men : config?.stripe_payment_link_enabled_women;
               const hasPaymentLink = !!profile?.stripe_payment_link;
-              const linkCost = config?.stripe_link_message_credit_cost ?? 5;
+              const linkCost = isMale ? (config?.stripe_link_message_credit_cost ?? 5) : 0;
               let tooltipMsg = '';
               let btnDisabled = true;
               if (!isVerified) tooltipMsg = t('stripe.payment_link.not_verified.tooltip');
               else if (!stripeEnabled) tooltipMsg = t('stripe.payment_link.not_enabled.tooltip');
               else if (!hasPaymentLink) tooltipMsg = t('stripe.payment_link.missing.prompt');
-              else if (tokens < linkCost) tooltipMsg = t('stripe.payment_link.message_embed.cost_notice', { n: linkCost });
+              else if (linkCost > 0 && tokens < linkCost) tooltipMsg = t('stripe.payment_link.message_embed.cost_notice', { n: linkCost });
               else btnDisabled = false;
               if (!stripeEnabled) return null;
               const handleEmbedPaymentLink = async () => {
                 if (btnDisabled) { if (tooltipMsg) alert(tooltipMsg); return; }
                 const myProfile = (await base44.entities.MemberProfile.filter({ user_id: user.id }))[0];
-                await base44.entities.MemberProfile.update(myProfile.id, { tokens: Math.max(0, tokens - linkCost) });
+                if (linkCost > 0) await base44.entities.MemberProfile.update(myProfile.id, { tokens: Math.max(0, tokens - linkCost) });
                 await base44.entities.Message.create({
                   conversation_id: conversationId,
                   sender_id: user.id,
