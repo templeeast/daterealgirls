@@ -25,12 +25,13 @@ export default function JuicyAdsEmbed({ zone, zoneMobile }) {
     if (!shouldRender || !activeZone) return;
 
     // Remove any existing loader so jads.js re-initializes and processes
-    // the queue fresh — required for SPA page navigations.
+    // the zone fresh — required for SPA page navigations.
     const existing = document.getElementById('juicyads-jads-loader');
     if (existing) existing.remove();
 
-    // Reset the queue with just the current zone
-    window.adsbyjuicy = [{ adzone: Number(activeZone) }];
+    // Use the standard JuicyAds async queue (push, not replace)
+    window.adsbyjuicy = window.adsbyjuicy || [];
+    window.adsbyjuicy.push({ adzone: Number(activeZone) });
 
     const loader = document.createElement('script');
     loader.id = 'juicyads-jads-loader';
@@ -47,7 +48,8 @@ export default function JuicyAdsEmbed({ zone, zoneMobile }) {
     <div className="my-4 flex justify-center">
       <ins
         id={String(activeZone)}
-        className="block"
+        className="adsbyjuicy"
+        data-adzone={String(activeZone)}
         style={{ display: 'block', minHeight: '90px' }}
       />
     </div>
