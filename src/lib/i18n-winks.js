@@ -5,6 +5,7 @@ export const winkTranslations = {
     wink_sent_toast: '😉 Wink sent!',
     wink_already_sent: 'You already winked at this person!',
     wink_premium_required: 'Upgrade to Premium to send winks 😉',
+    wink_insufficient_tokens: 'Not enough tokens to send a wink (costs 5 tokens)',
     wink_count: '{{count}} wink',
     wink_count_plural: '{{count}} winks',
     winks_received_title: '{{count}} Wink Received',
