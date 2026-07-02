@@ -157,10 +157,10 @@ export default function Browse() {
         </div>
       )}
 
-      {/* Search & Filters — sticky so it stays visible while scrolling */}
-      <div className="mb-8 sticky top-16 z-30">
+      {/* Search & Filters */}
+      <div className="mb-8">
         <h1 className="font-heading text-3xl font-bold mb-6">{t('browse_title')}</h1>
-        <div className="flex flex-col sm:flex-row gap-3 bg-background/95 backdrop-blur pb-3 -mx-4 px-4 sm:mx-0 sm:px-0">
+        <div className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
