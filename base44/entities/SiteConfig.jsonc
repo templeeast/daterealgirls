@@ -107,14 +107,6 @@
     "juicyads_zone_browse": {
       "type": "string"
     },
-    "juicyads_zone_browse_2": {
-      "type": "string",
-      "description": "JuicyAds Zone/Spot ID for the Browse page \u2014 150x150 Img + Title (placement 2, after 8th card)"
-    },
-    "juicyads_zone_browse_3": {
-      "type": "string",
-      "description": "JuicyAds Zone/Spot ID for the Browse page \u2014 150x150 Img + Title (placement 3, after 12th card)"
-    },
     "juicyads_zone_profile": {
       "type": "string",
       "description": "JuicyAds Zone/Spot ID for the /profile page \u2014 desktop placement (728x90 Leaderboard)"

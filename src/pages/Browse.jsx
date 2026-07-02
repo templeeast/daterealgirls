@@ -13,8 +13,7 @@ import { useAuth } from '@/lib/AuthContext';
 import { useTranslation } from 'react-i18next';
 import useSiteConfig from '@/hooks/useSiteConfig';
 import CountryCitySelector from '@/components/shared/CountryCitySelector';
-import JuicyAdsIns from '@/components/shared/JuicyAdsIns';
-import useJuicyAdsLoader from '@/hooks/useJuicyAdsLoader';
+import JuicyAdsEmbed from '@/components/shared/JuicyAdsEmbed';
 
 export default function Browse() {
   const navigate = useNavigate();
@@ -142,25 +141,6 @@ export default function Browse() {
   const visibleProfiles = shouldGateBrowsing ? filtered.slice(0, browseLimit - effectiveBrowseCount) : filtered;
   const hasLockedProfiles = shouldGateBrowsing && filtered.length > (browseLimit - effectiveBrowseCount);
 
-  // JuicyAds — multi-zone setup for Browse page
-  const juicyadsEnabled = config?.juicyads_enabled;
-  const juicyadsShowMen = config?.juicyads_show_men !== false;
-  const juicyadsShowWomen = config?.juicyads_show_women || false;
-  const showJuicyAds = juicyadsEnabled &&
-    !((profile?.gender === 'male' && !juicyadsShowMen) ||
-      (profile?.gender === 'female' && !juicyadsShowWomen));
-
-  const browseZone1 = config?.juicyads_zone_browse;
-  const browseZone2 = config?.juicyads_zone_browse_2;
-  const browseZone3 = config?.juicyads_zone_browse_3;
-
-  // Only activate once both config and profiles are loaded so <ins> elements exist in the DOM
-  const adZones = showJuicyAds && !isLoading && (browseZone1 || browseZone2 || browseZone3)
-    ? [browseZone1, browseZone2, browseZone3].filter(Boolean)
-    : [];
-
-  useJuicyAdsLoader(adZones);
-
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Token balance banner */}
@@ -280,19 +260,9 @@ export default function Browse() {
                   myProfile={profile}
                   hasWinked={winkedIds.has(p.id)}
                 />
-                {i === 3 && showJuicyAds && browseZone1 && (
+                {i === 3 && (
                   <div className="col-span-2 sm:col-span-3 lg:col-span-4 flex flex-col items-center justify-center gap-2 rounded-2xl border bg-card/50 py-2">
-                    <JuicyAdsIns zone={browseZone1} />
-                  </div>
-                )}
-                {i === 7 && showJuicyAds && browseZone2 && (
-                  <div className="col-span-2 sm:col-span-3 lg:col-span-4 flex flex-col items-center justify-center gap-2 rounded-2xl border bg-card/50 py-2">
-                    <JuicyAdsIns zone={browseZone2} />
-                  </div>
-                )}
-                {i === 11 && showJuicyAds && browseZone3 && (
-                  <div className="col-span-2 sm:col-span-3 lg:col-span-4 flex flex-col items-center justify-center gap-2 rounded-2xl border bg-card/50 py-2">
-                    <JuicyAdsIns zone={browseZone3} />
+                    <JuicyAdsEmbed zone={config?.juicyads_zone_browse} />
                   </div>
                 )}
               </React.Fragment>
