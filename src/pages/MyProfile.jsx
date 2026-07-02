@@ -21,7 +21,6 @@ import useMyProfile from '@/hooks/useMyProfile';
 import useSiteConfig from '@/hooks/useSiteConfig';
 import { useTranslation } from 'react-i18next';
 import i18n from '@/lib/i18n';
-import StripeIdentityCard from '@/components/profile/StripeIdentityCard';
 import DiditVerificationCard from '@/components/profile/DiditVerificationCard';
 import CountryCitySelector from '@/components/shared/CountryCitySelector';
 import PrivatePhotosSection from '@/components/profile/PrivatePhotosSection';
@@ -431,15 +430,7 @@ export default function MyProfile() {
       )}
 
       {/* Verification Status */}
-      {config.require_stripe_identity ? (
-        <StripeIdentityCard
-          profile={profile}
-          publishableKey={config.stripe_identity_publishable_key}
-          onRefetch={refetch}
-        />
-      ) : (
-        <DiditVerificationCard profile={profile} onRefetch={refetch} />
-      )}
+      <DiditVerificationCard profile={profile} onRefetch={refetch} />
 
       {/* Verification Promo Code */}
       {profile.verification_status === 'verified' && !profile.used_promo_codes?.includes('LAUNCH26') && (

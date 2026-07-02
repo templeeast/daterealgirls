@@ -36,8 +36,6 @@ export default function SiteSettings() {
     msg_rate_limit_count: 5,
     msg_rate_limit_seconds: 10,
     primary_color: '',
-    require_stripe_identity: false,
-    stripe_identity_publishable_key: '',
     banner_show_women_only: true,
     payment_processor: 'whop',
     authorizenet_use_hosted_page: false,
@@ -109,8 +107,6 @@ export default function SiteSettings() {
         msg_rate_limit_count: existingConfig.msg_rate_limit_count ?? 5,
         msg_rate_limit_seconds: existingConfig.msg_rate_limit_seconds ?? 10,
         primary_color: existingConfig.primary_color || '',
-        require_stripe_identity: existingConfig.require_stripe_identity || false,
-        stripe_identity_publishable_key: existingConfig.stripe_identity_publishable_key || '',
         banner_show_women_only: existingConfig.banner_show_women_only !== false,
         payment_processor: existingConfig.payment_processor || 'whop',
         authorizenet_use_hosted_page: existingConfig.authorizenet_use_hosted_page || false,
@@ -312,37 +308,6 @@ export default function SiteSettings() {
 
       {/* Token Economy */}
       <TokenEconomySettings form={form} updateField={updateField} />
-
-      {/* Identity Verification */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="font-heading text-lg">Identity Verification</CardTitle>
-          <CardDescription>Require new users to verify their identity with Stripe during onboarding.</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="font-medium text-sm">Require Stripe Identity Verification</p>
-              <p className="text-xs text-muted-foreground mt-0.5">When enabled, a verification step is added to the onboarding flow for all new members.</p>
-            </div>
-            <Switch
-              checked={form.require_stripe_identity}
-              onCheckedChange={v => updateField('require_stripe_identity', v)}
-            />
-          </div>
-          {form.require_stripe_identity && (
-            <div className="space-y-2 pt-2 border-t">
-              <Label>Stripe Publishable Key</Label>
-              <Input
-                value={form.stripe_identity_publishable_key}
-                onChange={e => updateField('stripe_identity_publishable_key', e.target.value)}
-                placeholder="pk_live_..."
-              />
-              <p className="text-xs text-muted-foreground">Found in your Stripe dashboard under Developers → API keys.</p>
-            </div>
-          )}
-        </CardContent>
-      </Card>
 
       {/* Monetization — Ads */}
       <Card>

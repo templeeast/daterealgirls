@@ -128,7 +128,7 @@ export default function TokenEconomySettings({ form, updateField }) {
       <Card>
         <CardHeader>
           <CardTitle className="font-heading text-lg">ID Verification</CardTitle>
-          <CardDescription>Token cost for Stripe Identity verification.</CardDescription>
+          <CardDescription>Token cost for ID verification.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between">

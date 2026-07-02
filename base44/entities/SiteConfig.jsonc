@@ -29,13 +29,6 @@
     "target_audience": {
       "type": "string"
     },
-    "require_stripe_identity": {
-      "type": "boolean",
-      "default": false
-    },
-    "stripe_identity_publishable_key": {
-      "type": "string"
-    },
     "banner_show_women_only": {
       "type": "boolean",
       "default": true

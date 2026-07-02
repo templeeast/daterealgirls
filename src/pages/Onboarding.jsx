@@ -14,7 +14,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 
 import CountryCitySelector from '@/components/shared/CountryCitySelector';
-import StripeIdentityStep from '@/components/onboarding/StripeIdentityStep';
 import DiditVerificationStep from '@/components/onboarding/DiditVerificationStep';
 
 const INTERESTS = [
@@ -50,7 +49,6 @@ export default function Onboarding() {
       setCheckingProfile(false);
     })();
   }, [navigate]);
-  const [identityVerified, setIdentityVerified] = useState(false);
   const [form, setForm] = useState({
     display_name: '',
     gender: '',
@@ -143,8 +141,6 @@ export default function Onboarding() {
     navigate('/browse');
   };
 
-  const requireStripeIdentity = config.require_stripe_identity === true;
-
   const ageIfDobEntered = form.date_of_birth ? calculateAge(form.date_of_birth) : null;
   const isUnderAge = ageIfDobEntered !== null && ageIfDobEntered < 18;
 
@@ -227,16 +223,7 @@ export default function Onboarding() {
     </div>,
 
     // Step 2: Identity Verification
-    ...(requireStripeIdentity ? [
-      <StripeIdentityStep
-        key="identity"
-        publishableKey={config.stripe_identity_publishable_key}
-        onVerified={() => { setIdentityVerified(true); setStep(s => s + 1); }}
-        onSkip={() => setStep(s => s + 1)}
-      />
-    ] : [
-      <DiditVerificationStep key="verify" />,
-    ]),
+    <DiditVerificationStep key="verify" />,
 
     // Step 3: Photos & Social
     <div key="photos" className="space-y-6">
@@ -314,8 +301,7 @@ export default function Onboarding() {
               {steps[step]}
             </motion.div>
           </AnimatePresence>
-          {!(requireStripeIdentity && step === 2) && (
-            <div className="flex justify-between mt-8">
+          <div className="flex justify-between mt-8">
               <Button variant="ghost" onClick={() => setStep(s => s - 1)} disabled={step === 0}>
                 <ChevronLeft className="w-4 h-4 mr-1" /> {t('back_btn')}
               </Button>
@@ -329,7 +315,6 @@ export default function Onboarding() {
                 </Button>
               )}
             </div>
-          )}
         </CardContent>
       </Card>
     </div>
