@@ -13,7 +13,7 @@ import { useTranslation } from 'react-i18next';
 import VerificationRequiredModal from '@/components/shared/VerificationRequiredModal';
 
 const requiresIdVerification = (memberProfile) =>
-  memberProfile?.didit_verification_status === 'Approved';
+  memberProfile?.verification_status === 'verified' || memberProfile?.didit_verification_status === 'Approved';
 
 function PrivatePhotoRequestCard({ msg, isMe, onRespond }) {
   const { data: accessRecords = [] } = useQuery({
