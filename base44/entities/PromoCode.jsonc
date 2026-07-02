@@ -29,6 +29,11 @@
       "default": true,
       "description": "Whether this promo code is currently active"
     },
+    "visible": {
+      "type": "boolean",
+      "default": true,
+      "description": "If true, the promo is shown to eligible users on their profile. If false, it is hidden (targeted only \u2014 users must enter the code manually)."
+    },
     "max_uses": {
       "type": "number",
       "description": "Maximum total redemptions allowed (leave empty for unlimited)"
