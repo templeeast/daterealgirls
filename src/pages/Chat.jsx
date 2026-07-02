@@ -423,12 +423,35 @@ export default function Chat() {
           {(() => {
             const isVerified = requiresIdVerification(profile);
             const stripeEnabled = isMale ? config?.stripe_payment_link_enabled_men : config?.stripe_payment_link_enabled_women;
-            const hasPaymentLink = !!profile?.stripe_payment_link;
             const showPaymentBtn = isVerified && stripeEnabled;
             return showPaymentBtn ? (
               <p className="text-xs text-gray-400 text-center mb-1 max-w-3xl mx-auto px-1">
                 {t('stripe.payment_link.composer.legal_disclaimer')}
               </p>
+            ) : null;
+          })()}
+          {/* Payment link insufficient tokens notice */}
+          {(() => {
+            const isVerified = requiresIdVerification(profile);
+            const stripeEnabled = isMale ? config?.stripe_payment_link_enabled_men : config?.stripe_payment_link_enabled_women;
+            const hasPaymentLink = !!profile?.stripe_payment_link;
+            const linkCost = config?.stripe_link_message_credit_cost ?? 5;
+            const showPaymentBtn = isVerified && stripeEnabled;
+            const insufficientTokens = showPaymentBtn && hasPaymentLink && tokens < linkCost;
+            return insufficientTokens ? (
+              <div className="flex items-center justify-center gap-2 mb-1 max-w-3xl mx-auto px-1">
+                <p className="text-xs text-amber-600 dark:text-amber-400">
+                  {t('stripe.payment_link.message_embed.insufficient_tokens', { n: linkCost })}
+                </p>
+                <Button
+                  size="sm"
+                  variant="link"
+                  className="h-auto p-0 text-xs text-primary"
+                  onClick={() => navigate('/my-profile')}
+                >
+                  {t('stripe.payment_link.message_embed.buy_tokens')}
+                </Button>
+              </div>
             ) : null;
           })()}
           <div className="flex gap-2 items-center max-w-3xl mx-auto">
