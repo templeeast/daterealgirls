@@ -6,6 +6,9 @@ import JuicyAdsEmbed from '@/components/shared/JuicyAdsEmbed';
  * so it stays visible while the user scrolls the page.
  */
 export default function StickyAdBar({ zone, zoneMobile }) {
+  // Don't render the bar at all if no zone ID is specified
+  if (!zone && !zoneMobile) return null;
+
   return (
     <div className="sticky top-16 z-40 w-full border-b bg-background/95 backdrop-blur">
       <div className="max-w-7xl mx-auto">
