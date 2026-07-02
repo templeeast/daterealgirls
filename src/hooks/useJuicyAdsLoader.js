@@ -17,26 +17,22 @@ export default function useJuicyAdsLoader(zones) {
 
     const validZones = zoneKey.split(',').filter(Boolean);
 
-    // Remove any existing loader so jads.js re-initializes fresh
-    // (required for SPA page navigations and zone set changes).
-    const existing = document.getElementById('juicyads-jads-loader');
-    if (existing) existing.remove();
+    // Defer script injection so React has committed the <ins> DOM nodes first
+    const timer = setTimeout(() => {
+      const existing = document.getElementById('juicyads-jads-loader');
+      if (existing) existing.remove();
 
-    // Reset the queue with all zones for this page
-    window.adsbyjuicy = validZones.map(z => ({ adzone: Number(z) }));
+      window.adsbyjuicy = validZones.map(z => ({ adzone: Number(z) }));
 
-    const loader = document.createElement('script');
-    loader.id = 'juicyads-jads-loader';
-    loader.type = 'text/javascript';
-    loader.async = true;
-    loader.setAttribute('data-cfasync', 'false');
-    loader.src = 'https://adserver.juicyads.com/js/jads.js';
-    document.head.appendChild(loader);
+      const loader = document.createElement('script');
+      loader.id = 'juicyads-jads-loader';
+      loader.type = 'text/javascript';
+      loader.async = true;
+      loader.setAttribute('data-cfasync', 'false');
+      loader.src = 'https://adserver.juicyads.com/js/jads.js';
+      document.head.appendChild(loader);
+    }, 100);
 
-    return () => {
-      const el = document.getElementById('juicyads-jads-loader');
-      if (el) el.remove();
-      window.adsbyjuicy = undefined;
-    };
+    return () => clearTimeout(timer);
   }, [zoneKey]);
 }

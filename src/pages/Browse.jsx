@@ -154,7 +154,8 @@ export default function Browse() {
   const browseZone2 = config?.juicyads_zone_browse_2;
   const browseZone3 = config?.juicyads_zone_browse_3;
 
-  const adZones = showJuicyAds && !isLoading
+  // Only activate once both config and profiles are loaded so <ins> elements exist in the DOM
+  const adZones = showJuicyAds && !isLoading && (browseZone1 || browseZone2 || browseZone3)
     ? [browseZone1, browseZone2, browseZone3].filter(Boolean)
     : [];
 
