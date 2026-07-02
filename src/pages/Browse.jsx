@@ -261,7 +261,7 @@ export default function Browse() {
                   hasWinked={winkedIds.has(p.id)}
                 />
                 {i === 3 && (
-                  <div className="col-span-2 sm:col-span-3 lg:col-span-4">
+                  <div className="col-span-2 sm:col-span-3 lg:col-span-4 flex flex-col items-center justify-center gap-2 rounded-2xl border bg-card/50 py-2">
                     <JuicyAdsEmbed zone={config?.juicyads_zone_browse} />
                   </div>
                 )}
