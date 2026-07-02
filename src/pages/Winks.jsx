@@ -36,7 +36,7 @@ export default function Winks() {
   return (
     <div className="max-w-xl mx-auto px-4 py-8">
       {/* Sticky JuicyAds bar — stays visible while scrolling */}
-      <StickyAdBar zone={config?.juicyads_zone_browse} />
+      <StickyAdBar zone={config?.juicyads_zone_winks} />
 
       <h1 className="font-heading text-3xl font-bold mb-6 flex items-center gap-2">
         😉 Winks Received

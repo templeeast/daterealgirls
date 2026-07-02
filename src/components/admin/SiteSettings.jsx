@@ -62,6 +62,8 @@ export default function SiteSettings() {
     juicyads_zone_profile: '',
     juicyads_zone_profile_mobile: '',
     juicyads_zone_messages: '',
+    juicyads_zone_winks: '',
+    juicyads_zone_favorites: '',
     chat_retention_days: 90,
     welcome_tokens: 5000,
     first_purchase_bonus_men_enabled: true,
@@ -133,6 +135,8 @@ export default function SiteSettings() {
         juicyads_zone_profile: existingConfig.juicyads_zone_profile || '',
         juicyads_zone_profile_mobile: existingConfig.juicyads_zone_profile_mobile || '',
         juicyads_zone_messages: existingConfig.juicyads_zone_messages || '',
+        juicyads_zone_winks: existingConfig.juicyads_zone_winks || '',
+        juicyads_zone_favorites: existingConfig.juicyads_zone_favorites || '',
         chat_retention_days: existingConfig.chat_retention_days ?? 90,
         welcome_tokens: existingConfig.welcome_tokens ?? 5000,
         first_purchase_bonus_men_enabled: existingConfig.first_purchase_bonus_men_enabled !== false,
@@ -404,6 +408,14 @@ export default function SiteSettings() {
                 <div className="space-y-1">
                   <Label className="text-xs">Messages Page Zone ID</Label>
                   <Input value={form.juicyads_zone_messages} onChange={e => updateField('juicyads_zone_messages', e.target.value)} placeholder="e.g. 123458" />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs">Winks Page Zone ID</Label>
+                  <Input value={form.juicyads_zone_winks} onChange={e => updateField('juicyads_zone_winks', e.target.value)} placeholder="e.g. 123459" />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs">Favorites Page Zone ID</Label>
+                  <Input value={form.juicyads_zone_favorites} onChange={e => updateField('juicyads_zone_favorites', e.target.value)} placeholder="e.g. 123460" />
                 </div>
                 <p className="text-xs text-muted-foreground">Zone IDs are found in your JuicyAds Dashboard → My Spots. Leave a zone blank to disable the ad on that page.</p>
               </div>

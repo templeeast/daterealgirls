@@ -118,6 +118,14 @@
     "juicyads_zone_messages": {
       "type": "string"
     },
+    "juicyads_zone_winks": {
+      "type": "string",
+      "description": "JuicyAds Zone/Spot ID for the /winks page"
+    },
+    "juicyads_zone_favorites": {
+      "type": "string",
+      "description": "JuicyAds Zone/Spot ID for the /favorites page"
+    },
     "msg_rate_limit_count": {
       "type": "number",
       "default": 5
