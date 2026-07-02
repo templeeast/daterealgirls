@@ -22,6 +22,7 @@ import useSiteConfig from '@/hooks/useSiteConfig';
 import { useTranslation } from 'react-i18next';
 import i18n from '@/lib/i18n';
 import DiditVerificationCard from '@/components/profile/DiditVerificationCard';
+import EligiblePromosCard from '@/components/profile/EligiblePromosCard';
 import CountryCitySelector from '@/components/shared/CountryCitySelector';
 import PrivatePhotosSection from '@/components/profile/PrivatePhotosSection';
 
@@ -80,10 +81,6 @@ export default function MyProfile() {
     'Best Deal Pack': 'best',
   };
 
-  // Verification promo code state
-  const [verifPromoCode, setVerifPromoCode] = useState('');
-  const [applyingVerifPromo, setApplyingVerifPromo] = useState(false);
-
   // General promo code state
   const [generalPromoCode, setGeneralPromoCode] = useState('');
   const [applyingGeneralPromo, setApplyingGeneralPromo] = useState(false);
@@ -113,26 +110,6 @@ export default function MyProfile() {
     if (error.includes('already been used')) return t('promo_already_used');
     if (error.includes('usage limit')) return t('promo_usage_limit_reached');
     return error;
-  };
-
-  const handleApplyVerifPromo = async () => {
-    if (!verifPromoCode.trim()) return;
-    setApplyingVerifPromo(true);
-    try {
-      const res = await base44.functions.invoke('applyVerificationPromo', { promoCode: verifPromoCode.trim() });
-      if (res.data?.pending) {
-        toast({ title: res.data.message || 'Promo applied! Tokens will be awarded on your first purchase.' });
-      } else {
-        toast({ title: `🎉 ${res.data.bonusTokens.toLocaleString()} bonus tokens added!` });
-        refetch();
-      }
-      setVerifPromoCode('');
-    } catch (err) {
-      const errorMsg = err?.response?.data?.error || err?.message || 'Invalid promo code';
-      toast({ title: getPromoErrorMessage(errorMsg), variant: 'destructive' });
-    } finally {
-      setApplyingVerifPromo(false);
-    }
   };
 
   const handleApplyGeneralPromo = async () => {
@@ -432,31 +409,8 @@ export default function MyProfile() {
       {/* Verification Status */}
       <DiditVerificationCard profile={profile} onRefetch={refetch} />
 
-      {/* Verification Promo Code */}
-      {profile.verification_status === 'verified' && !profile.used_promo_codes?.includes('LAUNCH26') && (
-        <Card className="mb-6 border-green-200 bg-green-50">
-          <CardContent className="pt-6">
-            <div className="flex items-start gap-3 mb-4">
-              <span className="text-2xl">🎉</span>
-              <div>
-                <p className="font-semibold text-green-800">Verified! Claim your bonus tokens</p>
-                <p className="text-sm text-green-700">Enter promo code <span className="font-mono font-bold">LAUNCH26</span> below to receive 5,000 free tokens.</p>
-              </div>
-            </div>
-            <div className="flex gap-2">
-              <Input
-                placeholder="Enter LAUNCH26"
-                value={verifPromoCode}
-                onChange={e => setVerifPromoCode(e.target.value.toUpperCase())}
-                className="font-mono flex-1"
-              />
-              <Button onClick={handleApplyVerifPromo} disabled={applyingVerifPromo || !verifPromoCode.trim()} className="shrink-0">
-                {applyingVerifPromo ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Apply'}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
+      {/* Eligible Promo Codes (dynamic) */}
+      <EligiblePromosCard profile={profile} onRefetch={refetch} />
 
       {/* General Promo Code */}
       <Card className="mb-6 border-blue-200 bg-blue-50">
