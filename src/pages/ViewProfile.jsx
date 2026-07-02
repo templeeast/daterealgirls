@@ -12,8 +12,6 @@ import useMyProfile from '@/hooks/useMyProfile';
 import PrivatePhotosViewer from '@/components/profile/PrivatePhotosViewer';
 import { useToast } from '@/components/ui/use-toast';
 import { useTranslation } from 'react-i18next';
-import useSiteConfig from '@/hooks/useSiteConfig';
-import StickyAdBar from '@/components/shared/StickyAdBar';
 
 export default function ViewProfile() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -25,7 +23,6 @@ export default function ViewProfile() {
   const queryClient = useQueryClient();
 
   const { profile: myProfile } = useMyProfile();
-  const { config } = useSiteConfig();
 
   const { data: profile, isLoading } = useQuery({
     queryKey: ['profile', profileId],
@@ -151,9 +148,6 @@ export default function ViewProfile() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
-      {/* Sticky JuicyAds bar — stays visible while scrolling */}
-      <StickyAdBar zone={config?.juicyads_zone_profile} zoneMobile={config?.juicyads_zone_profile_mobile} />
-
       <Button variant="ghost" className="mb-4" onClick={() => navigate(-1)}>
         <ArrowLeft className="w-4 h-4 mr-2" /> {t('back')}
       </Button>

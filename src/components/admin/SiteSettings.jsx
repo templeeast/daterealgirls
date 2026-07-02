@@ -397,15 +397,6 @@ export default function SiteSettings() {
                   <Input value={form.juicyads_zone_browse} onChange={e => updateField('juicyads_zone_browse', e.target.value)} placeholder="e.g. 123456" />
                 </div>
                 <div className="space-y-1">
-                  <Label className="text-xs">Profile Page Zone ID — Desktop (728×90 Leaderboard)</Label>
-                  <Input value={form.juicyads_zone_profile} onChange={e => updateField('juicyads_zone_profile', e.target.value)} placeholder="e.g. 1120980" />
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-xs">Profile Page Zone ID — Mobile (300×100)</Label>
-                  <Input value={form.juicyads_zone_profile_mobile} onChange={e => updateField('juicyads_zone_profile_mobile', e.target.value)} placeholder="e.g. 1120981" />
-                  <p className="text-xs text-muted-foreground">Mobile zone served on screens narrower than 768px. Leave blank to use the desktop zone on all devices.</p>
-                </div>
-                <div className="space-y-1">
                   <Label className="text-xs">Messages Page Zone ID</Label>
                   <Input value={form.juicyads_zone_messages} onChange={e => updateField('juicyads_zone_messages', e.target.value)} placeholder="e.g. 123458" />
                 </div>
