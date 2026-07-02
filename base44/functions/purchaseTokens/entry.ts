@@ -72,6 +72,12 @@ Deno.serve(async (req) => {
     if (profiles.length > 0) {
       const profile = profiles[0];
 
+      // Load SiteConfig for first purchase bonus settings
+      const configs = await base44.asServiceRole.entities.SiteConfig.list();
+      const config = configs[0] || {};
+
+      const wasFirstPurchase = !profile.has_purchased_tokens;
+
       // Look up promo code from database (purchase or any type)
       const normalizedPromo = (promoCode || '').trim().toUpperCase();
       let promoBonus = 0;
@@ -103,7 +109,17 @@ Deno.serve(async (req) => {
         }
       }
 
-      const totalTokens = (profile.tokens || 0) + tokensToAdd + promoBonus;
+      // First purchase bonus
+      let firstPurchaseBonus = 0;
+      if (wasFirstPurchase) {
+        if (profile.gender === 'male' && config.first_purchase_bonus_men_enabled) {
+          firstPurchaseBonus = config.first_purchase_bonus_men_tokens || 0;
+        } else if (profile.gender === 'female' && config.first_purchase_bonus_women_enabled) {
+          firstPurchaseBonus = config.first_purchase_bonus_women_tokens || 0;
+        }
+      }
+
+       const totalTokens = (profile.tokens || 0) + tokensToAdd + promoBonus + firstPurchaseBonus;
 
       const updates = {
         tokens: totalTokens,
@@ -138,13 +154,23 @@ Deno.serve(async (req) => {
         });
       }
 
+      // Log first purchase bonus transaction
+      if (firstPurchaseBonus > 0) {
+        await base44.asServiceRole.entities.TokenTransaction.create({
+          user_id: user.id,
+          type: 'bonus',
+          tokens: firstPurchaseBonus,
+          description: 'First purchase bonus',
+        });
+      }
+
       return Response.json({
         success: true,
         transactionId: txResponse.transId,
         tokensAdded: tokensToAdd,
-        bonusTokens: promoBonus,
+        bonusTokens: promoBonus + firstPurchaseBonus,
         promoApplied,
-        isFirstPurchase: !profile.has_purchased_tokens,
+        isFirstPurchase: wasFirstPurchase,
       });
     }
 
