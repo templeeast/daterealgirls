@@ -40,7 +40,6 @@ export default function VerifyComplete() {
           didit_verified_at:         new Date().toISOString(),
           verification_status:       'verified',
         });
-        // TODO (Prompt 3): await awardGodate26Promo(p.id);
         toast({ title: '🎉 Identity verified! Welcome to DateRealGirls.' });
         navigate('/browse');
       } else if (verificationStatus === 'Declined') {

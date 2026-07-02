@@ -89,7 +89,6 @@ Deno.serve(async (req) => {
           didit_verified_at:         new Date().toISOString(),
           verification_status:       "verified",
         });
-        // TODO (Prompt 3): await awardGodate26Promo(profile.id);
       } else if (status === "Declined") {
         await base44.asServiceRole.entities.MemberProfile.update(profile.id, {
           didit_verification_status: "Declined",
