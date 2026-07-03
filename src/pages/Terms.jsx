@@ -81,7 +81,7 @@ export default function Terms() {
             <h3 className="font-semibold mb-2">3.3 {t('terms_s3_3_title')}</h3>
             <p className="text-muted-foreground leading-relaxed mb-4">{t('terms_s3_3_desc')}</p>
             <h3 className="font-semibold mb-2">3.4 {t('terms_s3_4_title')}</h3>
-            <p className="text-muted-foreground leading-relaxed">{t('terms_s3_4_desc')}</p>
+            <p className="text-muted-foreground leading-relaxed mb-4">{t('terms_s3_4_desc')}</p>
           </section>
 
           <section>
@@ -97,7 +97,7 @@ export default function Terms() {
             </ul>
             <p className="text-muted-foreground leading-relaxed mb-4">{t('terms_s4_2_submit')}</p>
             <h3 className="font-semibold mb-2">4.3 {t('terms_s4_3_title')}</h3>
-            <p className="text-muted-foreground leading-relaxed">{t('terms_s4_3_desc')}</p>
+            <p className="text-muted-foreground leading-relaxed mb-4">{t('terms_s4_3_desc')}</p>
           </section>
 
           <section>
