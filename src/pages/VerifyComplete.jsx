@@ -41,7 +41,7 @@ export default function VerifyComplete() {
           verification_status:       'verified',
         });
         toast({ title: '🎉 Identity verified! Welcome to DateRealGirls.' });
-        navigate('/browse');
+        navigate(p.profile_complete ? '/browse' : '/onboarding');
       } else if (verificationStatus === 'Declined') {
         await base44.entities.MemberProfile.update(p.id, {
           didit_verification_status: 'Declined',
@@ -124,7 +124,7 @@ export default function VerifyComplete() {
           <Button
             variant={pageStatus === 'declined' ? 'outline' : 'default'}
             className="w-full"
-            onClick={() => navigate('/browse')}
+            onClick={() => navigate(profile?.profile_complete ? '/browse' : '/onboarding')}
           >
             Continue to App
           </Button>

@@ -3,7 +3,17 @@ import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Shield, Loader2 } from 'lucide-react';
 
-export default function DiditVerificationStep() {
+const calculateAge = (dob) => {
+  if (!dob) return null;
+  const [year, month, day] = dob.split('-').map(Number);
+  const today = new Date();
+  let age = today.getFullYear() - year;
+  const m = today.getMonth() + 1 - month;
+  if (m < 0 || (m === 0 && today.getDate() < day)) age--;
+  return age;
+};
+
+export default function DiditVerificationStep({ form, config }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -11,19 +21,45 @@ export default function DiditVerificationStep() {
     setLoading(true);
     setError('');
 
-    const me = await base44.auth.me();
-    const profiles = await base44.entities.MemberProfile.filter({ user_id: me.id });
-    const profile = profiles[0];
+    try {
+      const me = await base44.auth.me();
+      const profiles = await base44.entities.MemberProfile.filter({ user_id: me.id });
+      let profile = profiles[0];
 
-    const res = await base44.functions.invoke('createDiditSession', { memberId: profile.id });
-    const result = res.data;
+      // During onboarding the profile may not exist yet — create it now
+      // so we have an ID to pass to Didit. handleSubmit will update (not duplicate) later.
+      if (!profile) {
+        const age = calculateAge(form.date_of_birth);
+        profile = await base44.entities.MemberProfile.create({
+          ...form,
+          user_id: me.id,
+          age,
+          verification_status: 'unverified',
+          is_active: true,
+          is_suspended: false,
+          profile_complete: false,
+          tokens: config?.welcome_tokens ?? 0,
+        });
+      }
 
-    await base44.entities.MemberProfile.update(profile.id, {
-      didit_session_id: result.session_id,
-      didit_verification_status: 'pending',
-    });
+      const res = await base44.functions.invoke('createDiditSession', { memberId: profile.id });
+      const result = res.data;
+      if (!result?.url) {
+        setError('Could not start verification. Please try again.');
+        setLoading(false);
+        return;
+      }
 
-    window.location.href = result.url;
+      await base44.entities.MemberProfile.update(profile.id, {
+        didit_session_id: result.session_id,
+        didit_verification_status: 'pending',
+      });
+
+      window.location.href = result.url;
+    } catch (e) {
+      setError(e.message || 'Something went wrong. Please try again.');
+      setLoading(false);
+    }
   };
 
   return (

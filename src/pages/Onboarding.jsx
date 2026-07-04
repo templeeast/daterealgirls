@@ -39,8 +39,29 @@ export default function Onboarding() {
         if (me) {
           const profiles = await base44.entities.MemberProfile.filter({ user_id: me.id });
           if (profiles?.length > 0) {
-            navigate('/browse', { replace: true });
-            return;
+            const p = profiles[0];
+            if (p.profile_complete) {
+              navigate('/browse', { replace: true });
+              return;
+            }
+            // Profile exists but not complete (e.g. created during verification step) — pre-fill form
+            setForm(prev => ({
+              ...prev,
+              display_name: p.display_name || '',
+              gender: p.gender || '',
+              date_of_birth: p.date_of_birth || '',
+              location_city: p.location_city || '',
+              location_country: p.location_country || '',
+              bio: p.bio || '',
+              looking_for: p.looking_for || '',
+              interests: p.interests || [],
+              photo_1: p.photo_1 || '',
+              photo_2: p.photo_2 || '',
+              photo_3: p.photo_3 || '',
+              instagram: p.instagram || '',
+              facebook: p.facebook || '',
+              tiktok: p.tiktok || '',
+            }));
           }
         }
       } catch {
@@ -118,16 +139,29 @@ export default function Onboarding() {
 
     setSaving(true);
     const me = await base44.auth.me();
-    const newProfile = await base44.entities.MemberProfile.create({
-      ...form,
-      user_id: me.id,
-      age,
-      verification_status: 'unverified',
-      is_active: true,
-      is_suspended: false,
-      profile_complete: true,
-      tokens: config.welcome_tokens ?? 5000,
-    });
+
+    // Profile may already exist if it was created during the verification step
+    const existing = await base44.entities.MemberProfile.filter({ user_id: me.id });
+    let newProfile;
+    if (existing[0]) {
+      newProfile = await base44.entities.MemberProfile.update(existing[0].id, {
+        ...form,
+        age,
+        profile_complete: true,
+        tokens: config.welcome_tokens ?? 5000,
+      });
+    } else {
+      newProfile = await base44.entities.MemberProfile.create({
+        ...form,
+        user_id: me.id,
+        age,
+        verification_status: 'unverified',
+        is_active: true,
+        is_suspended: false,
+        profile_complete: true,
+        tokens: config.welcome_tokens ?? 5000,
+      });
+    }
 
     // Award GODATE26 welcome bonus (non-blocking)
     try {
@@ -223,7 +257,7 @@ export default function Onboarding() {
     </div>,
 
     // Step 2: Identity Verification
-    <DiditVerificationStep key="verify" />,
+    <DiditVerificationStep key="verify" form={form} config={config} />,
 
     // Step 3: Photos & Social
     <div key="photos" className="space-y-6">
