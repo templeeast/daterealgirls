@@ -64,9 +64,11 @@ export default function ViewProfile() {
 
   const favMutation = useMutation({
     mutationFn: async () => {
-      const existing = myFavorites.find(f => f.favorited_profile_id === profileId);
-      if (existing) {
-        await base44.entities.Favorite.delete(existing.id);
+      // Always fetch fresh from DB to avoid stale cache causing duplicate creates
+      const fresh = await base44.entities.Favorite.filter({ user_id: user.id, favorited_profile_id: profileId });
+      if (fresh.length > 0) {
+        // Delete all matches (cleans up any existing duplicates too)
+        for (const f of fresh) await base44.entities.Favorite.delete(f.id);
       } else {
         await base44.entities.Favorite.create({
           user_id: user.id,
