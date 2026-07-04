@@ -16,11 +16,19 @@ export default function Favorites() {
   const { config } = useSiteConfig();
   const queryClient = useQueryClient();
 
-  const { data: favorites, isLoading } = useQuery({
+  const { data: rawFavorites, isLoading } = useQuery({
     queryKey: ['myFavorites', user?.id],
     queryFn: () => user ? base44.entities.Favorite.filter({ user_id: user.id }) : [],
     enabled: !!user,
     initialData: [],
+  });
+
+  // Deduplicate by favorited_profile_id — keep only the first occurrence
+  const seen = new Set();
+  const favorites = rawFavorites.filter(fav => {
+    if (seen.has(fav.favorited_profile_id)) return false;
+    seen.add(fav.favorited_profile_id);
+    return true;
   });
 
   const removeMutation = useMutation({
