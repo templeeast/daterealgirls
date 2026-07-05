@@ -13,7 +13,10 @@ const sections = [
     items: [
       { id: 'auth-1', label: 'Unauthenticated visitor can view Landing page without errors' },
       { id: 'auth-2', label: 'Login button redirects to platform login and returns correctly' },
-      { id: 'auth-3', label: 'New authenticated user (no profile) is redirected to /onboarding automatically' },
+      { id: 'auth-3', label: 'New authenticated user (no profile) sees the Landing page when visiting the base URL — NOT auto-redirected to onboarding' },
+      { id: 'auth-3a', label: 'Landing page shows a prompt banner for authenticated users with an incomplete profile, linking to onboarding' },
+      { id: 'auth-3b', label: 'New authenticated user clicking "Start Browsing" on Landing is redirected to /onboarding (profile not complete)' },
+      { id: 'auth-3c', label: 'Authenticated user with complete profile clicking "Start Browsing" navigates to /browse' },
       { id: 'auth-4', label: 'Existing user with incomplete profile is redirected to /my-profile' },
       { id: 'auth-5', label: 'Existing user with complete profile is redirected to /browse' },
       { id: 'auth-6', label: 'Onboarding Step 1: display name, gender, DOB, country/city all required before proceeding' },
