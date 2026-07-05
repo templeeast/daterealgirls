@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Heart, Shield, Users, Globe, ChevronRight, LogIn, UserCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -20,7 +20,12 @@ export default function Landing() {
 
   const handleCTAClick = (path) => {
     if (isAuthenticated) {
-      navigate(path);
+      // Authenticated users without a complete profile can't browse yet — send to onboarding
+      if (path === '/browse' && (!profile || !profile.profile_complete)) {
+        navigate('/onboarding');
+      } else {
+        navigate(path);
+      }
     } else {
       navigateToLogin();
     }
@@ -31,14 +36,6 @@ export default function Landing() {
     { icon: Globe, title: t('feature_global_reach_title'), desc: t('feature_global_reach_desc') },
     { icon: Shield, title: t('feature_id_verified_title'), desc: t('feature_id_verified_desc') },
   ];
-
-  useEffect(() => {
-    if (!isLoadingAuth && !isLoadingProfile && isAuthenticated) {
-      if (!profile) {
-        navigate('/onboarding', { replace: true });
-      }
-    }
-  }, [isAuthenticated, isLoadingAuth, isLoadingProfile, profile, navigate]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -55,6 +52,19 @@ export default function Landing() {
       {config.dev_mode && (
         <div className="w-full bg-amber-500 text-white py-1.5 px-4 text-center z-50 relative">
           <span className="text-xs font-bold tracking-widest uppercase">⚙️ DEV MODE — Sandbox/Test Payment Keys Active</span>
+        </div>
+      )}
+
+      {/* Profile incomplete prompt */}
+      {isAuthenticated && !isLoadingProfile && (!profile || !profile.profile_complete) && (
+        <div className="w-full bg-amber-500 text-white py-3 px-4 text-center z-50 relative">
+          <div className="flex items-center justify-center gap-2 flex-wrap">
+            <UserCircle className="w-4 h-4 shrink-0" />
+            <span className="text-sm font-medium">{t('profile_incomplete_prompt')}</span>
+            <button onClick={() => navigate('/onboarding')} className="text-sm font-bold underline underline-offset-2 hover:text-white/80 transition-colors">
+              {t('btn_complete_profile')} →
+            </button>
+          </div>
         </div>
       )}
 
