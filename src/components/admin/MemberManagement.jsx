@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import VerificationDetail from '@/components/admin/VerificationDetail';
+import MemberTokenHistory from '@/components/admin/MemberTokenHistory';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -10,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
-import { Search, Ban, Eye, RotateCcw, X, Instagram, Facebook, MapPin, Calendar, User, ExternalLink, Trash2, Shield, Loader2 } from 'lucide-react';
+import { Search, Ban, Eye, RotateCcw, X, Instagram, Facebook, MapPin, Calendar, User, ExternalLink, Trash2, Shield, Loader2, Coins } from 'lucide-react';
 
 export default function MemberManagement() {
   const queryClient = useQueryClient();
@@ -22,6 +23,7 @@ export default function MemberManagement() {
   const [signedUrls, setSignedUrls] = useState({});
   const [deleteDialog, setDeleteDialog] = useState(null);
   const [verifyDialog, setVerifyDialog] = useState(null);
+  const [historyDialog, setHistoryDialog] = useState(null);
 
   const openDetailMember = async (p) => {
     setDetailMember(p);
@@ -164,6 +166,9 @@ export default function MemberManagement() {
                   <div className="flex gap-1" onClick={e => e.stopPropagation()}>
                     <Button size="sm" variant="ghost" className="text-xs gap-1" onClick={() => setVerifyDialog(p)} title="View Verification">
                       <Shield className="w-3 h-3" />
+                    </Button>
+                    <Button size="sm" variant="ghost" className="text-xs gap-1" onClick={() => setHistoryDialog(p)} title="Token Purchase History">
+                      <Coins className="w-3 h-3" />
                     </Button>
                     {p.is_suspended ? (
                       <Button size="sm" variant="ghost" className="text-xs gap-1" onClick={() => suspendMutation.mutate({ id: p.id, suspend: false })}>
@@ -384,6 +389,21 @@ export default function MemberManagement() {
               )}
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Token Purchase History Dialog */}
+      <Dialog open={!!historyDialog} onOpenChange={() => setHistoryDialog(null)}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Coins className="w-5 h-5 text-primary" />
+              Token Purchase History
+            </DialogTitle>
+          </DialogHeader>
+          {historyDialog && (
+            <MemberTokenHistory profile={historyDialog} onClose={() => setHistoryDialog(null)} />
+          )}
         </DialogContent>
       </Dialog>
 
