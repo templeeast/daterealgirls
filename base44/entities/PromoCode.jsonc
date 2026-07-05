@@ -34,6 +34,11 @@
       "default": true,
       "description": "If true, the promo is shown to eligible users on their profile. If false, it is hidden (targeted only \u2014 users must enter the code manually)."
     },
+    "auto_award": {
+      "type": "boolean",
+      "default": false,
+      "description": "If true, this promo is awarded automatically by backend logic (e.g. profile completion) and should NOT be shown as a manual 'use this code' suggestion to users."
+    },
     "max_uses": {
       "type": "number",
       "description": "Maximum total redemptions allowed (leave empty for unlimited)"

@@ -23,6 +23,7 @@ import { useTranslation } from 'react-i18next';
 import i18n from '@/lib/i18n';
 import DiditVerificationCard from '@/components/profile/DiditVerificationCard';
 import EligiblePromosCard from '@/components/profile/EligiblePromosCard';
+import PromoSuggestionsBanner from '@/components/profile/PromoSuggestionsBanner';
 import CountryCitySelector from '@/components/shared/CountryCitySelector';
 import PrivatePhotosSection from '@/components/profile/PrivatePhotosSection';
 
@@ -445,15 +446,8 @@ export default function MyProfile() {
           <CardDescription>Purchase tokens to browse more profiles, send messages, and verify your identity.</CardDescription>
         </CardHeader>
         <CardContent>
-          {/* Promo Code Banner */}
-          <div className="mb-5 flex items-start gap-3 bg-amber-50 border border-amber-200 text-amber-800 rounded-xl p-4">
-            <span className="text-2xl">🎁</span>
-            <div className="space-y-1">
-              <p className="font-semibold text-sm">Use Promo Code <span className="font-mono bg-amber-100 px-1.5 py-0.5 rounded">FUNDATES</span> with your first token purchase to get <strong>1,000 free tokens</strong>.</p>
-              <p className="text-sm">Use Promo Code <span className="font-mono bg-amber-100 px-1.5 py-0.5 rounded">LAUNCH26</span> after ID Verification to get an additional <strong>5,000 free tokens</strong>.</p>
-              <p className="text-sm">Use Promo Code <span className="font-mono bg-amber-100 px-1.5 py-0.5 rounded">GODATE26</span> as a profile completion welcome bonus for <strong>1,000 free tokens</strong>.</p>
-            </div>
-          </div>
+          {/* Promo Code Banner (dynamic) */}
+          <PromoSuggestionsBanner profile={profile} />
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
             {[
               { name: 'Starter Pack', tokens: config.token_pack_starter_tokens ?? 500, price: config.token_pack_starter_price ?? 5.99 },

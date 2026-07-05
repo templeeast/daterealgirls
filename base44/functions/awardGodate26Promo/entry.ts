@@ -36,9 +36,10 @@ Deno.serve(async (req) => {
       used_promo_codes: [...usedCodes, PROMO_CODE],
     });
 
-    // 5. Increment times_used on the PromoCode record
+    // 5. Increment times_used on the PromoCode record and mark as auto-award
     await base44.asServiceRole.entities.PromoCode.update(promo.id, {
       times_used: (promo.times_used || 0) + 1,
+      auto_award: true,
     });
 
     // 6. Log the token transaction

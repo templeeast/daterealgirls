@@ -29,6 +29,7 @@ export default function EligiblePromosCard({ profile, onRefetch }) {
     const now = new Date();
     return promoCodes.filter(p => {
       if (p.visible === false) return false;
+      if (p.auto_award === true) return false;
       if (usedCodes.includes(p.code)) return false;
       if (p.expires_at && new Date(p.expires_at) < now) return false;
       if (p.max_uses && (p.times_used || 0) >= p.max_uses) return false;
