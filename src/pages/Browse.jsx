@@ -8,6 +8,7 @@ import { Search, SlidersHorizontal, Coins, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import ProfileCard from '@/components/browse/ProfileCard';
+import BrowseAllDialog from '@/components/browse/BrowseAllDialog';
 import useMyProfile from '@/hooks/useMyProfile';
 import { useAuth } from '@/lib/AuthContext';
 import { useTranslation } from 'react-i18next';
@@ -17,7 +18,7 @@ import StickyAdBar from '@/components/shared/StickyAdBar';
 
 export default function Browse() {
   const navigate = useNavigate();
-  const { user, profile } = useMyProfile();
+  const { user, profile, refetch } = useMyProfile();
   const { isAuthenticated } = useAuth();
   const { t } = useTranslation();
   const { config } = useSiteConfig();
@@ -41,7 +42,17 @@ export default function Browse() {
   const isVerified = profile?.verification_status === 'verified';
   const isUnverifiedGate = !isVerified;
 
-  const shouldGateBrowsing = isUnverifiedGate || (browseEnabled && isPastFreeLimit);
+  // Browse-all unlock: user paid browseCost tokens for 7 days of unlimited browsing
+  const browseUnlockedUntil = profile?.browse_unlocked_until ? new Date(profile.browse_unlocked_until) : null;
+  const isBrowseUnlocked = browseUnlockedUntil && browseUnlockedUntil > new Date();
+
+  // Can interact (message/wink/favorite) only if verified AND has purchased browse-all
+  const canInteract = isVerified && !!isBrowseUnlocked;
+
+  const shouldGateBrowsing = isUnverifiedGate || (browseEnabled && isPastFreeLimit && !isBrowseUnlocked);
+
+  // Browse-all purchase dialog
+  const [browseAllDialogOpen, setBrowseAllDialogOpen] = useState(false);
 
   // Persist filters in sessionStorage so they survive navigation
   const loadFilter = (key, fallback) => {
@@ -177,6 +188,19 @@ export default function Browse() {
         </div>
       )}
 
+      {/* Browse-all unlock banner — verified but not yet unlocked */}
+      {isVerified && !isBrowseUnlocked && (
+        <div className="mb-6 bg-primary/5 border border-primary/20 rounded-xl p-4 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Coins className="w-4 h-4 text-primary shrink-0" />
+            <p className="text-sm text-foreground">{t('browse_all_banner_desc', { cost: browseCost })}</p>
+          </div>
+          <Button size="sm" className="shrink-0 gap-2" onClick={() => setBrowseAllDialogOpen(true)}>
+            <Coins className="w-4 h-4" /> {t('browse_all_banner_btn')}
+          </Button>
+        </div>
+      )}
+
       {/* Search & Filters */}
       <div className="mb-8">
         <h1 className="font-heading text-3xl font-bold mb-6">{t('browse_title')}</h1>
@@ -276,6 +300,8 @@ export default function Browse() {
                   onFavorite={() => favMutation.mutate(p)}
                   myProfile={profile}
                   hasWinked={winkedIds.has(p.id)}
+                  canInteract={canInteract}
+                  onLockedInteract={() => isUnverifiedGate ? navigate('/my-profile') : setBrowseAllDialogOpen(true)}
                 />
 
               </React.Fragment>
@@ -293,8 +319,8 @@ export default function Browse() {
                       </>
                     ) : (
                       <>
-                        <p className="text-xs font-semibold text-foreground">{browseCost} tokens/profile</p>
-                        <p className="text-xs text-muted-foreground mt-1">Buy tokens to continue browsing</p>
+                        <Coins className="w-5 h-5 text-primary mx-auto mb-1" />
+                        <p className="text-xs font-semibold text-foreground">{t('browse_locked_unlock')}</p>
                       </>
                     )}
                   </div>
@@ -313,15 +339,23 @@ export default function Browse() {
           )}
           {hasLockedProfiles && !isUnverifiedGate && (
             <div className="mt-10 max-w-md mx-auto text-center">
-              <p className="text-muted-foreground mb-4">You've reached your free browse limit. Get more tokens to discover more profiles!</p>
-              <Button size="lg" className="rounded-full" onClick={() => navigate('/my-profile')}>
-                <Coins className="w-4 h-4 mr-2" /> Buy Tokens
+              <p className="text-muted-foreground mb-4">{t('browse_all_locked_desc')}</p>
+              <Button size="lg" className="rounded-full gap-2" onClick={() => setBrowseAllDialogOpen(true)}>
+                <Coins className="w-4 h-4" /> {t('browse_all_unlock_btn', { cost: browseCost })}
               </Button>
             </div>
           )}
         </>
       )}
 
+      <BrowseAllDialog
+        open={browseAllDialogOpen}
+        onOpenChange={setBrowseAllDialogOpen}
+        browseCost={browseCost}
+        currentTokens={currentTokens}
+        isVerified={isVerified}
+        onSuccess={() => refetch()}
+      />
     </div>
   );
 }

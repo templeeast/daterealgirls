@@ -1,12 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { MapPin, Heart, Shield, Star, Clock, AlertCircle } from 'lucide-react';
+import { MapPin, Heart, Shield, Star, Clock, AlertCircle, Lock } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import WinkButton from '@/components/profile/WinkButton';
 
-export default function ProfileCard({ profile, onFavorite, isFavorited, myProfile, hasWinked }) {
+export default function ProfileCard({ profile, onFavorite, isFavorited, myProfile, hasWinked, canInteract, onLockedInteract }) {
   const lookingForLabels = {
     relationship: 'Relationship',
     friendship: 'Friendship',
@@ -83,21 +83,34 @@ export default function ProfileCard({ profile, onFavorite, isFavorited, myProfil
           ))}
         </div>
         <div className="flex items-center gap-1 shrink-0">
-          {myProfile && (
-            <WinkButton
-              myProfile={myProfile}
-              targetProfileId={profile.id}
-              existingWink={hasWinked}
+          {myProfile && !canInteract ? (
+            <Button
+              variant="ghost"
               size="icon"
-            />
+              onClick={(e) => { e.preventDefault(); onLockedInteract?.(); }}
+              title="Verify & unlock to interact"
+            >
+              <Lock className="w-4 h-4 text-muted-foreground" />
+            </Button>
+          ) : (
+            <>
+              {myProfile && (
+                <WinkButton
+                  myProfile={myProfile}
+                  targetProfileId={profile.id}
+                  existingWink={hasWinked}
+                  size="icon"
+                />
+              )}
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={(e) => { e.preventDefault(); onFavorite?.(profile); }}
+              >
+                <Star className={`w-4 h-4 ${isFavorited ? 'fill-primary text-primary' : 'text-muted-foreground'}`} />
+              </Button>
+            </>
           )}
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={(e) => { e.preventDefault(); onFavorite?.(profile); }}
-          >
-            <Star className={`w-4 h-4 ${isFavorited ? 'fill-primary text-primary' : 'text-muted-foreground'}`} />
-          </Button>
         </div>
       </div>
     </motion.div>

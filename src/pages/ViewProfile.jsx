@@ -1,14 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import { MapPin, Shield, Star, MessageCircle, Flag, Heart, ArrowLeft, Instagram, Facebook } from 'lucide-react';
+import { MapPin, Shield, Star, MessageCircle, Flag, Heart, ArrowLeft, Instagram, Facebook, Lock } from 'lucide-react';
 import WinkButton from '@/components/profile/WinkButton';
+import BrowseAllDialog from '@/components/browse/BrowseAllDialog';
 import { Skeleton } from '@/components/ui/skeleton';
 import useMyProfile from '@/hooks/useMyProfile';
+import useSiteConfig from '@/hooks/useSiteConfig';
 import PrivatePhotosViewer from '@/components/profile/PrivatePhotosViewer';
 import { useToast } from '@/components/ui/use-toast';
 import { useTranslation } from 'react-i18next';
@@ -23,6 +25,16 @@ export default function ViewProfile() {
   const queryClient = useQueryClient();
 
   const { profile: myProfile } = useMyProfile();
+  const { config } = useSiteConfig();
+
+  // Interaction gate: must be verified AND have purchased browse-all
+  const isMale = myProfile?.gender === 'male';
+  const browseCost = isMale ? (config?.tokens_browse_cost_men ?? 100) : (config?.tokens_browse_cost_women ?? 0);
+  const isVerified = myProfile?.verification_status === 'verified';
+  const browseUnlockedUntil = myProfile?.browse_unlocked_until ? new Date(myProfile.browse_unlocked_until) : null;
+  const isBrowseUnlocked = browseUnlockedUntil && browseUnlockedUntil > new Date();
+  const canInteract = isVerified && !!isBrowseUnlocked;
+  const [browseAllDialogOpen, setBrowseAllDialogOpen] = useState(false);
 
   const { data: profile, isLoading } = useQuery({
     queryKey: ['profile', profileId],
@@ -202,21 +214,34 @@ export default function ViewProfile() {
       </div>
 
       {/* Action buttons */}
-      <div className="flex gap-3 mb-8 flex-wrap">
-        <Button className="gap-2 rounded-full" onClick={handleMessage}>
-          <MessageCircle className="w-4 h-4" /> {t('message_btn')}
-        </Button>
-        <Button variant="outline" className="gap-2 rounded-full" onClick={() => favMutation.mutate()}>
-          <Star className={`w-4 h-4 ${isFavorited ? 'fill-primary text-primary' : ''}`} />
-          {isFavorited ? t('favorited_btn') : t('favorite_btn')}
-        </Button>
-        {myProfile && (
-          <WinkButton
-            myProfile={myProfile}
-            targetProfileId={profileId}
-            existingWink={hasWinked}
-            onWinked={() => refetchWinks()}
-          />
+      <div className="flex gap-3 mb-8 flex-wrap items-center">
+        {canInteract ? (
+          <>
+            <Button className="gap-2 rounded-full" onClick={handleMessage}>
+              <MessageCircle className="w-4 h-4" /> {t('message_btn')}
+            </Button>
+            <Button variant="outline" className="gap-2 rounded-full" onClick={() => favMutation.mutate()}>
+              <Star className={`w-4 h-4 ${isFavorited ? 'fill-primary text-primary' : ''}`} />
+              {isFavorited ? t('favorited_btn') : t('favorite_btn')}
+            </Button>
+            {myProfile && (
+              <WinkButton
+                myProfile={myProfile}
+                targetProfileId={profileId}
+                existingWink={hasWinked}
+                onWinked={() => refetchWinks()}
+              />
+            )}
+          </>
+        ) : (
+          <div className="flex items-center gap-3 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
+            <Lock className="w-5 h-5 text-amber-500 shrink-0" />
+            <p className="text-sm text-amber-800">{t('vp_interact_locked')}</p>
+            <Button size="sm" className="shrink-0 gap-2" onClick={() => !isVerified ? navigate('/my-profile') : setBrowseAllDialogOpen(true)}>
+              {!isVerified ? <Shield className="w-4 h-4" /> : null}
+              {!isVerified ? t('browse_verify_to_unlock_button') : t('browse_all_banner_btn')}
+            </Button>
+          </div>
         )}
         <Button variant="ghost" size="icon" className="rounded-full text-muted-foreground" onClick={handleReport}>
           <Flag className="w-4 h-4" />
@@ -296,6 +321,15 @@ export default function ViewProfile() {
       {myProfile && profile.user_id !== user?.id && (
         <PrivatePhotosViewer ownerProfileId={profile.id} myProfile={myProfile} />
       )}
+
+      <BrowseAllDialog
+        open={browseAllDialogOpen}
+        onOpenChange={setBrowseAllDialogOpen}
+        browseCost={browseCost}
+        currentTokens={myProfile?.tokens ?? 0}
+        isVerified={isVerified}
+        onSuccess={() => queryClient.invalidateQueries({ queryKey: ['myProfile'] })}
+      />
     </div>
   );
 }

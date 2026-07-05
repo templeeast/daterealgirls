@@ -286,6 +286,11 @@
       "format": "date-time",
       "description": "Start of current 7-day browse window"
     },
+    "browse_unlocked_until": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp until which the user has unlimited browsing (paid browse-all). null/expired = not unlocked."
+    },
     "whop_member_id": {
       "type": "string",
       "description": "Whop member ID (mber_...) linked to this profile"
