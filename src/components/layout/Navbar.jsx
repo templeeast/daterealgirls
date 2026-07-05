@@ -32,10 +32,10 @@ export default function Navbar() {
   const winksCount = winks?.length ?? 0;
 
   const navItems = [
-    { path: '/browse', label: t('nav_browse'), icon: Search, restricted: true },
-    { path: '/winks', label: t('nav_winks', 'Winks'), icon: Zap, restricted: true, badge: winksCount },
-    { path: '/messages', label: t('nav_messages'), icon: MessageCircle, restricted: true },
-    { path: '/favorites', label: t('nav_favorites'), icon: Star, restricted: true },
+    { path: '/browse', label: t('nav_browse'), icon: Search, restricted: true, needsVerification: false },
+    { path: '/winks', label: t('nav_winks', 'Winks'), icon: Zap, restricted: true, needsVerification: true, badge: winksCount },
+    { path: '/messages', label: t('nav_messages'), icon: MessageCircle, restricted: true, needsVerification: true },
+    { path: '/favorites', label: t('nav_favorites'), icon: Star, restricted: true, needsVerification: true },
     { path: '/my-profile', label: t('nav_profile'), icon: User, restricted: false },
   ];
 
@@ -57,8 +57,8 @@ export default function Navbar() {
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-1">
-            {navItems.map(({ path, label, icon: Icon, restricted, badge }) => {
-              const disabled = restricted && !profileComplete;
+            {navItems.map(({ path, label, icon: Icon, restricted, needsVerification, badge }) => {
+              const disabled = restricted && (needsVerification ? !profileComplete : !profile?.profile_complete);
               return disabled ? (
                 <Button key={path} variant="ghost" size="sm" className="gap-2 opacity-40 cursor-not-allowed" disabled>
                   <Icon className="w-4 h-4" />
@@ -143,8 +143,8 @@ export default function Navbar() {
                       </div>
                     </div>
                   )}
-                  {navItems.map(({ path, label, icon: Icon, restricted, badge }) => {
-                    const disabled = restricted && !profileComplete;
+                  {navItems.map(({ path, label, icon: Icon, restricted, needsVerification, badge }) => {
+                    const disabled = restricted && (needsVerification ? !profileComplete : !profile?.profile_complete);
                     return disabled ? (
                       <Button key={path} variant="ghost" className="w-full justify-start gap-3 opacity-40 cursor-not-allowed" disabled>
                         <Icon className="w-4 h-4" />

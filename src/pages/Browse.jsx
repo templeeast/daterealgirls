@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search, SlidersHorizontal, Coins } from 'lucide-react';
+import { Search, SlidersHorizontal, Coins, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import ProfileCard from '@/components/browse/ProfileCard';
@@ -37,7 +37,11 @@ export default function Browse() {
   const effectiveBrowseCount = needsWeekReset ? 0 : (profile?.browse_count_this_week ?? 0);
   const isPastFreeLimit = effectiveBrowseCount >= browseLimit;
 
-  const shouldGateBrowsing = browseEnabled && isPastFreeLimit;
+  // Unverified users are limited to the free browse limit, same as token-gated users
+  const isVerified = profile?.verification_status === 'verified';
+  const isUnverifiedGate = !isVerified;
+
+  const shouldGateBrowsing = isUnverifiedGate || (browseEnabled && isPastFreeLimit);
 
   // Persist filters in sessionStorage so they survive navigation
   const loadFilter = (key, fallback) => {
@@ -138,8 +142,11 @@ export default function Browse() {
     return true;
   });
 
-  const visibleProfiles = shouldGateBrowsing ? filtered.slice(0, browseLimit - effectiveBrowseCount) : filtered;
-  const hasLockedProfiles = shouldGateBrowsing && filtered.length > (browseLimit - effectiveBrowseCount);
+  const gateVisibleCount = isUnverifiedGate
+    ? browseLimit
+    : Math.max(0, browseLimit - effectiveBrowseCount);
+  const visibleProfiles = shouldGateBrowsing ? filtered.slice(0, gateVisibleCount) : filtered;
+  const hasLockedProfiles = shouldGateBrowsing && filtered.length > gateVisibleCount;
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -147,13 +154,26 @@ export default function Browse() {
       <StickyAdBar zone={config?.juicyads_zone_browse} />
 
       {/* Token balance banner */}
-      {currentTokens < 200 && (
+      {currentTokens < 200 && !isUnverifiedGate && (
         <div className="mb-6 bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Coins className="w-4 h-4 text-amber-600" />
             <p className="text-sm text-amber-800">Running low on tokens — Top up now!</p>
           </div>
           <Button size="sm" variant="outline" className="border-amber-300" onClick={() => navigate('/my-profile')}>Buy Tokens</Button>
+        </div>
+      )}
+
+      {/* Verification required banner — unverified users see limited profiles */}
+      {isUnverifiedGate && (
+        <div className="mb-6 bg-blue-50 border border-blue-200 rounded-xl p-4 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Shield className="w-4 h-4 text-blue-600 shrink-0" />
+            <p className="text-sm text-blue-800">{t('browse_verify_to_unlock_desc')}</p>
+          </div>
+          <Button size="sm" className="shrink-0" onClick={() => navigate('/my-profile')}>
+            <Shield className="w-4 h-4" /> {t('browse_verify_to_unlock_button')}
+          </Button>
         </div>
       )}
 
@@ -260,20 +280,38 @@ export default function Browse() {
 
               </React.Fragment>
             ))}
-            {/* Blurred locked cards for token-gated browsing */}
-            {shouldGateBrowsing && filtered.slice(browseLimit - effectiveBrowseCount).map((p, i) => (
+            {/* Blurred locked cards for token-gated or unverified browsing */}
+            {shouldGateBrowsing && filtered.slice(gateVisibleCount).map((p, i) => (
               <div key={`locked-${i}`} className="relative rounded-2xl overflow-hidden border">
                 <div className="aspect-[3/4] bg-gradient-to-br from-primary/10 to-accent blur-sm scale-105" />
                 <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/40">
                   <div className="bg-white/90 rounded-xl px-4 py-3 text-center shadow-lg">
-                    <p className="text-xs font-semibold text-foreground">{browseCost} tokens/profile</p>
-                    <p className="text-xs text-muted-foreground mt-1">Buy tokens to continue browsing</p>
+                    {isUnverifiedGate ? (
+                      <>
+                        <Shield className="w-5 h-5 text-primary mx-auto mb-1" />
+                        <p className="text-xs font-semibold text-foreground">{t('browse_locked_verify')}</p>
+                      </>
+                    ) : (
+                      <>
+                        <p className="text-xs font-semibold text-foreground">{browseCost} tokens/profile</p>
+                        <p className="text-xs text-muted-foreground mt-1">Buy tokens to continue browsing</p>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
             ))}
           </div>
-          {hasLockedProfiles && (
+          {hasLockedProfiles && isUnverifiedGate && (
+            <div className="mt-10 max-w-md mx-auto text-center">
+              <Shield className="w-10 h-10 text-primary mx-auto mb-3" />
+              <p className="text-muted-foreground mb-4">{t('browse_verify_to_unlock_desc')}</p>
+              <Button size="lg" className="rounded-full" onClick={() => navigate('/my-profile')}>
+                <Shield className="w-4 h-4 mr-2" /> {t('browse_verify_to_unlock_button')}
+              </Button>
+            </div>
+          )}
+          {hasLockedProfiles && !isUnverifiedGate && (
             <div className="mt-10 max-w-md mx-auto text-center">
               <p className="text-muted-foreground mb-4">You've reached your free browse limit. Get more tokens to discover more profiles!</p>
               <Button size="lg" className="rounded-full" onClick={() => navigate('/my-profile')}>
