@@ -29,8 +29,10 @@ export default function PromoSuggestionsBanner({ profile }) {
       if (p.expires_at && new Date(p.expires_at) < now) return false;
       if (p.max_uses && (p.times_used || 0) >= p.max_uses) return false;
       if (p.type === 'verification' && !isVerified) return false;
+      // Only show purchase-type codes here; verification/any-type are shown in EligiblePromosCard
+      if (p.type !== 'purchase') return false;
       // Purchase-type codes are only useful as suggestions before first purchase
-      if (p.type === 'purchase' && hasPurchased) return false;
+      if (hasPurchased) return false;
       return true;
     });
   }, [promoCodes, usedCodes, isVerified, hasPurchased]);

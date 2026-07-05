@@ -4,15 +4,18 @@ import { base44 } from '@/api/base44Client';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Shield } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Determines which active promo codes a user is eligible for and hasn't claimed yet.
- * Renders a green card per eligible promo (same style as the former LAUNCH26 card).
+ * - Claimable: verification-type (verified only) + any-type. Purchase-type is shown in PromoSuggestionsBanner (Buy Tokens).
+ * - Teaser: verification-type codes shown to UNVERIFIED users, prompting them to verify first.
  */
 export default function EligiblePromosCard({ profile, onRefetch }) {
   const { toast } = useToast();
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [applyingCode, setApplyingCode] = useState(null);
   const [customInputs, setCustomInputs] = useState({});
@@ -25,11 +28,12 @@ export default function EligiblePromosCard({ profile, onRefetch }) {
   const usedCodes = profile?.used_promo_codes || [];
   const isVerified = profile?.verification_status === 'verified';
 
-  const eligiblePromos = useMemo(() => {
+  const claimablePromos = useMemo(() => {
     const now = new Date();
     return promoCodes.filter(p => {
       if (p.visible === false) return false;
       if (p.auto_award === true) return false;
+      if (p.type === 'purchase') return false; // shown in Buy Tokens section
       if (usedCodes.includes(p.code)) return false;
       if (p.expires_at && new Date(p.expires_at) < now) return false;
       if (p.max_uses && (p.times_used || 0) >= p.max_uses) return false;
@@ -38,7 +42,21 @@ export default function EligiblePromosCard({ profile, onRefetch }) {
     });
   }, [promoCodes, usedCodes, isVerified]);
 
-  if (isLoading || eligiblePromos.length === 0) return null;
+  const verificationTeaserPromos = useMemo(() => {
+    if (isVerified) return [];
+    const now = new Date();
+    return promoCodes.filter(p => {
+      if (p.visible === false) return false;
+      if (p.auto_award === true) return false;
+      if (p.type !== 'verification') return false;
+      if (usedCodes.includes(p.code)) return false;
+      if (p.expires_at && new Date(p.expires_at) < now) return false;
+      if (p.max_uses && (p.times_used || 0) >= p.max_uses) return false;
+      return true;
+    });
+  }, [promoCodes, usedCodes, isVerified]);
+
+  if (isLoading || (claimablePromos.length === 0 && verificationTeaserPromos.length === 0)) return null;
 
   const handleApply = async (code) => {
     setApplyingCode(code);
@@ -69,7 +87,27 @@ export default function EligiblePromosCard({ profile, onRefetch }) {
 
   return (
     <>
-      {eligiblePromos.map(promo => (
+      {/* Verification teaser — shown to unverified users for verification-type promos */}
+      {verificationTeaserPromos.map(promo => (
+        <Card key={`teaser-${promo.id}`} className="mb-6 border-blue-200 bg-blue-50">
+          <CardContent className="pt-6">
+            <div className="flex items-start gap-3">
+              <Shield className="w-6 h-6 text-blue-600 shrink-0 mt-0.5" />
+              <div>
+                <p className="font-semibold text-blue-800">
+                  {t('promo_verify_teaser_title', { tokens: promo.tokens.toLocaleString() })}
+                </p>
+                <p className="text-sm text-blue-700 mt-0.5">
+                  {t('promo_verify_teaser_desc', { code: promo.code, tokens: promo.tokens.toLocaleString() })}
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      ))}
+
+      {/* Claimable promos */}
+      {claimablePromos.map(promo => (
         <Card key={promo.id} className="mb-6 border-green-200 bg-green-50">
           <CardContent className="pt-6">
             <div className="flex items-start gap-3 mb-4">
