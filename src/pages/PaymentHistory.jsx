@@ -37,12 +37,17 @@ export default function PaymentHistory() {
   const [paymentsLoading, setPaymentsLoading] = useState(false);
   const [paymentsError, setPaymentsError] = useState(null);
 
-  // Pending purchase promos (registered but not yet awarded)
+  // Pending purchase promos: codes in used_promo_codes that have NOT yet been awarded
+  // (i.e. no corresponding promo/bonus TokenTransaction exists for them)
   const pendingPromos = useMemo(() => {
     if (!profile?.used_promo_codes || profile?.has_purchased_tokens) return [];
-    const used = profile.used_promo_codes || [];
-    return used;
-  }, [profile]);
+    const awardedCodes = new Set(
+      tokenTxs
+        .filter(tx => (tx.type === 'promo' || tx.type === 'bonus') && tx.promo_code)
+        .map(tx => tx.promo_code.toUpperCase())
+    );
+    return profile.used_promo_codes.filter(code => !awardedCodes.has(code.toUpperCase()));
+  }, [profile, tokenTxs]);
 
   useEffect(() => {
     if (profileLoading || configLoading || !profile || !config) return;
