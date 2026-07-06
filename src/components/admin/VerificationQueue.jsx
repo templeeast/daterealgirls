@@ -13,13 +13,13 @@ export default function VerificationQueue({ profileId }) {
   const { data: pending, isLoading } = useQuery({
     queryKey: ['pendingVerifications'],
     queryFn: async () => {
-      const [diditPending, diditDeclined] = await Promise.all([
-        base44.entities.MemberProfile.filter({ didit_verification_status: 'pending' }),
-        base44.entities.MemberProfile.filter({ didit_verification_status: 'Declined' }),
+      const [unverified, pending] = await Promise.all([
+        base44.entities.MemberProfile.filter({ verification_status: 'unverified' }),
+        base44.entities.MemberProfile.filter({ verification_status: 'pending' }),
       ]);
       // Deduplicate by id
       const seen = new Set();
-      return [...diditPending, ...diditDeclined].filter(p => seen.has(p.id) ? false : seen.add(p.id));
+      return [...unverified, ...pending].filter(p => seen.has(p.id) ? false : seen.add(p.id));
     },
     initialData: [],
   });
@@ -86,8 +86,10 @@ export default function VerificationQueue({ profileId }) {
             </div>
             {p.didit_verification_status === 'Declined' ? (
               <Badge className="bg-red-100 text-red-700 shrink-0">Declined by Didit</Badge>
-            ) : (
+            ) : p.didit_verification_status === 'pending' || p.didit_verification_status === 'Approved' ? (
               <Badge className="bg-amber-100 text-amber-700 shrink-0">Didit Pending</Badge>
+            ) : (
+              <Badge className="bg-slate-100 text-slate-700 shrink-0">Not Started</Badge>
             )}
             <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
           </CardContent>
