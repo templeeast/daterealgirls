@@ -784,6 +784,9 @@ export default function MyProfile() {
                 onChange={e => updateField('stripe_payment_link', e.target.value)}
               />
               <p className="text-xs text-muted-foreground">Must start with <code className="bg-muted px-1 rounded">https://buy.stripe.com/</code>. Create one in your Stripe Dashboard → Payment Links.</p>
+              <a href="https://stripe.com/payments/payment-links" target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline inline-flex items-center gap-1">
+                <ExternalLink className="w-3 h-3" /> {t('stripe.payment_link.docs_link')}
+              </a>
             </div>
             <div className="flex items-center justify-between border-t pt-3">
               <div>
