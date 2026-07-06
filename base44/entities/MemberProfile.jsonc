@@ -216,6 +216,24 @@
       "default": "unverified",
       "description": "ID verification status"
     },
+    "verification_rejection_reason": {
+      "type": "string",
+      "enum": [
+        "fake_profile",
+        "underage",
+        "invalid_id",
+        "photo_mismatch",
+        "inappropriate_content",
+        "duplicate_account",
+        "incomplete_verification",
+        "other"
+      ],
+      "description": "Reason selected by admin when rejecting verification"
+    },
+    "verification_rejection_details": {
+      "type": "string",
+      "description": "Additional explanation provided by admin for the rejection"
+    },
     "didit_session_id": {
       "type": "string",
       "description": "Didit verification session UUID \u2014 set at session creation"

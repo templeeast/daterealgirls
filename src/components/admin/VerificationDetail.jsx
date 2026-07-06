@@ -1,9 +1,30 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle,
+  DialogDescription, DialogFooter,
+} from '@/components/ui/dialog';
+import {
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from '@/components/ui/select';
 import { CheckCircle, XCircle, Loader2, ArrowLeft } from 'lucide-react';
+
+const REASON_OPTIONS = [
+  { value: 'fake_profile', labelKey: 'rej_reason_fake_profile' },
+  { value: 'underage', labelKey: 'rej_reason_underage' },
+  { value: 'invalid_id', labelKey: 'rej_reason_invalid_id' },
+  { value: 'photo_mismatch', labelKey: 'rej_reason_photo_mismatch' },
+  { value: 'inappropriate_content', labelKey: 'rej_reason_inappropriate_content' },
+  { value: 'duplicate_account', labelKey: 'rej_reason_duplicate_account' },
+  { value: 'incomplete_verification', labelKey: 'rej_reason_incomplete_verification' },
+  { value: 'other', labelKey: 'rej_reason_other' },
+];
 
 function DiditStatusBadge({ profile: p }) {
   if (!p.didit_session_id) {
@@ -32,9 +53,13 @@ function ImageCol({ label, url }) {
 }
 
 export default function VerificationDetail({ profile: p, onBack, onVerify }) {
+  const { t } = useTranslation();
   const [diditImages, setDiditImages]   = useState(null);
   const [diditLoading, setDiditLoading] = useState(false);
   const [diditError, setDiditError]     = useState(null);
+  const [showRejectDialog, setShowRejectDialog] = useState(false);
+  const [rejectReason, setRejectReason] = useState('');
+  const [rejectDetails, setRejectDetails] = useState('');
 
   useEffect(() => {
     if (!p.didit_session_id) return;
@@ -46,6 +71,16 @@ export default function VerificationDetail({ profile: p, onBack, onVerify }) {
       .catch(err => setDiditError(err.message))
       .finally(() => setDiditLoading(false));
   }, [p.didit_session_id]);
+
+  const handleConfirmReject = () => {
+    onVerify(p.id, 'rejected', 'rejected', {
+      rejectionReason: rejectReason,
+      rejectionDetails: rejectDetails,
+    });
+    setShowRejectDialog(false);
+    setRejectReason('');
+    setRejectDetails('');
+  };
 
   return (
     <div className="space-y-4">
@@ -66,7 +101,7 @@ export default function VerificationDetail({ profile: p, onBack, onVerify }) {
               <Button size="sm" className="gap-1" onClick={() => onVerify(p.id, 'approved', 'verified')}>
                 <CheckCircle className="w-4 h-4" /> Approve
               </Button>
-              <Button size="sm" variant="destructive" className="gap-1" onClick={() => onVerify(p.id, 'rejected', 'rejected')}>
+              <Button size="sm" variant="destructive" className="gap-1" onClick={() => setShowRejectDialog(true)}>
                 <XCircle className="w-4 h-4" /> Reject
               </Button>
             </div>
@@ -94,6 +129,57 @@ export default function VerificationDetail({ profile: p, onBack, onVerify }) {
           )}
         </CardContent>
       </Card>
+
+      {/* Rejection Dialog */}
+      <Dialog open={showRejectDialog} onOpenChange={setShowRejectDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t('rej_dialog_title')}</DialogTitle>
+            <DialogDescription>{t('rej_dialog_desc')}</DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 py-2">
+            <div className="space-y-2">
+              <Label>{t('rej_reason_label')}</Label>
+              <Select value={rejectReason} onValueChange={setRejectReason}>
+                <SelectTrigger>
+                  <SelectValue placeholder={t('rej_reason_placeholder')} />
+                </SelectTrigger>
+                <SelectContent>
+                  {REASON_OPTIONS.map(opt => (
+                    <SelectItem key={opt.value} value={opt.value}>
+                      {t(opt.labelKey)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label>{t('rej_details_label')}</Label>
+              <Textarea
+                value={rejectDetails}
+                onChange={e => setRejectDetails(e.target.value)}
+                placeholder={t('rej_details_placeholder')}
+                rows={4}
+              />
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowRejectDialog(false)}>
+              {t('rej_cancel_btn')}
+            </Button>
+            <Button
+              variant="destructive"
+              disabled={!rejectReason}
+              onClick={handleConfirmReject}
+            >
+              {t('rej_confirm_btn')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

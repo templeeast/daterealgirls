@@ -33,13 +33,16 @@ import ContactUs from '@/pages/ContactUs';
 import WhopReturn from '@/pages/WhopReturn';
 import PaymentHistory from '@/pages/PaymentHistory';
 import VerifyComplete from '@/pages/VerifyComplete';
+import RejectionScreen from '@/components/RejectionScreen';
+import useMyProfile from '@/hooks/useMyProfile';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin, user } = useAuth();
   const { config, isLoading: isLoadingConfig } = useSiteConfig();
+  const { profile: myProfile, isLoading: isLoadingProfile } = useMyProfile();
 
-  // Show loading spinner while checking app public settings or auth
-  if (isLoadingPublicSettings || isLoadingAuth || isLoadingConfig) {
+  // Show loading spinner while checking app public settings, auth, or member profile
+  if (isLoadingPublicSettings || isLoadingAuth || isLoadingConfig || (user && isLoadingProfile)) {
     return (
       <div className="fixed inset-0 flex items-center justify-center">
         <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div>
@@ -64,6 +67,14 @@ const AuthenticatedApp = () => {
   // Emergency kill switch — block non-admins when app is disabled
   if (config?.app_disabled && user?.role !== 'admin') {
     return <AppDisabledScreen message={config.app_disabled_message} />;
+  }
+
+  // Rejected members see rejection screen (admins exempt; /support still accessible)
+  if (myProfile?.verification_status === 'rejected' && user?.role !== 'admin') {
+    const isSupportPath = window.location.pathname === '/support' || window.location.pathname.startsWith('/support/');
+    if (!isSupportPath) {
+      return <RejectionScreen profile={myProfile} />;
+    }
   }
 
   // Render the main app

@@ -25,10 +25,16 @@ export default function VerificationQueue({ profileId }) {
   });
 
   const verifyMutation = useMutation({
-    mutationFn: ({ id, reviewStatus, verificationStatus }) =>
+    mutationFn: ({ id, reviewStatus, verificationStatus, rejectionReason, rejectionDetails }) =>
       base44.entities.MemberProfile.update(id, {
         profile_review_status: reviewStatus,
         verification_status: verificationStatus,
+        ...(verificationStatus === 'rejected' && {
+          is_suspended: true,
+          suspension_reason: 'verification_rejected',
+          verification_rejection_reason: rejectionReason || 'other',
+          verification_rejection_details: rejectionDetails || '',
+        }),
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['pendingVerifications'] });
@@ -37,8 +43,8 @@ export default function VerificationQueue({ profileId }) {
     },
   });
 
-  const handleVerify = (id, reviewStatus, verificationStatus) =>
-    verifyMutation.mutate({ id, reviewStatus, verificationStatus });
+  const handleVerify = (id, reviewStatus, verificationStatus, extra = {}) =>
+    verifyMutation.mutate({ id, reviewStatus, verificationStatus, ...extra });
 
   if (isLoading) return <div className="text-center py-16"><Loader2 className="w-8 h-8 animate-spin mx-auto text-muted-foreground" /></div>;
 
