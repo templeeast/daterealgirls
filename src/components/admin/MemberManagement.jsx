@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import VerificationDetail from '@/components/admin/VerificationDetail';
 import MemberTokenHistory from '@/components/admin/MemberTokenHistory';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -7,18 +8,32 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import { Search, Ban, Eye, RotateCcw, X, Instagram, Facebook, MapPin, Calendar, User, ExternalLink, Trash2, Shield, Loader2, Coins } from 'lucide-react';
 
+const SUSPEND_REASON_OPTIONS = [
+  { value: 'fake_profile', labelKey: 'rej_reason_fake_profile' },
+  { value: 'underage', labelKey: 'rej_reason_underage' },
+  { value: 'invalid_id', labelKey: 'rej_reason_invalid_id' },
+  { value: 'photo_mismatch', labelKey: 'rej_reason_photo_mismatch' },
+  { value: 'inappropriate_content', labelKey: 'rej_reason_inappropriate_content' },
+  { value: 'duplicate_account', labelKey: 'rej_reason_duplicate_account' },
+  { value: 'incomplete_verification', labelKey: 'rej_reason_incomplete_verification' },
+  { value: 'other', labelKey: 'rej_reason_other' },
+];
+
 export default function MemberManagement() {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [suspendDialog, setSuspendDialog] = useState(null);
   const [suspendReason, setSuspendReason] = useState('');
+  const [suspendDetails, setSuspendDetails] = useState('');
   const [detailMember, setDetailMember] = useState(null);
   const [signedUrls, setSignedUrls] = useState({});
   const [deleteDialog, setDeleteDialog] = useState(null);
@@ -46,15 +61,20 @@ export default function MemberManagement() {
   });
 
   const suspendMutation = useMutation({
-    mutationFn: ({ id, suspend }) =>
+    mutationFn: ({ id, suspend, rejectionReason, rejectionDetails }) =>
       base44.entities.MemberProfile.update(id, {
         is_suspended: suspend,
-        suspension_reason: suspend ? suspendReason : '',
+        verification_status: suspend ? 'rejected' : 'unverified',
+        suspension_reason: suspend ? 'verification_rejected' : '',
+        verification_rejection_reason: suspend ? (rejectionReason || 'other') : '',
+        verification_rejection_details: suspend ? (rejectionDetails || '') : '',
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['allProfiles'] });
+      queryClient.invalidateQueries({ queryKey: ['pendingVerifications'] });
       setSuspendDialog(null);
       setSuspendReason('');
+      setSuspendDetails('');
     },
   });
 
@@ -75,13 +95,20 @@ export default function MemberManagement() {
   });
 
   const verifyMutation = useMutation({
-    mutationFn: ({ id, reviewStatus, verificationStatus }) =>
+    mutationFn: ({ id, reviewStatus, verificationStatus, rejectionReason, rejectionDetails }) =>
       base44.entities.MemberProfile.update(id, {
         profile_review_status: reviewStatus,
         verification_status: verificationStatus,
+        ...(verificationStatus === 'rejected' && {
+          is_suspended: true,
+          suspension_reason: 'verification_rejected',
+          verification_rejection_reason: rejectionReason || 'other',
+          verification_rejection_details: rejectionDetails || '',
+        }),
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['allProfiles'] });
+      queryClient.invalidateQueries({ queryKey: ['pendingVerifications'] });
       setVerifyDialog(null);
     },
   });
@@ -354,17 +381,43 @@ export default function MemberManagement() {
       <Dialog open={!!suspendDialog} onOpenChange={() => setSuspendDialog(null)}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Suspend {suspendDialog?.display_name}?</DialogTitle>
+            <DialogTitle>{t('rej_dialog_title')} — {suspendDialog?.display_name}</DialogTitle>
+            <DialogDescription>{t('rej_dialog_desc')}</DialogDescription>
           </DialogHeader>
-          <Textarea
-            placeholder="Reason for suspension..."
-            value={suspendReason}
-            onChange={e => setSuspendReason(e.target.value)}
-          />
+          <div className="space-y-4 py-2">
+            <div className="space-y-2">
+              <Label>{t('rej_reason_label')}</Label>
+              <Select value={suspendReason} onValueChange={setSuspendReason}>
+                <SelectTrigger>
+                  <SelectValue placeholder={t('rej_reason_placeholder')} />
+                </SelectTrigger>
+                <SelectContent>
+                  {SUSPEND_REASON_OPTIONS.map(opt => (
+                    <SelectItem key={opt.value} value={opt.value}>
+                      {t(opt.labelKey)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label>{t('rej_details_label')}</Label>
+              <Textarea
+                placeholder={t('rej_details_placeholder')}
+                value={suspendDetails}
+                onChange={e => setSuspendDetails(e.target.value)}
+                rows={4}
+              />
+            </div>
+          </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setSuspendDialog(null)}>Cancel</Button>
-            <Button variant="destructive" onClick={() => suspendMutation.mutate({ id: suspendDialog.id, suspend: true })}>
-              Suspend Member
+            <Button variant="outline" onClick={() => setSuspendDialog(null)}>{t('rej_cancel_btn')}</Button>
+            <Button
+              variant="destructive"
+              disabled={!suspendReason}
+              onClick={() => suspendMutation.mutate({ id: suspendDialog.id, suspend: true, rejectionReason: suspendReason, rejectionDetails: suspendDetails })}
+            >
+              {t('rej_confirm_btn')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -414,7 +467,7 @@ export default function MemberManagement() {
             <VerificationDetail
               profile={verifyDialog}
               onBack={() => setVerifyDialog(null)}
-              onVerify={(id, reviewStatus, verificationStatus) => verifyMutation.mutate({ id, reviewStatus, verificationStatus })}
+              onVerify={(id, reviewStatus, verificationStatus, extra = {}) => verifyMutation.mutate({ id, reviewStatus, verificationStatus, ...extra })}
             />
           )}
         </DialogContent>
