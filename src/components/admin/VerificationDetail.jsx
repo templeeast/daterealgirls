@@ -66,7 +66,7 @@ export default function VerificationDetail({ profile: p, onBack, onVerify }) {
               <Button size="sm" className="gap-1" onClick={() => onVerify(p.id, 'approved', 'verified')}>
                 <CheckCircle className="w-4 h-4" /> Approve
               </Button>
-              <Button size="sm" variant="outline" className="gap-1 text-destructive" onClick={() => onVerify(p.id, 'rejected', 'unverified')}>
+              <Button size="sm" variant="destructive" className="gap-1" onClick={() => onVerify(p.id, 'rejected', 'unverified')}>
                 <XCircle className="w-4 h-4" /> Reject
               </Button>
             </div>
