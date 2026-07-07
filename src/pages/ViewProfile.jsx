@@ -62,14 +62,6 @@ export default function ViewProfile() {
     initialData: [],
   });
 
-  const { data: winkCount } = useQuery({
-    queryKey: ['winkCount', profileId],
-    queryFn: () => base44.entities.Wink.filter({ recipient_profile_id: profileId }),
-    enabled: !!profileId,
-    select: (data) => data.length,
-    initialData: [],
-  });
-
   const hasWinked = myWinks.some(w => w.recipient_profile_id === profileId);
 
   const isFavorited = myFavorites.some(f => f.favorited_profile_id === profileId);
@@ -203,12 +195,6 @@ export default function ViewProfile() {
           {/* Tag ID */}
           {profile.tag_id && profile.show_tag_id !== false && (
             <p className="font-mono text-sm text-muted-foreground mt-1">{profile.tag_id}</p>
-          )}
-          {/* Wink count — shown when viewing someone else's profile */}
-          {user && profile.user_id !== user.id && winkCount > 0 && (
-            <p className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
-              <span>😉</span> {t('wink_count', { count: winkCount })}
-            </p>
           )}
         </div>
       </div>
