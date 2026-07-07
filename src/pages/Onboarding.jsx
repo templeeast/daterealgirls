@@ -298,7 +298,7 @@ export default function Onboarding() {
   ];
   const verifyStepIndex = 2;
   const canProceed = step === 0
-    ? form.display_name && form.gender && form.date_of_birth && !isUnderAge
+    ? form.display_name && form.gender && form.date_of_birth && form.location_country && form.location_city && !isUnderAge
     : true;
 
   if (checkingProfile) {
