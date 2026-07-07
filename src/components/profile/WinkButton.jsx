@@ -66,7 +66,7 @@ export default function WinkButton({ myProfile, targetProfileId, existingWink, o
       title={sent ? t('wink_btn_sent') : t('wink_btn')}
     >
       <span className="text-base leading-none">😉</span>
-      {size !== 'icon' && (sent ? t('wink_btn_sent') : `${t('wink_btn')}${winkCost > 0 ? ` (${winkCost})` : ''}`)}
+      {size !== 'icon' && (sent ? t('wink_btn_sent') : `${t('wink_btn')}${winkCost > 0 ? ` · ${winkCost} tokens` : ''}`)}
     </Button>
   );
 }
