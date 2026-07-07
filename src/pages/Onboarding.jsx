@@ -299,6 +299,8 @@ export default function Onboarding() {
   const verifyStepIndex = 2;
   const canProceed = step === 0
     ? form.display_name && form.gender && form.date_of_birth && form.location_country && form.location_city && !isUnderAge
+    : step === 1
+    ? form.bio.trim() && form.looking_for && form.interests.length > 0
     : true;
 
   if (checkingProfile) {
