@@ -140,21 +140,35 @@ export default function Onboarding() {
     setSaving(true);
     const me = await base44.auth.me();
 
+    // Generate a unique member tag ID (e.g. @DRG-A1B2C3)
+    const generateTagId = () => {
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      let code = '';
+      for (let i = 0; i < 6; i++) code += chars[Math.floor(Math.random() * chars.length)];
+      return `@DRG-${code}`;
+    };
+
     // Profile may already exist if it was created during the verification step
     const existing = await base44.entities.MemberProfile.filter({ user_id: me.id });
     let newProfile;
     if (existing[0]) {
-      newProfile = await base44.entities.MemberProfile.update(existing[0].id, {
+      const updateData = {
         ...form,
         age,
         profile_complete: true,
         tokens: config.welcome_tokens ?? 5000,
-      });
+      };
+      // Assign tag ID if missing
+      if (!existing[0].tag_id) {
+        updateData.tag_id = generateTagId();
+      }
+      newProfile = await base44.entities.MemberProfile.update(existing[0].id, updateData);
     } else {
       newProfile = await base44.entities.MemberProfile.create({
         ...form,
         user_id: me.id,
         age,
+        tag_id: generateTagId(),
         verification_status: 'unverified',
         is_active: true,
         is_suspended: false,
@@ -301,6 +315,8 @@ export default function Onboarding() {
     ? form.display_name && form.gender && form.date_of_birth && form.location_country && form.location_city && !isUnderAge
     : step === 1
     ? form.bio.trim() && form.looking_for && form.interests.length > 0
+    : step === 3
+    ? !!form.photo_1
     : true;
 
   if (checkingProfile) {
