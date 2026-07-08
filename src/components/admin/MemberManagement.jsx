@@ -64,10 +64,7 @@ export default function MemberManagement() {
     mutationFn: ({ id, suspend, rejectionReason, rejectionDetails }) =>
       base44.entities.MemberProfile.update(id, {
         is_suspended: suspend,
-        verification_status: suspend ? 'rejected' : 'unverified',
-        suspension_reason: suspend ? 'verification_rejected' : '',
-        verification_rejection_reason: suspend ? (rejectionReason || 'other') : '',
-        verification_rejection_details: suspend ? (rejectionDetails || '') : '',
+        suspension_reason: suspend ? [rejectionReason, rejectionDetails].filter(Boolean).join(' — ') : '',
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['allProfiles'] });
@@ -198,7 +195,7 @@ export default function MemberManagement() {
                       <Coins className="w-3 h-3" />
                     </Button>
                     {p.is_suspended ? (
-                      <Button size="sm" variant="ghost" className="text-xs gap-1" onClick={() => suspendMutation.mutate({ id: p.id, suspend: false })}>
+                      <Button size="sm" variant="ghost" className="text-xs gap-1" onClick={() => suspendMutation.mutate({ id: p.id, suspend: false, rejectionReason: '', rejectionDetails: '' })}>
                         <RotateCcw className="w-3 h-3" /> Restore
                       </Button>
                     ) : (
