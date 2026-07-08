@@ -383,7 +383,7 @@ export default function MemberManagement() {
           </DialogHeader>
           <div className="space-y-4 py-2">
             <div className="space-y-2">
-              <Label>{t('rej_reason_label')}</Label>
+              <Label>Suspension Reason</Label>
               <Select value={suspendReason} onValueChange={setSuspendReason}>
                 <SelectTrigger>
                   <SelectValue placeholder={t('rej_reason_placeholder')} />
