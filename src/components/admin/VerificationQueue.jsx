@@ -13,13 +13,13 @@ export default function VerificationQueue({ profileId }) {
   const { data: pending, isLoading } = useQuery({
     queryKey: ['pendingVerifications'],
     queryFn: async () => {
-      const [unverified, pending] = await Promise.all([
-        base44.entities.MemberProfile.filter({ verification_status: 'unverified' }),
-        base44.entities.MemberProfile.filter({ verification_status: 'pending' }),
+      const [pending, rejected] = await Promise.all([
+        base44.entities.MemberProfile.filter({ profile_review_status: 'pending' }),
+        base44.entities.MemberProfile.filter({ profile_review_status: 'rejected' }),
       ]);
       // Deduplicate by id
       const seen = new Set();
-      return [...unverified, ...pending].filter(p => seen.has(p.id) ? false : seen.add(p.id));
+      return [...pending, ...rejected].filter(p => seen.has(p.id) ? false : seen.add(p.id));
     },
     initialData: [],
   });
