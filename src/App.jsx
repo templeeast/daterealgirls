@@ -1,7 +1,7 @@
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
@@ -41,6 +41,8 @@ const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin, user } = useAuth();
   const { config, isLoading: isLoadingConfig } = useSiteConfig();
   const { profile: myProfile, isLoading: isLoadingProfile } = useMyProfile();
+  const location = useLocation();
+  const currentPath = location.pathname;
 
   // Show loading spinner while checking app public settings, auth, or member profile
   if (isLoadingPublicSettings || isLoadingAuth || isLoadingConfig || (user && isLoadingProfile)) {
@@ -58,7 +60,7 @@ const AuthenticatedApp = () => {
     } else if (authError.type === 'auth_required') {
       // Allow public routes to render for unauthenticated visitors
       const publicPaths = ['/', '/privacy', '/terms', '/support'];
-      const isPublicPath = publicPaths.some(p => window.location.pathname === p || window.location.pathname.startsWith(p + '/'));
+      const isPublicPath = publicPaths.some(p => currentPath === p || currentPath.startsWith(p + '/'));
       if (!isPublicPath) {
         return <Landing />;
       }
@@ -72,7 +74,7 @@ const AuthenticatedApp = () => {
 
   // Suspended members see suspension screen (admins exempt; /support still accessible)
   if (myProfile?.is_suspended && user?.role !== 'admin') {
-    const isSupportPath = window.location.pathname === '/support' || window.location.pathname.startsWith('/support/');
+    const isSupportPath = currentPath === '/support' || currentPath.startsWith('/support/');
     if (!isSupportPath) {
       return <SuspensionScreen profile={myProfile} />;
     }
@@ -80,7 +82,7 @@ const AuthenticatedApp = () => {
 
   // Rejected members see rejection screen (admins exempt; /support still accessible)
   if (myProfile?.verification_status === 'rejected' && user?.role !== 'admin') {
-    const isSupportPath = window.location.pathname === '/support' || window.location.pathname.startsWith('/support/');
+    const isSupportPath = currentPath === '/support' || currentPath.startsWith('/support/');
     if (!isSupportPath) {
       return <RejectionScreen profile={myProfile} />;
     }
