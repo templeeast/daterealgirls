@@ -378,8 +378,8 @@ export default function MemberManagement() {
       <Dialog open={!!suspendDialog} onOpenChange={() => setSuspendDialog(null)}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{t('rej_dialog_title')} — {suspendDialog?.display_name}</DialogTitle>
-            <DialogDescription>{t('rej_dialog_desc')}</DialogDescription>
+            <DialogTitle>Suspend Member — {suspendDialog?.display_name}</DialogTitle>
+            <DialogDescription>Select a reason and provide additional details for the member.</DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-2">
             <div className="space-y-2">
@@ -408,13 +408,13 @@ export default function MemberManagement() {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setSuspendDialog(null)}>{t('rej_cancel_btn')}</Button>
+            <Button variant="outline" onClick={() => setSuspendDialog(null)}>Cancel</Button>
             <Button
               variant="destructive"
               disabled={!suspendReason}
               onClick={() => suspendMutation.mutate({ id: suspendDialog.id, suspend: true, rejectionReason: suspendReason, rejectionDetails: suspendDetails })}
             >
-              {t('rej_confirm_btn')}
+              Confirm Suspension
             </Button>
           </DialogFooter>
         </DialogContent>
