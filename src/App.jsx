@@ -34,6 +34,7 @@ import WhopReturn from '@/pages/WhopReturn';
 import PaymentHistory from '@/pages/PaymentHistory';
 import VerifyComplete from '@/pages/VerifyComplete';
 import RejectionScreen from '@/components/RejectionScreen';
+import SuspensionScreen from '@/components/SuspensionScreen';
 import useMyProfile from '@/hooks/useMyProfile';
 
 const AuthenticatedApp = () => {
@@ -67,6 +68,14 @@ const AuthenticatedApp = () => {
   // Emergency kill switch — block non-admins when app is disabled
   if (config?.app_disabled && user?.role !== 'admin') {
     return <AppDisabledScreen message={config.app_disabled_message} />;
+  }
+
+  // Suspended members see suspension screen (admins exempt; /support still accessible)
+  if (myProfile?.is_suspended && user?.role !== 'admin') {
+    const isSupportPath = window.location.pathname === '/support' || window.location.pathname.startsWith('/support/');
+    if (!isSupportPath) {
+      return <SuspensionScreen profile={myProfile} />;
+    }
   }
 
   // Rejected members see rejection screen (admins exempt; /support still accessible)
