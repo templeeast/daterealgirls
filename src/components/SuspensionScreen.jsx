@@ -1,23 +1,10 @@
-import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React from 'react';
 import { Ban, LifeBuoy, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { base44 } from '@/api/base44Client';
 
 export default function SuspensionScreen({ profile }) {
-  const navigate = useNavigate();
-
-  // Force re-render when page is restored from bfcache (browser back button)
-  useEffect(() => {
-    const onPageShow = (e) => {
-      if (e.persisted) {
-        window.location.reload();
-      }
-    };
-    window.addEventListener('pageshow', onPageShow);
-    return () => window.removeEventListener('pageshow', onPageShow);
-  }, []);
 
   // suspension_reason is a combined "reason — details" string stored by the admin suspend flow
   const combined = profile?.suspension_reason || '';
@@ -66,7 +53,7 @@ export default function SuspensionScreen({ profile }) {
           </p>
 
           <div className="flex flex-col gap-2 pt-1">
-            <Button onClick={() => navigate('/support')} className="gap-2 w-full">
+            <Button onClick={() => window.location.href = '/support'} className="gap-2 w-full">
               <LifeBuoy className="w-4 h-4" />
               Contact Support
             </Button>
