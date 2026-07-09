@@ -57,11 +57,15 @@ export default function SiteSettings() {
     juicyads_show_men: true,
     juicyads_show_women: false,
     juicyads_zone_browse: '',
+    juicyads_zone_browse_mobile: '',
     juicyads_zone_profile: '',
     juicyads_zone_profile_mobile: '',
     juicyads_zone_messages: '',
+    juicyads_zone_messages_mobile: '',
     juicyads_zone_winks: '',
+    juicyads_zone_winks_mobile: '',
     juicyads_zone_favorites: '',
+    juicyads_zone_favorites_mobile: '',
     adsterra_enabled: false,
     adsterra_show_men: true,
     adsterra_show_women: false,
@@ -141,11 +145,15 @@ export default function SiteSettings() {
         juicyads_show_men: existingConfig.juicyads_show_men !== false,
         juicyads_show_women: existingConfig.juicyads_show_women || false,
         juicyads_zone_browse: existingConfig.juicyads_zone_browse || '',
+        juicyads_zone_browse_mobile: existingConfig.juicyads_zone_browse_mobile || '',
         juicyads_zone_profile: existingConfig.juicyads_zone_profile || '',
         juicyads_zone_profile_mobile: existingConfig.juicyads_zone_profile_mobile || '',
         juicyads_zone_messages: existingConfig.juicyads_zone_messages || '',
+        juicyads_zone_messages_mobile: existingConfig.juicyads_zone_messages_mobile || '',
         juicyads_zone_winks: existingConfig.juicyads_zone_winks || '',
+        juicyads_zone_winks_mobile: existingConfig.juicyads_zone_winks_mobile || '',
         juicyads_zone_favorites: existingConfig.juicyads_zone_favorites || '',
+        juicyads_zone_favorites_mobile: existingConfig.juicyads_zone_favorites_mobile || '',
         adsterra_enabled: existingConfig.adsterra_enabled || false,
         adsterra_show_men: existingConfig.adsterra_show_men !== false,
         adsterra_show_women: existingConfig.adsterra_show_women || false,
@@ -383,23 +391,26 @@ export default function SiteSettings() {
 
               <div className="border-t pt-4 space-y-3">
                 <p className="text-sm font-semibold">Zone / Spot IDs by Page</p>
-                <div className="space-y-1">
-                  <Label className="text-xs">Browse Page Zone ID</Label>
-                  <Input value={form.juicyads_zone_browse} onChange={e => updateField('juicyads_zone_browse', e.target.value)} placeholder="e.g. 123456" />
-                </div>
-                <div className="space-y-1">
-                  <Label className="text-xs">Messages Page Zone ID</Label>
-                  <Input value={form.juicyads_zone_messages} onChange={e => updateField('juicyads_zone_messages', e.target.value)} placeholder="e.g. 123458" />
-                </div>
-                <div className="space-y-1">
-                  <Label className="text-xs">Winks Page Zone ID</Label>
-                  <Input value={form.juicyads_zone_winks} onChange={e => updateField('juicyads_zone_winks', e.target.value)} placeholder="e.g. 123459" />
-                </div>
-                <div className="space-y-1">
-                  <Label className="text-xs">Favorites Page Zone ID</Label>
-                  <Input value={form.juicyads_zone_favorites} onChange={e => updateField('juicyads_zone_favorites', e.target.value)} placeholder="e.g. 123460" />
-                </div>
-                <p className="text-xs text-muted-foreground">Zone IDs are found in your JuicyAds Dashboard → My Spots. Leave a zone blank to disable the ad on that page.</p>
+                <p className="text-xs text-muted-foreground">Recommended sizes — Desktop: <strong>728×90</strong> (Leaderboard), Mobile: <strong>300×100</strong> (Mobile Ads). Available JuicyAds banner types: 728×90 Leaderboard, 300×100 Mobile, 300×50 Mobile, 468×60 Banner, 160×600 Skyscraper, 300×250.</p>
+                {[
+                  { label: 'Browse Page', deskField: 'juicyads_zone_browse', mobField: 'juicyads_zone_browse_mobile' },
+                  { label: 'Messages Page', deskField: 'juicyads_zone_messages', mobField: 'juicyads_zone_messages_mobile' },
+                  { label: 'Winks Page', deskField: 'juicyads_zone_winks', mobField: 'juicyads_zone_winks_mobile' },
+                  { label: 'Favorites Page', deskField: 'juicyads_zone_favorites', mobField: 'juicyads_zone_favorites_mobile' },
+                  { label: 'Profile Page', deskField: 'juicyads_zone_profile', mobField: 'juicyads_zone_profile_mobile' },
+                ].map(({ label, deskField, mobField }) => (
+                  <div key={deskField} className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <Label className="text-xs">{label} — Desktop Zone (728×90)</Label>
+                      <Input value={form[deskField]} onChange={e => updateField(deskField, e.target.value)} placeholder="e.g. 123456" />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs">{label} — Mobile Zone (300×100)</Label>
+                      <Input value={form[mobField]} onChange={e => updateField(mobField, e.target.value)} placeholder="e.g. 123457" />
+                    </div>
+                  </div>
+                ))}
+                <p className="text-xs text-muted-foreground">Zone IDs are found in your JuicyAds Dashboard → My Spots. Leave a zone blank to disable the ad on that page. When a mobile zone is blank, the desktop zone is served on mobile screens as fallback.</p>
               </div>
             </div>
           )}

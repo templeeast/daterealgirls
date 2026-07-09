@@ -41,6 +41,7 @@ export default function Favorites() {
       {/* Sticky ad bar — JuicyAds + Adsterra, stays visible while scrolling */}
       <StickyAdBar
         zone={config?.juicyads_zone_favorites}
+        zoneMobile={config?.juicyads_zone_favorites_mobile}
         adsterraKey={config?.adsterra_key_favorites}
         adsterraKeyMobile={config?.adsterra_key_favorites_mobile}
       />

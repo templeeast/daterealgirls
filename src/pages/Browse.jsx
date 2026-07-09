@@ -164,6 +164,7 @@ export default function Browse() {
       {/* Sticky ad bar — JuicyAds + Adsterra, stays visible while scrolling */}
       <StickyAdBar
         zone={config?.juicyads_zone_browse}
+        zoneMobile={config?.juicyads_zone_browse_mobile}
         adsterraKey={config?.adsterra_key_browse}
         adsterraKeyMobile={config?.adsterra_key_browse_mobile}
       />

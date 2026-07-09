@@ -58,6 +58,7 @@ export default function Winks() {
       {/* Sticky ad bar — JuicyAds + Adsterra, stays visible while scrolling */}
       <StickyAdBar
         zone={config?.juicyads_zone_winks}
+        zoneMobile={config?.juicyads_zone_winks_mobile}
         adsterraKey={config?.adsterra_key_winks}
         adsterraKeyMobile={config?.adsterra_key_winks_mobile}
       />

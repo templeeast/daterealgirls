@@ -52,6 +52,7 @@ export default function Messages() {
       {/* Sticky ad bar — JuicyAds + Adsterra, stays visible while scrolling */}
       <StickyAdBar
         zone={config?.juicyads_zone_messages}
+        zoneMobile={config?.juicyads_zone_messages_mobile}
         adsterraKey={config?.adsterra_key_messages}
         adsterraKeyMobile={config?.adsterra_key_messages_mobile}
       />
