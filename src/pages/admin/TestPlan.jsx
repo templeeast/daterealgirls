@@ -633,39 +633,58 @@ const sections = [
       { id: 'ads-j22', label: 'JUICYADS MESSAGES: Ad embed appears below the page title and above the conversation list' },
 
       // --- Adsterra Admin Settings ---
-      { id: 'ads-a1', label: 'ADSTERRA ADMIN: Enable Adsterra Ads toggle saves to SiteConfig and persists on page reload' },
+      { id: 'ads-a1', label: 'ADSTERRA ADMIN: Enable Adsterra Ads toggle saves to SiteConfig (adsterra_enabled) and persists on page reload' },
       { id: 'ads-a2', label: 'ADSTERRA ADMIN: "Show Ads to Men" toggle saves correctly (adsterra_show_men field)' },
       { id: 'ads-a3', label: 'ADSTERRA ADMIN: "Show Ads to Women" toggle saves correctly (adsterra_show_women field)' },
-      { id: 'ads-a4', label: 'ADSTERRA ADMIN: Browse Page Script URL field accepts full src URL and saves to adsterra_script_browse' },
-      { id: 'ads-a5', label: 'ADSTERRA ADMIN: Profile Page Script URL field accepts full src URL and saves to adsterra_script_profile' },
-      { id: 'ads-a6', label: 'ADSTERRA ADMIN: Messages Page Script URL field accepts full src URL and saves to adsterra_script_messages' },
-      { id: 'ads-a7', label: 'ADSTERRA ADMIN: Adsterra sub-controls (gender toggles + script URL fields) are hidden when adsterra_enabled is OFF' },
-      { id: 'ads-a8', label: 'ADSTERRA ADMIN: Adsterra sub-controls appear when adsterra_enabled is toggled ON' },
+      { id: 'ads-a4', label: 'ADSTERRA ADMIN: Browse Page Desktop Key field (728×90) accepts alphanumeric key and saves to adsterra_key_browse' },
+      { id: 'ads-a5', label: 'ADSTERRA ADMIN: Browse Page Mobile Key field (320×50) accepts alphanumeric key and saves to adsterra_key_browse_mobile' },
+      { id: 'ads-a6', label: 'ADSTERRA ADMIN: Messages Page Desktop + Mobile Key fields save to adsterra_key_messages / adsterra_key_messages_mobile' },
+      { id: 'ads-a7', label: 'ADSTERRA ADMIN: Winks Page Desktop + Mobile Key fields save to adsterra_key_winks / adsterra_key_winks_mobile' },
+      { id: 'ads-a8', label: 'ADSTERRA ADMIN: Favorites Page Desktop + Mobile Key fields save to adsterra_key_favorites / adsterra_key_favorites_mobile' },
+      { id: 'ads-a9', label: 'ADSTERRA ADMIN: Profile Page Desktop + Mobile Key fields save to adsterra_key_profile / adsterra_key_profile_mobile' },
+      { id: 'ads-a10', label: 'ADSTERRA ADMIN: Adsterra sub-controls (gender toggles + all key fields) are hidden when adsterra_enabled is OFF' },
+      { id: 'ads-a11', label: 'ADSTERRA ADMIN: Adsterra sub-controls appear when adsterra_enabled is toggled ON' },
+      { id: 'ads-a12', label: 'ADSTERRA ADMIN: Helper text shows recommended sizes (Desktop: 728×90 Leaderboard, Mobile: 320×50 Mobile Banner) and available Adsterra sizes' },
+
+      // --- Adsterra Key Validation ---
+      { id: 'ads-k1', label: 'ADSTERRA KEY: Entering the ad unit\'s numeric ID (e.g. 30176264) instead of the alphanumeric embed key does NOT render an ad — the field requires the key from the "Get Code" snippet' },
+      { id: 'ads-k2', label: 'ADSTERRA KEY: Entering the correct alphanumeric key (from Adsterra Dashboard → Get Code → atOptions.key) renders the ad successfully' },
 
       // --- Adsterra Browse Page ---
-      { id: 'ads-a9', label: 'ADSTERRA BROWSE: Male user (adsterra_enabled ON, show_men ON, script URL set) sees Adsterra embed on /browse page' },
-      { id: 'ads-a10', label: 'ADSTERRA BROWSE: Female user (show_women OFF) does NOT see Adsterra on /browse page' },
-      { id: 'ads-a11', label: 'ADSTERRA BROWSE: Female user (show_women ON) sees Adsterra on /browse page' },
-      { id: 'ads-a12', label: 'ADSTERRA BROWSE: No ad renders when adsterra_script_browse is blank, even if adsterra_enabled is ON' },
-      { id: 'ads-a13', label: 'ADSTERRA BROWSE: No ad renders when adsterra_enabled is OFF, even if script URL and show_men are set' },
-
-      // --- Adsterra Profile Page ---
-      { id: 'ads-a14', label: 'ADSTERRA PROFILE: Male user (show_men ON, script URL set) sees Adsterra embed on /profile/:id page' },
-      { id: 'ads-a15', label: 'ADSTERRA PROFILE: Female user (show_women OFF) does NOT see Adsterra on /profile/:id page' },
-      { id: 'ads-a16', label: 'ADSTERRA PROFILE: No ad renders when adsterra_script_profile is blank' },
-      { id: 'ads-a17', label: 'ADSTERRA PROFILE: Ad embed appears below photo gallery and above profile name/bio' },
+      { id: 'ads-a20', label: 'ADSTERRA BROWSE: Female user (adsterra_enabled ON, show_women ON, desktop key set) sees Adsterra banner on /browse page' },
+      { id: 'ads-a21', label: 'ADSTERRA BROWSE: Male user (show_men ON, desktop key set) sees Adsterra banner on /browse page' },
+      { id: 'ads-a22', label: 'ADSTERRA BROWSE: Female user (show_women OFF) does NOT see Adsterra on /browse page' },
+      { id: 'ads-a23', label: 'ADSTERRA BROWSE: On screen wider than 768px, desktop key (728×90) is served on /browse' },
+      { id: 'ads-a24', label: 'ADSTERRA BROWSE: On screen narrower than 768px, mobile key (320×50) is served on /browse' },
+      { id: 'ads-a25', label: 'ADSTERRA BROWSE: When mobile key is blank, desktop key renders on mobile screens (fallback)' },
+      { id: 'ads-a26', label: 'ADSTERRA BROWSE: No ad renders when adsterra_key_browse is blank, even if adsterra_enabled is ON' },
+      { id: 'ads-a27', label: 'ADSTERRA BROWSE: No ad renders when adsterra_enabled is OFF, even if keys and show_women are set' },
 
       // --- Adsterra Messages Page ---
-      { id: 'ads-a18', label: 'ADSTERRA MESSAGES: Male user (show_men ON, script URL set) sees Adsterra embed on /messages page' },
-      { id: 'ads-a19', label: 'ADSTERRA MESSAGES: Female user (show_women OFF) does NOT see Adsterra on /messages page' },
-      { id: 'ads-a20', label: 'ADSTERRA MESSAGES: No ad renders when adsterra_script_messages is blank' },
-      { id: 'ads-a21', label: 'ADSTERRA MESSAGES: Ad embed appears below the page title and above the conversation list' },
+      { id: 'ads-a30', label: 'ADSTERRA MESSAGES: Eligible user (enabled + gender ON + key set) sees Adsterra banner on /messages page' },
+      { id: 'ads-a31', label: 'ADSTERRA MESSAGES: Desktop and mobile keys are served based on screen width' },
+      { id: 'ads-a32', label: 'ADSTERRA MESSAGES: No ad renders when adsterra_key_messages is blank' },
+
+      // --- Adsterra Winks Page ---
+      { id: 'ads-a40', label: 'ADSTERRA WINKS: Eligible user (enabled + gender ON + key set) sees Adsterra banner on /winks page' },
+      { id: 'ads-a41', label: 'ADSTERRA WINKS: Desktop and mobile keys are served based on screen width' },
+      { id: 'ads-a42', label: 'ADSTERRA WINKS: No ad renders when adsterra_key_winks is blank' },
+
+      // --- Adsterra Favorites Page ---
+      { id: 'ads-a50', label: 'ADSTERRA FAVORITES: Eligible user (enabled + gender ON + key set) sees Adsterra banner on /favorites page' },
+      { id: 'ads-a51', label: 'ADSTERRA FAVORITES: Desktop and mobile keys are served based on screen width' },
+      { id: 'ads-a52', label: 'ADSTERRA FAVORITES: No ad renders when adsterra_key_favorites is blank' },
+
+      // --- Adsterra Profile Page ---
+      { id: 'ads-a60', label: 'ADSTERRA PROFILE: Eligible user (show_men/women ON, key set) sees Adsterra embed on /profile/:id page' },
+      { id: 'ads-a61', label: 'ADSTERRA PROFILE: Desktop and mobile keys are served based on screen width' },
+      { id: 'ads-a62', label: 'ADSTERRA PROFILE: No ad renders when adsterra_key_profile is blank' },
 
       // --- Both Networks Running Together ---
       { id: 'ads-b1', label: 'BOTH NETWORKS: JuicyAds and Adsterra can both be enabled simultaneously — both render on the same page without conflict' },
       { id: 'ads-b2', label: 'BOTH NETWORKS: Disabling JuicyAds does not affect Adsterra display, and vice versa' },
       { id: 'ads-b3', label: 'BOTH NETWORKS: Gender settings for each network are independent — e.g. JuicyAds show_men ON and Adsterra show_men OFF shows only JuicyAds to male users' },
-      { id: 'ads-b4', label: 'BOTH NETWORKS: All six ad placements (3 pages × 2 networks) can be active simultaneously with no layout breakage' },
+      { id: 'ads-b4', label: 'BOTH NETWORKS: All ad placements (5 pages × 2 networks) can be active simultaneously with no layout breakage' },
 
       // --- JuicyAds Profile Mobile Zone ---
       { id: 'ads-jm1', label: 'JUICYADS ADMIN: "Profile Page Zone ID — Desktop (728×90 Leaderboard)" label is shown for the existing profile zone field' },
