@@ -27,9 +27,10 @@ export default function AdsterraEmbed({
   const isMobile = useIsMobile();
   const containerRef = useRef(null);
 
-  const activeKey = (adKeyMobile && isMobile) ? adKeyMobile : adKey;
-  const activeWidth = isMobile ? mobileWidth : width;
-  const activeHeight = isMobile ? mobileHeight : height;
+  const usingMobileKey = !!(adKeyMobile && isMobile);
+  const activeKey = usingMobileKey ? adKeyMobile : adKey;
+  const activeWidth = usingMobileKey ? mobileWidth : width;
+  const activeHeight = usingMobileKey ? mobileHeight : height;
 
   const gender = profile?.gender;
   const enabled = config?.adsterra_enabled;
