@@ -6,11 +6,12 @@ import { useIsMobile } from '@/hooks/use-mobile';
 /**
  * Renders an Adsterra banner ad unit.
  *
- * Mirrors the JuicyAdsEmbed pattern: checks config + gender audience,
- * picks the desktop or mobile key, and injects the Adsterra invoke.js
- * script into a container div.
+ * Uses an iframe wrapper so Adsterra's invoke.js (which relies on
+ * document.write) has a fresh document context — this is required
+ * for SPAs where scripts are injected after initial page load,
+ * and fixes rendering on iOS Safari.
  *
- * Recommended banner sizes (from Adsterra available sizes):
+ * Recommended banner sizes:
  *   Desktop: 728x90 (Leaderboard)
  *   Mobile:  320x50 (Mobile Banner)
  */
@@ -49,20 +50,46 @@ export default function AdsterraEmbed({
     const container = containerRef.current;
     container.innerHTML = '';
 
-    // Adsterra uses a global atOptions object read by invoke.js
-    window.atOptions = {
-      key: activeKey,
-      format: 'iframe',
-      height: activeHeight,
-      width: activeWidth,
-      params: {},
+    // Use an iframe so invoke.js can use document.write safely.
+    // Without this, the async-injected script silently fails on
+    // iOS Safari and other strict browsers.
+    const iframe = document.createElement('iframe');
+    iframe.width = activeWidth;
+    iframe.height = activeHeight;
+    iframe.style.border = '0';
+    iframe.style.overflow = 'hidden';
+    iframe.style.display = 'block';
+    iframe.style.margin = '0 auto';
+    iframe.scrolling = 'no';
+    iframe.setAttribute('frameborder', '0');
+    container.appendChild(iframe);
+
+    const writeContent = () => {
+      try {
+        const doc = iframe.contentWindow.document;
+        doc.open();
+        doc.write(
+          '<html><head><style>body{margin:0;padding:0;overflow:hidden;}</style></head><body>' +
+          '<script type="text/javascript">' +
+          'atOptions = {' +
+          "  key: '" + activeKey + "'," +
+          "  format: 'iframe'," +
+          '  height: ' + activeHeight + ',' +
+          '  width: ' + activeWidth + ',' +
+          '  params: {}' +
+          '};' +
+          '</script>' +
+          '<script type="text/javascript" src="https://www.highperformanceformat.com/' + activeKey + '/invoke.js"></script>' +
+          '</body></html>'
+        );
+        doc.close();
+      } catch (e) {
+        // If the iframe isn't ready yet, retry shortly
+        setTimeout(writeContent, 50);
+      }
     };
 
-    const script = document.createElement('script');
-    script.type = 'text/javascript';
-    script.async = true;
-    script.src = `https://www.highperformanceformat.com/${activeKey}/invoke.js`;
-    container.appendChild(script);
+    writeContent();
 
     return () => {
       container.innerHTML = '';
