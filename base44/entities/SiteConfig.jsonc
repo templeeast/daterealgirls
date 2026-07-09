@@ -119,6 +119,61 @@
       "type": "string",
       "description": "JuicyAds Zone/Spot ID for the /favorites page"
     },
+    "adsterra_enabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether Adsterra ads are enabled"
+    },
+    "adsterra_show_men": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether to show Adsterra ads to male users"
+    },
+    "adsterra_show_women": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether to show Adsterra ads to female users"
+    },
+    "adsterra_key_browse": {
+      "type": "string",
+      "description": "Adsterra ad unit key for the Browse page (desktop \u2014 728x90 Leaderboard)"
+    },
+    "adsterra_key_browse_mobile": {
+      "type": "string",
+      "description": "Adsterra ad unit key for the Browse page (mobile \u2014 320x50 Mobile Banner)"
+    },
+    "adsterra_key_profile": {
+      "type": "string",
+      "description": "Adsterra ad unit key for the Profile page (desktop \u2014 728x90 Leaderboard)"
+    },
+    "adsterra_key_profile_mobile": {
+      "type": "string",
+      "description": "Adsterra ad unit key for the Profile page (mobile \u2014 320x50 Mobile Banner)"
+    },
+    "adsterra_key_messages": {
+      "type": "string",
+      "description": "Adsterra ad unit key for the Messages page (desktop \u2014 728x90 Leaderboard)"
+    },
+    "adsterra_key_messages_mobile": {
+      "type": "string",
+      "description": "Adsterra ad unit key for the Messages page (mobile \u2014 320x50 Mobile Banner)"
+    },
+    "adsterra_key_winks": {
+      "type": "string",
+      "description": "Adsterra ad unit key for the Winks page (desktop \u2014 728x90 Leaderboard)"
+    },
+    "adsterra_key_winks_mobile": {
+      "type": "string",
+      "description": "Adsterra ad unit key for the Winks page (mobile \u2014 320x50 Mobile Banner)"
+    },
+    "adsterra_key_favorites": {
+      "type": "string",
+      "description": "Adsterra ad unit key for the Favorites page (desktop \u2014 728x90 Leaderboard)"
+    },
+    "adsterra_key_favorites_mobile": {
+      "type": "string",
+      "description": "Adsterra ad unit key for the Favorites page (mobile \u2014 320x50 Mobile Banner)"
+    },
     "msg_rate_limit_count": {
       "type": "number",
       "default": 5

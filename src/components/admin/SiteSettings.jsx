@@ -62,6 +62,19 @@ export default function SiteSettings() {
     juicyads_zone_messages: '',
     juicyads_zone_winks: '',
     juicyads_zone_favorites: '',
+    adsterra_enabled: false,
+    adsterra_show_men: true,
+    adsterra_show_women: false,
+    adsterra_key_browse: '',
+    adsterra_key_browse_mobile: '',
+    adsterra_key_profile: '',
+    adsterra_key_profile_mobile: '',
+    adsterra_key_messages: '',
+    adsterra_key_messages_mobile: '',
+    adsterra_key_winks: '',
+    adsterra_key_winks_mobile: '',
+    adsterra_key_favorites: '',
+    adsterra_key_favorites_mobile: '',
     chat_retention_days: 90,
     welcome_tokens: 5000,
     first_purchase_bonus_men_enabled: true,
@@ -133,6 +146,19 @@ export default function SiteSettings() {
         juicyads_zone_messages: existingConfig.juicyads_zone_messages || '',
         juicyads_zone_winks: existingConfig.juicyads_zone_winks || '',
         juicyads_zone_favorites: existingConfig.juicyads_zone_favorites || '',
+        adsterra_enabled: existingConfig.adsterra_enabled || false,
+        adsterra_show_men: existingConfig.adsterra_show_men !== false,
+        adsterra_show_women: existingConfig.adsterra_show_women || false,
+        adsterra_key_browse: existingConfig.adsterra_key_browse || '',
+        adsterra_key_browse_mobile: existingConfig.adsterra_key_browse_mobile || '',
+        adsterra_key_profile: existingConfig.adsterra_key_profile || '',
+        adsterra_key_profile_mobile: existingConfig.adsterra_key_profile_mobile || '',
+        adsterra_key_messages: existingConfig.adsterra_key_messages || '',
+        adsterra_key_messages_mobile: existingConfig.adsterra_key_messages_mobile || '',
+        adsterra_key_winks: existingConfig.adsterra_key_winks || '',
+        adsterra_key_winks_mobile: existingConfig.adsterra_key_winks_mobile || '',
+        adsterra_key_favorites: existingConfig.adsterra_key_favorites || '',
+        adsterra_key_favorites_mobile: existingConfig.adsterra_key_favorites_mobile || '',
         chat_retention_days: existingConfig.chat_retention_days ?? 90,
         welcome_tokens: existingConfig.welcome_tokens ?? 5000,
         first_purchase_bonus_men_enabled: existingConfig.first_purchase_bonus_men_enabled !== false,
@@ -377,6 +403,64 @@ export default function SiteSettings() {
               </div>
             </div>
           )}
+
+          {/* Adsterra */}
+          <div className="border-t pt-4 space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="font-medium text-sm">Enable Adsterra Ads</p>
+                <p className="text-xs text-muted-foreground mt-0.5">Shows Adsterra banner ads alongside JuicyAds on the same pages. Enter ad unit keys from your Adsterra dashboard.</p>
+              </div>
+              <Switch
+                checked={form.adsterra_enabled}
+                onCheckedChange={v => updateField('adsterra_enabled', v)}
+              />
+            </div>
+            {form.adsterra_enabled && (
+              <div className="space-y-4 pt-2">
+                <div className="border-t pt-4 space-y-3">
+                  <p className="text-sm font-semibold">Audience — Who Sees Adsterra Ads</p>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium">Show Ads to Men</p>
+                      <p className="text-xs text-muted-foreground">Recommended — men are the paying audience</p>
+                    </div>
+                    <Switch checked={form.adsterra_show_men} onCheckedChange={v => updateField('adsterra_show_men', v)} />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium">Show Ads to Women</p>
+                    </div>
+                    <Switch checked={form.adsterra_show_women} onCheckedChange={v => updateField('adsterra_show_women', v)} />
+                  </div>
+                </div>
+
+                <div className="border-t pt-4 space-y-3">
+                  <p className="text-sm font-semibold">Ad Unit Keys by Page</p>
+                  <p className="text-xs text-muted-foreground">Recommended sizes — Desktop: <strong>728×90</strong> (Leaderboard), Mobile: <strong>320×50</strong> (Mobile Banner). Available sizes from Adsterra: 468×60, 160×300, 320×50, 300×250, 160×600, 728×90.</p>
+                  {[
+                    { label: 'Browse Page', deskField: 'adsterra_key_browse', mobField: 'adsterra_key_browse_mobile' },
+                    { label: 'Messages Page', deskField: 'adsterra_key_messages', mobField: 'adsterra_key_messages_mobile' },
+                    { label: 'Winks Page', deskField: 'adsterra_key_winks', mobField: 'adsterra_key_winks_mobile' },
+                    { label: 'Favorites Page', deskField: 'adsterra_key_favorites', mobField: 'adsterra_key_favorites_mobile' },
+                    { label: 'Profile Page', deskField: 'adsterra_key_profile', mobField: 'adsterra_key_profile_mobile' },
+                  ].map(({ label, deskField, mobField }) => (
+                    <div key={deskField} className="grid grid-cols-2 gap-3">
+                      <div className="space-y-1">
+                        <Label className="text-xs">{label} — Desktop Key (728×90)</Label>
+                        <Input value={form[deskField]} onChange={e => updateField(deskField, e.target.value)} placeholder="e.g. a1b2c3d4e5f6g7h8" />
+                      </div>
+                      <div className="space-y-1">
+                        <Label className="text-xs">{label} — Mobile Key (320×50)</Label>
+                        <Input value={form[mobField]} onChange={e => updateField(mobField, e.target.value)} placeholder="e.g. a1b2c3d4e5f6g7h8" />
+                      </div>
+                    </div>
+                  ))}
+                  <p className="text-xs text-muted-foreground">Find your ad unit keys in Adsterra Dashboard → Ad Units. Leave a key blank to disable the ad on that page.</p>
+                </div>
+              </div>
+            )}
+          </div>
         </CardContent>
       </Card>
 

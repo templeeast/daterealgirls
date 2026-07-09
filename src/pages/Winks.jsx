@@ -55,8 +55,12 @@ export default function Winks() {
 
   return (
     <div className="max-w-xl mx-auto px-4 py-8">
-      {/* Sticky JuicyAds bar — stays visible while scrolling */}
-      <StickyAdBar zone={config?.juicyads_zone_winks} />
+      {/* Sticky ad bar — JuicyAds + Adsterra, stays visible while scrolling */}
+      <StickyAdBar
+        zone={config?.juicyads_zone_winks}
+        adsterraKey={config?.adsterra_key_winks}
+        adsterraKeyMobile={config?.adsterra_key_winks_mobile}
+      />
 
       {/* Tab toggle */}
       <div className="flex gap-2 mb-6">

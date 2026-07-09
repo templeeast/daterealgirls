@@ -49,8 +49,12 @@ export default function Messages() {
     <div className="max-w-2xl mx-auto px-4 py-8">
       <h1 className="font-heading text-3xl font-bold mb-6">{t('messages_title')}</h1>
 
-      {/* Sticky JuicyAds bar — stays visible while scrolling */}
-      <StickyAdBar zone={config?.juicyads_zone_messages} />
+      {/* Sticky ad bar — JuicyAds + Adsterra, stays visible while scrolling */}
+      <StickyAdBar
+        zone={config?.juicyads_zone_messages}
+        adsterraKey={config?.adsterra_key_messages}
+        adsterraKeyMobile={config?.adsterra_key_messages_mobile}
+      />
 
       {isLoading ? (
         <div className="space-y-3">
