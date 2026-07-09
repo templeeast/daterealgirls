@@ -10,7 +10,8 @@
       "type": "string",
       "enum": [
         "profile",
-        "chat"
+        "chat",
+        "private"
       ],
       "description": "Where the photo comes from"
     },

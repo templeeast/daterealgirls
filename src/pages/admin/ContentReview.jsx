@@ -17,12 +17,38 @@ const TABS = [
   { value: 'rejected', label: 'Rejected' },
 ];
 
-// Extract photos from profiles and messages, cross-reference with reviews
-function buildPhotoList(profiles, messages, reviews) {
+// Extract photos from profiles, private photos, and messages, cross-reference with reviews
+function buildPhotoList(profiles, messages, privatePhotos, reviews) {
   const reviewMap = {};
   reviews.forEach(r => { reviewMap[r.photo_url] = r; });
 
+  const profileMap = {};
+  profiles.forEach(p => { profileMap[p.id] = p; });
+
   const items = [];
+
+  // Private photos
+  privatePhotos.forEach(pp => {
+    const url = pp.photo_url;
+    if (!url) return;
+    const existing = reviewMap[url];
+    const ownerProfile = profileMap[pp.member_id];
+    items.push({
+      photo_url: url,
+      source_type: 'private',
+      source_description: `Private photo of ${ownerProfile?.display_name || 'Unknown'}`,
+      source_profile_id: pp.member_id,
+      source_user_id: ownerProfile?.user_id || '',
+      source_field: 'private_photo',
+      source_message_id: null,
+      source_conversation_id: null,
+      review_status: existing?.review_status || 'pending',
+      rejection_reason: existing?.rejection_reason || null,
+      reviewed_date: existing?.updated_date || null,
+      review_id: existing?.id || null,
+      uploaded_date: pp.uploaded_at || pp.created_date || null,
+    });
+  });
 
   // Profile photos
   profiles.forEach(p => {
@@ -100,9 +126,14 @@ export default function ContentReview() {
     queryFn: () => base44.entities.PhotoReview.list('-created_date', 5000),
   });
 
+  const { data: privatePhotos = [], isLoading: loadingPrivatePhotos } = useQuery({
+    queryKey: ['admin', 'privatePhotos'],
+    queryFn: () => base44.entities.PrivatePhoto.list('-uploaded_at', 5000),
+  });
+
   const allPhotos = useMemo(
-    () => buildPhotoList(profiles, messages, reviews),
-    [profiles, messages, reviews]
+    () => buildPhotoList(profiles, messages, privatePhotos, reviews),
+    [profiles, messages, privatePhotos, reviews]
   );
 
   const filteredPhotos = useMemo(() => {
@@ -143,6 +174,7 @@ export default function ContentReview() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['photoReviews'] });
+      queryClient.invalidateQueries({ queryKey: ['admin', 'privatePhotos'] });
       toast({ title: 'Photo approved' });
     },
   });
@@ -208,11 +240,12 @@ export default function ContentReview() {
       queryClient.invalidateQueries({ queryKey: ['photoReviews'] });
       queryClient.invalidateQueries({ queryKey: ['admin', 'profiles', 'withPhotos'] });
       queryClient.invalidateQueries({ queryKey: ['admin', 'messages', 'withImages'] });
+      queryClient.invalidateQueries({ queryKey: ['admin', 'privatePhotos'] });
       toast({ title: 'Photo rejected and deleted' });
     },
   });
 
-  const isLoading = loadingProfiles || loadingMessages || loadingReviews;
+  const isLoading = loadingProfiles || loadingMessages || loadingReviews || loadingPrivatePhotos;
 
   const counts = useMemo(() => ({
     all: allPhotos.length,

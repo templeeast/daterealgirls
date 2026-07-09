@@ -40,7 +40,7 @@ export default function PrivatePhotosViewer({ ownerProfileId, myProfile }) {
     enabled: !!myProfile?.id,
   });
 
-  const approvedPhotos = photos.filter(p => p.status === 'approved');
+  const approvedPhotos = photos.filter(p => p.status !== 'rejected');
   const accessRecord = accessRecords[0];
   const isViewerMale = myProfile?.gender === 'male';
   const paidViewSet = new Set(myViews.map(v => v.private_photo_id));

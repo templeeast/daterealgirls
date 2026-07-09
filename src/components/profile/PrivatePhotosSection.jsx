@@ -92,9 +92,9 @@ export default function PrivatePhotosSection({ profile, onRefetch, maxPrivatePho
         await base44.entities.MemberProfile.update(profile.id, { tokens: Math.max(0, (profile.tokens || 0) - uploadCost) });
         await base44.entities.TokenTransaction.create({ user_id: profile.user_id, type: 'spend', tokens: -uploadCost, description: 'Private photo upload fee' });
       }
-      await base44.entities.PrivatePhoto.create({ member_id: profile.id, photo_url: imageUrl, status: 'pending_review', token_cost_to_view: tokenCostToView, uploaded_at: new Date().toISOString() });
+      await base44.entities.PrivatePhoto.create({ member_id: profile.id, photo_url: imageUrl, status: 'approved', token_cost_to_view: tokenCostToView, uploaded_at: new Date().toISOString() });
       await base44.entities.PhotoReview.create({ photo_url: imageUrl, source_type: 'private', source_description: `Private photo of ${profile.display_name || 'Unknown'}`, source_profile_id: profile.id, source_user_id: profile.user_id, source_field: 'private_photo', review_status: 'pending' });
-      toast({ title: 'Your private photo has been submitted for review and will be visible once approved.' });
+      toast({ title: 'Your private photo has been uploaded and is now visible.' });
       refetch();
       if (onRefetch) onRefetch();
       setUploading(false);
