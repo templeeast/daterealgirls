@@ -1,5 +1,7 @@
 export const winkTranslations = {
   en: {
+    token_cost_send_wink: 'Send a wink',
+    token_cost_per_wink: 'per wink',
     wink_btn: 'Wink',
     wink_btn_sent: 'Winked',
     wink_sent_toast: '😉 Wink sent!',
@@ -23,6 +25,8 @@ export const winkTranslations = {
     winks_empty_sent_desc: 'Winks you send will appear here.',
   },
   es: {
+    token_cost_send_wink: 'Enviar un guiño',
+    token_cost_per_wink: 'por guiño',
     wink_btn: 'Guiño',
     wink_btn_sent: 'Guiñado',
     wink_sent_toast: '😉 ¡Guiño enviado!',
@@ -45,6 +49,8 @@ export const winkTranslations = {
     winks_empty_sent_desc: 'Los guiños que envíes aparecerán aquí.',
   },
   th: {
+    token_cost_send_wink: 'ส่งวิงค์',
+    token_cost_per_wink: 'ต่อวิงค์',
     wink_btn: '윙크',
     wink_btn_sent: 'ส่งแล้ว',
     wink_sent_toast: '😉 ส่งวิงค์แล้ว!',
@@ -67,6 +73,8 @@ export const winkTranslations = {
     winks_empty_sent_desc: 'วิงค์ที่คุณส่งจะปรากฏที่นี่',
   },
   zh: {
+    token_cost_send_wink: '发送眨眼',
+    token_cost_per_wink: '每次眨眼',
     wink_btn: '眨眼',
     wink_btn_sent: '已眨眼',
     wink_sent_toast: '😉 眨眼已发送！',
@@ -89,6 +97,8 @@ export const winkTranslations = {
     winks_empty_sent_desc: '您发送的眨眼将出现在这里。',
   },
   de: {
+    token_cost_send_wink: 'Zwinkern senden',
+    token_cost_per_wink: 'pro Zwinkern',
     wink_btn: 'Zwinkern',
     wink_btn_sent: 'Gezwinkert',
     wink_sent_toast: '😉 Zwinkern gesendet!',
@@ -111,6 +121,8 @@ export const winkTranslations = {
     winks_empty_sent_desc: 'Von dir gesendete Zwinkern erscheinen hier.',
   },
   vi: {
+    token_cost_send_wink: 'Gửi nháy mắt',
+    token_cost_per_wink: 'mỗi nháy mắt',
     wink_btn: 'Nháy mắt',
     wink_btn_sent: 'Đã nháy mắt',
     wink_sent_toast: '😉 Đã gửi nháy mắt!',
@@ -133,6 +145,8 @@ export const winkTranslations = {
     winks_empty_sent_desc: 'Nháy mắt bạn gửi sẽ xuất hiện ở đây.',
   },
   pt: {
+    token_cost_send_wink: 'Enviar um flerte',
+    token_cost_per_wink: 'por flerte',
     wink_btn: 'Piscar',
     wink_btn_sent: 'Piscado',
     wink_sent_toast: '😉 Piscadela enviada!',
@@ -155,6 +169,8 @@ export const winkTranslations = {
     winks_empty_sent_desc: 'Piscadelas que você enviar aparecerão aqui.',
   },
   tl: {
+    token_cost_send_wink: 'Magpadala ng kindat',
+    token_cost_per_wink: 'bawat kindat',
     wink_btn: 'Kumindat',
     wink_btn_sent: 'Nagkindat',
     wink_sent_toast: '😉 Naipadala ang kindat!',

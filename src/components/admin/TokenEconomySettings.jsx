@@ -124,6 +124,40 @@ export default function TokenEconomySettings({ form, updateField }) {
         </CardContent>
       </Card>
 
+      {/* Wink Costs */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="font-heading text-lg">Winks</CardTitle>
+          <CardDescription>Token cost per wink sent.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="font-medium text-sm">Require Tokens for Winks — Men</p>
+            </div>
+            <Switch checked={form.tokens_wink_men_enabled !== false} onCheckedChange={v => toggle('tokens_wink_men_enabled', v)} />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Token Cost per Wink — Men</Label>
+              <Input type="number" value={form.tokens_wink_cost_men ?? 5} onChange={e => num('tokens_wink_cost_men', e.target.value)} />
+            </div>
+          </div>
+          <div className="flex items-center justify-between border-t pt-4">
+            <div>
+              <p className="font-medium text-sm">Require Tokens for Winks — Women</p>
+            </div>
+            <Switch checked={form.tokens_wink_women_enabled || false} onCheckedChange={v => toggle('tokens_wink_women_enabled', v)} />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Token Cost per Wink — Women</Label>
+              <Input type="number" value={form.tokens_wink_cost_women ?? 0} onChange={e => num('tokens_wink_cost_women', e.target.value)} />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* ID Verification Costs */}
       <Card>
         <CardHeader>

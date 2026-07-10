@@ -276,6 +276,26 @@
       "type": "number",
       "default": 0
     },
+    "tokens_wink_men_enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether men are charged tokens to send a wink"
+    },
+    "tokens_wink_women_enabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether women are charged tokens to send a wink"
+    },
+    "tokens_wink_cost_men": {
+      "type": "number",
+      "default": 5,
+      "description": "Token cost for men to send a wink"
+    },
+    "tokens_wink_cost_women": {
+      "type": "number",
+      "default": 0,
+      "description": "Token cost for women to send a wink"
+    },
     "tokens_verify_men_enabled": {
       "type": "boolean",
       "default": true

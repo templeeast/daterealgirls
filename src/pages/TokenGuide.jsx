@@ -78,6 +78,25 @@ export default function TokenGuide() {
                   </td>
                 </tr>
                 <tr className="border-b">
+                  <td className="px-6 py-4 font-medium">{t('token_cost_send_wink')}</td>
+                  <td className="text-center px-6 py-4">
+                    {config.tokens_wink_men_enabled !== false ? (
+                      <div className="font-semibold">{t('token_cost_n_tokens', { n: config.tokens_wink_cost_men ?? 5 })}</div>
+                    ) : (
+                      <span className="text-green-600 font-semibold">{t('free')}</span>
+                    )}
+                    <div className="text-xs text-muted-foreground">{t('token_cost_per_wink')}</div>
+                  </td>
+                  <td className="text-center px-6 py-4">
+                    {config.tokens_wink_women_enabled ? (
+                      <div className="font-semibold">{t('token_cost_n_tokens', { n: config.tokens_wink_cost_women ?? 0 })}</div>
+                    ) : (
+                      <span className="text-green-600 font-semibold">{t('free')}</span>
+                    )}
+                    <div className="text-xs text-muted-foreground">{t('token_cost_per_wink')}</div>
+                  </td>
+                </tr>
+                <tr className="border-b">
                   <td className="px-6 py-4 font-medium">{t('token_cost_send_photo')}</td>
                   <td className="text-center px-6 py-4">
                     <div className="font-semibold">{t('token_cost_n_tokens', { n: config.tokens_msg_photo_cost ?? 5 })}</div>
