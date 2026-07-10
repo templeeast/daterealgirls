@@ -271,6 +271,19 @@ export default function Landing() {
                       <div className="text-xs text-muted-foreground">{t('token_cost_per_photo')}</div>
                     </td>
                   </tr>
+                  <tr className="border-b">
+                    <td className="px-6 py-4 font-medium">
+                      {t('token_cost_send_video')} <span className="text-xs text-amber-600 font-medium">({t('token_cost_verification_required')})</span>
+                    </td>
+                    <td className="text-center px-6 py-4">
+                      <div className="font-semibold">{t('token_cost_n_tokens', { n: config.tokens_msg_video_cost_men ?? 10 })}</div>
+                      <div className="text-xs text-muted-foreground">{t('token_cost_per_video')}</div>
+                    </td>
+                    <td className="text-center px-6 py-4">
+                      <div className="font-semibold">{t('token_cost_n_tokens', { n: config.tokens_msg_video_cost_women ?? 0 })}</div>
+                      <div className="text-xs text-muted-foreground">{t('token_cost_per_video')}</div>
+                    </td>
+                  </tr>
                   {(config.stripe_payment_link_enabled_men || config.stripe_payment_link_enabled_women) && (
                   <tr className="border-b">
                     <td className="px-6 py-4 font-medium">
@@ -309,6 +322,19 @@ export default function Landing() {
                     <td className="text-center px-6 py-4">
                       <div className="font-semibold text-green-600">{t('free')}</div>
                       <div className="text-xs text-muted-foreground">{t('token_cost_per_photo')}</div>
+                    </td>
+                  </tr>
+                  <tr className="border-b">
+                    <td className="px-6 py-4 font-medium">
+                      {t('token_cost_view_private_video')} <span className="text-xs text-amber-600 font-medium">({t('token_cost_verification_required')})</span>
+                    </td>
+                    <td className="text-center px-6 py-4">
+                      <div className="font-semibold">{t('token_cost_n_tokens', { n: config.tokens_private_video_cost ?? 10 })}</div>
+                      <div className="text-xs text-muted-foreground">{t('token_cost_per_video')}</div>
+                    </td>
+                    <td className="text-center px-6 py-4">
+                      <div className="font-semibold text-green-600">{t('free')}</div>
+                      <div className="text-xs text-muted-foreground">{t('token_cost_per_video')}</div>
                     </td>
                   </tr>
                   <tr>
