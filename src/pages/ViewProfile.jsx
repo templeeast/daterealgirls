@@ -12,6 +12,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import useMyProfile from '@/hooks/useMyProfile';
 import useSiteConfig from '@/hooks/useSiteConfig';
 import PrivatePhotosViewer from '@/components/profile/PrivatePhotosViewer';
+import PhotoZoomModal from '@/components/profile/PhotoZoomModal';
 import { useToast } from '@/components/ui/use-toast';
 import { useTranslation } from 'react-i18next';
 
@@ -35,6 +36,7 @@ export default function ViewProfile() {
   const isBrowseUnlocked = browseUnlockedUntil && browseUnlockedUntil > new Date();
   const canInteract = isVerified && !!isBrowseUnlocked;
   const [browseAllDialogOpen, setBrowseAllDialogOpen] = useState(false);
+  const [zoomPhotoIndex, setZoomPhotoIndex] = useState(null);
 
   const { data: profile, isLoading } = useQuery({
     queryKey: ['profile', profileId],
@@ -162,7 +164,11 @@ export default function ViewProfile() {
       {photos.length > 0 ? (
         <div className={`grid gap-3 mb-6 ${photos.length === 1 ? 'grid-cols-1' : photos.length === 2 ? 'grid-cols-2' : 'grid-cols-3'}`}>
           {photos.map((url, i) => (
-            <div key={i} className={`rounded-2xl overflow-hidden ${i === 0 && photos.length > 1 ? 'col-span-2 row-span-2' : ''}`}>
+            <div
+              key={i}
+              className={`rounded-2xl overflow-hidden cursor-pointer ${i === 0 && photos.length > 1 ? 'col-span-2 row-span-2' : ''}`}
+              onClick={() => setZoomPhotoIndex(i)}
+            >
               <img src={url} alt="" className="w-full h-full object-cover aspect-square" />
             </div>
           ))}
@@ -307,6 +313,13 @@ export default function ViewProfile() {
       {myProfile && profile.user_id !== user?.id && (
         <PrivatePhotosViewer ownerProfileId={profile.id} myProfile={myProfile} />
       )}
+
+      <PhotoZoomModal
+        photos={photos}
+        initialIndex={zoomPhotoIndex}
+        open={zoomPhotoIndex !== null}
+        onOpenChange={(v) => { if (!v) setZoomPhotoIndex(null); }}
+      />
 
       <BrowseAllDialog
         open={browseAllDialogOpen}
