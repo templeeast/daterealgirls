@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import useSiteConfig from '@/hooks/useSiteConfig';
 import ProfilesBelowHero from '@/components/landing/ProfilesBelowHero';
 import StockProfilesBanner from '@/components/landing/StockProfilesBanner';
+import StackPromosCard from '@/components/landing/StackPromosCard';
 import { useAuth } from '@/lib/AuthContext';
 import { useTranslation } from 'react-i18next';
 import LanguageSelector from '@/components/layout/LanguageSelector';
@@ -176,18 +177,6 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="font-heading text-3xl sm:text-4xl font-bold mb-4">{t('token_pricing_title')}</h2>
-            <p className="text-muted-foreground text-lg">
-              {(() => {
-                const text = t('token_pricing_subtitle_promo');
-                const codes = ['FUNDATES', 'GODATE26', 'LAUNCH26'];
-                const parts = text.split(new RegExp(`(${codes.join('|')})`, 'g'));
-                return parts.map((part, i) =>
-                  codes.includes(part)
-                    ? <span key={i} className="font-bold text-primary bg-primary/10 px-1.5 py-0.5 rounded">{part}</span>
-                    : <span key={i}>{part}</span>
-                );
-              })()}
-            </p>
           </div>
 
           {/* Token Packs */}
@@ -211,6 +200,11 @@ export default function Landing() {
                 <Button className="w-full rounded-full" size="sm" onClick={() => handleCTAClick('/my-profile')}>{t('get_started')}</Button>
               </div>
             ))}
+          </div>
+
+          {/* Stack Promos Card */}
+          <div className="mb-16">
+            <StackPromosCard />
           </div>
 
           {/* New site notice */}
