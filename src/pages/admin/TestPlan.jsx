@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { CheckSquare, Square, ChevronDown, ChevronRight, Shield, Users, CreditCard, MessageSquare, Heart, Settings, Bug, Globe, Trash2, RefreshCw, Tag, Camera, Lock, Image, Key, Link, Monitor, Video } from 'lucide-react';
+import { CheckSquare, Square, ChevronDown, ChevronRight, Shield, Users, CreditCard, MessageSquare, Heart, Settings, Bug, Globe, Trash2, RefreshCw, Tag, Camera, Lock, Image, Key, Link, Monitor, Video, MapPin } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import useMyProfile from '@/hooks/useMyProfile';
 import { base44 } from '@/api/base44Client';
@@ -772,6 +772,54 @@ const sections = [
       { id: 'vid-55b', label: 'GENDER ISOLATION: Enabling videos_chat_women_enabled does NOT show the video button for male users' },
       { id: 'vid-56', label: 'GENDER ISOLATION: Both men and women toggles can be ON simultaneously without conflict' },
       { id: 'vid-57', label: 'GENDER ISOLATION: Both men and women toggles can be OFF simultaneously (no video uploads for anyone)' },
+    ],
+  },
+  {
+    id: 'geocoding',
+    icon: MapPin,
+    title: 'Geocoding & Zip Code Radius Search',
+    color: 'text-teal-500',
+    items: [
+      // --- Entity fields ---
+      { id: 'geo-1', label: 'ENTITY: MemberProfile has location_zip, latitude, and longitude fields' },
+      { id: 'geo-2', label: 'ENTITY: location_zip is a string, latitude and longitude are numbers' },
+      // --- geocodeZip backend function ---
+      { id: 'geo-3', label: 'GEOCODE FUNCTION: geocodeZip returns latitude, longitude, place_name, and state for a valid US zip (e.g. 90210 → Beverly Hills, CA)' },
+      { id: 'geo-4', label: 'GEOCODE FUNCTION: geocodeZip works for international postal codes (e.g. DE 10115 → Berlin)' },
+      { id: 'geo-5', label: 'GEOCODE FUNCTION: geocodeZip returns 404 not_found for an invalid/non-existent zip code' },
+      { id: 'geo-6', label: 'GEOCODE FUNCTION: geocodeZip returns 400 when zip or country_code is missing from the payload' },
+      { id: 'geo-7', label: 'GEOCODE FUNCTION: geocodeZip returns 401 for unauthenticated requests' },
+      { id: 'geo-8', label: 'GEOCODE FUNCTION: geocodeZip calls Zippopotam.us API (http://api.zippopotam.us/{country}/{zip})' },
+      // --- Onboarding ---
+      { id: 'geo-9',  label: 'ONBOARDING: Zip/postal code field is present in Step 1 (Basic Information) and is required' },
+      { id: 'geo-10', label: 'ONBOARDING: Cannot proceed past Step 1 without entering a zip code' },
+      { id: 'geo-11', label: 'ONBOARDING: Completing onboarding geocodes the entered zip and stores latitude/longitude on the MemberProfile' },
+      { id: 'geo-12', label: 'ONBOARDING: MemberProfile is created with location_zip, latitude, and longitude populated' },
+      { id: 'geo-13', label: 'ONBOARDING: If Zippopotam.us cannot find the zip, profile is still created (geoData empty) without blocking onboarding' },
+      // --- MyProfile ---
+      { id: 'geo-14', label: 'MY PROFILE: Zip/postal code field is editable and pre-populated with the user\'s saved location_zip' },
+      { id: 'geo-15', label: 'MY PROFILE: Saving profile with a new zip re-geocodes and updates latitude/longitude on the MemberProfile' },
+      { id: 'geo-16', label: 'MY PROFILE: Changing country + zip and saving correctly geocodes with the new country code' },
+      // --- Browse radius search ---
+      { id: 'geo-17', label: 'BROWSE: Zip code search input and radius dropdown (5, 10, 25, 50, 100, 250 miles) appear in the filter bar' },
+      { id: 'geo-18', label: 'BROWSE: Entering a valid zip + selecting radius shows green "within N mi of ZIP" confirmation text' },
+      { id: 'geo-19', label: 'BROWSE: "Looking up zip code..." message appears while geocoding is in progress' },
+      { id: 'geo-20', label: 'BROWSE: Invalid zip shows red "Zip code not found" error message' },
+      { id: 'geo-21', label: 'BROWSE: Entering a zip without selecting a country shows "Select a country to search by zip" error' },
+      { id: 'geo-22', label: 'BROWSE: Radius search filters out profiles beyond the selected distance (Haversine formula, miles)' },
+      { id: 'geo-23', label: 'BROWSE: Profiles without latitude/longitude are excluded from radius search results' },
+      { id: 'geo-24', label: 'BROWSE: Clearing the zip input removes the radius filter and shows all profiles again' },
+      { id: 'geo-25', label: 'BROWSE: "Reset" button clears zip search, radius, and zip coords state' },
+      { id: 'geo-26', label: 'BROWSE: Zip geocoding is debounced (600ms) — does not fire API on every keystroke' },
+      { id: 'geo-27', label: 'BROWSE: Radius dropdown persists across page reloads (saved to localStorage)' },
+      { id: 'geo-28', label: 'BROWSE: Zip search value persists across page reloads (saved to localStorage)' },
+      { id: 'geo-29', label: 'BROWSE: Radius search works in combination with other filters (gender, age, looking_for)' },
+      // --- i18n ---
+      { id: 'geo-30', label: 'i18n: Zip code field label, placeholder, and error messages render correctly in all 8 supported languages' },
+      { id: 'geo-31', label: 'i18n: Browse radius label, miles unit, and "within N mi of ZIP" string translate correctly in all 8 languages' },
+      // --- getCountryCode utility ---
+      { id: 'geo-32', label: 'UTIL: getCountryCode correctly maps country names to ISO codes (e.g. "United States" → "US", "Germany" → "DE")' },
+      { id: 'geo-33', label: 'UTIL: haversineDistance returns correct distance in miles between two lat/lng coordinate pairs' },
     ],
   },
 ];
