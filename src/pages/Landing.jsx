@@ -208,7 +208,7 @@ export default function Landing() {
           >
             <div className="flex items-center justify-center gap-3">
               <span className="text-2xl">🎉</span>
-              <p className="text-sm font-bold text-primary">{t('browse_new_site_notice')}</p>
+              <p className="text-base sm:text-lg font-bold text-primary">{t('browse_new_site_notice')}</p>
             </div>
           </div>
 
