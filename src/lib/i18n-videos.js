@@ -1,5 +1,6 @@
 export const videoTranslations = {
   en: {
+    private_photos_and_videos_title: 'Private Photos and Videos',
     chat_token_cost_video: '{{n}} tokens per video',
     chat_video_insufficient_tokens: 'You need {{n}} tokens to send a video. Please buy more tokens.',
     chat_video_too_long: 'Video must be {{n}} seconds or less.',
@@ -13,6 +14,7 @@ export const videoTranslations = {
     token_cost_per_video: 'per video',
   },
   es: {
+    private_photos_and_videos_title: 'Fotos y Videos Privados',
     chat_token_cost_video: '{{n}} tokens por video',
     chat_video_insufficient_tokens: 'Necesitas {{n}} tokens para enviar un video. Por favor compra más tokens.',
     chat_video_too_long: 'El video debe durar {{n}} segundos o menos.',
@@ -26,6 +28,7 @@ export const videoTranslations = {
     token_cost_per_video: 'por video',
   },
   th: {
+    private_photos_and_videos_title: 'รูปและวิดีโอส่วนตัว',
     chat_token_cost_video: '{{n}} โทเค็นต่อวิดีโอ',
     chat_video_insufficient_tokens: 'คุณต้องการ {{n}} โทเค็นเพื่อส่งวิดีโอ กรุณาซื้อโทเค็นเพิ่ม',
     chat_video_too_long: 'วิดีโอต้องไม่เกิน {{n}} วินาที',
@@ -39,6 +42,7 @@ export const videoTranslations = {
     token_cost_per_video: 'ต่อวิดีโอ',
   },
   zh: {
+    private_photos_and_videos_title: '私密照片和视频',
     chat_token_cost_video: '每个视频 {{n}} 代币',
     chat_video_insufficient_tokens: '发送视频需要 {{n}} 代币，请购买更多代币。',
     chat_video_too_long: '视频不得超过 {{n}} 秒。',
@@ -52,6 +56,7 @@ export const videoTranslations = {
     token_cost_per_video: '每个视频',
   },
   de: {
+    private_photos_and_videos_title: 'Private Fotos und Videos',
     chat_token_cost_video: '{{n}} Token pro Video',
     chat_video_insufficient_tokens: 'Du benötigst {{n}} Token, um ein Video zu senden. Bitte kaufe mehr Token.',
     chat_video_too_long: 'Das Video darf höchstens {{n}} Sekunden lang sein.',
@@ -65,6 +70,7 @@ export const videoTranslations = {
     token_cost_per_video: 'pro Video',
   },
   vi: {
+    private_photos_and_videos_title: 'Ảnh và Video Riêng tư',
     chat_token_cost_video: '{{n}} token mỗi video',
     chat_video_insufficient_tokens: 'Bạn cần {{n}} token để gửi video. Vui lòng mua thêm token.',
     chat_video_too_long: 'Video không được vượt quá {{n}} giây.',
@@ -78,6 +84,7 @@ export const videoTranslations = {
     token_cost_per_video: 'mỗi video',
   },
   pt: {
+    private_photos_and_videos_title: 'Fotos e Vídeos Privados',
     chat_token_cost_video: '{{n}} tokens por vídeo',
     chat_video_insufficient_tokens: 'Você precisa de {{n}} tokens para enviar um vídeo. Por favor, compre mais tokens.',
     chat_video_too_long: 'O vídeo deve ter {{n}} segundos ou menos.',
@@ -91,6 +98,7 @@ export const videoTranslations = {
     token_cost_per_video: 'por vídeo',
   },
   tl: {
+    private_photos_and_videos_title: 'Pribadong Larawan at Video',
     chat_token_cost_video: '{{n}} token bawat video',
     chat_video_insufficient_tokens: 'Kailangan mo ng {{n}} token para magpadala ng video. Bumili ng mas maraming token.',
     chat_video_too_long: 'Ang video ay dapat {{n}} segundo o mas maikli.',

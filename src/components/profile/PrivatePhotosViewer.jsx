@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import PhotoZoomModal from '@/components/profile/PhotoZoomModal';
 import useSiteConfig from '@/hooks/useSiteConfig';
+import { useTranslation } from 'react-i18next';
 
 const requiresIdVerification = (p) => p?.didit_verification_status === 'Approved';
 
@@ -22,6 +23,7 @@ export default function PrivatePhotosViewer({ ownerProfileId, myProfile }) {
   const [unlockedIds, setUnlockedIds] = useState(new Set());
   const [zoomIndex, setZoomIndex] = useState(null);
   const { config } = useSiteConfig();
+  const { t } = useTranslation();
 
   const { data: photos = [] } = useQuery({
     queryKey: ['privatePhotos', ownerProfileId],
@@ -55,7 +57,7 @@ export default function PrivatePhotosViewer({ ownerProfileId, myProfile }) {
   if (!requiresIdVerification(myProfile)) {
     return (
       <Card className="mt-6">
-        <CardHeader><CardTitle className="font-heading text-lg">Private Photos</CardTitle></CardHeader>
+        <CardHeader><CardTitle className="font-heading text-lg">{t('private_photos_and_videos_title')}</CardTitle></CardHeader>
         <CardContent className="text-center py-6">
           <Lock className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
           <p className="text-sm text-muted-foreground mb-3">Verify your identity to request access to private photos.</p>
@@ -238,7 +240,7 @@ export default function PrivatePhotosViewer({ ownerProfileId, myProfile }) {
       />
 
       <Card className="mt-6">
-        <CardHeader><CardTitle className="font-heading text-lg">Private Photos</CardTitle></CardHeader>
+        <CardHeader><CardTitle className="font-heading text-lg">{t('private_photos_and_videos_title')}</CardTitle></CardHeader>
         <CardContent>{renderContent()}</CardContent>
       </Card>
     </>
