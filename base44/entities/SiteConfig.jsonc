@@ -401,6 +401,11 @@
       "default": 10,
       "description": "Token cost for women to send a video in a chat message"
     },
+    "tokens_private_photo_cost": {
+      "type": "number",
+      "default": 5,
+      "description": "Token cost to view a private photo (charged to male viewers)"
+    },
     "tokens_private_video_cost": {
       "type": "number",
       "default": 10,

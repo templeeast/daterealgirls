@@ -275,6 +275,11 @@ export default function TokenEconomySettings({ form, updateField }) {
               <p className="text-xs text-muted-foreground">Charged to male users per photo sent in chat.</p>
             </div>
             <div className="space-y-2">
+              <Label>Token Cost — View Private Photo</Label>
+              <Input type="number" value={form.tokens_private_photo_cost ?? 5} onChange={e => num('tokens_private_photo_cost', e.target.value)} />
+              <p className="text-xs text-muted-foreground">Charged to male viewers per private photo unlock.</p>
+            </div>
+            <div className="space-y-2">
               <Label>Token Cost — View Private Video</Label>
               <Input type="number" value={form.tokens_private_video_cost ?? 10} onChange={e => num('tokens_private_video_cost', e.target.value)} />
               <p className="text-xs text-muted-foreground">Charged to male viewers per private video unlock.</p>
