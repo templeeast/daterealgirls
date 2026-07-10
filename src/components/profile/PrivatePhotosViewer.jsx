@@ -7,6 +7,7 @@ import { Lock, Loader2 } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { useNavigate } from 'react-router-dom';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import PhotoZoomModal from '@/components/profile/PhotoZoomModal';
 
 const requiresIdVerification = (p) => p?.didit_verification_status === 'Approved';
 
@@ -18,6 +19,7 @@ export default function PrivatePhotosViewer({ ownerProfileId, myProfile }) {
   const [confirmPhoto, setConfirmPhoto] = useState(null);
   const [unlocking, setUnlocking] = useState(false);
   const [unlockedIds, setUnlockedIds] = useState(new Set());
+  const [zoomIndex, setZoomIndex] = useState(null);
 
   const { data: photos = [] } = useQuery({
     queryKey: ['privatePhotos', ownerProfileId],
@@ -80,7 +82,11 @@ export default function PrivatePhotosViewer({ ownerProfileId, myProfile }) {
   };
 
   const handlePhotoClick = async (photo) => {
-    if (isUnlocked(photo)) return;
+    if (isUnlocked(photo)) {
+      const idx = approvedPhotos.findIndex(p => p.id === photo.id);
+      setZoomIndex(idx);
+      return;
+    }
     if (!isViewerMale) {
       await base44.entities.PrivatePhotoView.create({
         private_photo_id: photo.id,
@@ -216,6 +222,13 @@ export default function PrivatePhotosViewer({ ownerProfileId, myProfile }) {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <PhotoZoomModal
+        photos={approvedPhotos.map(p => p.photo_url)}
+        initialIndex={zoomIndex}
+        open={zoomIndex !== null}
+        onOpenChange={(v) => { if (!v) setZoomIndex(null); }}
+      />
 
       <Card className="mt-6">
         <CardHeader><CardTitle className="font-heading text-lg">Private Photos</CardTitle></CardHeader>
