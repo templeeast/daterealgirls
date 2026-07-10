@@ -7,6 +7,7 @@ export const stackPromosTranslations = {
     stack_promos_step2: 'Verify your ID',
     stack_promos_step3: 'Use code after 1st purchase',
     stack_promos_reward: '+1,000 tokens',
+    stack_promos_view_token_guide: 'See what you can do with your tokens',
   },
   es: {
     stack_promos_badge: 'Promos de Lanzamiento',
@@ -16,6 +17,7 @@ export const stackPromosTranslations = {
     stack_promos_step2: 'Verifica tu ID',
     stack_promos_step3: 'Usa el código después de la 1ª compra',
     stack_promos_reward: '+1,000 tokens',
+    stack_promos_view_token_guide: 'Mira lo que puedes hacer con tus tokens',
   },
   th: {
     stack_promos_badge: 'โปรโมชั่นเปิดตัว',
@@ -25,6 +27,7 @@ export const stackPromosTranslations = {
     stack_promos_step2: 'ยืนยันตัวตน',
     stack_promos_step3: 'ใช้รหัสหลังซื้อครั้งแรก',
     stack_promos_reward: '+1,000 โทเค็น',
+    stack_promos_view_token_guide: 'ดูสิ่งที่คุณทำได้กับโทเค็นของคุณ',
   },
   zh: {
     stack_promos_badge: '启动促销',
@@ -34,6 +37,7 @@ export const stackPromosTranslations = {
     stack_promos_step2: '验证身份',
     stack_promos_step3: '首次购买后使用代码',
     stack_promos_reward: '+1,000 代币',
+    stack_promos_view_token_guide: '查看你可以用代币做什么',
   },
   de: {
     stack_promos_badge: 'Launch-Promos',
@@ -43,6 +47,7 @@ export const stackPromosTranslations = {
     stack_promos_step2: 'Verifiziere deinen Ausweis',
     stack_promos_step3: 'Code nach dem 1. Kauf verwenden',
     stack_promos_reward: '+1.000 Token',
+    stack_promos_view_token_guide: 'Sieh, was du mit deinen Token machen kannst',
   },
   vi: {
     stack_promos_badge: 'Khuyến mãi Ra mắt',
@@ -52,6 +57,7 @@ export const stackPromosTranslations = {
     stack_promos_step2: 'Xác minh ID',
     stack_promos_step3: 'Dùng mã sau lần mua đầu tiên',
     stack_promos_reward: '+1.000 token',
+    stack_promos_view_token_guide: 'Xem những gì bạn có thể làm với token',
   },
   pt: {
     stack_promos_badge: 'Promos de Lançamento',
@@ -61,6 +67,7 @@ export const stackPromosTranslations = {
     stack_promos_step2: 'Verifique seu ID',
     stack_promos_step3: 'Use o código após a 1ª compra',
     stack_promos_reward: '+1.000 tokens',
+    stack_promos_view_token_guide: 'Veja o que você pode fazer com seus tokens',
   },
   tl: {
     stack_promos_badge: 'Launch Promos',
@@ -70,5 +77,6 @@ export const stackPromosTranslations = {
     stack_promos_step2: 'I-verify ang iyong ID',
     stack_promos_step3: 'Gamitin ang code pagkatapos ng 1st purchase',
     stack_promos_reward: '+1,000 token',
+    stack_promos_view_token_guide: 'Tingnan kung ano ang magagawa mo sa iyong mga token',
   },
 };

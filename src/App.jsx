@@ -6,6 +6,7 @@ import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import Landing from '@/pages/Landing';
+import TokenGuide from '@/pages/TokenGuide';
 import Onboarding from '@/pages/Onboarding';
 import Browse from '@/pages/Browse';
 import ViewProfile from '@/pages/ViewProfile';
@@ -92,6 +93,7 @@ const AuthenticatedApp = () => {
   return (
     <Routes>
       <Route path="/" element={<Landing />} />
+      <Route path="/token-guide" element={<TokenGuide />} />
       <Route path="/onboarding" element={<Onboarding />} />
       <Route element={<AppLayout />}>
         <Route path="/browse" element={<ProfileCompleteGuard><Browse /></ProfileCompleteGuard>} />

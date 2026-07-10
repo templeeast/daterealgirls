@@ -1,5 +1,6 @@
 import React from 'react';
-import { UserCheck, ShieldCheck, Ticket } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { UserCheck, ShieldCheck, Ticket, ArrowRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 export default function StackPromosCard() {
@@ -37,6 +38,13 @@ export default function StackPromosCard() {
             </div>
           );
         })}
+      </div>
+
+      <div className="text-center mt-8">
+        <Link to="/token-guide" className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:text-primary/80 transition-colors">
+          {t('stack_promos_view_token_guide')}
+          <ArrowRight className="w-4 h-4" />
+        </Link>
       </div>
     </div>
   );
