@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
-import { Shield, Loader2 } from 'lucide-react';
+import { Shield, Loader2, CheckCircle2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const calculateAge = (dob) => {
   if (!dob) return null;
@@ -13,9 +14,28 @@ const calculateAge = (dob) => {
   return age;
 };
 
-export default function DiditVerificationStep({ form, config }) {
+export default function DiditVerificationStep({ form, config, alreadyVerified }) {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  if (alreadyVerified) {
+    return (
+      <div className="space-y-6 text-center py-4">
+        <div className="flex justify-center">
+          <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center">
+            <CheckCircle2 className="w-8 h-8 text-green-600" />
+          </div>
+        </div>
+        <div className="space-y-2">
+          <h3 className="font-heading text-lg font-semibold">{t('onboarding_verified_title')}</h3>
+          <p className="text-sm text-muted-foreground">
+            {t('onboarding_verified_desc')}
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   const handleVerify = async () => {
     setLoading(true);

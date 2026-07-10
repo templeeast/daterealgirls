@@ -1,6 +1,8 @@
 // New verification section translations (MyProfile ID verification UI)
 export const verificationTranslations = {
   en: {
+    onboarding_verified_title: 'Identity Verified',
+    onboarding_verified_desc: "Your identity has been verified successfully. You're all set — continue to the next step.",
     verif_status_unverified: 'Unverified',
     verif_status_pending: 'Pending',
     verif_status_verified: 'Verified',
@@ -25,6 +27,8 @@ export const verificationTranslations = {
     verif_id_updated_tag: '⚠ Updated ID on file (pending review)',
   },
   es: {
+    onboarding_verified_title: 'Identidad Verificada',
+    onboarding_verified_desc: 'Tu identidad ha sido verificada con éxito. Estás listo — continúa al siguiente paso.',
     verif_status_unverified: 'No verificado',
     verif_status_pending: 'Pendiente',
     verif_status_verified: 'Verificado',
@@ -49,6 +53,8 @@ export const verificationTranslations = {
     verif_id_updated_tag: '⚠ ID actualizada en archivo (pendiente de revisión)',
   },
   th: {
+    onboarding_verified_title: 'ยืนยันตัวตนแล้ว',
+    onboarding_verified_desc: 'ยืนยันตัวตนสำเร็จแล้ว คุณพร้อมแล้ว — ไปยังขั้นตอนถัดไป',
     verif_status_unverified: 'ยังไม่ยืนยัน',
     verif_status_pending: 'รอตรวจสอบ',
     verif_status_verified: 'ยืนยันแล้ว',
@@ -73,6 +79,8 @@ export const verificationTranslations = {
     verif_id_updated_tag: '⚠ มีบัตรใหม่ในระบบ (รอการตรวจสอบ)',
   },
   zh: {
+    onboarding_verified_title: '身份已验证',
+    onboarding_verified_desc: '您的身份已成功验证。一切就绪 — 请继续下一步。',
     verif_status_unverified: '未验证',
     verif_status_pending: '待审核',
     verif_status_verified: '已验证',
@@ -97,6 +105,8 @@ export const verificationTranslations = {
     verif_id_updated_tag: '⚠ 已上传新ID（等待审核）',
   },
   de: {
+    onboarding_verified_title: 'Identität Verifiziert',
+    onboarding_verified_desc: 'Deine Identität wurde erfolgreich verifiziert. Du bist bereit — fahre mit dem nächsten Schritt fort.',
     verif_status_unverified: 'Nicht verifiziert',
     verif_status_pending: 'Ausstehend',
     verif_status_verified: 'Verifiziert',
@@ -121,6 +131,8 @@ export const verificationTranslations = {
     verif_id_updated_tag: '⚠ Neuer Ausweis hochgeladen (ausstehende Prüfung)',
   },
   vi: {
+    onboarding_verified_title: 'Đã Xác Minh Danh Tính',
+    onboarding_verified_desc: 'Danh tính của bạn đã được xác minh thành công. Bạn đã sẵn sàng — tiếp tục bước tiếp theo.',
     verif_status_unverified: 'Chưa xác minh',
     verif_status_pending: 'Đang xem xét',
     verif_status_verified: 'Đã xác minh',
@@ -145,6 +157,8 @@ export const verificationTranslations = {
     verif_id_updated_tag: '⚠ Giấy tờ cập nhật đã có (chờ xem xét)',
   },
   pt: {
+    onboarding_verified_title: 'Identidade Verificada',
+    onboarding_verified_desc: 'Sua identidade foi verificada com sucesso. Você está pronto — continue para a próxima etapa.',
     verif_status_unverified: 'Não verificado',
     verif_status_pending: 'Pendente',
     verif_status_verified: 'Verificado',
@@ -169,6 +183,8 @@ export const verificationTranslations = {
     verif_id_updated_tag: '⚠ Documento atualizado em arquivo (aguardando revisão)',
   },
   tl: {
+    onboarding_verified_title: 'Na-verify na ang Identidad',
+    onboarding_verified_desc: 'Matagumpay na na-verify ang iyong identidad. Handa ka na — magpatuloy sa susunod na hakbang.',
     verif_status_unverified: 'Hindi pa na-verify',
     verif_status_pending: 'Naghihintay',
     verif_status_verified: 'Na-verify na',

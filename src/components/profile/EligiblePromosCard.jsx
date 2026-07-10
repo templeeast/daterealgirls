@@ -27,20 +27,23 @@ export default function EligiblePromosCard({ profile, onRefetch }) {
 
   const usedCodes = profile?.used_promo_codes || [];
   const isVerified = profile?.verification_status === 'verified';
+  const hasPurchased = profile?.has_purchased_tokens;
 
   const claimablePromos = useMemo(() => {
     const now = new Date();
     return promoCodes.filter(p => {
       if (p.visible === false) return false;
       if (p.auto_award === true) return false;
-      if (p.type === 'purchase') return false; // shown in Buy Tokens section
+      // Purchase-type promos are only claimable here after first purchase
+      // (before first purchase they appear in PromoSuggestionsBanner as suggestions)
+      if (p.type === 'purchase' && !hasPurchased) return false;
       if (usedCodes.includes(p.code)) return false;
       if (p.expires_at && new Date(p.expires_at) < now) return false;
       if (p.max_uses && (p.times_used || 0) >= p.max_uses) return false;
       if (p.type === 'verification' && !isVerified) return false;
       return true;
     });
-  }, [promoCodes, usedCodes, isVerified]);
+  }, [promoCodes, usedCodes, isVerified, hasPurchased]);
 
   const verificationTeaserPromos = useMemo(() => {
     if (isVerified) return [];
@@ -117,16 +120,12 @@ export default function EligiblePromosCard({ profile, onRefetch }) {
                   {promo.type === 'verification'
                     ? 'Verified! Claim your bonus tokens'
                     : promo.type === 'purchase'
-                    ? 'Bonus tokens available with your next purchase'
+                    ? 'Claim your purchase bonus tokens'
                     : 'Claim your bonus tokens'}
                 </p>
                 <p className="text-sm text-green-700">
                   Enter promo code <span className="font-mono font-bold">{promo.code}</span>{' '}
-                  {promo.type === 'purchase'
-                    ? promo.has_purchased_tokens
-                      ? 'to receive'
-                      : 'and it will be applied to your first purchase for'
-                    : 'to receive'}{' '}
+                  to receive{' '}
                   <strong>{promo.tokens.toLocaleString()} free tokens</strong>.
                 </p>
               </div>

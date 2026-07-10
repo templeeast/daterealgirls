@@ -30,6 +30,7 @@ export default function Onboarding() {
   const [step, setStep] = useState(0);
   const [saving, setSaving] = useState(false);
   const [checkingProfile, setCheckingProfile] = useState(true);
+  const [alreadyVerified, setAlreadyVerified] = useState(false);
 
   // If user already has a profile, redirect them away from onboarding
   useEffect(() => {
@@ -62,6 +63,11 @@ export default function Onboarding() {
               facebook: p.facebook || '',
               tiktok: p.tiktok || '',
             }));
+            // If already verified (e.g. returned from Didit), skip past the verification step
+            if (p.verification_status === 'verified' || p.didit_verification_status === 'Approved') {
+              setAlreadyVerified(true);
+              setStep(3); // Skip to Photos & Social step
+            }
           }
         }
       } catch {
@@ -152,11 +158,31 @@ export default function Onboarding() {
     const existing = await base44.entities.MemberProfile.filter({ user_id: me.id });
     let newProfile;
     if (existing[0]) {
+      let tokenBalance = config.welcome_tokens ?? 5000;
+
+      // If verification was completed during onboarding (before tokens were awarded),
+      // deduct the verification fee now from the welcome tokens.
+      if (existing[0].verification_status === 'verified') {
+        const isMale = form.gender === 'male';
+        const verifyEnabled = isMale ? config.tokens_verify_men_enabled : config.tokens_verify_women_enabled;
+        const verifyCost = isMale ? (config.tokens_verify_cost_men ?? 300) : (config.tokens_verify_cost_women ?? 300);
+        if (verifyEnabled && verifyCost > 0) {
+          tokenBalance = Math.max(0, tokenBalance - verifyCost);
+          // Log the verification token spend
+          await base44.entities.TokenTransaction.create({
+            user_id: me.id,
+            type: 'spend',
+            tokens: -verifyCost,
+            description: 'ID verification fee',
+          });
+        }
+      }
+
       const updateData = {
         ...form,
         age,
         profile_complete: true,
-        tokens: config.welcome_tokens ?? 5000,
+        tokens: tokenBalance,
       };
       // Assign tag ID if missing
       if (!existing[0].tag_id) {
@@ -271,7 +297,7 @@ export default function Onboarding() {
     </div>,
 
     // Step 2: Identity Verification
-    <DiditVerificationStep key="verify" form={form} config={config} />,
+    <DiditVerificationStep key="verify" form={form} config={config} alreadyVerified={alreadyVerified} />,
 
     // Step 3: Photos & Social
     <div key="photos" className="space-y-6">
