@@ -202,17 +202,17 @@ export default function Landing() {
             ))}
           </div>
 
-          {/* Stack Promos Card */}
-          <div className="mb-16">
-            <StackPromosCard />
-          </div>
-
           {/* New site notice */}
-          <div className="max-w-3xl mx-auto bg-accent border border-primary/20 rounded-2xl p-5 text-center">
+          <div className="max-w-3xl mx-auto mb-16 bg-accent border border-primary/20 rounded-2xl p-5 text-center">
             <div className="flex items-center justify-center gap-3">
               <span className="text-2xl">🎉</span>
               <p className="text-sm text-accent-foreground font-medium">{t('browse_new_site_notice')}</p>
             </div>
+          </div>
+
+          {/* Stack Promos Card */}
+          <div>
+            <StackPromosCard />
           </div>
         </div>
       </section>
