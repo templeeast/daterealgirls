@@ -109,6 +109,20 @@ export default function SiteSettings() {
     stripe_payment_link_enabled_men: false,
     stripe_payment_link_enabled_women: false,
     stripe_link_message_credit_cost: 5,
+    tokens_wink_men_enabled: true,
+    tokens_wink_cost_men: 5,
+    tokens_wink_women_enabled: false,
+    tokens_wink_cost_women: 0,
+    videos_private_men_enabled: false,
+    videos_private_women_enabled: false,
+    videos_chat_men_enabled: false,
+    videos_chat_women_enabled: false,
+    max_video_duration_seconds: 30,
+    max_video_file_size_mb: 25,
+    tokens_msg_photo_cost: 5,
+    tokens_msg_video_cost_men: 10,
+    tokens_msg_video_cost_women: 10,
+    tokens_private_video_cost: 10,
   });
 
   useEffect(() => {
@@ -197,6 +211,20 @@ export default function SiteSettings() {
         stripe_payment_link_enabled_men: existingConfig.stripe_payment_link_enabled_men || false,
         stripe_payment_link_enabled_women: existingConfig.stripe_payment_link_enabled_women || false,
         stripe_link_message_credit_cost: existingConfig.stripe_link_message_credit_cost ?? 5,
+        tokens_wink_men_enabled: existingConfig.tokens_wink_men_enabled !== false,
+        tokens_wink_cost_men: existingConfig.tokens_wink_cost_men ?? 5,
+        tokens_wink_women_enabled: existingConfig.tokens_wink_women_enabled || false,
+        tokens_wink_cost_women: existingConfig.tokens_wink_cost_women ?? 0,
+        videos_private_men_enabled: existingConfig.videos_private_men_enabled || false,
+        videos_private_women_enabled: existingConfig.videos_private_women_enabled || false,
+        videos_chat_men_enabled: existingConfig.videos_chat_men_enabled || false,
+        videos_chat_women_enabled: existingConfig.videos_chat_women_enabled || false,
+        max_video_duration_seconds: existingConfig.max_video_duration_seconds ?? 30,
+        max_video_file_size_mb: existingConfig.max_video_file_size_mb ?? 25,
+        tokens_msg_photo_cost: existingConfig.tokens_msg_photo_cost ?? 5,
+        tokens_msg_video_cost_men: existingConfig.tokens_msg_video_cost_men ?? 10,
+        tokens_msg_video_cost_women: existingConfig.tokens_msg_video_cost_women ?? 10,
+        tokens_private_video_cost: existingConfig.tokens_private_video_cost ?? 10,
       });
     }
   }, [existingConfig]);
