@@ -779,6 +779,7 @@ const sections = [
 export default function TestPlan() {
   const { user } = useMyProfile();
   const [checked, setChecked] = useState({});
+  const [deleted, setDeleted] = useState(() => new Set());
   const [expanded, setExpanded] = useState(() => Object.fromEntries(sections.map(s => [s.id, true])));
   const [recordId, setRecordId] = useState(null);
   const saveTimer = useRef(null);
@@ -789,18 +790,23 @@ export default function TestPlan() {
       if (records.length > 0) {
         setRecordId(records[0].id);
         setChecked(records[0].checked_items || {});
+        setDeleted(new Set(records[0].deleted_items || []));
       }
     });
   }, []);
 
   // Debounced save to database
-  const saveProgress = (newChecked) => {
+  const saveProgress = (newChecked, newDeleted) => {
     if (saveTimer.current) clearTimeout(saveTimer.current);
     saveTimer.current = setTimeout(async () => {
+      const payload = {
+        checked_items: newChecked,
+        deleted_items: Array.from(newDeleted),
+      };
       if (recordId) {
-        await base44.entities.TestPlanProgress.update(recordId, { checked_items: newChecked });
+        await base44.entities.TestPlanProgress.update(recordId, payload);
       } else {
-        const record = await base44.entities.TestPlanProgress.create({ checked_items: newChecked });
+        const record = await base44.entities.TestPlanProgress.create(payload);
         setRecordId(record.id);
       }
     }, 500);
@@ -817,15 +823,37 @@ export default function TestPlan() {
   const toggle = (id) => {
     setChecked(prev => {
       const newChecked = { ...prev, [id]: !prev[id] };
-      saveProgress(newChecked);
+      saveProgress(newChecked, deleted);
       return newChecked;
     });
   };
   const toggleSection = (id) => setExpanded(prev => ({ ...prev, [id]: !prev[id] }));
 
-  const totalItems = sections.reduce((acc, s) => acc + s.items.length, 0);
-  const checkedCount = Object.values(checked).filter(Boolean).length;
-  const pct = Math.round((checkedCount / totalItems) * 100);
+  const handleDeleteItem = (itemId) => {
+    if (!window.confirm('Delete this test item? It will be removed from the checklist for all future visits.')) return;
+    setDeleted(prev => {
+      const newDeleted = new Set(prev);
+      newDeleted.add(itemId);
+      setChecked(prevChecked => {
+        const newChecked = { ...prevChecked };
+        delete newChecked[itemId];
+        saveProgress(newChecked, newDeleted);
+        return newChecked;
+      });
+      return newDeleted;
+    });
+  };
+
+  const handleRestoreDeleted = () => {
+    if (!window.confirm('Restore all deleted test items?')) return;
+    setDeleted(new Set());
+    saveProgress(checked, new Set());
+  };
+
+  const deletedCount = deleted.size;
+  const totalItems = sections.reduce((acc, s) => acc + s.items.filter(i => !deleted.has(i.id)).length, 0);
+  const checkedCount = Object.entries(checked).filter(([id, v]) => v && !deleted.has(id)).length;
+  const pct = totalItems > 0 ? Math.round((checkedCount / totalItems) * 100) : 0;
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
@@ -854,7 +882,8 @@ export default function TestPlan() {
       <div className="space-y-4">
         {sections.map(section => {
           const SectionIcon = section.icon;
-          const sectionChecked = section.items.filter(item => checked[item.id]).length;
+          const visibleItems = section.items.filter(item => !deleted.has(item.id));
+          const sectionChecked = visibleItems.filter(item => checked[item.id]).length;
           const isExpanded = expanded[section.id];
 
           return (
@@ -867,29 +896,38 @@ export default function TestPlan() {
                   <SectionIcon className={`w-5 h-5 ${section.color}`} />
                   <span className="font-semibold text-left">{section.title}</span>
                   <Badge variant="outline" className="text-xs">
-                    {sectionChecked}/{section.items.length}
+                    {sectionChecked}/{visibleItems.length}
                   </Badge>
                 </div>
                 {isExpanded ? <ChevronDown className="w-4 h-4 text-muted-foreground" /> : <ChevronRight className="w-4 h-4 text-muted-foreground" />}
               </button>
 
-              {isExpanded && (
+              {isExpanded && visibleItems.length > 0 && (
                 <div className="border-t divide-y">
-                  {section.items.map(item => (
-                    <label
+                  {visibleItems.map(item => (
+                    <div
                       key={item.id}
-                      className="flex items-start gap-3 px-5 py-3 hover:bg-muted/20 cursor-pointer transition-colors"
+                      className="group flex items-start gap-3 px-5 py-3 hover:bg-muted/20 transition-colors"
                     >
-                      <div className="mt-0.5 flex-shrink-0" onClick={() => toggle(item.id)}>
-                        {checked[item.id]
-                          ? <CheckSquare className="w-5 h-5 text-primary" />
-                          : <Square className="w-5 h-5 text-muted-foreground" />
-                        }
-                      </div>
-                      <span className={`text-sm leading-relaxed ${checked[item.id] ? 'line-through text-muted-foreground' : ''}`}>
-                        {item.label}
-                      </span>
-                    </label>
+                      <label className="flex items-start gap-3 flex-1 cursor-pointer">
+                        <div className="mt-0.5 flex-shrink-0" onClick={() => toggle(item.id)}>
+                          {checked[item.id]
+                            ? <CheckSquare className="w-5 h-5 text-primary" />
+                            : <Square className="w-5 h-5 text-muted-foreground" />
+                          }
+                        </div>
+                        <span className={`text-sm leading-relaxed ${checked[item.id] ? 'line-through text-muted-foreground' : ''}`}>
+                          {item.label}
+                        </span>
+                      </label>
+                      <button
+                        className="mt-0.5 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-destructive"
+                        onClick={() => handleDeleteItem(item.id)}
+                        title="Delete this test item"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
                   ))}
                 </div>
               )}
@@ -897,6 +935,17 @@ export default function TestPlan() {
           );
         })}
       </div>
+
+      {deletedCount > 0 && (
+        <div className="text-center mt-4">
+          <button
+            className="text-xs text-muted-foreground underline hover:text-foreground"
+            onClick={handleRestoreDeleted}
+          >
+            {deletedCount} item{deletedCount !== 1 ? 's' : ''} deleted — Restore all
+          </button>
+        </div>
+      )}
 
       <p className="text-xs text-muted-foreground text-center mt-8">
         Progress is automatically saved to the database and persists across sessions.

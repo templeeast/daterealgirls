@@ -5,6 +5,14 @@
     "checked_items": {
       "type": "object",
       "description": "Map of test item IDs to boolean checked state"
+    },
+    "deleted_items": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "List of test item IDs that have been deleted from the checklist"
     }
   },
   "required": []
