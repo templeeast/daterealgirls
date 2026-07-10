@@ -50,7 +50,9 @@ export default function JuicyAdsEmbed({ zone, zoneMobile }) {
         id={String(activeZone)}
         className="adsbyjuicy"
         data-adzone={String(activeZone)}
-        style={{ display: 'block', width: '100%', maxWidth: '728px', minHeight: '90px', overflow: 'visible' }}
+        data-width={isMobile ? '300' : '728'}
+        data-height={isMobile ? '100' : '90'}
+        style={{ display: 'block', width: isMobile ? '300px' : '728px', height: isMobile ? '100px' : '90px', margin: '0 auto' }}
       />
     </div>
   );
