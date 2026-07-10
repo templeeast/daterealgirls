@@ -44,6 +44,18 @@
       "type": "string",
       "description": "Country"
     },
+    "location_zip": {
+      "type": "string",
+      "description": "Zip / postal code"
+    },
+    "latitude": {
+      "type": "number",
+      "description": "Geocoded latitude from zip code (via Zippopotam.us)"
+    },
+    "longitude": {
+      "type": "number",
+      "description": "Geocoded longitude from zip code (via Zippopotam.us)"
+    },
     "bio": {
       "type": "string",
       "description": "Profile bio (max 500 chars)"

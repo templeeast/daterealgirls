@@ -14,6 +14,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 
 import CountryCitySelector from '@/components/shared/CountryCitySelector';
+import { getCountryCode } from '@/lib/geoUtils';
 import DiditVerificationStep from '@/components/onboarding/DiditVerificationStep';
 
 const INTERESTS = [
@@ -53,6 +54,7 @@ export default function Onboarding() {
               date_of_birth: p.date_of_birth || '',
               location_city: p.location_city || '',
               location_country: p.location_country || '',
+              location_zip: p.location_zip || '',
               bio: p.bio || '',
               looking_for: p.looking_for || '',
               interests: p.interests || [],
@@ -82,6 +84,7 @@ export default function Onboarding() {
     date_of_birth: '',
     location_city: '',
     location_country: '',
+    location_zip: '',
     bio: '',
     looking_for: '',
     interests: [],
@@ -146,6 +149,22 @@ export default function Onboarding() {
     setSaving(true);
     const me = await base44.auth.me();
 
+    // Geocode zip code to lat/lng for radius search
+    let geoData = {};
+    if (form.location_zip) {
+      const countryCode = getCountryCode(form.location_country);
+      if (countryCode) {
+        try {
+          const geoRes = await base44.functions.invoke('geocodeZip', { zip: form.location_zip, country_code: countryCode });
+          if (geoRes.data?.latitude != null) {
+            geoData = { latitude: geoRes.data.latitude, longitude: geoRes.data.longitude };
+          }
+        } catch (e) {
+          console.warn('Zip geocoding failed:', e.message);
+        }
+      }
+    }
+
     // Generate a unique member tag ID (e.g. @DRG-A1B2C3)
     const generateTagId = () => {
       const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -180,6 +199,7 @@ export default function Onboarding() {
 
       const updateData = {
         ...form,
+        ...geoData,
         age,
         profile_complete: true,
         tokens: tokenBalance,
@@ -192,6 +212,7 @@ export default function Onboarding() {
     } else {
       newProfile = await base44.entities.MemberProfile.create({
         ...form,
+        ...geoData,
         user_id: me.id,
         age,
         tag_id: generateTagId(),
@@ -250,6 +271,10 @@ export default function Onboarding() {
         onCountryChange={v => updateField('location_country', v)}
         onCityChange={v => updateField('location_city', v)}
       />
+      <div className="space-y-2">
+        <Label>{t('zip_code_label')}</Label>
+        <Input placeholder={t('zip_code_placeholder')} value={form.location_zip} onChange={e => updateField('location_zip', e.target.value)} />
+      </div>
     </div>,
 
     // Step 1: About You
@@ -338,7 +363,7 @@ export default function Onboarding() {
   ];
   const verifyStepIndex = 2;
   const canProceed = step === 0
-    ? form.display_name && form.gender && form.date_of_birth && form.location_country && form.location_city && !isUnderAge
+    ? form.display_name && form.gender && form.date_of_birth && form.location_country && form.location_city && form.location_zip && !isUnderAge
     : step === 1
     ? form.bio.trim() && form.looking_for && form.interests.length > 0
     : step === 3

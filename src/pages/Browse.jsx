@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
@@ -15,6 +15,7 @@ import { useTranslation } from 'react-i18next';
 import useSiteConfig from '@/hooks/useSiteConfig';
 import CountryCitySelector from '@/components/shared/CountryCitySelector';
 import StickyAdBar from '@/components/shared/StickyAdBar';
+import { getCountryCode, haversineDistance } from '@/lib/geoUtils';
 
 export default function Browse() {
   const navigate = useNavigate();
@@ -68,6 +69,11 @@ export default function Browse() {
   const [showFilters, setShowFilters] = useState(() => loadFilter('showFilters', false));
   const [countryFilter, setCountryFilter] = useState(() => loadFilter('country', ''));
   const [cityFilter, setCityFilter] = useState(() => loadFilter('city', ''));
+  const [zipSearch, setZipSearch] = useState(() => loadFilter('zipSearch', ''));
+  const [radiusSearch, setRadiusSearch] = useState(() => loadFilter('radiusSearch', 25));
+  const [zipCoords, setZipCoords] = useState(null);
+  const [zipSearching, setZipSearching] = useState(false);
+  const [zipError, setZipError] = useState('');
 
   const handleSearch = v => { setSearch(v); saveFilter('search', v); };
   const handleGender = v => { setGenderFilter(v); saveFilter('gender', v); };
@@ -85,10 +91,53 @@ export default function Browse() {
       setAgeMax(''); saveFilter('ageMax', '');
       setCountryFilter(''); saveFilter('country', '');
       setCityFilter(''); saveFilter('city', '');
+      setZipSearch(''); saveFilter('zipSearch', '');
+      setRadiusSearch(25); saveFilter('radiusSearch', 25);
+      setZipCoords(null);
+      setZipError('');
     }
   };
   const handleCountry = v => { setCountryFilter(v); setCityFilter(''); saveFilter('country', v); saveFilter('city', ''); };
   const handleCity = v => { setCityFilter(v); saveFilter('city', v); };
+  const handleZipSearch = v => { setZipSearch(v); saveFilter('zipSearch', v); };
+  const handleRadiusSearch = v => { setRadiusSearch(v); saveFilter('radiusSearch', v); };
+
+  // Debounced zip geocoding for radius search
+  useEffect(() => {
+    if (!zipSearch || zipSearch.length < 3) {
+      setZipCoords(null);
+      setZipError('');
+      setZipSearching(false);
+      return;
+    }
+    const countryCode = getCountryCode(countryFilter || profile?.location_country);
+    if (!countryCode) {
+      setZipError(t('browse_zip_country_required'));
+      setZipCoords(null);
+      setZipSearching(false);
+      return;
+    }
+    setZipSearching(true);
+    setZipError('');
+    const timer = setTimeout(async () => {
+      try {
+        const res = await base44.functions.invoke('geocodeZip', { zip: zipSearch, country_code: countryCode });
+        if (res.data?.latitude != null) {
+          setZipCoords({ lat: res.data.latitude, lng: res.data.longitude });
+          setZipError('');
+        } else {
+          setZipCoords(null);
+          setZipError(t('browse_zip_not_found'));
+        }
+      } catch (e) {
+        setZipCoords(null);
+        setZipError(t('browse_zip_not_found'));
+      } finally {
+        setZipSearching(false);
+      }
+    }, 600);
+    return () => clearTimeout(timer);
+  }, [zipSearch, countryFilter, profile?.location_country, t]);
 
   const { data: profiles, isLoading } = useQuery({
     queryKey: ['profiles'],
@@ -140,6 +189,11 @@ export default function Browse() {
     if (ageMax !== '' && (p.age == null || p.age > parseInt(ageMax))) return false;
     if (countryFilter && p.location_country !== countryFilter) return false;
     if (cityFilter && p.location_city !== cityFilter) return false;
+    if (zipCoords) {
+      if (p.latitude == null || p.longitude == null) return false;
+      const dist = haversineDistance(zipCoords.lat, zipCoords.lng, p.latitude, p.longitude);
+      if (dist > radiusSearch) return false;
+    }
     if (search) {
       const s = search.toLowerCase();
       return (
@@ -255,6 +309,30 @@ export default function Browse() {
               onCityChange={handleCity}
               showLabels={false}
             />
+            <div className="flex items-center gap-2">
+              <Input
+                placeholder={t('browse_zip_placeholder')}
+                className="w-32"
+                value={zipSearch}
+                onChange={e => handleZipSearch(e.target.value)}
+              />
+              <Select value={String(radiusSearch)} onValueChange={v => handleRadiusSearch(Number(v))}>
+                <SelectTrigger className="w-28"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="5">5 {t('browse_radius_miles')}</SelectItem>
+                  <SelectItem value="10">10 {t('browse_radius_miles')}</SelectItem>
+                  <SelectItem value="25">25 {t('browse_radius_miles')}</SelectItem>
+                  <SelectItem value="50">50 {t('browse_radius_miles')}</SelectItem>
+                  <SelectItem value="100">100 {t('browse_radius_miles')}</SelectItem>
+                  <SelectItem value="250">250 {t('browse_radius_miles')}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            {zipSearching && <p className="w-full text-xs text-muted-foreground">{t('browse_zip_geocoding')}</p>}
+            {zipError && <p className="w-full text-xs text-destructive">{zipError}</p>}
+            {zipCoords && !zipSearching && !zipError && (
+              <p className="w-full text-xs text-green-600">{t('browse_within', { radius: radiusSearch, zip: zipSearch })}</p>
+            )}
             <div className="flex items-center gap-2">
               <Input
                 type="number"

@@ -25,6 +25,7 @@ import DiditVerificationCard from '@/components/profile/DiditVerificationCard';
 import EligiblePromosCard from '@/components/profile/EligiblePromosCard';
 import PromoSuggestionsBanner from '@/components/profile/PromoSuggestionsBanner';
 import CountryCitySelector from '@/components/shared/CountryCitySelector';
+import { getCountryCode } from '@/lib/geoUtils';
 import PrivatePhotosSection from '@/components/profile/PrivatePhotosSection';
 
 const INTERESTS = [
@@ -188,6 +189,7 @@ export default function MyProfile() {
         bio: profile.bio || '',
         location_city: profile.location_city || '',
         location_country: profile.location_country || '',
+        location_zip: profile.location_zip || '',
         looking_for: profile.looking_for || '',
         marital_status: profile.marital_status || '',
         interests: profile.interests || [],
@@ -342,7 +344,21 @@ export default function MyProfile() {
   const handleSave = async () => {
     setSaving(true);
     try {
-      await base44.entities.MemberProfile.update(profile.id, form);
+      let geoData = {};
+      if (form.location_zip) {
+        const countryCode = getCountryCode(form.location_country);
+        if (countryCode) {
+          try {
+            const geoRes = await base44.functions.invoke('geocodeZip', { zip: form.location_zip, country_code: countryCode });
+            if (geoRes.data?.latitude != null) {
+              geoData = { latitude: geoRes.data.latitude, longitude: geoRes.data.longitude };
+            }
+          } catch (e) {
+            console.warn('Zip geocoding failed:', e.message);
+          }
+        }
+      }
+      await base44.entities.MemberProfile.update(profile.id, { ...form, ...geoData });
       queryClient.invalidateQueries({ queryKey: ['myProfile'] });
       toast({ title: t('profile_updated') });
     } finally {
@@ -672,6 +688,10 @@ export default function MyProfile() {
             onCountryChange={v => updateField('location_country', v)}
             onCityChange={v => updateField('location_city', v)}
           />
+          <div className="space-y-2">
+            <Label>{t('zip_code_label')}</Label>
+            <Input placeholder={t('zip_code_placeholder')} value={form.location_zip} onChange={e => updateField('location_zip', e.target.value)} />
+          </div>
           <div className="space-y-2">
             <Label>{t('looking_for_label')}</Label>
             <Select value={form.looking_for} onValueChange={v => updateField('looking_for', v)}>
