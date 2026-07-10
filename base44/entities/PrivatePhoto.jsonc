@@ -8,7 +8,20 @@
     },
     "photo_url": {
       "type": "string",
-      "description": "Stored image URL"
+      "description": "Stored image or video URL"
+    },
+    "media_type": {
+      "type": "string",
+      "enum": [
+        "image",
+        "video"
+      ],
+      "default": "image",
+      "description": "Whether this media is an image or video"
+    },
+    "thumbnail_url": {
+      "type": "string",
+      "description": "Video poster/thumbnail URL (for video media type)"
     },
     "uploaded_at": {
       "type": "string",
@@ -27,7 +40,7 @@
     },
     "token_cost_to_view": {
       "type": "number",
-      "description": "Tokens required to view \u2014 5 for male uploaders, 0 for female"
+      "description": "Tokens required to view \u2014 5 for photos, 10 for videos (male viewers); 0 for female"
     }
   },
   "required": [

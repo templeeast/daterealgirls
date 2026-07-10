@@ -335,6 +335,46 @@
     "stripe_link_message_credit_cost": {
       "type": "number",
       "default": 5
+    },
+    "videos_private_enabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether video uploads are enabled for private photos"
+    },
+    "videos_chat_enabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether video uploads are enabled in chat messages"
+    },
+    "max_video_duration_seconds": {
+      "type": "number",
+      "default": 30,
+      "description": "Maximum allowed video duration in seconds"
+    },
+    "max_video_file_size_mb": {
+      "type": "number",
+      "default": 25,
+      "description": "Maximum allowed video file size in MB"
+    },
+    "tokens_msg_photo_cost": {
+      "type": "number",
+      "default": 5,
+      "description": "Token cost to send a photo in a chat message (charged to male users)"
+    },
+    "tokens_msg_video_cost_men": {
+      "type": "number",
+      "default": 10,
+      "description": "Token cost for men to send a video in a chat message"
+    },
+    "tokens_msg_video_cost_women": {
+      "type": "number",
+      "default": 10,
+      "description": "Token cost for women to send a video in a chat message"
+    },
+    "tokens_private_video_cost": {
+      "type": "number",
+      "default": 10,
+      "description": "Token cost to view a private video (charged to male viewers)"
     }
   },
   "required": [

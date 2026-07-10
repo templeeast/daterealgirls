@@ -8,6 +8,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { useNavigate } from 'react-router-dom';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import PhotoZoomModal from '@/components/profile/PhotoZoomModal';
+import useSiteConfig from '@/hooks/useSiteConfig';
 
 const requiresIdVerification = (p) => p?.didit_verification_status === 'Approved';
 
@@ -20,6 +21,7 @@ export default function PrivatePhotosViewer({ ownerProfileId, myProfile }) {
   const [unlocking, setUnlocking] = useState(false);
   const [unlockedIds, setUnlockedIds] = useState(new Set());
   const [zoomIndex, setZoomIndex] = useState(null);
+  const { config } = useSiteConfig();
 
   const { data: photos = [] } = useQuery({
     queryKey: ['privatePhotos', ownerProfileId],
@@ -102,27 +104,28 @@ export default function PrivatePhotosViewer({ ownerProfileId, myProfile }) {
 
   const handleConfirmPurchase = async () => {
     if (!confirmPhoto) return;
+    const viewCost = confirmPhoto.media_type === 'video' ? (config?.tokens_private_video_cost ?? 10) : 5;
     setUnlocking(true);
-    if ((myProfile.tokens || 0) < 5) {
-      toast({ title: 'You need 5 tokens to view this photo.', variant: 'destructive' });
+    if ((myProfile.tokens || 0) < viewCost) {
+      toast({ title: `You need ${viewCost} tokens to view this ${confirmPhoto.media_type === 'video' ? 'video' : 'photo'}.`, variant: 'destructive' });
       setUnlocking(false);
       setConfirmPhoto(null);
       return;
     }
     await base44.entities.MemberProfile.update(myProfile.id, {
-      tokens: Math.max(0, (myProfile.tokens || 0) - 5),
+      tokens: Math.max(0, (myProfile.tokens || 0) - viewCost),
     });
     await base44.entities.TokenTransaction.create({
       user_id: myProfile.user_id,
       type: 'spend',
-      tokens: -5,
-      description: 'Private photo view fee',
+      tokens: -viewCost,
+      description: `Private ${confirmPhoto.media_type === 'video' ? 'video' : 'photo'} view fee`,
     });
     await base44.entities.PrivatePhotoView.create({
       private_photo_id: confirmPhoto.id,
       viewer_member_id: myProfile.id,
       viewed_at: new Date().toISOString(),
-      tokens_spent: 5,
+      tokens_spent: viewCost,
     });
     setUnlockedIds(prev => new Set([...prev, confirmPhoto.id]));
     setConfirmPhoto(null);
@@ -142,11 +145,15 @@ export default function PrivatePhotosViewer({ ownerProfileId, myProfile }) {
             const unlocked = isUnlocked(photo);
             return (
               <div key={photo.id} className="relative aspect-square rounded-xl overflow-hidden border cursor-pointer" onClick={() => handlePhotoClick(photo)}>
-                <img src={photo.photo_url} alt="" className={`w-full h-full object-cover transition-all ${unlocked ? '' : 'blur-xl scale-110'}`} />
+                {unlocked && photo.media_type === 'video' ? (
+                  <video src={photo.photo_url} poster={photo.thumbnail_url} controls className="w-full h-full object-cover" />
+                ) : (
+                  <img src={photo.media_type === 'video' && photo.thumbnail_url ? photo.thumbnail_url : photo.photo_url} alt="" className={`w-full h-full object-cover transition-all ${unlocked ? '' : 'blur-xl scale-110'}`} />
+                )}
                 {!unlocked && (
                   <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/30">
                     <Lock className="w-6 h-6 text-white mb-1" />
-                    <span className="text-white text-xs font-medium">{isViewerMale ? '5 tokens to unlock' : 'Tap to view'}</span>
+                    <span className="text-white text-xs font-medium">{isViewerMale ? `${photo.media_type === 'video' ? (config?.tokens_private_video_cost ?? 10) : 5} tokens to unlock` : 'Tap to view'}</span>
                   </div>
                 )}
               </div>
@@ -210,13 +217,13 @@ export default function PrivatePhotosViewer({ ownerProfileId, myProfile }) {
       <Dialog open={!!confirmPhoto} onOpenChange={(v) => { if (!v) setConfirmPhoto(null); }}>
         <DialogContent className="max-w-sm">
           <DialogHeader>
-            <DialogTitle>Unlock Private Photo</DialogTitle>
-            <DialogDescription>Spend 5 tokens to view this private photo?</DialogDescription>
+            <DialogTitle>Unlock Private {confirmPhoto?.media_type === 'video' ? 'Video' : 'Photo'}</DialogTitle>
+            <DialogDescription>Spend {confirmPhoto?.media_type === 'video' ? (config?.tokens_private_video_cost ?? 10) : 5} tokens to view this private {confirmPhoto?.media_type === 'video' ? 'video' : 'photo'}?</DialogDescription>
           </DialogHeader>
           <DialogFooter className="flex-col gap-2 sm:flex-col">
             <Button onClick={handleConfirmPurchase} disabled={unlocking} className="w-full gap-2">
               {unlocking ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
-              Confirm (5 tokens)
+              Confirm ({confirmPhoto?.media_type === 'video' ? (config?.tokens_private_video_cost ?? 10) : 5} tokens)
             </Button>
             <Button variant="outline" className="w-full" onClick={() => setConfirmPhoto(null)} disabled={unlocking}>Cancel</Button>
           </DialogFooter>
@@ -224,7 +231,7 @@ export default function PrivatePhotosViewer({ ownerProfileId, myProfile }) {
       </Dialog>
 
       <PhotoZoomModal
-        photos={approvedPhotos.map(p => p.photo_url)}
+        items={approvedPhotos.map(p => ({ url: p.photo_url, type: p.media_type || 'image', poster: p.thumbnail_url }))}
         initialIndex={zoomIndex}
         open={zoomIndex !== null}
         onOpenChange={(v) => { if (!v) setZoomIndex(null); }}

@@ -315,7 +315,7 @@ export default function ViewProfile() {
       )}
 
       <PhotoZoomModal
-        photos={photos}
+        items={photos.map(url => ({ url, type: 'image' }))}
         initialIndex={zoomPhotoIndex}
         open={zoomPhotoIndex !== null}
         onOpenChange={(v) => { if (!v) setZoomPhotoIndex(null); }}

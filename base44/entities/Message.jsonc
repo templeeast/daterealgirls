@@ -22,6 +22,14 @@
       "type": "string",
       "description": "Optional shared image URL"
     },
+    "video_url": {
+      "type": "string",
+      "description": "Optional shared video URL"
+    },
+    "video_thumbnail_url": {
+      "type": "string",
+      "description": "Optional video thumbnail/poster URL"
+    },
     "is_read": {
       "type": "boolean",
       "default": false,
@@ -32,6 +40,7 @@
       "enum": [
         "text",
         "image",
+        "video",
         "private_photo_request",
         "private_photo_access_granted",
         "private_photo_access_denied"

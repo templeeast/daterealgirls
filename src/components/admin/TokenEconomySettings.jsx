@@ -189,6 +189,62 @@ export default function TokenEconomySettings({ form, updateField }) {
         </CardContent>
       </Card>
 
+      {/* Video Features */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="font-heading text-lg">Video Features</CardTitle>
+          <CardDescription>Enable video uploads and configure token costs for private photos and chat messages.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="font-medium text-sm">Enable Videos for Private Photos</p>
+              <p className="text-xs text-muted-foreground">When ON, members can upload short video clips as private photos.</p>
+            </div>
+            <Switch checked={form.videos_private_enabled || false} onCheckedChange={v => toggle('videos_private_enabled', v)} />
+          </div>
+          <div className="flex items-center justify-between border-t pt-4">
+            <div>
+              <p className="font-medium text-sm">Enable Videos for Chat</p>
+              <p className="text-xs text-muted-foreground">When ON, members can send short video clips in chat messages.</p>
+            </div>
+            <Switch checked={form.videos_chat_enabled || false} onCheckedChange={v => toggle('videos_chat_enabled', v)} />
+          </div>
+          <div className="grid grid-cols-2 gap-4 border-t pt-4">
+            <div className="space-y-2">
+              <Label>Max Video Duration (seconds)</Label>
+              <Input type="number" value={form.max_video_duration_seconds ?? 30} onChange={e => num('max_video_duration_seconds', e.target.value)} />
+            </div>
+            <div className="space-y-2">
+              <Label>Max Video File Size (MB)</Label>
+              <Input type="number" value={form.max_video_file_size_mb ?? 25} onChange={e => num('max_video_file_size_mb', e.target.value)} />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4 border-t pt-4">
+            <div className="space-y-2">
+              <Label>Token Cost — Send Photo in Message</Label>
+              <Input type="number" value={form.tokens_msg_photo_cost ?? 5} onChange={e => num('tokens_msg_photo_cost', e.target.value)} />
+              <p className="text-xs text-muted-foreground">Charged to male users per photo sent in chat.</p>
+            </div>
+            <div className="space-y-2">
+              <Label>Token Cost — View Private Video</Label>
+              <Input type="number" value={form.tokens_private_video_cost ?? 10} onChange={e => num('tokens_private_video_cost', e.target.value)} />
+              <p className="text-xs text-muted-foreground">Charged to male viewers per private video unlock.</p>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4 border-t pt-4">
+            <div className="space-y-2">
+              <Label>Token Cost — Send Video in Message (Men)</Label>
+              <Input type="number" value={form.tokens_msg_video_cost_men ?? 10} onChange={e => num('tokens_msg_video_cost_men', e.target.value)} />
+            </div>
+            <div className="space-y-2">
+              <Label>Token Cost — Send Video in Message (Women)</Label>
+              <Input type="number" value={form.tokens_msg_video_cost_women ?? 10} onChange={e => num('tokens_msg_video_cost_women', e.target.value)} />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Token Packs */}
       <Card>
         <CardHeader>

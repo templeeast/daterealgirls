@@ -33,10 +33,13 @@ function buildPhotoList(profiles, messages, privatePhotos, reviews) {
     if (!url) return;
     const existing = reviewMap[url];
     const ownerProfile = profileMap[pp.member_id];
+    const isVideo = pp.media_type === 'video';
     items.push({
       photo_url: url,
+      media_type: pp.media_type || 'image',
+      thumbnail_url: pp.thumbnail_url || '',
       source_type: 'private',
-      source_description: `Private photo of ${ownerProfile?.display_name || 'Unknown'}`,
+      source_description: `Private ${isVideo ? 'video' : 'photo'} of ${ownerProfile?.display_name || 'Unknown'}`,
       source_profile_id: pp.member_id,
       source_user_id: ownerProfile?.user_id || '',
       source_field: 'private_photo',
@@ -76,26 +79,50 @@ function buildPhotoList(profiles, messages, privatePhotos, reviews) {
     }
   });
 
-  // Chat images
+  // Chat images and videos
   messages.forEach(m => {
-    if (!m.image_url) return;
-    const url = m.image_url;
-    const existing = reviewMap[url];
-    items.push({
-      photo_url: url,
-      source_type: 'chat',
-      source_description: `Chat image from ${m.sender_name || 'Unknown'} in conversation`,
-      source_profile_id: null,
-      source_user_id: m.sender_id,
-      source_field: null,
-      source_message_id: m.id,
-      source_conversation_id: m.conversation_id,
-      review_status: existing?.review_status || 'pending',
-      rejection_reason: existing?.rejection_reason || null,
-      reviewed_date: existing?.updated_date || null,
-      review_id: existing?.id || null,
-      uploaded_date: m.created_date || null,
-    });
+    if (m.image_url) {
+      const url = m.image_url;
+      const existing = reviewMap[url];
+      items.push({
+        photo_url: url,
+        media_type: 'image',
+        thumbnail_url: '',
+        source_type: 'chat',
+        source_description: `Chat image from ${m.sender_name || 'Unknown'} in conversation`,
+        source_profile_id: null,
+        source_user_id: m.sender_id,
+        source_field: null,
+        source_message_id: m.id,
+        source_conversation_id: m.conversation_id,
+        review_status: existing?.review_status || 'pending',
+        rejection_reason: existing?.rejection_reason || null,
+        reviewed_date: existing?.updated_date || null,
+        review_id: existing?.id || null,
+        uploaded_date: m.created_date || null,
+      });
+    }
+    if (m.video_url) {
+      const url = m.video_url;
+      const existing = reviewMap[url];
+      items.push({
+        photo_url: url,
+        media_type: 'video',
+        thumbnail_url: m.video_thumbnail_url || '',
+        source_type: 'chat',
+        source_description: `Chat video from ${m.sender_name || 'Unknown'} in conversation`,
+        source_profile_id: null,
+        source_user_id: m.sender_id,
+        source_field: null,
+        source_message_id: m.id,
+        source_conversation_id: m.conversation_id,
+        review_status: existing?.review_status || 'pending',
+        rejection_reason: existing?.rejection_reason || null,
+        reviewed_date: existing?.updated_date || null,
+        review_id: existing?.id || null,
+        uploaded_date: m.created_date || null,
+      });
+    }
   });
 
   return items;
@@ -117,7 +144,7 @@ export default function ContentReview() {
     queryKey: ['admin', 'messages', 'withImages'],
     queryFn: async () => {
       const all = await base44.entities.Message.list('-created_date', 2000);
-      return all.filter(m => m.image_url);
+      return all.filter(m => m.image_url || m.video_url);
     },
   });
 
@@ -152,6 +179,8 @@ export default function ContentReview() {
     mutationFn: async (photo) => {
       const data = {
         photo_url: photo.photo_url,
+        media_type: photo.media_type || 'image',
+        thumbnail_url: photo.thumbnail_url || '',
         source_type: photo.source_type,
         source_description: photo.source_description,
         source_profile_id: photo.source_profile_id || '',
@@ -187,9 +216,16 @@ export default function ContentReview() {
           [photo.source_field]: '',
         });
       } else if (photo.source_type === 'chat' && photo.source_message_id) {
-        await base44.entities.Message.update(photo.source_message_id, {
-          image_url: '',
-        });
+        if (photo.media_type === 'video') {
+          await base44.entities.Message.update(photo.source_message_id, {
+            video_url: '',
+            video_thumbnail_url: '',
+          });
+        } else {
+          await base44.entities.Message.update(photo.source_message_id, {
+            image_url: '',
+          });
+        }
       } else if (photo.source_type === 'private') {
         const privPhotos = await base44.entities.PrivatePhoto.filter({ photo_url: photo.photo_url });
         if (privPhotos[0]) await base44.entities.PrivatePhoto.update(privPhotos[0].id, { status: 'rejected' });
@@ -198,6 +234,8 @@ export default function ContentReview() {
       // 2. Create/update PhotoReview record
       const reviewData = {
         photo_url: photo.photo_url,
+        media_type: photo.media_type || 'image',
+        thumbnail_url: photo.thumbnail_url || '',
         source_type: photo.source_type,
         source_description: photo.source_description,
         source_profile_id: photo.source_profile_id || '',

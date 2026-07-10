@@ -4,9 +4,10 @@ import { base44 } from '@/api/base44Client';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Upload, Trash2, Loader2, UserCheck, UserX } from 'lucide-react';
+import { Upload, Trash2, Loader2, UserCheck, UserX, Video } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import VerificationRequiredModal from '@/components/shared/VerificationRequiredModal';
+import useSiteConfig from '@/hooks/useSiteConfig';
 import { useNavigate } from 'react-router-dom';
 
 const requiresIdVerification = (p) => p?.didit_verification_status === 'Approved';
@@ -16,6 +17,7 @@ export default function PrivatePhotosSection({ profile, onRefetch, maxPrivatePho
   const { toast } = useToast();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { config } = useSiteConfig();
   const fileRef = useRef();
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState('');
@@ -79,22 +81,49 @@ export default function PrivatePhotosSection({ profile, onRefetch, maxPrivatePho
       setUploadError(`You've reached the maximum of ${maxPrivatePhotos} private photos. Delete an existing private photo to upload a new one.`);
       return;
     }
+    const isVideo = file.type.startsWith('video/');
+    const mediaType = isVideo ? 'video' : 'image';
+    if (isVideo) {
+      const maxDuration = config?.max_video_duration_seconds ?? 30;
+      const maxSizeMB = config?.max_video_file_size_mb ?? 25;
+      if (file.size > maxSizeMB * 1024 * 1024) {
+        setUploadError(t('chat_video_too_large', { n: maxSizeMB }));
+        return;
+      }
+      try {
+        const duration = await new Promise((resolve, reject) => {
+          const videoEl = document.createElement('video');
+          videoEl.preload = 'metadata';
+          videoEl.onloadedmetadata = () => resolve(videoEl.duration);
+          videoEl.onerror = () => reject(new Error('metadata'));
+          videoEl.src = URL.createObjectURL(file);
+        });
+        if (duration > maxDuration) {
+          setUploadError(t('chat_video_too_long', { n: maxDuration }));
+          return;
+        }
+      } catch (err) {
+        setUploadError('Could not validate video. Please try a different file.');
+        return;
+      }
+    }
     setUploading(true);
     setUploadError('');
     const reader = new FileReader();
     reader.onload = async () => {
       const base64 = reader.result.split(',')[1];
-      const res = await base44.functions.invoke('uploadToCloudinary', { file: base64, filename: file.name });
-      const imageUrl = res.data?.url;
-      if (!imageUrl) { setUploadError('Upload failed. Please try again.'); setUploading(false); return; }
-      const tokenCostToView = isMale ? 5 : 0;
+      const res = await base44.functions.invoke('uploadToCloudinary', { file: base64, filename: file.name, media_type: mediaType, content_type: file.type });
+      const mediaUrl = res.data?.url;
+      const thumbnailUrl = res.data?.thumbnail_url;
+      if (!mediaUrl) { setUploadError('Upload failed. Please try again.'); setUploading(false); return; }
+      const tokenCostToView = isMale ? (isVideo ? (config?.tokens_private_video_cost ?? 10) : 5) : 0;
       if (isMale && uploadCost > 0) {
         await base44.entities.MemberProfile.update(profile.id, { tokens: Math.max(0, (profile.tokens || 0) - uploadCost) });
-        await base44.entities.TokenTransaction.create({ user_id: profile.user_id, type: 'spend', tokens: -uploadCost, description: 'Private photo upload fee' });
+        await base44.entities.TokenTransaction.create({ user_id: profile.user_id, type: 'spend', tokens: -uploadCost, description: `Private ${mediaType} upload fee` });
       }
-      await base44.entities.PrivatePhoto.create({ member_id: profile.id, photo_url: imageUrl, status: 'approved', token_cost_to_view: tokenCostToView, uploaded_at: new Date().toISOString() });
-      await base44.entities.PhotoReview.create({ photo_url: imageUrl, source_type: 'private', source_description: `Private photo of ${profile.display_name || 'Unknown'}`, source_profile_id: profile.id, source_user_id: profile.user_id, source_field: 'private_photo', review_status: 'pending' });
-      toast({ title: 'Your private photo has been uploaded and is now visible.' });
+      await base44.entities.PrivatePhoto.create({ member_id: profile.id, photo_url: mediaUrl, media_type: mediaType, thumbnail_url: thumbnailUrl || '', status: 'approved', token_cost_to_view: tokenCostToView, uploaded_at: new Date().toISOString() });
+      await base44.entities.PhotoReview.create({ photo_url: mediaUrl, media_type: mediaType, thumbnail_url: thumbnailUrl || '', source_type: 'private', source_description: `Private ${mediaType} of ${profile.display_name || 'Unknown'}`, source_profile_id: profile.id, source_user_id: profile.user_id, source_field: 'private_photo', review_status: 'pending' });
+      toast({ title: `Your private ${mediaType} has been uploaded and is now visible.` });
       refetch();
       if (onRefetch) onRefetch();
       setUploading(false);
@@ -143,7 +172,7 @@ export default function PrivatePhotosSection({ profile, onRefetch, maxPrivatePho
       <Card className="mb-6">
         <CardHeader>
           <CardTitle className="font-heading text-lg flex items-center gap-2">🔒 Private Photos</CardTitle>
-          <CardDescription>{t('private_photos_desc', { n: maxPrivatePhotos })}</CardDescription>
+          <CardDescription>{config?.videos_private_enabled ? t('private_photos_videos_desc', { n: maxPrivatePhotos }) : t('private_photos_desc', { n: maxPrivatePhotos })}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {uploadError && (
@@ -157,15 +186,26 @@ export default function PrivatePhotosSection({ profile, onRefetch, maxPrivatePho
 
           <Button variant="outline" className="gap-2" onClick={handleUploadClick} disabled={uploading}>
             {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
-            {uploading ? 'Uploading...' : `Upload Private Photo${isMale ? ' (10 tokens)' : ''}`}
+            {uploading ? 'Uploading...' : `Upload Private ${config?.videos_private_enabled ? 'Photo/Video' : 'Photo'}${isMale ? ' (10 tokens)' : ''}`}
           </Button>
-          <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
+          <input ref={fileRef} type="file" accept={config?.videos_private_enabled ? "image/*,video/*" : "image/*"} className="hidden" onChange={handleFileChange} />
 
           {displayPhotos.length > 0 && (
             <div className="grid grid-cols-3 gap-3">
               {displayPhotos.map(photo => (
                 <div key={photo.id} className="relative group aspect-square rounded-xl overflow-hidden border">
-                  <img src={photo.photo_url} alt="" className={`w-full h-full object-cover ${photo.status === 'pending_review' ? 'opacity-50' : ''}`} />
+                  {photo.media_type === 'video' ? (
+                    <>
+                      <img src={photo.thumbnail_url || photo.photo_url} alt="" className={`w-full h-full object-cover ${photo.status === 'pending_review' ? 'opacity-50' : ''}`} />
+                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                        <div className="bg-black/50 rounded-full p-2">
+                          <Video className="w-5 h-5 text-white" />
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <img src={photo.photo_url} alt="" className={`w-full h-full object-cover ${photo.status === 'pending_review' ? 'opacity-50' : ''}`} />
+                  )}
                   {photo.status === 'pending_review' && (
                     <div className="absolute inset-0 flex items-center justify-center bg-black/30">
                       <span className="text-white text-xs font-medium text-center px-1">⏳ Under Review</span>

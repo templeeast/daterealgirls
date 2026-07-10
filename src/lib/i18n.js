@@ -10,6 +10,7 @@ import { terms8aTranslations } from './i18n-terms-8a';
 import { stripePaymentLinkTranslations } from './i18n-stripe-payment-link';
 import { browseAllTranslations } from './i18n-browse-all';
 import { rejectionTranslations } from './i18n-rejection';
+import { videoTranslations } from './i18n-videos';
 
 const en = {
    // Landing
@@ -2449,14 +2450,14 @@ const tl = {
 };
 
 const resources = {
-  en: { translation: { ...en, ...heroFeaturesTranslations.en, ...verificationTranslations.en, ...paymentInterestsTranslations.en, ...legalTranslations.en, ...winkTranslations.en, ...subscriptionIdTranslations.en, ...terms8aTranslations.en, ...stripePaymentLinkTranslations.en, ...browseAllTranslations.en, ...rejectionTranslations.en } },
-  es: { translation: { ...es, ...heroFeaturesTranslations.es, ...verificationTranslations.es, ...paymentInterestsTranslations.es, ...legalTranslations.es, ...winkTranslations.es, ...subscriptionIdTranslations.es, ...terms8aTranslations.es, ...stripePaymentLinkTranslations.es, ...browseAllTranslations.es, ...rejectionTranslations.es } },
-  th: { translation: { ...th, ...heroFeaturesTranslations.th, ...verificationTranslations.th, ...paymentInterestsTranslations.th, ...legalTranslations.th, ...winkTranslations.th, ...subscriptionIdTranslations.th, ...terms8aTranslations.th, ...stripePaymentLinkTranslations.th, ...browseAllTranslations.th, ...rejectionTranslations.th } },
-  zh: { translation: { ...zh, ...heroFeaturesTranslations.zh, ...verificationTranslations.zh, ...paymentInterestsTranslations.zh, ...legalTranslations.zh, ...winkTranslations.zh, ...subscriptionIdTranslations.zh, ...terms8aTranslations.zh, ...stripePaymentLinkTranslations.zh, ...browseAllTranslations.zh, ...rejectionTranslations.zh } },
-  de: { translation: { ...de, ...heroFeaturesTranslations.de, ...verificationTranslations.de, ...paymentInterestsTranslations.de, ...legalTranslations.de, ...winkTranslations.de, ...subscriptionIdTranslations.de, ...terms8aTranslations.de, ...stripePaymentLinkTranslations.de, ...browseAllTranslations.de, ...rejectionTranslations.de } },
-  vi: { translation: { ...vi, ...heroFeaturesTranslations.vi, ...verificationTranslations.vi, ...paymentInterestsTranslations.vi, ...legalTranslations.vi, ...winkTranslations.vi, ...subscriptionIdTranslations.vi, ...terms8aTranslations.vi, ...stripePaymentLinkTranslations.vi, ...browseAllTranslations.vi, ...rejectionTranslations.vi } },
-  pt: { translation: { ...pt, ...heroFeaturesTranslations.pt, ...verificationTranslations.pt, ...paymentInterestsTranslations.pt, ...legalTranslations.pt, ...winkTranslations.pt, ...subscriptionIdTranslations.pt, ...terms8aTranslations.pt, ...stripePaymentLinkTranslations.pt, ...browseAllTranslations.pt, ...rejectionTranslations.pt } },
-  tl: { translation: { ...tl, ...heroFeaturesTranslations.tl, ...verificationTranslations.tl, ...paymentInterestsTranslations.tl, ...legalTranslations.tl, ...winkTranslations.tl, ...subscriptionIdTranslations.tl, ...terms8aTranslations.tl, ...stripePaymentLinkTranslations.tl, ...rejectionTranslations.tl } },
+  en: { translation: { ...en, ...heroFeaturesTranslations.en, ...verificationTranslations.en, ...paymentInterestsTranslations.en, ...legalTranslations.en, ...winkTranslations.en, ...subscriptionIdTranslations.en, ...terms8aTranslations.en, ...stripePaymentLinkTranslations.en, ...browseAllTranslations.en, ...rejectionTranslations.en, ...videoTranslations.en } },
+  es: { translation: { ...es, ...heroFeaturesTranslations.es, ...verificationTranslations.es, ...paymentInterestsTranslations.es, ...legalTranslations.es, ...winkTranslations.es, ...subscriptionIdTranslations.es, ...terms8aTranslations.es, ...stripePaymentLinkTranslations.es, ...browseAllTranslations.es, ...rejectionTranslations.es, ...videoTranslations.es } },
+  th: { translation: { ...th, ...heroFeaturesTranslations.th, ...verificationTranslations.th, ...paymentInterestsTranslations.th, ...legalTranslations.th, ...winkTranslations.th, ...subscriptionIdTranslations.th, ...terms8aTranslations.th, ...stripePaymentLinkTranslations.th, ...browseAllTranslations.th, ...rejectionTranslations.th, ...videoTranslations.th } },
+  zh: { translation: { ...zh, ...heroFeaturesTranslations.zh, ...verificationTranslations.zh, ...paymentInterestsTranslations.zh, ...legalTranslations.zh, ...winkTranslations.zh, ...subscriptionIdTranslations.zh, ...terms8aTranslations.zh, ...stripePaymentLinkTranslations.zh, ...browseAllTranslations.zh, ...rejectionTranslations.zh, ...videoTranslations.zh } },
+  de: { translation: { ...de, ...heroFeaturesTranslations.de, ...verificationTranslations.de, ...paymentInterestsTranslations.de, ...legalTranslations.de, ...winkTranslations.de, ...subscriptionIdTranslations.de, ...terms8aTranslations.de, ...stripePaymentLinkTranslations.de, ...browseAllTranslations.de, ...rejectionTranslations.de, ...videoTranslations.de } },
+  vi: { translation: { ...vi, ...heroFeaturesTranslations.vi, ...verificationTranslations.vi, ...paymentInterestsTranslations.vi, ...legalTranslations.vi, ...winkTranslations.vi, ...subscriptionIdTranslations.vi, ...terms8aTranslations.vi, ...stripePaymentLinkTranslations.vi, ...browseAllTranslations.vi, ...rejectionTranslations.vi, ...videoTranslations.vi } },
+  pt: { translation: { ...pt, ...heroFeaturesTranslations.pt, ...verificationTranslations.pt, ...paymentInterestsTranslations.pt, ...legalTranslations.pt, ...winkTranslations.pt, ...subscriptionIdTranslations.pt, ...terms8aTranslations.pt, ...stripePaymentLinkTranslations.pt, ...browseAllTranslations.pt, ...rejectionTranslations.pt, ...videoTranslations.pt } },
+  tl: { translation: { ...tl, ...heroFeaturesTranslations.tl, ...verificationTranslations.tl, ...paymentInterestsTranslations.tl, ...legalTranslations.tl, ...winkTranslations.tl, ...subscriptionIdTranslations.tl, ...terms8aTranslations.tl, ...stripePaymentLinkTranslations.tl, ...rejectionTranslations.tl, ...videoTranslations.tl } },
 };
 
 i18n

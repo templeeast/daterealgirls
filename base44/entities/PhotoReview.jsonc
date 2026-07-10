@@ -4,7 +4,20 @@
   "properties": {
     "photo_url": {
       "type": "string",
-      "description": "URL of the photo being reviewed"
+      "description": "URL of the photo or video being reviewed"
+    },
+    "media_type": {
+      "type": "string",
+      "enum": [
+        "image",
+        "video"
+      ],
+      "default": "image",
+      "description": "Whether this media is an image or video"
+    },
+    "thumbnail_url": {
+      "type": "string",
+      "description": "Video poster/thumbnail URL (for video media type)"
     },
     "source_type": {
       "type": "string",

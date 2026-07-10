@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { CheckCircle, XCircle, Eye, Shield, MessageCircle, ImageIcon, Loader2 } from 'lucide-react';
+import { CheckCircle, XCircle, Eye, Shield, MessageCircle, ImageIcon, Loader2, Video } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 
@@ -63,14 +63,25 @@ export default function PhotoReviewCard({ review, onApprove, onReject }) {
     onReject(review);
   };
 
-  const col1Label = review.source_type === 'private' ? '🔒 Private Photo' : 'Submitted Content';
+  const col1Label = review.source_type === 'private' ? (review.media_type === 'video' ? '🔒 Private Video' : '🔒 Private Photo') : 'Submitted Content';
 
   return (
     <>
       <Card className="overflow-hidden hover:shadow-md transition-shadow">
         <div className="aspect-square bg-muted relative">
           {review.photo_url ? (
-            <img src={review.photo_url} alt="" className="w-full h-full object-cover" />
+            review.media_type === 'video' ? (
+              <>
+                <img src={review.thumbnail_url || review.photo_url} alt="" className="w-full h-full object-cover" />
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <div className="bg-black/50 rounded-full p-3">
+                    <Video className="w-8 h-8 text-white" />
+                  </div>
+                </div>
+              </>
+            ) : (
+              <img src={review.photo_url} alt="" className="w-full h-full object-cover" />
+            )
           ) : (
             <div className="w-full h-full flex items-center justify-center">
               <ImageIcon className="w-10 h-10 text-muted-foreground/30" />
@@ -83,7 +94,7 @@ export default function PhotoReviewCard({ review, onApprove, onReject }) {
             variant="secondary"
             className={`absolute top-2 left-2 text-xs ${review.source_type === 'private' ? 'bg-amber-100 text-amber-700 border-amber-300' : ''}`}
           >
-            {review.source_type === 'profile' ? 'Profile' : review.source_type === 'private' ? '🔒 Private Photo' : 'Chat'}
+            {review.source_type === 'profile' ? 'Profile' : review.source_type === 'private' ? (review.media_type === 'video' ? '🔒 Private Video' : '🔒 Private Photo') : (review.media_type === 'video' ? 'Chat Video' : 'Chat')}
           </Badge>
         </div>
 
@@ -157,7 +168,7 @@ export default function PhotoReviewCard({ review, onApprove, onReject }) {
           </DialogHeader>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 py-2">
-            <ImageCell label={col1Label} url={review.photo_url} />
+            <ImageCell label={col1Label} url={review.media_type === 'video' ? (review.thumbnail_url || review.photo_url) : review.photo_url} />
             {modalLoading ? (
               <>
                 <div className="space-y-2">

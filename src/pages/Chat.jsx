@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ArrowLeft, Send, User, Image as ImageIcon, Trash2, Coins, Lock, CheckCircle, XCircle, BadgeDollarSign } from 'lucide-react';
+import { ArrowLeft, Send, User, Image as ImageIcon, Trash2, Coins, Lock, CheckCircle, XCircle, BadgeDollarSign, Video as VideoIcon } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import useMyProfile from '@/hooks/useMyProfile';
 import useSiteConfig from '@/hooks/useSiteConfig';
@@ -82,7 +82,11 @@ export default function Chat() {
   const isMale = profile?.gender === 'male';
   const msgTokenEnabled = isMale ? (config?.tokens_msg_men_enabled !== false) : (config?.tokens_msg_women_enabled || false);
   const msgTokenCost = isMale ? (config?.tokens_msg_cost_men ?? 50) : (config?.tokens_msg_cost_women ?? 0);
-  const photoTokenCost = 2; // 2 tokens per photo sent in message
+  const photoTokenCost = config?.tokens_msg_photo_cost ?? 5;
+  const videoTokenCost = isMale ? (config?.tokens_msg_video_cost_men ?? 10) : (config?.tokens_msg_video_cost_women ?? 10);
+  const videosChatEnabled = config?.videos_chat_enabled === true;
+  const maxVideoDuration = config?.max_video_duration_seconds ?? 30;
+  const maxVideoFileSizeMB = config?.max_video_file_size_mb ?? 25;
   const tokens = profile?.tokens ?? 0;
 
   const showTokenLock = msgTokenEnabled && msgTokenCost > 0 && tokens < msgTokenCost;
@@ -174,6 +178,15 @@ export default function Chat() {
     },
   });
 
+  const deleteVideoMutation = useMutation({
+    mutationFn: async (msgId) => {
+      await base44.entities.Message.update(msgId, { video_url: '', video_thumbnail_url: '' });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['messages', conversationId] });
+    },
+  });
+
   const handleSend = () => {
     if (!text.trim()) return;
     if (!requiresIdVerification(profile)) {
@@ -235,6 +248,71 @@ export default function Chat() {
       queryClient.invalidateQueries({ queryKey: ['myProfile'] });
     };
     reader.readAsDataURL(file);
+  };
+
+  const handleVideoSend = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!requiresIdVerification(profile)) {
+      setShowVerifModal(true);
+      e.target.value = '';
+      return;
+    }
+    if (file.size > maxVideoFileSizeMB * 1024 * 1024) {
+      alert(t('chat_video_too_large', { n: maxVideoFileSizeMB }));
+      e.target.value = '';
+      return;
+    }
+    const videoEl = document.createElement('video');
+    videoEl.preload = 'metadata';
+    videoEl.onloadedmetadata = async () => {
+      if (videoEl.duration > maxVideoDuration) {
+        alert(t('chat_video_too_long', { n: maxVideoDuration }));
+        e.target.value = '';
+        return;
+      }
+      if (tokens < videoTokenCost) {
+        alert(t('chat_video_insufficient_tokens', { n: videoTokenCost }));
+        e.target.value = '';
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = async () => {
+        const base64 = reader.result.split(',')[1];
+        const res = await base44.functions.invoke('uploadToCloudinary', {
+          file: base64,
+          filename: file.name,
+          media_type: 'video',
+          content_type: file.type,
+        });
+        const videoUrl = res.data?.url;
+        const thumbnailUrl = res.data?.thumbnail_url;
+        if (!videoUrl) return;
+        const myProfile = (await base44.entities.MemberProfile.filter({ user_id: user.id }))[0];
+        if (videoTokenCost > 0) {
+          await base44.entities.MemberProfile.update(myProfile.id, {
+            tokens: Math.max(0, tokens - videoTokenCost),
+          });
+        }
+        await base44.entities.Message.create({
+          conversation_id: conversationId,
+          sender_id: user.id,
+          sender_name: myProfile?.display_name || 'User',
+          content: '🎥 Video',
+          video_url: videoUrl,
+          video_thumbnail_url: thumbnailUrl,
+          message_type: 'video',
+        });
+        await base44.entities.Conversation.update(conversationId, {
+          last_message: '🎥 Video',
+          last_message_date: new Date().toISOString(),
+        });
+        queryClient.invalidateQueries({ queryKey: ['messages', conversationId] });
+        queryClient.invalidateQueries({ queryKey: ['myProfile'] });
+      };
+      reader.readAsDataURL(file);
+    };
+    videoEl.src = URL.createObjectURL(file);
   };
 
   if (!conversation) return null;
@@ -355,7 +433,22 @@ export default function Chat() {
                         )}
                       </div>
                     )}
-                    {msg.content && msg.content !== '📷 Photo' && (
+                    {msg.video_url && (
+                      <div className="relative group">
+                        <video src={msg.video_url} poster={msg.video_thumbnail_url} controls className="rounded-lg max-w-full mb-2" />
+                        {isMe && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="absolute top-1 right-1 h-7 w-7 rounded-full bg-black/40 hover:bg-black/70 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                            onClick={() => deleteVideoMutation.mutate(msg.id)}
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </Button>
+                        )}
+                      </div>
+                    )}
+                    {msg.content && msg.content !== '📷 Photo' && msg.content !== '🎥 Video' && (
                       msg.content.startsWith('https://buy.stripe.com/') ? (
                         <a
                           href={msg.content}
@@ -395,7 +488,7 @@ export default function Chat() {
         </div>
       ) : (
         <div className="border-t bg-card px-4 py-3">
-          {(msgTokenEnabled && msgTokenCost > 0) || isMale ? (
+          {(msgTokenEnabled && msgTokenCost > 0) || isMale || videosChatEnabled ? (
             <div className="flex justify-center mb-2 flex-wrap gap-x-3 gap-y-0.5">
               {msgTokenEnabled && msgTokenCost > 0 && (
                 <span className="text-xs text-muted-foreground flex items-center gap-1">
@@ -405,6 +498,11 @@ export default function Chat() {
               {isMale && (
                 <span className="text-xs text-muted-foreground flex items-center gap-1">
                   <Coins className="w-3 h-3" /> {t('chat_token_cost_photo', { n: photoTokenCost })}
+                </span>
+              )}
+              {videosChatEnabled && (
+                <span className="text-xs text-muted-foreground flex items-center gap-1">
+                  <Coins className="w-3 h-3" /> {t('chat_token_cost_video', { n: videoTokenCost })}
                 </span>
               )}
               {(() => {
@@ -461,6 +559,14 @@ export default function Chat() {
               </Button>
               <input type="file" accept="image/*" className="hidden" onChange={handleImageSend} />
             </label>
+            {videosChatEnabled && (
+              <label>
+                <Button variant="ghost" size="icon" className="shrink-0" asChild>
+                  <span><VideoIcon className="w-5 h-5" /></span>
+                </Button>
+                <input type="file" accept="video/*" className="hidden" onChange={handleVideoSend} />
+              </label>
+            )}
             {/* Payment link embed button */}
             {(() => {
               const isVerified = requiresIdVerification(profile);
