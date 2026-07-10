@@ -61,6 +61,7 @@ export default function PrivatePhotosSection({ profile, onRefetch, maxPrivatePho
 
   const isMale = profile.gender === 'male';
   const uploadCost = isMale ? 10 : 0;
+  const videosPrivateEnabled = isMale ? (config?.videos_private_men_enabled === true) : (config?.videos_private_women_enabled === true);
 
   const handleUploadClick = () => {
     setUploadError('');
@@ -172,7 +173,7 @@ export default function PrivatePhotosSection({ profile, onRefetch, maxPrivatePho
       <Card className="mb-6">
         <CardHeader>
           <CardTitle className="font-heading text-lg flex items-center gap-2">🔒 Private Photos</CardTitle>
-          <CardDescription>{config?.videos_private_enabled ? t('private_photos_videos_desc', { n: maxPrivatePhotos }) : t('private_photos_desc', { n: maxPrivatePhotos })}</CardDescription>
+          <CardDescription>{videosPrivateEnabled ? t('private_photos_videos_desc', { n: maxPrivatePhotos }) : t('private_photos_desc', { n: maxPrivatePhotos })}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {uploadError && (
@@ -186,9 +187,9 @@ export default function PrivatePhotosSection({ profile, onRefetch, maxPrivatePho
 
           <Button variant="outline" className="gap-2" onClick={handleUploadClick} disabled={uploading}>
             {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
-            {uploading ? 'Uploading...' : `Upload Private ${config?.videos_private_enabled ? 'Photo/Video' : 'Photo'}${isMale ? ' (10 tokens)' : ''}`}
+            {uploading ? 'Uploading...' : `Upload Private ${videosPrivateEnabled ? 'Photo/Video' : 'Photo'}${isMale ? ' (10 tokens)' : ''}`}
           </Button>
-          <input ref={fileRef} type="file" accept={config?.videos_private_enabled ? "image/*,video/*" : "image/*"} className="hidden" onChange={handleFileChange} />
+          <input ref={fileRef} type="file" accept={videosPrivateEnabled ? "image/*,video/*" : "image/*"} className="hidden" onChange={handleFileChange} />
 
           {displayPhotos.length > 0 && (
             <div className="grid grid-cols-3 gap-3">

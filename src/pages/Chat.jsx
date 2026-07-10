@@ -84,7 +84,7 @@ export default function Chat() {
   const msgTokenCost = isMale ? (config?.tokens_msg_cost_men ?? 50) : (config?.tokens_msg_cost_women ?? 0);
   const photoTokenCost = config?.tokens_msg_photo_cost ?? 5;
   const videoTokenCost = isMale ? (config?.tokens_msg_video_cost_men ?? 10) : (config?.tokens_msg_video_cost_women ?? 10);
-  const videosChatEnabled = config?.videos_chat_enabled === true;
+  const videosChatEnabled = isMale ? (config?.videos_chat_men_enabled === true) : (config?.videos_chat_women_enabled === true);
   const maxVideoDuration = config?.max_video_duration_seconds ?? 30;
   const maxVideoFileSizeMB = config?.max_video_file_size_mb ?? 25;
   const tokens = profile?.tokens ?? 0;

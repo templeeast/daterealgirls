@@ -336,15 +336,25 @@
       "type": "number",
       "default": 5
     },
-    "videos_private_enabled": {
+    "videos_private_men_enabled": {
       "type": "boolean",
       "default": false,
-      "description": "Whether video uploads are enabled for private photos"
+      "description": "Whether male members can upload video clips as private photos"
     },
-    "videos_chat_enabled": {
+    "videos_private_women_enabled": {
       "type": "boolean",
       "default": false,
-      "description": "Whether video uploads are enabled in chat messages"
+      "description": "Whether female members can upload video clips as private photos"
+    },
+    "videos_chat_men_enabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether male members can send video clips in chat messages"
+    },
+    "videos_chat_women_enabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether female members can send video clips in chat messages"
     },
     "max_video_duration_seconds": {
       "type": "number",

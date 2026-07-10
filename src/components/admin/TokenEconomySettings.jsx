@@ -198,17 +198,31 @@ export default function TokenEconomySettings({ form, updateField }) {
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-medium text-sm">Enable Videos for Private Photos</p>
-              <p className="text-xs text-muted-foreground">When ON, members can upload short video clips as private photos.</p>
+              <p className="font-medium text-sm">Enable Videos for Private Photos — Men</p>
+              <p className="text-xs text-muted-foreground">When ON, male members can upload short video clips as private photos.</p>
             </div>
-            <Switch checked={form.videos_private_enabled || false} onCheckedChange={v => toggle('videos_private_enabled', v)} />
+            <Switch checked={form.videos_private_men_enabled || false} onCheckedChange={v => toggle('videos_private_men_enabled', v)} />
           </div>
           <div className="flex items-center justify-between border-t pt-4">
             <div>
-              <p className="font-medium text-sm">Enable Videos for Chat</p>
-              <p className="text-xs text-muted-foreground">When ON, members can send short video clips in chat messages.</p>
+              <p className="font-medium text-sm">Enable Videos for Private Photos — Women</p>
+              <p className="text-xs text-muted-foreground">When ON, female members can upload short video clips as private photos.</p>
             </div>
-            <Switch checked={form.videos_chat_enabled || false} onCheckedChange={v => toggle('videos_chat_enabled', v)} />
+            <Switch checked={form.videos_private_women_enabled || false} onCheckedChange={v => toggle('videos_private_women_enabled', v)} />
+          </div>
+          <div className="flex items-center justify-between border-t pt-4">
+            <div>
+              <p className="font-medium text-sm">Enable Videos for Chat — Men</p>
+              <p className="text-xs text-muted-foreground">When ON, male members can send short video clips in chat messages.</p>
+            </div>
+            <Switch checked={form.videos_chat_men_enabled || false} onCheckedChange={v => toggle('videos_chat_men_enabled', v)} />
+          </div>
+          <div className="flex items-center justify-between border-t pt-4">
+            <div>
+              <p className="font-medium text-sm">Enable Videos for Chat — Women</p>
+              <p className="text-xs text-muted-foreground">When ON, female members can send short video clips in chat messages.</p>
+            </div>
+            <Switch checked={form.videos_chat_women_enabled || false} onCheckedChange={v => toggle('videos_chat_women_enabled', v)} />
           </div>
           <div className="grid grid-cols-2 gap-4 border-t pt-4">
             <div className="space-y-2">
