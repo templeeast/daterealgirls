@@ -276,12 +276,24 @@ export default function Landing() {
                       {t('token_cost_send_video')} <span className="text-xs text-amber-600 font-medium">({t('token_cost_verification_required')})</span>
                     </td>
                     <td className="text-center px-6 py-4">
-                      <div className="font-semibold">{t('token_cost_n_tokens', { n: config.tokens_msg_video_cost_men ?? 10 })}</div>
-                      <div className="text-xs text-muted-foreground">{t('token_cost_per_video')}</div>
+                      {config.videos_chat_men_enabled ? (
+                        <>
+                          <div className="font-semibold">{t('token_cost_n_tokens', { n: config.tokens_msg_video_cost_men ?? 10 })}</div>
+                          <div className="text-xs text-muted-foreground">{t('token_cost_per_video')}</div>
+                        </>
+                      ) : (
+                        <span className="text-muted-foreground">—</span>
+                      )}
                     </td>
                     <td className="text-center px-6 py-4">
-                      <div className="font-semibold">{t('token_cost_n_tokens', { n: config.tokens_msg_video_cost_women ?? 0 })}</div>
-                      <div className="text-xs text-muted-foreground">{t('token_cost_per_video')}</div>
+                      {config.videos_chat_women_enabled ? (
+                        <>
+                          <div className="font-semibold">{t('token_cost_n_tokens', { n: config.tokens_msg_video_cost_women ?? 0 })}</div>
+                          <div className="text-xs text-muted-foreground">{t('token_cost_per_video')}</div>
+                        </>
+                      ) : (
+                        <span className="text-muted-foreground">—</span>
+                      )}
                     </td>
                   </tr>
                   {(config.stripe_payment_link_enabled_men || config.stripe_payment_link_enabled_women) && (
