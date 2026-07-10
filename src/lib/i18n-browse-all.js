@@ -17,6 +17,7 @@ export const browseAllTranslations = {
     browse_all_locked_desc: "You've reached your free browse limit. Unlock all profiles to continue!",
     browse_locked_unlock: 'Unlock to view',
     vp_interact_locked: 'Verify and unlock browsing to message, wink, and favorite.',
+    vp_interact_locked_verified: 'Unlock browsing to message, wink, and favorite.',
   },
   es: {
     browse_all_dialog_title: 'Desbloquear todos los perfiles',
@@ -36,6 +37,7 @@ export const browseAllTranslations = {
     browse_all_locked_desc: 'Has alcanzado tu límite de navegación gratuita. ¡Desbloquea todos los perfiles para continuar!',
     browse_locked_unlock: 'Desbloquear para ver',
     vp_interact_locked: 'Verifica y desbloquea la navegación para enviar mensajes, guiños y favoritos.',
+    vp_interact_locked_verified: 'Desbloquea la navegación para enviar mensajes, guiños y favoritos.',
   },
   th: {
     browse_all_dialog_title: 'ปลดล็อกโปรไฟล์ทั้งหมด',
@@ -55,6 +57,7 @@ export const browseAllTranslations = {
     browse_all_locked_desc: 'คุณดูครบขีดจำกัดฟรีแล้ว ปลดล็อกโปรไฟล์ทั้งหมดเพื่อดูต่อ!',
     browse_locked_unlock: 'ปลดล็อกเพื่อดู',
     vp_interact_locked: 'ยืนยันและปลดล็อกการดูเพื่อส่งข้อความ หวั่น และเพิ่มรายการโปรด',
+    vp_interact_locked_verified: 'ปลดล็อกการดูเพื่อส่งข้อความ หวั่น และเพิ่มรายการโปรด',
   },
   zh: {
     browse_all_dialog_title: '解锁所有资料',
@@ -74,6 +77,7 @@ export const browseAllTranslations = {
     browse_all_locked_desc: '您已达到免费浏览上限。解锁所有资料以继续！',
     browse_locked_unlock: '解锁查看',
     vp_interact_locked: '验证并解锁浏览后才能发送消息、眨眼和收藏。',
+    vp_interact_locked_verified: '解锁浏览后即可发送消息、眨眼和收藏。',
   },
   de: {
     browse_all_dialog_title: 'Alle Profile freischalten',
@@ -93,6 +97,7 @@ export const browseAllTranslations = {
     browse_all_locked_desc: 'Sie haben Ihr kostenloses Limit erreicht. Schalten Sie alle Profile frei, um weiterzumachen!',
     browse_locked_unlock: 'Freischalten zum Ansehen',
     vp_interact_locked: 'Verifizieren und Durchsuchen freischalten, um Nachrichten, Winks und Favoriten zu nutzen.',
+    vp_interact_locked_verified: 'Durchsuchen freischalten, um Nachrichten, Winks und Favoriten zu nutzen.',
   },
   vi: {
     browse_all_dialog_title: 'Mở khóa tất cả hồ sơ',
@@ -112,6 +117,7 @@ export const browseAllTranslations = {
     browse_all_locked_desc: 'Bạn đã đạt giới hạn duyệt miễn phí. Mở khóa tất cả hồ sơ để tiếp tục!',
     browse_locked_unlock: 'Mở khóa để xem',
     vp_interact_locked: 'Xác minh và mở khóa duyệt để nhắn tin, gửi mắt và thêm yêu thích.',
+    vp_interact_locked_verified: 'Mở khóa duyệt để nhắn tin, gửi mắt và thêm yêu thích.',
   },
   pt: {
     browse_all_dialog_title: 'Desbloquear todos os perfis',
@@ -131,6 +137,7 @@ export const browseAllTranslations = {
     browse_all_locked_desc: 'Você atingiu seu limite de navegação gratuita. Desbloqueie todos os perfis para continuar!',
     browse_locked_unlock: 'Desbloquear para ver',
     vp_interact_locked: 'Verifique e desbloqueie a navegação para enviar mensagens, piscadelas e favoritos.',
+    vp_interact_locked_verified: 'Desbloqueie a navegação para enviar mensagens, piscadelas e favoritos.',
   },
   tl: {
     browse_all_dialog_title: 'I-unlock lahat ng profile',
@@ -150,5 +157,6 @@ export const browseAllTranslations = {
     browse_all_locked_desc: 'Naabot mo na ang iyong libreng browse limit. I-unlock lahat ng profile para magpatuloy!',
     browse_locked_unlock: 'I-unlock para makita',
     vp_interact_locked: 'Mag-verify at i-unlock ang pag-browse para makapag-message, wink, at favorite.',
+    vp_interact_locked_verified: 'I-unlock ang pag-browse para makapag-message, wink, at favorite.',
   },
 };

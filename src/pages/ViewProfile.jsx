@@ -228,7 +228,7 @@ export default function ViewProfile() {
         ) : (
           <div className="flex items-center gap-3 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
             <Lock className="w-5 h-5 text-amber-500 shrink-0" />
-            <p className="text-sm text-amber-800">{t('vp_interact_locked')}</p>
+            <p className="text-sm text-amber-800">{isVerified ? t('vp_interact_locked_verified') : t('vp_interact_locked')}</p>
             <Button size="sm" className="shrink-0 gap-2" onClick={() => !isVerified ? navigate('/my-profile') : setBrowseAllDialogOpen(true)}>
               {!isVerified ? <Shield className="w-4 h-4" /> : null}
               {!isVerified ? t('browse_verify_to_unlock_button') : t('browse_all_banner_btn')}
