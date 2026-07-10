@@ -259,6 +259,15 @@
       "format": "date-time",
       "description": "Timestamp when Didit returned an Approved status"
     },
+    "didit_extracted_gender": {
+      "type": "string",
+      "description": "Gender extracted from the ID document by Didit (M, F, or U)"
+    },
+    "gender_review_needed": {
+      "type": "boolean",
+      "default": false,
+      "description": "Flag set when Didit-extracted gender doesn't match profile gender or is unknown \u2014 requires admin review"
+    },
     "is_active": {
       "type": "boolean",
       "default": true

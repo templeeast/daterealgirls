@@ -83,12 +83,56 @@ Deno.serve(async (req) => {
       if (!profile) return Response.json({ received: true });
 
       if (status === "Approved") {
-        await base44.asServiceRole.entities.MemberProfile.update(profile.id, {
-          didit_session_id:          session_id,
-          didit_verification_status: "Approved",
-          didit_verified_at:         new Date().toISOString(),
-          verification_status:       "verified",
-        });
+        // Extract gender from webhook payload, or fall back to decision API
+        let diditGender = null;
+        const idv = (body.id_verifications ?? [])[0];
+        if (idv?.gender) {
+          diditGender = idv.gender;
+        }
+        if (!diditGender) {
+          try {
+            const apiKey = isDevMode
+              ? Deno.env.get('DIDIT_API_KEY_DEV')
+              : Deno.env.get('DIDIT_API_KEY_PROD');
+            const decisionRes = await fetch(
+              `https://verification.didit.me/v3/session/${session_id}/decision/`,
+              { method: 'GET', headers: { 'x-api-key': apiKey, 'Content-Type': 'application/json' } }
+            );
+            if (decisionRes.ok) {
+              const decision = await decisionRes.json();
+              const decisionIdv = (decision.id_verifications ?? [])[0];
+              if (decisionIdv?.gender) diditGender = decisionIdv.gender;
+            }
+          } catch (e) { /* proceed without gender if decision API fails */ }
+        }
+
+        // Map Didit gender codes to profile gender values
+        const genderMap = { 'M': 'male', 'F': 'female' };
+        const mappedGender = genderMap[diditGender] || null;
+        const genderMismatch = mappedGender && mappedGender !== profile.gender;
+        const genderUnknown = !mappedGender; // "U" or not present on document
+
+        if (genderMismatch || genderUnknown) {
+          // Flag for admin review — do not auto-verify
+          await base44.asServiceRole.entities.MemberProfile.update(profile.id, {
+            didit_session_id:          session_id,
+            didit_verification_status: "Approved",
+            didit_verified_at:         new Date().toISOString(),
+            didit_extracted_gender:    diditGender || 'U',
+            gender_review_needed:      true,
+            profile_review_status:     "pending",
+          });
+        } else {
+          // Gender matches — auto-verify as before
+          await base44.asServiceRole.entities.MemberProfile.update(profile.id, {
+            didit_session_id:          session_id,
+            didit_verification_status: "Approved",
+            didit_verified_at:         new Date().toISOString(),
+            verification_status:       "verified",
+            didit_extracted_gender:    diditGender || null,
+            gender_review_needed:      false,
+          });
+        }
       } else if (status === "Declined") {
         await base44.asServiceRole.entities.MemberProfile.update(profile.id, {
           didit_verification_status: "Declined",

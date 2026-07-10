@@ -13,7 +13,7 @@ import {
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select';
-import { CheckCircle, XCircle, Loader2, ArrowLeft } from 'lucide-react';
+import { CheckCircle, XCircle, Loader2, ArrowLeft, AlertTriangle } from 'lucide-react';
 
 const REASON_OPTIONS = [
   { value: 'fake_profile', labelKey: 'rej_reason_fake_profile' },
@@ -106,6 +106,24 @@ export default function VerificationDetail({ profile: p, onBack, onVerify }) {
               </Button>
             </div>
           </div>
+
+          {/* Gender Mismatch Warning */}
+          {p.gender_review_needed && (
+            <div className="rounded-xl bg-amber-50 border border-amber-300 p-4 space-y-1">
+              <div className="flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4 text-amber-600" />
+                <p className="text-sm font-semibold text-amber-800">Gender Review Required</p>
+              </div>
+              <p className="text-xs text-amber-700">
+                Profile gender: <span className="font-medium capitalize">{p.gender}</span>
+                {' · '}
+                Didit ID gender: <span className="font-medium">{p.didit_extracted_gender === 'M' ? 'Male' : p.didit_extracted_gender === 'F' ? 'Female' : 'Unknown'}</span>
+              </p>
+              <p className="text-xs text-amber-600">
+                Didit approved the ID, but the gender on the document {p.didit_extracted_gender === 'U' || !p.didit_extracted_gender ? 'could not be determined' : 'does not match'} the profile gender. Please review the ID images and approve or reject manually.
+              </p>
+            </div>
+          )}
 
           {/* Didit Images */}
           {!p.didit_session_id ? (

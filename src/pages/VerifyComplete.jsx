@@ -35,13 +35,28 @@ export default function VerifyComplete() {
       setProfile(p);
 
       if (verificationStatus === 'Approved') {
+        // Only mark Didit status — the webhook handles verification_status and gender check
         await base44.entities.MemberProfile.update(p.id, {
           didit_verification_status: 'Approved',
           didit_verified_at:         new Date().toISOString(),
-          verification_status:       'verified',
         });
-        toast({ title: '🎉 Identity verified! Welcome to DateRealGirls.' });
-        navigate(p.profile_complete ? '/browse' : '/onboarding');
+
+        // Wait for webhook to process, then reload to check the result
+        await new Promise(r => setTimeout(r, 3000));
+        const updated = await base44.entities.MemberProfile.filter({ id: p.id });
+        const updatedProfile = updated[0];
+
+        if (updatedProfile?.gender_review_needed) {
+          setProfile(updatedProfile);
+          setPageStatus('gender_review');
+        } else if (updatedProfile?.verification_status === 'verified') {
+          toast({ title: '🎉 Identity verified! Welcome to DateRealGirls.' });
+          navigate(updatedProfile.profile_complete ? '/browse' : '/onboarding');
+        } else {
+          // Webhook may still be processing
+          setProfile(updatedProfile || p);
+          setPageStatus('pending');
+        }
       } else if (verificationStatus === 'Declined') {
         await base44.entities.MemberProfile.update(p.id, {
           didit_verification_status: 'Declined',
@@ -96,6 +111,17 @@ export default function VerifyComplete() {
               <CardTitle className="font-heading text-xl">Verification In Progress</CardTitle>
               <CardDescription>
                 Your verification is being reviewed. This can take a few minutes. You can continue using the app in the meantime.
+              </CardDescription>
+            </>
+          )}
+          {pageStatus === 'gender_review' && (
+            <>
+              <div className="flex justify-center mb-3">
+                <Clock className="w-12 h-12 text-amber-500" />
+              </div>
+              <CardTitle className="font-heading text-xl">Verification Under Review</CardTitle>
+              <CardDescription>
+                Your ID was verified successfully, but our team needs to manually review one more detail before completing your verification. This is typically resolved within 24 hours. You can continue using the app in the meantime.
               </CardDescription>
             </>
           )}

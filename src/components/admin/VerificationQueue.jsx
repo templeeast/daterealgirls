@@ -90,7 +90,9 @@ export default function VerificationQueue({ profileId }) {
               <p className="font-medium text-sm">{p.display_name}, {p.age}</p>
               <p className="text-xs text-muted-foreground capitalize">{p.gender} · {[p.location_city, p.location_country].filter(Boolean).join(', ')}</p>
             </div>
-            {p.didit_verification_status === 'Approved' ? (
+            {p.gender_review_needed ? (
+              <Badge className="bg-amber-100 text-amber-700 shrink-0 border-amber-300">⚠ Gender Review</Badge>
+            ) : p.didit_verification_status === 'Approved' ? (
               <Badge className="bg-green-100 text-green-700 shrink-0">Verified by Didit</Badge>
             ) : p.didit_verification_status === 'Declined' ? (
               <Badge className="bg-red-100 text-red-700 shrink-0">Declined by Didit</Badge>
