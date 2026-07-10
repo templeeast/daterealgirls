@@ -203,10 +203,12 @@ export default function Landing() {
           </div>
 
           {/* New site notice */}
-          <div className="max-w-3xl mx-auto mb-16 bg-accent border border-primary/20 rounded-2xl p-5 text-center">
+          <div className="max-w-3xl mx-auto mb-16 rounded-2xl p-5 text-center border-2 border-primary/20 shadow-lg shadow-primary/5"
+            style={{ background: 'linear-gradient(135deg, hsl(346 77% 97%) 0%, hsl(346 60% 95%) 100%)' }}
+          >
             <div className="flex items-center justify-center gap-3">
               <span className="text-2xl">🎉</span>
-              <p className="text-sm text-accent-foreground font-medium">{t('browse_new_site_notice')}</p>
+              <p className="text-sm font-bold text-primary">{t('browse_new_site_notice')}</p>
             </div>
           </div>
 
