@@ -50,9 +50,9 @@ export default function AdsterraEmbed({
     const container = containerRef.current;
     container.innerHTML = '';
 
-    // Use an iframe so invoke.js can use document.write safely.
-    // Without this, the async-injected script silently fails on
-    // iOS Safari and other strict browsers.
+    // Use srcdoc so the iframe content is parsed natively by the browser.
+    // iOS Safari silently fails when writing to contentWindow.document on
+    // a programmatically created iframe; srcdoc avoids that entirely.
     const iframe = document.createElement('iframe');
     iframe.width = activeWidth;
     iframe.height = activeHeight;
@@ -62,34 +62,26 @@ export default function AdsterraEmbed({
     iframe.style.margin = '0 auto';
     iframe.scrolling = 'no';
     iframe.setAttribute('frameborder', '0');
+    iframe.setAttribute('loading', 'eager');
+
+    const srcdoc =
+      '<html><head><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;padding:0;overflow:hidden;}</style></head><body>' +
+      '<script type="text/javascript">' +
+      'atOptions = {' +
+      "  key: '" + activeKey + "'," +
+      "  format: 'iframe'," +
+      '  height: ' + activeHeight + ',' +
+      '  width: ' + activeWidth + ',' +
+      '  params: {}' +
+      '};' +
+      '</script>' +
+      '<script type="text/javascript" src="https://www.highperformanceformat.com/' + activeKey + '/invoke.js"></script>' +
+      '</body></html>';
+
+    // srcdoc is well-supported on iOS Safari 5+ and all modern browsers;
+    // it avoids the contentWindow.document.write timing failures on iOS
+    iframe.setAttribute('srcdoc', srcdoc);
     container.appendChild(iframe);
-
-    const writeContent = () => {
-      try {
-        const doc = iframe.contentWindow.document;
-        doc.open();
-        doc.write(
-          '<html><head><style>body{margin:0;padding:0;overflow:hidden;}</style></head><body>' +
-          '<script type="text/javascript">' +
-          'atOptions = {' +
-          "  key: '" + activeKey + "'," +
-          "  format: 'iframe'," +
-          '  height: ' + activeHeight + ',' +
-          '  width: ' + activeWidth + ',' +
-          '  params: {}' +
-          '};' +
-          '</script>' +
-          '<script type="text/javascript" src="https://www.highperformanceformat.com/' + activeKey + '/invoke.js"></script>' +
-          '</body></html>'
-        );
-        doc.close();
-      } catch (e) {
-        // If the iframe isn't ready yet, retry shortly
-        setTimeout(writeContent, 50);
-      }
-    };
-
-    writeContent();
 
     return () => {
       container.innerHTML = '';
