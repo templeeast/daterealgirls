@@ -15,9 +15,13 @@ export default function JuicyAdsEmbed({ zone, zoneMobile }) {
   const showMen = config?.juicyads_show_men !== false;
   const showWomen = config?.juicyads_show_women || false;
 
+  const adFreeUntil = profile?.ad_free_until;
+  const isAdFree = adFreeUntil && new Date(adFreeUntil) > new Date();
+
   const shouldRender =
     enabled &&
     activeZone &&
+    !isAdFree &&
     !(gender === 'male' && !showMen) &&
     !(gender === 'female' && !showWomen);
 

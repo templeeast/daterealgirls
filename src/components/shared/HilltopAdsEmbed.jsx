@@ -39,9 +39,13 @@ export default function HilltopAdsEmbed({ scriptUrl, scriptUrlMobile }) {
   const width = 300;
   const height = isMobile ? 100 : 250;
 
+  const adFreeUntil = profile?.ad_free_until;
+  const isAdFree = adFreeUntil && new Date(adFreeUntil) > new Date();
+
   const shouldRender =
     enabled &&
     activeUrl &&
+    !isAdFree &&
     !(gender === 'male' && !showMen) &&
     !(gender === 'female' && !showWomen);
 

@@ -352,6 +352,11 @@
       "type": "boolean",
       "default": false,
       "description": "Whether to show the Stripe payment link on the public profile (requires verified status)"
+    },
+    "ad_free_until": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp until which ads are hidden for this user"
     }
   },
   "required": [

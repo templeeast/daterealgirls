@@ -196,6 +196,19 @@ export default function TokenGuide() {
                     <div className="text-xs text-muted-foreground">{t('token_cost_one_time')}</div>
                   </td>
                 </tr>
+                {config.ad_free_enabled !== false && (
+                <tr className="border-t bg-muted/30">
+                  <td className="px-6 py-4 font-medium">{t('token_cost_remove_ads')}</td>
+                  <td className="text-center px-6 py-4">
+                    <div className="font-semibold">{t('token_cost_n_tokens', { n: config.ad_free_token_cost ?? 200 })}</div>
+                    <div className="text-xs text-muted-foreground">{config.ad_free_duration_days ?? 7} {t('ad_free_days')}</div>
+                  </td>
+                  <td className="text-center px-6 py-4">
+                    <div className="font-semibold">{t('token_cost_n_tokens', { n: config.ad_free_token_cost ?? 200 })}</div>
+                    <div className="text-xs text-muted-foreground">{config.ad_free_duration_days ?? 7} {t('ad_free_days')}</div>
+                  </td>
+                </tr>
+                )}
               </tbody>
             </table>
           </div>

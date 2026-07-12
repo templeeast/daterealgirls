@@ -118,6 +118,9 @@ export default function SiteSettings() {
     hilltopads_zone_browse_profile_mobile: '',
     hilltopads_zone_winks_messages_favorites: '',
     hilltopads_zone_winks_messages_favorites_mobile: '',
+    ad_free_enabled: true,
+    ad_free_duration_days: 7,
+    ad_free_token_cost: 200,
   });
 
   useEffect(() => {
@@ -215,6 +218,9 @@ export default function SiteSettings() {
         hilltopads_zone_browse_profile_mobile: existingConfig.hilltopads_zone_browse_profile_mobile || '',
         hilltopads_zone_winks_messages_favorites: existingConfig.hilltopads_zone_winks_messages_favorites || '',
         hilltopads_zone_winks_messages_favorites_mobile: existingConfig.hilltopads_zone_winks_messages_favorites_mobile || '',
+        ad_free_enabled: existingConfig.ad_free_enabled !== false,
+        ad_free_duration_days: existingConfig.ad_free_duration_days ?? 7,
+        ad_free_token_cost: existingConfig.ad_free_token_cost ?? 200,
       });
     }
   }, [existingConfig]);
@@ -491,6 +497,35 @@ export default function SiteSettings() {
             )}
           </div>
 
+        </CardContent>
+      </Card>
+
+      {/* Ad-Free Pass */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="font-heading text-lg">Ad-Free Pass</CardTitle>
+          <CardDescription>Allow users to spend tokens to hide all ads (JuicyAds + HilltopAds) for a configurable number of days.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="font-medium text-sm">Enable Ad-Free Pass</p>
+              <p className="text-xs text-muted-foreground mt-0.5">When enabled, users can purchase ad-free time from their profile page.</p>
+            </div>
+            <Switch checked={form.ad_free_enabled} onCheckedChange={v => updateField('ad_free_enabled', v)} />
+          </div>
+          {form.ad_free_enabled && (
+            <div className="grid grid-cols-2 gap-4 pt-2 border-t">
+              <div className="space-y-2">
+                <Label>Duration (days)</Label>
+                <Input type="number" value={form.ad_free_duration_days} onChange={e => updateField('ad_free_duration_days', Number(e.target.value))} />
+              </div>
+              <div className="space-y-2">
+                <Label>Token Cost</Label>
+                <Input type="number" value={form.ad_free_token_cost} onChange={e => updateField('ad_free_token_cost', Number(e.target.value))} />
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
 

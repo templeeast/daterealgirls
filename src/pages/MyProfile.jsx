@@ -27,6 +27,7 @@ import PromoSuggestionsBanner from '@/components/profile/PromoSuggestionsBanner'
 import CountryCitySelector from '@/components/shared/CountryCitySelector';
 import { getCountryCode } from '@/lib/geoUtils';
 import PrivatePhotosSection from '@/components/profile/PrivatePhotosSection';
+import AdFreeCard from '@/components/profile/AdFreeCard';
 
 const INTERESTS = [
   { key: 'Travel', tKey: 'interest_travel' },
@@ -515,10 +516,18 @@ export default function MyProfile() {
                 <span>ID Verification</span>
                 <span>{profile.gender === 'male' ? (config.tokens_verify_cost_men ?? 200) : (config.tokens_verify_cost_women ?? 200)} tokens</span>
               </div>
+              {config.ad_free_enabled !== false && (
+              <div className="flex justify-between">
+                <span>{t('token_cost_remove_ads')}</span>
+                <span>{config.ad_free_token_cost ?? 200} tokens</span>
+              </div>
+              )}
             </div>
           </div>
         </CardContent>
       </Card>
+
+      <AdFreeCard profile={profile} onRefetch={refetch} />
 
       {/* Winks Received */}
       {winks && winks.length > 0 && (
