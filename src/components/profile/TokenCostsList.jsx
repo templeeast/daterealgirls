@@ -133,8 +133,9 @@ export default function TokenCostsList({ profile, config }) {
   // 11. Remove ads
   if (config?.ad_free_enabled !== false) {
     const cost = config?.ad_free_token_cost ?? 200;
+    const days = config?.ad_free_duration_days ?? 7;
     rows.push({
-      label: t('token_cost_remove_ads'),
+      label: `${t('token_cost_remove_ads')} (${days} ${t('ad_free_days')})`,
       cost: t('token_cost_n_tokens', { n: cost }),
       isFree: false,
     });
