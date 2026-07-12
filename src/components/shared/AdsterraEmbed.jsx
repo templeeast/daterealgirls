@@ -6,10 +6,10 @@ import { useIsMobile } from '@/hooks/use-mobile';
 /**
  * Renders an Adsterra banner ad unit.
  *
- * Uses an iframe wrapper so Adsterra's invoke.js (which relies on
- * document.write) has a fresh document context — this is required
- * for SPAs where scripts are injected after initial page load,
- * and fixes rendering on iOS Safari.
+ * Sets the atOptions global and loads Adsterra's invoke.js directly.
+ * With format:'iframe', invoke.js creates its own internal iframe to
+ * render the ad — no wrapper iframe needed, works on all platforms
+ * including iOS Safari.
  *
  * Recommended banner sizes:
  *   Desktop: 728x90 (Leaderboard)
@@ -50,25 +50,25 @@ export default function AdsterraEmbed({
     const container = containerRef.current;
     container.innerHTML = '';
 
-    // Load a static same-origin HTML file that contains Adsterra's
-    // exact script structure, with the ad key passed as a URL param.
-    // iOS Safari blocks cross-origin script execution in srcdoc/blob
-    // iframes, but fully supports same-origin iframe src URLs.
-    const iframe = document.createElement('iframe');
-    iframe.width = activeWidth;
-    iframe.height = activeHeight;
-    iframe.style.border = '0';
-    iframe.style.overflow = 'hidden';
-    iframe.style.display = 'block';
-    iframe.style.margin = '0 auto';
-    iframe.scrolling = 'no';
-    iframe.setAttribute('frameborder', '0');
-    iframe.setAttribute('loading', 'eager');
-    iframe.src = '/adsterra-ad.html?key=' + encodeURIComponent(activeKey) +
-      '&width=' + activeWidth + '&height=' + activeHeight;
-    container.appendChild(iframe);
+    // Set the atOptions global that invoke.js reads, then load invoke.js.
+    // With format:'iframe', Adsterra creates its own internal iframe —
+    // no wrapper iframe needed, works on all platforms including iOS Safari.
+    window.atOptions = {
+      key: activeKey,
+      format: 'iframe',
+      height: activeHeight,
+      width: activeWidth,
+      params: {}
+    };
+
+    const script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = 'https://www.highperformanceformat.com/' + activeKey + '/invoke.js';
+    script.async = true;
+    container.appendChild(script);
 
     return () => {
+      delete window.atOptions;
       container.innerHTML = '';
     };
   }, [activeKey, shouldRender, activeWidth, activeHeight]);
