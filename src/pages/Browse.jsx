@@ -15,6 +15,7 @@ import { useTranslation } from 'react-i18next';
 import useSiteConfig from '@/hooks/useSiteConfig';
 import CountryCitySelector from '@/components/shared/CountryCitySelector';
 import StickyAdBar from '@/components/shared/StickyAdBar';
+import HilltopAdBar from '@/components/shared/HilltopAdBar';
 import { getCountryCode, haversineDistance } from '@/lib/geoUtils';
 
 export default function Browse() {
@@ -220,6 +221,9 @@ export default function Browse() {
         zone={config?.juicyads_zone_browse}
         zoneMobile={config?.juicyads_zone_browse_mobile}
       />
+
+      {/* Sticky ad bar — HilltopAds 300×250 */}
+      <HilltopAdBar scriptUrl={config?.hilltopads_zone_browse_profile} />
 
       {/* Token balance banner */}
       {currentTokens < 200 && !isUnverifiedGate && (

@@ -8,6 +8,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import useMyProfile from '@/hooks/useMyProfile';
 import useSiteConfig from '@/hooks/useSiteConfig';
 import StickyAdBar from '@/components/shared/StickyAdBar';
+import HilltopAdBar from '@/components/shared/HilltopAdBar';
 import { useTranslation } from 'react-i18next';
 
 export default function Favorites() {
@@ -43,6 +44,9 @@ export default function Favorites() {
         zone={config?.juicyads_zone_favorites}
         zoneMobile={config?.juicyads_zone_favorites_mobile}
       />
+
+      {/* Sticky ad bar — HilltopAds 300×250 */}
+      <HilltopAdBar scriptUrl={config?.hilltopads_zone_winks_messages_favorites} />
 
       <h1 className="font-heading text-3xl font-bold mb-6">{t('favorites_title')}</h1>
 

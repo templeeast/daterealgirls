@@ -419,6 +419,54 @@ export default function SiteSettings() {
             </div>
           )}
 
+          {/* HilltopAds */}
+          <div className="border-t pt-4 space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="font-medium text-sm">Enable HilltopAds</p>
+                <p className="text-xs text-muted-foreground mt-0.5">Shows 300×250 banner ads (desktop + mobile) on Browse, Winks, Messages, and Favorites pages. Enter the script URL (s.src value) from the HilltopAds embed code.</p>
+              </div>
+              <Switch
+                checked={form.hilltopads_enabled}
+                onCheckedChange={v => updateField('hilltopads_enabled', v)}
+              />
+            </div>
+            {form.hilltopads_enabled && (
+              <div className="space-y-4 pt-2">
+                <div className="border-t pt-4 space-y-3">
+                  <p className="text-sm font-semibold">Audience — Who Sees HilltopAds</p>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium">Show Ads to Men</p>
+                      <p className="text-xs text-muted-foreground">Recommended — men are the paying audience</p>
+                    </div>
+                    <Switch checked={form.hilltopads_show_men} onCheckedChange={v => updateField('hilltopads_show_men', v)} />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium">Show Ads to Women</p>
+                    </div>
+                    <Switch checked={form.hilltopads_show_women} onCheckedChange={v => updateField('hilltopads_show_women', v)} />
+                  </div>
+                </div>
+
+                <div className="border-t pt-4 space-y-3">
+                  <p className="text-sm font-semibold">Script URLs by Page Group (300×250 Desktop + Mobile)</p>
+                  <p className="text-xs text-muted-foreground">Paste the <strong>s.src</strong> value from the HilltopAds HTML embed code for each zone. Due to HilltopAds zone limits, Winks/Messages/Favorites share a single zone.</p>
+                  <div className="space-y-1">
+                    <Label className="text-xs">Browse &amp; Profile Pages — Script URL</Label>
+                    <Input value={form.hilltopads_zone_browse_profile} onChange={e => updateField('hilltopads_zone_browse_profile', e.target.value)} placeholder="//loud-hall.com/..." />
+                  </div>
+                  <div className="space-y-1">
+                    <Label className="text-xs">Winks, Messages &amp; Favorites Pages — Script URL</Label>
+                    <Input value={form.hilltopads_zone_winks_messages_favorites} onChange={e => updateField('hilltopads_zone_winks_messages_favorites', e.target.value)} placeholder="//loud-hall.com/..." />
+                  </div>
+                  <p className="text-xs text-muted-foreground">Find your script URLs in HilltopAds Dashboard → Manage Site &amp; Zones → HTML Code. Use the demo site URLs initially; switch to the www URLs when going live.</p>
+                </div>
+              </div>
+            )}
+          </div>
+
         </CardContent>
       </Card>
 

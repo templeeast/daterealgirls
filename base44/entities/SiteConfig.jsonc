@@ -137,6 +137,31 @@
       "type": "string",
       "description": "JuicyAds Zone/Spot ID for the /favorites page \u2014 mobile placement (300x100)"
     },
+    "hilltopads_enabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether HilltopAds banner ads are enabled"
+    },
+    "hilltopads_show_men": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether to show HilltopAds to male users"
+    },
+    "hilltopads_show_women": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether to show HilltopAds to female users"
+    },
+    "hilltopads_zone_browse_profile": {
+      "type": "string",
+      "description": "HilltopAds script URL for the Browse and Profile pages (300x250 desktop + mobile)",
+      "default": "//loud-hall.com/bWX/V.scdPG/lv0RYTWDcQ/geemx9yuXZZUF/KZPCTvctyzM_T-cVwDOZTWMptANwzYImxZnpzTAE5RNkww"
+    },
+    "hilltopads_zone_winks_messages_favorites": {
+      "type": "string",
+      "description": "HilltopAds script URL for the Winks, Messages, and Favorites pages (300x250 desktop + mobile)",
+      "default": "//loud-hall.com/bUX.VesndBGHl/0DYNWicD/EeQmZ9/u/ZUUrljk/PPT/cgyoM/TEctxuMtD/k/tlNnzzIMxmNZzUEfxMM/wN"
+    },
     "msg_rate_limit_count": {
       "type": "number",
       "default": 5

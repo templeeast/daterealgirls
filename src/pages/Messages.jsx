@@ -10,6 +10,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import useSiteConfig from '@/hooks/useSiteConfig';
 import StickyAdBar from '@/components/shared/StickyAdBar';
+import HilltopAdBar from '@/components/shared/HilltopAdBar';
 
 export default function Messages() {
   const { user } = useMyProfile();
@@ -54,6 +55,9 @@ export default function Messages() {
         zone={config?.juicyads_zone_messages}
         zoneMobile={config?.juicyads_zone_messages_mobile}
       />
+
+      {/* Sticky ad bar — HilltopAds 300×250 */}
+      <HilltopAdBar scriptUrl={config?.hilltopads_zone_winks_messages_favorites} />
 
       {isLoading ? (
         <div className="space-y-3">

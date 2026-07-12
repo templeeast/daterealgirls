@@ -7,6 +7,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import useMyProfile from '@/hooks/useMyProfile';
 import useSiteConfig from '@/hooks/useSiteConfig';
 import StickyAdBar from '@/components/shared/StickyAdBar';
+import HilltopAdBar from '@/components/shared/HilltopAdBar';
 import { formatDistanceToNow } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 
@@ -60,6 +61,9 @@ export default function Winks() {
         zone={config?.juicyads_zone_winks}
         zoneMobile={config?.juicyads_zone_winks_mobile}
       />
+
+      {/* Sticky ad bar — HilltopAds 300×250 */}
+      <HilltopAdBar scriptUrl={config?.hilltopads_zone_winks_messages_favorites} />
 
       {/* Tab toggle */}
       <div className="flex gap-2 mb-6">
