@@ -38,12 +38,10 @@ export default function Favorites() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
-      {/* Sticky ad bar — JuicyAds + Adsterra, stays visible while scrolling */}
+      {/* Sticky ad bar — JuicyAds, stays visible while scrolling */}
       <StickyAdBar
         zone={config?.juicyads_zone_favorites}
         zoneMobile={config?.juicyads_zone_favorites_mobile}
-        adsterraKey={config?.adsterra_key_favorites}
-        adsterraKeyMobile={config?.adsterra_key_favorites_mobile}
       />
 
       <h1 className="font-heading text-3xl font-bold mb-6">{t('favorites_title')}</h1>

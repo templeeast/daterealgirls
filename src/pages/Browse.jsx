@@ -215,12 +215,10 @@ export default function Browse() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      {/* Sticky ad bar — JuicyAds + Adsterra, stays visible while scrolling */}
+      {/* Sticky ad bar — JuicyAds, stays visible while scrolling */}
       <StickyAdBar
         zone={config?.juicyads_zone_browse}
         zoneMobile={config?.juicyads_zone_browse_mobile}
-        adsterraKey={config?.adsterra_key_browse}
-        adsterraKeyMobile={config?.adsterra_key_browse_mobile}
       />
 
       {/* Token balance banner */}
