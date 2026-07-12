@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { CheckSquare, Square, ChevronDown, ChevronRight, Shield, Users, CreditCard, MessageSquare, Heart, Settings, Bug, Globe, Trash2, RefreshCw, Tag, Camera, Lock, Image, Key, Link, Monitor, Video, MapPin } from 'lucide-react';
+import { CheckSquare, Square, ChevronDown, ChevronRight, Shield, Users, CreditCard, MessageSquare, Heart, Settings, Bug, Globe, Trash2, RefreshCw, Tag, Camera, Lock, Image, Key, Link, Monitor, Video, MapPin, EyeOff } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import useMyProfile from '@/hooks/useMyProfile';
 import { base44 } from '@/api/base44Client';
@@ -798,6 +798,52 @@ const sections = [
       { id: 'gv-22', label: 'ADMIN DETAIL: Admin can still use Reject button to reject a gender-flagged profile (sets verification_status="rejected")' },
       { id: 'gv-23', label: 'ADMIN DETAIL: After manual approve, profile disappears from gender review queue and member can use the app normally' },
       { id: 'gv-24', label: 'GENDER MAP: Didit "M" maps to profile "male", "F" maps to "female", "U" or missing maps to unknown (triggers review)' },
+    ],
+  },
+  {
+    id: 'adfree',
+    icon: EyeOff,
+    title: 'Ad-Free Pass (Token-Based Ad Removal)',
+    color: 'text-cyan-600',
+    items: [
+      // --- Entity & Config ---
+      { id: 'af-1',  label: 'ENTITY: MemberProfile has ad_free_until field (date-time) for storing ad-free expiry' },
+      { id: 'af-2',  label: 'ENTITY: SiteConfig has ad_free_enabled (boolean, default true), ad_free_duration_days (default 7), ad_free_token_cost (default 200)' },
+      // --- Admin Settings ---
+      { id: 'af-3',  label: 'ADMIN SETTINGS: "Ad-Free Pass" card is visible in Site Settings with enable toggle, duration, and token cost fields' },
+      { id: 'af-4',  label: 'ADMIN SETTINGS: Toggling ad_free_enabled OFF hides the AdFreeCard from My Profile and hides the row in Token Guide' },
+      { id: 'af-5',  label: 'ADMIN SETTINGS: Toggling ad_free_enabled ON shows the AdFreeCard on My Profile and the row in Token Guide' },
+      { id: 'af-6',  label: 'ADMIN SETTINGS: Changing ad_free_duration_days saves and reflects the new duration on AdFreeCard and Token Guide' },
+      { id: 'af-7',  label: 'ADMIN SETTINGS: Changing ad_free_token_cost saves and reflects the new cost on AdFreeCard, Token Guide, and My Profile cost breakdown' },
+      // --- My Profile UI ---
+      { id: 'af-8',  label: 'MY PROFILE: AdFreeCard renders with title "Remove Ads", description showing duration, cost, and current token balance' },
+      { id: 'af-9',  label: 'MY PROFILE: User with sufficient tokens sees active "Remove Ads (N tokens)" button' },
+      { id: 'af-10', label: 'MY PROFILE: User with insufficient tokens sees "You need N more tokens" message and disabled button' },
+      { id: 'af-11', label: 'MY PROFILE: Clicking "Remove Ads" calls purchaseAdFree, deducts tokens, and shows success toast' },
+      { id: 'af-12', label: 'MY PROFILE: After purchase, card switches to green "Ads are hidden until {date}" active state' },
+      { id: 'af-13', label: 'MY PROFILE: AdFreeCard does NOT render when ad_free_enabled is false' },
+      // --- Token Cost Breakdown ---
+      { id: 'af-14', label: 'MY PROFILE: "Remove ads" row appears in token cost breakdown when ad_free_enabled is true' },
+      { id: 'af-15', label: 'MY PROFILE: "Remove ads" row is hidden from cost breakdown when ad_free_enabled is false' },
+      // --- Token Guide ---
+      { id: 'af-16', label: 'TOKEN GUIDE: "Remove ads" row appears in the token cost table with correct cost and duration for both men and women' },
+      { id: 'af-17', label: 'TOKEN GUIDE: Row is hidden when ad_free_enabled is false' },
+      // --- Ad Suppression ---
+      { id: 'af-18', label: 'AD SUPPRESSION: JuicyAds embed does NOT render when user has active ad_free_until (on Browse, Profile, Messages, Winks, Favorites)' },
+      { id: 'af-19', label: 'AD SUPPRESSION: HilltopAds embed does NOT render when user has active ad_free_until' },
+      { id: 'af-20', label: 'AD SUPPRESSION: Ads reappear on all pages after ad_free_until expires' },
+      // --- Backend Function ---
+      { id: 'af-21', label: 'BACKEND: purchaseAdFree returns 401 for unauthenticated requests' },
+      { id: 'af-22', label: 'BACKEND: purchaseAdFree returns 404 when MemberProfile not found' },
+      { id: 'af-23', label: 'BACKEND: purchaseAdFree returns 403 when ad_free_enabled is false' },
+      { id: 'af-24', label: 'BACKEND: purchaseAdFree returns 402 with tokensNeeded when user has insufficient tokens' },
+      { id: 'af-25', label: 'BACKEND: purchaseAdFree deducts correct token amount and sets ad_free_until to N days from now' },
+      { id: 'af-26', label: 'BACKEND: purchaseAdFree creates TokenTransaction with type="spend", correct negative tokens, and "Removed ads (N days)" description' },
+      { id: 'af-27', label: 'BACKEND: If user already has active ad_free_until, new purchase EXTENDS from existing expiry (not from now)' },
+      { id: 'af-28', label: 'BACKEND: If user has expired ad_free_until, new purchase starts from current time' },
+      // --- i18n ---
+      { id: 'af-29', label: 'i18n: AdFreeCard title, description, cost/duration labels, button text, insufficient message, and active-until text render correctly in all 8 supported languages' },
+      { id: 'af-30', label: 'i18n: Token Guide "Remove ads" row label renders correctly in all 8 supported languages' },
     ],
   },
 ];
