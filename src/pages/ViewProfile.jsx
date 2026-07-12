@@ -11,6 +11,7 @@ import BrowseAllDialog from '@/components/browse/BrowseAllDialog';
 import { Skeleton } from '@/components/ui/skeleton';
 import useMyProfile from '@/hooks/useMyProfile';
 import useSiteConfig from '@/hooks/useSiteConfig';
+import AdFreeBanner from '@/components/shared/AdFreeBanner';
 import PrivatePhotosViewer from '@/components/profile/PrivatePhotosViewer';
 import PhotoZoomModal from '@/components/profile/PhotoZoomModal';
 import { useToast } from '@/components/ui/use-toast';
@@ -159,6 +160,9 @@ export default function ViewProfile() {
       <Button variant="ghost" className="mb-4" onClick={() => navigate(-1)}>
         <ArrowLeft className="w-4 h-4 mr-2" /> {t('back')}
       </Button>
+
+      {/* Token-based ad removal */}
+      <AdFreeBanner />
 
       {/* Photos */}
       {photos.length > 0 ? (

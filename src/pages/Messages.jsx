@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next';
 import useSiteConfig from '@/hooks/useSiteConfig';
 import StickyAdBar from '@/components/shared/StickyAdBar';
 import HilltopAdBar from '@/components/shared/HilltopAdBar';
+import AdFreeBanner from '@/components/shared/AdFreeBanner';
 
 export default function Messages() {
   const { user } = useMyProfile();
@@ -58,6 +59,9 @@ export default function Messages() {
 
       {/* Sticky ad bar — HilltopAds 300×250 */}
       <HilltopAdBar scriptUrl={config?.hilltopads_zone_winks_messages_favorites} scriptUrlMobile={config?.hilltopads_zone_winks_messages_favorites_mobile} />
+
+      {/* Token-based ad removal */}
+      <AdFreeBanner />
 
       {isLoading ? (
         <div className="space-y-3">

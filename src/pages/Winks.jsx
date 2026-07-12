@@ -8,6 +8,7 @@ import useMyProfile from '@/hooks/useMyProfile';
 import useSiteConfig from '@/hooks/useSiteConfig';
 import StickyAdBar from '@/components/shared/StickyAdBar';
 import HilltopAdBar from '@/components/shared/HilltopAdBar';
+import AdFreeBanner from '@/components/shared/AdFreeBanner';
 import { formatDistanceToNow } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 
@@ -64,6 +65,9 @@ export default function Winks() {
 
       {/* Sticky ad bar — HilltopAds 300×250 */}
       <HilltopAdBar scriptUrl={config?.hilltopads_zone_winks_messages_favorites} scriptUrlMobile={config?.hilltopads_zone_winks_messages_favorites_mobile} />
+
+      {/* Token-based ad removal */}
+      <AdFreeBanner />
 
       {/* Tab toggle */}
       <div className="flex gap-2 mb-6">
