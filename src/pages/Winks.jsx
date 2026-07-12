@@ -63,7 +63,7 @@ export default function Winks() {
       />
 
       {/* Sticky ad bar — HilltopAds 300×250 */}
-      <HilltopAdBar scriptUrl={config?.hilltopads_zone_winks_messages_favorites} />
+      <HilltopAdBar scriptUrl={config?.hilltopads_zone_winks_messages_favorites} scriptUrlMobile={config?.hilltopads_zone_winks_messages_favorites_mobile} />
 
       {/* Tab toggle */}
       <div className="flex gap-2 mb-6">

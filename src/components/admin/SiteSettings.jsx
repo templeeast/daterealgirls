@@ -111,6 +111,13 @@ export default function SiteSettings() {
     tokens_msg_video_cost_men: 10,
     tokens_msg_video_cost_women: 10,
     tokens_private_video_cost: 10,
+    hilltopads_enabled: false,
+    hilltopads_show_men: true,
+    hilltopads_show_women: false,
+    hilltopads_zone_browse_profile: '',
+    hilltopads_zone_browse_profile_mobile: '',
+    hilltopads_zone_winks_messages_favorites: '',
+    hilltopads_zone_winks_messages_favorites_mobile: '',
   });
 
   useEffect(() => {
@@ -201,6 +208,13 @@ export default function SiteSettings() {
         tokens_msg_video_cost_men: existingConfig.tokens_msg_video_cost_men ?? 10,
         tokens_msg_video_cost_women: existingConfig.tokens_msg_video_cost_women ?? 10,
         tokens_private_video_cost: existingConfig.tokens_private_video_cost ?? 10,
+        hilltopads_enabled: existingConfig.hilltopads_enabled || false,
+        hilltopads_show_men: existingConfig.hilltopads_show_men !== false,
+        hilltopads_show_women: existingConfig.hilltopads_show_women || false,
+        hilltopads_zone_browse_profile: existingConfig.hilltopads_zone_browse_profile || '',
+        hilltopads_zone_browse_profile_mobile: existingConfig.hilltopads_zone_browse_profile_mobile || '',
+        hilltopads_zone_winks_messages_favorites: existingConfig.hilltopads_zone_winks_messages_favorites || '',
+        hilltopads_zone_winks_messages_favorites_mobile: existingConfig.hilltopads_zone_winks_messages_favorites_mobile || '',
       });
     }
   }, [existingConfig]);
@@ -451,15 +465,25 @@ export default function SiteSettings() {
                 </div>
 
                 <div className="border-t pt-4 space-y-3">
-                  <p className="text-sm font-semibold">Script URLs by Page Group (300×250 Desktop + Mobile)</p>
-                  <p className="text-xs text-muted-foreground">Paste the <strong>s.src</strong> value from the HilltopAds HTML embed code for each zone. Due to HilltopAds zone limits, Winks/Messages/Favorites share a single zone.</p>
-                  <div className="space-y-1">
-                    <Label className="text-xs">Browse &amp; Profile Pages — Script URL</Label>
-                    <Input value={form.hilltopads_zone_browse_profile} onChange={e => updateField('hilltopads_zone_browse_profile', e.target.value)} placeholder="//loud-hall.com/..." />
-                  </div>
-                  <div className="space-y-1">
-                    <Label className="text-xs">Winks, Messages &amp; Favorites Pages — Script URL</Label>
-                    <Input value={form.hilltopads_zone_winks_messages_favorites} onChange={e => updateField('hilltopads_zone_winks_messages_favorites', e.target.value)} placeholder="//loud-hall.com/..." />
+                  <p className="text-sm font-semibold">Script URLs by Page Group (300×250)</p>
+                  <p className="text-xs text-muted-foreground">Paste the <strong>s.src</strong> value from the HilltopAds HTML embed code for each zone. Set a separate Mobile Mode zone for mobile screens; if left blank, the Desktop zone is used as fallback.</p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <Label className="text-xs">Browse &amp; Profile — Desktop Script URL</Label>
+                      <Input value={form.hilltopads_zone_browse_profile} onChange={e => updateField('hilltopads_zone_browse_profile', e.target.value)} placeholder="//loud-hall.com/..." />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs">Browse &amp; Profile — Mobile Mode Script URL</Label>
+                      <Input value={form.hilltopads_zone_browse_profile_mobile} onChange={e => updateField('hilltopads_zone_browse_profile_mobile', e.target.value)} placeholder="//loud-hall.com/..." />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs">Winks, Messages &amp; Favorites — Desktop Script URL</Label>
+                      <Input value={form.hilltopads_zone_winks_messages_favorites} onChange={e => updateField('hilltopads_zone_winks_messages_favorites', e.target.value)} placeholder="//loud-hall.com/..." />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs">Winks, Messages &amp; Favorites — Mobile Mode Script URL</Label>
+                      <Input value={form.hilltopads_zone_winks_messages_favorites_mobile} onChange={e => updateField('hilltopads_zone_winks_messages_favorites_mobile', e.target.value)} placeholder="//loud-hall.com/..." />
+                    </div>
                   </div>
                   <p className="text-xs text-muted-foreground">Find your script URLs in HilltopAds Dashboard → Manage Site &amp; Zones → HTML Code. Use the demo site URLs initially; switch to the www URLs when going live.</p>
                 </div>

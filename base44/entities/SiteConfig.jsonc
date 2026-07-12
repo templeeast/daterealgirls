@@ -154,13 +154,21 @@
     },
     "hilltopads_zone_browse_profile": {
       "type": "string",
-      "description": "HilltopAds script URL for the Browse and Profile pages (300x250 desktop + mobile)",
+      "description": "HilltopAds script URL for the Browse and Profile pages \u2014 desktop (300x250)",
       "default": "//loud-hall.com/bWX/V.scdPG/lv0RYTWDcQ/geemx9yuXZZUF/KZPCTvctyzM_T-cVwDOZTWMptANwzYImxZnpzTAE5RNkww"
+    },
+    "hilltopads_zone_browse_profile_mobile": {
+      "type": "string",
+      "description": "HilltopAds script URL for the Browse and Profile pages \u2014 mobile mode (300x250)"
     },
     "hilltopads_zone_winks_messages_favorites": {
       "type": "string",
-      "description": "HilltopAds script URL for the Winks, Messages, and Favorites pages (300x250 desktop + mobile)",
+      "description": "HilltopAds script URL for the Winks, Messages, and Favorites pages \u2014 desktop (300x250)",
       "default": "//loud-hall.com/bUX.VesndBGHl/0DYNWicD/EeQmZ9/u/ZUUrljk/PPT/cgyoM/TEctxuMtD/k/tlNnzzIMxmNZzUEfxMM/wN"
+    },
+    "hilltopads_zone_winks_messages_favorites_mobile": {
+      "type": "string",
+      "description": "HilltopAds script URL for the Winks, Messages, and Favorites pages \u2014 mobile mode (300x250)"
     },
     "msg_rate_limit_count": {
       "type": "number",

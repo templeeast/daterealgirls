@@ -46,7 +46,7 @@ export default function Favorites() {
       />
 
       {/* Sticky ad bar — HilltopAds 300×250 */}
-      <HilltopAdBar scriptUrl={config?.hilltopads_zone_winks_messages_favorites} />
+      <HilltopAdBar scriptUrl={config?.hilltopads_zone_winks_messages_favorites} scriptUrlMobile={config?.hilltopads_zone_winks_messages_favorites_mobile} />
 
       <h1 className="font-heading text-3xl font-bold mb-6">{t('favorites_title')}</h1>
 

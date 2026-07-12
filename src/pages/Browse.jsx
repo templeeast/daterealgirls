@@ -223,7 +223,7 @@ export default function Browse() {
       />
 
       {/* Sticky ad bar — HilltopAds 300×250 */}
-      <HilltopAdBar scriptUrl={config?.hilltopads_zone_browse_profile} />
+      <HilltopAdBar scriptUrl={config?.hilltopads_zone_browse_profile} scriptUrlMobile={config?.hilltopads_zone_browse_profile_mobile} />
 
       {/* Token balance banner */}
       {currentTokens < 200 && !isUnverifiedGate && (

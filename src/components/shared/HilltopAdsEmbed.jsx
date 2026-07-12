@@ -1,17 +1,23 @@
 import React, { useEffect, useRef } from 'react';
 import useSiteConfig from '@/hooks/useSiteConfig';
 import useMyProfile from '@/hooks/useMyProfile';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 /**
- * Renders a HilltopAds 300×250 banner ad (desktop + mobile).
- * The scriptUrl is the s.src value from the HilltopAds embed code.
+ * Renders a HilltopAds 300×250 banner ad.
+ * scriptUrl      — s.src for desktop zone.
+ * scriptUrlMobile — s.src for the mobile-mode zone (optional).
+ *
+ * On mobile screens, the mobile zone is used if set; otherwise falls back
+ * to the desktop zone.
  *
  * HilltopAds MultiTag Banner scripts use fixed/absolute positioning that
  * breaks out of any container div. We load the script inside an iframe to
  * constrain the ad to 300×250 — position:fixed inside the iframe is relative
  * to the iframe viewport, not the parent page.
  */
-export default function HilltopAdsEmbed({ scriptUrl }) {
+export default function HilltopAdsEmbed({ scriptUrl, scriptUrlMobile }) {
+  const isMobile = useIsMobile();
   const { config } = useSiteConfig();
   const { profile } = useMyProfile();
   const containerRef = useRef(null);
@@ -21,14 +27,17 @@ export default function HilltopAdsEmbed({ scriptUrl }) {
   const showMen = config?.hilltopads_show_men !== false;
   const showWomen = config?.hilltopads_show_women || false;
 
+  // Pick the active zone: mobile zone on mobile screens if available, else desktop
+  const activeUrl = isMobile && scriptUrlMobile ? scriptUrlMobile : scriptUrl;
+
   const shouldRender =
     enabled &&
-    scriptUrl &&
+    activeUrl &&
     !(gender === 'male' && !showMen) &&
     !(gender === 'female' && !showWomen);
 
   useEffect(() => {
-    if (!shouldRender || !scriptUrl || !containerRef.current) return;
+    if (!shouldRender || !activeUrl || !containerRef.current) return;
 
     // Clear any previous ad content — required for SPA page navigations.
     containerRef.current.innerHTML = '';
@@ -44,7 +53,7 @@ export default function HilltopAdsEmbed({ scriptUrl }) {
     iframe.setAttribute('referrerpolicy', 'no-referrer-when-downgrade');
     containerRef.current.appendChild(iframe);
 
-    const fullUrl = scriptUrl.startsWith('//') ? 'https:' + scriptUrl : scriptUrl;
+    const fullUrl = activeUrl.startsWith('//') ? 'https:' + activeUrl : activeUrl;
 
     const doc = iframe.contentDocument || iframe.contentWindow?.document;
     if (doc) {
@@ -65,7 +74,7 @@ export default function HilltopAdsEmbed({ scriptUrl }) {
         containerRef.current.innerHTML = '';
       }
     };
-  }, [scriptUrl, shouldRender]);
+  }, [activeUrl, shouldRender]);
 
   if (!shouldRender) return null;
 
