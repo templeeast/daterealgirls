@@ -52,13 +52,27 @@ export default function HilltopAdsEmbed({ scriptUrl, scriptUrlMobile }) {
   const cleanUrl = activeUrl.replace(/\\/g, '');
   const fullUrl = cleanUrl.startsWith('//') ? 'https:' + cleanUrl : cleanUrl;
 
-  const iframeSrc = '/hilltopads-iframe.html?url=' + encodeURIComponent(fullUrl) + '&w=' + width + '&h=' + height;
+  const srcDoc =
+    '<!DOCTYPE html><html><head><meta charset="utf-8">' +
+    '<meta name="viewport" content="width=device-width, initial-scale=1">' +
+    '<meta name="referrer" content="no-referrer-when-downgrade">' +
+    '<style>*{margin:0;padding:0;overflow:hidden;}html,body{width:' + width + 'px;height:' + height + 'px;}</style>' +
+    '</head><body>' +
+    '<script>(function(cn){' +
+    'var d=document,s=d.createElement("script"),l=d.scripts[d.scripts.length-1];' +
+    's.settings=cn||{};' +
+    's.src="' + fullUrl + '";' +
+    's.async=true;' +
+    's.referrerPolicy="no-referrer-when-downgrade";' +
+    'l.parentNode.insertBefore(s,l);' +
+    '})({})<\/script>' +
+    '</body></html>';
 
   return (
     <div className="my-4 flex justify-center">
       <iframe
         key={fullUrl}
-        src={iframeSrc}
+        srcDoc={srcDoc}
         title="advertisement"
         style={{ width: width + 'px', height: height + 'px', border: 'none', display: 'block', margin: '0 auto' }}
         scrolling="no"
