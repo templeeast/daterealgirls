@@ -16,6 +16,7 @@ import useSiteConfig from '@/hooks/useSiteConfig';
 import CountryCitySelector from '@/components/shared/CountryCitySelector';
 import StickyAdBar from '@/components/shared/StickyAdBar';
 import HilltopAdBar from '@/components/shared/HilltopAdBar';
+import AdFreeBanner from '@/components/shared/AdFreeBanner';
 import { getCountryCode, haversineDistance } from '@/lib/geoUtils';
 
 export default function Browse() {
@@ -224,6 +225,9 @@ export default function Browse() {
 
       {/* Sticky ad bar — HilltopAds 300×250 */}
       <HilltopAdBar scriptUrl={config?.hilltopads_zone_browse_profile} scriptUrlMobile={config?.hilltopads_zone_browse_profile_mobile} />
+
+      {/* Token-based ad removal */}
+      <AdFreeBanner />
 
       {/* Token balance banner */}
       {currentTokens < 200 && !isUnverifiedGate && (
