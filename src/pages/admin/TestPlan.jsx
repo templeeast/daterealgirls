@@ -844,6 +844,19 @@ const sections = [
       // --- i18n ---
       { id: 'af-29', label: 'i18n: AdFreeCard title, description, cost/duration labels, button text, insufficient message, and active-until text render correctly in all 8 supported languages' },
       { id: 'af-30', label: 'i18n: Token Guide "Remove ads" row label renders correctly in all 8 supported languages' },
+      // --- AdFreeBanner (inline on ad pages) ---
+      { id: 'af-31', label: 'BANNER: AdFreeBanner renders on /browse page below the ad bars' },
+      { id: 'af-32', label: 'BANNER: AdFreeBanner renders on /profile/:id (ViewProfile) page' },
+      { id: 'af-33', label: 'BANNER: AdFreeBanner renders on /winks page below the ad bars' },
+      { id: 'af-34', label: 'BANNER: AdFreeBanner renders on /messages page below the ad bars' },
+      { id: 'af-35', label: 'BANNER: AdFreeBanner renders on /favorites page below the ad bars' },
+      { id: 'af-36', label: 'BANNER: Banner shows compact layout with EyeOff icon, ad-free description, and token-cost button' },
+      { id: 'af-37', label: 'BANNER: User with sufficient tokens clicking the button calls purchaseAdFree and shows success toast' },
+      { id: 'af-38', label: 'BANNER: After successful purchase, myProfile query is invalidated and banner disappears (ad-free now active)' },
+      { id: 'af-39', label: 'BANNER: User with insufficient tokens sees button disabled (no purchase attempt)' },
+      { id: 'af-40', label: 'BANNER: Banner does NOT render when ad_free_enabled is false' },
+      { id: 'af-41', label: 'BANNER: Banner does NOT render when user already has active ad_free_until' },
+      { id: 'af-42', label: 'BANNER: Banner disappears from all five pages after ad-free is activated (no page reload needed)' },
     ],
   },
 ];
