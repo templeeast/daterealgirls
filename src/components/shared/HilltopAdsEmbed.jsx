@@ -1,24 +1,32 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import useSiteConfig from '@/hooks/useSiteConfig';
 import useMyProfile from '@/hooks/useMyProfile';
-import { useIsMobile } from '@/hooks/use-mobile';
 
 /**
- * Renders a HilltopAds 300×250 banner ad inside a sandboxed iframe.
+ * Renders a HilltopAds 300×250 banner ad inside an iframe.
  *
  * scriptUrl       — s.src for the desktop zone.
  * scriptUrlMobile — s.src for the mobile-mode zone (optional).
  *
- * On mobile screens, the mobile zone is used if set; otherwise falls back
- * to the desktop zone.
- *
- * Uses a React-rendered <iframe srcDoc=...> so the browser handles iframe
- * lifecycle natively — no manual doc.write() or useEffect cleanup needed.
- * When the active URL changes (e.g. desktop→mobile switch), React updates
- * srcDoc and the browser reloads the iframe content reliably.
+ * Uses lazy initial state for mobile detection (not the useIsMobile hook)
+ * to get the correct value on the FIRST render — no undefined→true flash
+ * that would cause the iframe to load the desktop URL briefly then switch.
+ * A `key` prop on the iframe forces a clean iframe recreation when the URL
+ * changes, guaranteeing the browser reloads the ad.
  */
 export default function HilltopAdsEmbed({ scriptUrl, scriptUrlMobile }) {
-  const isMobile = useIsMobile();
+  // Lazy initial state — correct on first render, no timing gap
+  const [isMobile, setIsMobile] = useState(() =>
+    typeof window !== 'undefined' && window.innerWidth < 768
+  );
+
+  useEffect(() => {
+    const mql = window.matchMedia('(max-width: 767px)');
+    const onChange = () => setIsMobile(window.innerWidth < 768);
+    mql.addEventListener('change', onChange);
+    return () => mql.removeEventListener('change', onChange);
+  }, []);
+
   const { config } = useSiteConfig();
   const { profile } = useMyProfile();
 
@@ -27,7 +35,6 @@ export default function HilltopAdsEmbed({ scriptUrl, scriptUrlMobile }) {
   const showMen = config?.hilltopads_show_men !== false;
   const showWomen = config?.hilltopads_show_women || false;
 
-  // Pick the active zone: mobile zone on mobile screens if available, else desktop
   const activeUrl = isMobile && scriptUrlMobile ? scriptUrlMobile : scriptUrl;
 
   const shouldRender =
@@ -38,13 +45,11 @@ export default function HilltopAdsEmbed({ scriptUrl, scriptUrlMobile }) {
 
   if (!shouldRender) return null;
 
-  // HilltopAds code blocks display s.src with escaped slashes (\/). When
-  // copy-pasted into the admin form, backslashes are stored literally.
-  // Strip them so the URL becomes a clean //loud-hall.com/... value.
+  // HilltopAds code blocks display s.src with escaped slashes (\/).
+  // Strip backslashes so the URL becomes a clean //loud-hall.com/... value.
   const cleanUrl = activeUrl.replace(/\\/g, '');
   const fullUrl = cleanUrl.startsWith('//') ? 'https:' + cleanUrl : cleanUrl;
 
-  // Replicate the exact HilltopAds IIFE loader inside the iframe document.
   const srcDoc =
     '<!DOCTYPE html><html><head><meta charset="utf-8">' +
     '<meta name="viewport" content="width=device-width, initial-scale=1">' +
@@ -63,6 +68,7 @@ export default function HilltopAdsEmbed({ scriptUrl, scriptUrlMobile }) {
   return (
     <div className="my-4 flex justify-center">
       <iframe
+        key={fullUrl}
         srcDoc={srcDoc}
         title="advertisement"
         style={{ width: '300px', height: '250px', border: 'none', display: 'block', margin: '0 auto' }}
