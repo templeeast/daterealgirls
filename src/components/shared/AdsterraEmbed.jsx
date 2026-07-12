@@ -6,10 +6,15 @@ import { useIsMobile } from '@/hooks/use-mobile';
 /**
  * Renders an Adsterra banner ad unit.
  *
- * Uses an iframe wrapper so Adsterra's invoke.js (which relies on
- * document.write) has a fresh document context — this is required
- * for SPAs where scripts are injected after initial page load,
- * and fixes rendering on iOS Safari.
+ * Loads invoke.js as a first-party script (not inside an iframe) and
+ * intercepts document.write — which invoke.js uses to output the ad
+ * iframe tag. In an SPA the document is already closed so native
+ * document.write is blocked; our override captures the HTML and
+ * injects it into our container div.
+ *
+ * This approach works on iOS Safari, where iframe-based methods
+ * (srcdoc, blob URL) fail due to Intelligent Tracking Prevention
+ * blocking third-party scripts inside iframes.
  *
  * Recommended banner sizes:
  *   Desktop: 728x90 (Leaderboard)
@@ -50,47 +55,53 @@ export default function AdsterraEmbed({
     const container = containerRef.current;
     container.innerHTML = '';
 
-    // Use a blob URL for the iframe src. iOS Safari blocks cross-origin
-    // script loading in srcdoc iframes (null origin) and silently fails
-    // on contentWindow.document.write. A blob URL inherits the parent
-    // page's origin, so external scripts (invoke.js) load and execute
-    // as parser-inserted synchronous scripts — document.write works.
-    const adHtml =
-      '<!DOCTYPE html><html><head><meta charset="utf-8">' +
-      '<meta name="viewport" content="width=device-width,initial-scale=1">' +
-      '<style>body{margin:0;padding:0;overflow:hidden;background:transparent;}</style>' +
-      '</head><body>' +
-      '<script type="text/javascript">' +
-      'atOptions = {' +
-      "  key: '" + activeKey + "'," +
-      "  format: 'iframe'," +
-      '  height: ' + activeHeight + ',' +
-      '  width: ' + activeWidth + ',' +
-      '  params: {}' +
-      '};' +
-      '</script>' +
-      '<script type="text/javascript" src="https://www.highperformanceformat.com/' + activeKey + '/invoke.js"></script>' +
-      '</body></html>';
+    // Set atOptions on window — invoke.js reads this global
+    window.atOptions = {
+      key: activeKey,
+      format: 'iframe',
+      height: activeHeight,
+      width: activeWidth,
+      params: {}
+    };
 
-    const blob = new Blob([adHtml], { type: 'text/html' });
-    const blobUrl = URL.createObjectURL(blob);
+    // invoke.js uses document.write to output the ad iframe tag.
+    // In an SPA the document is already closed, so native document.write
+    // is blocked by the browser. Override it to capture the output,
+    // then inject it into our container. Loading as a first-party
+    // script avoids iOS Safari's ITP blocking that affects iframes.
+    const origWrite = document.write.bind(document);
+    const origWriteln = document.writeln.bind(document);
+    let captured = '';
 
-    const iframe = document.createElement('iframe');
-    iframe.width = activeWidth;
-    iframe.height = activeHeight;
-    iframe.style.border = '0';
-    iframe.style.overflow = 'hidden';
-    iframe.style.display = 'block';
-    iframe.style.margin = '0 auto';
-    iframe.scrolling = 'no';
-    iframe.setAttribute('frameborder', '0');
-    iframe.setAttribute('loading', 'eager');
-    iframe.src = blobUrl;
-    container.appendChild(iframe);
+    document.write = (h) => { captured += h; };
+    document.writeln = (h) => { captured += h; };
+
+    const script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = 'https://www.highperformanceformat.com/' + activeKey + '/invoke.js';
+
+    script.onload = () => {
+      document.write = origWrite;
+      document.writeln = origWriteln;
+      if (captured) {
+        container.innerHTML = captured;
+      }
+    };
+
+    script.onerror = () => {
+      document.write = origWrite;
+      document.writeln = origWriteln;
+    };
+
+    container.appendChild(script);
 
     return () => {
-      URL.revokeObjectURL(blobUrl);
+      document.write = origWrite;
+      document.writeln = origWriteln;
       container.innerHTML = '';
+      if (window.atOptions && window.atOptions.key === activeKey) {
+        delete window.atOptions;
+      }
     };
   }, [activeKey, shouldRender, activeWidth, activeHeight]);
 
