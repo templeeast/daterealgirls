@@ -6,15 +6,11 @@ import { useIsMobile } from '@/hooks/use-mobile';
 /**
  * Renders an Adsterra banner ad unit.
  *
- * Loads invoke.js as a first-party script (not inside an iframe) and
- * intercepts document.write — which invoke.js uses to output the ad
- * iframe tag. In an SPA the document is already closed so native
- * document.write is blocked; our override captures the HTML and
- * injects it into our container div.
- *
- * This approach works on iOS Safari, where iframe-based methods
- * (srcdoc, blob URL) fail due to Intelligent Tracking Prevention
- * blocking third-party scripts inside iframes.
+ * Uses the standard React integration pattern: appends a config
+ * script (setting atOptions) and the invoke.js script directly to
+ * the container div. invoke.js inserts the ad iframe next to the
+ * script element inside the container — no document.write override
+ * or iframe wrapper needed.
  *
  * Recommended banner sizes:
  *   Desktop: 728x90 (Leaderboard)
@@ -55,53 +51,29 @@ export default function AdsterraEmbed({
     const container = containerRef.current;
     container.innerHTML = '';
 
-    // Set atOptions on window — invoke.js reads this global
-    window.atOptions = {
+    // Standard Adsterra React integration: append a config script that
+    // sets atOptions, then append invoke.js. invoke.js reads atOptions
+    // and inserts the ad iframe next to the script element (inside our
+    // container). No document.write override or iframe wrapper needed.
+    const conf = document.createElement('script');
+    conf.type = 'text/javascript';
+    conf.innerHTML = 'atOptions = ' + JSON.stringify({
       key: activeKey,
       format: 'iframe',
       height: activeHeight,
       width: activeWidth,
       params: {}
-    };
-
-    // invoke.js uses document.write to output the ad iframe tag.
-    // In an SPA the document is already closed, so native document.write
-    // is blocked by the browser. Override it to capture the output,
-    // then inject it into our container. Loading as a first-party
-    // script avoids iOS Safari's ITP blocking that affects iframes.
-    const origWrite = document.write.bind(document);
-    const origWriteln = document.writeln.bind(document);
-    let captured = '';
-
-    document.write = (h) => { captured += h; };
-    document.writeln = (h) => { captured += h; };
+    }) + ';';
 
     const script = document.createElement('script');
     script.type = 'text/javascript';
     script.src = 'https://www.highperformanceformat.com/' + activeKey + '/invoke.js';
 
-    script.onload = () => {
-      document.write = origWrite;
-      document.writeln = origWriteln;
-      if (captured) {
-        container.innerHTML = captured;
-      }
-    };
-
-    script.onerror = () => {
-      document.write = origWrite;
-      document.writeln = origWriteln;
-    };
-
+    container.appendChild(conf);
     container.appendChild(script);
 
     return () => {
-      document.write = origWrite;
-      document.writeln = origWriteln;
       container.innerHTML = '';
-      if (window.atOptions && window.atOptions.key === activeKey) {
-        delete window.atOptions;
-      }
     };
   }, [activeKey, shouldRender, activeWidth, activeHeight]);
 
