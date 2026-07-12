@@ -6,10 +6,10 @@ import { useIsMobile } from '@/hooks/use-mobile';
 /**
  * Renders an Adsterra banner ad unit.
  *
- * Sets the atOptions global and loads Adsterra's invoke.js directly.
- * With format:'iframe', invoke.js creates its own internal iframe to
- * render the ad — no wrapper iframe needed, works on all platforms
- * including iOS Safari.
+ * Uses an iframe wrapper so Adsterra's invoke.js (which relies on
+ * document.write) has a fresh document context — this is required
+ * for SPAs where scripts are injected after initial page load,
+ * and fixes rendering on iOS Safari.
  *
  * Recommended banner sizes:
  *   Desktop: 728x90 (Leaderboard)
@@ -50,9 +50,31 @@ export default function AdsterraEmbed({
     const container = containerRef.current;
     container.innerHTML = '';
 
-    // invoke.js uses document.write, which on an SPA would wipe the entire
-    // page. We must isolate it inside an iframe so document.write only
-    // affects the iframe's document.
+    // Use a blob URL for the iframe src. iOS Safari blocks cross-origin
+    // script loading in srcdoc iframes (null origin) and silently fails
+    // on contentWindow.document.write. A blob URL inherits the parent
+    // page's origin, so external scripts (invoke.js) load and execute
+    // as parser-inserted synchronous scripts — document.write works.
+    const adHtml =
+      '<!DOCTYPE html><html><head><meta charset="utf-8">' +
+      '<meta name="viewport" content="width=device-width,initial-scale=1">' +
+      '<style>body{margin:0;padding:0;overflow:hidden;background:transparent;}</style>' +
+      '</head><body>' +
+      '<script type="text/javascript">' +
+      'atOptions = {' +
+      "  key: '" + activeKey + "'," +
+      "  format: 'iframe'," +
+      '  height: ' + activeHeight + ',' +
+      '  width: ' + activeWidth + ',' +
+      '  params: {}' +
+      '};' +
+      '</script>' +
+      '<script type="text/javascript" src="https://www.highperformanceformat.com/' + activeKey + '/invoke.js"></script>' +
+      '</body></html>';
+
+    const blob = new Blob([adHtml], { type: 'text/html' });
+    const blobUrl = URL.createObjectURL(blob);
+
     const iframe = document.createElement('iframe');
     iframe.width = activeWidth;
     iframe.height = activeHeight;
@@ -63,28 +85,11 @@ export default function AdsterraEmbed({
     iframe.scrolling = 'no';
     iframe.setAttribute('frameborder', '0');
     iframe.setAttribute('loading', 'eager');
-
-    const srcdoc =
-      '<!DOCTYPE html><html><head><meta charset="utf-8">' +
-      '<meta name="viewport" content="width=device-width,initial-scale=1">' +
-      '<style>body{margin:0;padding:0;overflow:hidden;background:transparent;}</style>' +
-      '</head><body>' +
-      '<script type="text/javascript">' +
-      'atOptions = {' +
-      "'key': '" + activeKey + "'," +
-      "'format': 'iframe'," +
-      "'height': " + activeHeight + "," +
-      "'width': " + activeWidth + "," +
-      "'params': {}" +
-      '};' +
-      '</' + 'script>' +
-      '<script type="text/javascript" src="https://www.highperformanceformat.com/' + activeKey + '/invoke.js"></' + 'script>' +
-      '</body></html>';
-
-    iframe.setAttribute('srcdoc', srcdoc);
+    iframe.src = blobUrl;
     container.appendChild(iframe);
 
     return () => {
+      URL.revokeObjectURL(blobUrl);
       container.innerHTML = '';
     };
   }, [activeKey, shouldRender, activeWidth, activeHeight]);
