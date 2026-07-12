@@ -50,25 +50,41 @@ export default function AdsterraEmbed({
     const container = containerRef.current;
     container.innerHTML = '';
 
-    // Set the atOptions global that invoke.js reads, then load invoke.js.
-    // With format:'iframe', Adsterra creates its own internal iframe —
-    // no wrapper iframe needed, works on all platforms including iOS Safari.
-    window.atOptions = {
-      key: activeKey,
-      format: 'iframe',
-      height: activeHeight,
-      width: activeWidth,
-      params: {}
-    };
+    // invoke.js uses document.write, which on an SPA would wipe the entire
+    // page. We must isolate it inside an iframe so document.write only
+    // affects the iframe's document.
+    const iframe = document.createElement('iframe');
+    iframe.width = activeWidth;
+    iframe.height = activeHeight;
+    iframe.style.border = '0';
+    iframe.style.overflow = 'hidden';
+    iframe.style.display = 'block';
+    iframe.style.margin = '0 auto';
+    iframe.scrolling = 'no';
+    iframe.setAttribute('frameborder', '0');
+    iframe.setAttribute('loading', 'eager');
 
-    const script = document.createElement('script');
-    script.type = 'text/javascript';
-    script.src = 'https://www.highperformanceformat.com/' + activeKey + '/invoke.js';
-    script.async = true;
-    container.appendChild(script);
+    const srcdoc =
+      '<!DOCTYPE html><html><head><meta charset="utf-8">' +
+      '<meta name="viewport" content="width=device-width,initial-scale=1">' +
+      '<style>body{margin:0;padding:0;overflow:hidden;background:transparent;}</style>' +
+      '</head><body>' +
+      '<script type="text/javascript">' +
+      'atOptions = {' +
+      "'key': '" + activeKey + "'," +
+      "'format': 'iframe'," +
+      "'height': " + activeHeight + "," +
+      "'width': " + activeWidth + "," +
+      "'params': {}" +
+      '};' +
+      '</' + 'script>' +
+      '<script type="text/javascript" src="https://www.highperformanceformat.com/' + activeKey + '/invoke.js"></' + 'script>' +
+      '</body></html>';
+
+    iframe.setAttribute('srcdoc', srcdoc);
+    container.appendChild(iframe);
 
     return () => {
-      delete window.atOptions;
       container.innerHTML = '';
     };
   }, [activeKey, shouldRender, activeWidth, activeHeight]);
