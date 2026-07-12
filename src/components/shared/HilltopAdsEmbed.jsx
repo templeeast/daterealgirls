@@ -5,6 +5,11 @@ import useMyProfile from '@/hooks/useMyProfile';
 /**
  * Renders a HilltopAds 300×250 banner ad (desktop + mobile).
  * The scriptUrl is the s.src value from the HilltopAds embed code.
+ *
+ * HilltopAds MultiTag Banner scripts use fixed/absolute positioning that
+ * breaks out of any container div. We load the script inside an iframe to
+ * constrain the ad to 300×250 — position:fixed inside the iframe is relative
+ * to the iframe viewport, not the parent page.
  */
 export default function HilltopAdsEmbed({ scriptUrl }) {
   const { config } = useSiteConfig();
@@ -28,13 +33,32 @@ export default function HilltopAdsEmbed({ scriptUrl }) {
     // Clear any previous ad content — required for SPA page navigations.
     containerRef.current.innerHTML = '';
 
-    // Inject the HilltopAds script; the ad renders at the script's DOM position.
-    const s = document.createElement('script');
-    s.settings = {};
-    s.src = scriptUrl;
-    s.async = true;
-    s.referrerPolicy = 'no-referrer-when-downgrade';
-    containerRef.current.appendChild(s);
+    const iframe = document.createElement('iframe');
+    iframe.style.width = '300px';
+    iframe.style.height = '250px';
+    iframe.style.border = 'none';
+    iframe.style.display = 'block';
+    iframe.style.margin = '0 auto';
+    iframe.setAttribute('scrolling', 'no');
+    iframe.setAttribute('frameborder', '0');
+    iframe.setAttribute('referrerpolicy', 'no-referrer-when-downgrade');
+    containerRef.current.appendChild(iframe);
+
+    const fullUrl = scriptUrl.startsWith('//') ? 'https:' + scriptUrl : scriptUrl;
+
+    const doc = iframe.contentDocument || iframe.contentWindow?.document;
+    if (doc) {
+      doc.open();
+      doc.write(
+        '<!DOCTYPE html><html><head><meta charset="utf-8">' +
+        '<meta name="viewport" content="width=device-width, initial-scale=1">' +
+        '<style>*{margin:0;padding:0;overflow:hidden;}html,body{width:300px;height:250px;}</style>' +
+        '</head><body>' +
+        '<script async src="' + fullUrl + '"><\/script>' +
+        '</body></html>'
+      );
+      doc.close();
+    }
 
     return () => {
       if (containerRef.current) {
