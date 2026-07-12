@@ -28,6 +28,7 @@ import CountryCitySelector from '@/components/shared/CountryCitySelector';
 import { getCountryCode } from '@/lib/geoUtils';
 import PrivatePhotosSection from '@/components/profile/PrivatePhotosSection';
 import AdFreeCard from '@/components/profile/AdFreeCard';
+import TokenCostsList from '@/components/profile/TokenCostsList';
 
 const INTERESTS = [
   { key: 'Travel', tKey: 'interest_travel' },
@@ -486,44 +487,8 @@ export default function MyProfile() {
             ))}
           </div>
 
-          {/* Cost Breakdown */}
-          <div className="bg-muted/50 rounded-xl p-4">
-            <h4 className="text-sm font-semibold mb-3">Token Costs</h4>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span>{t('token_cost_browse_free', { n: config.tokens_free_browse_limit ?? 25 })}</span>
-                <span className="text-green-600 font-medium">Free</span>
-              </div>
-              <div className="flex justify-between">
-                <span>{t('token_cost_browse_all')} (1 week)</span>
-                <span>{profile.gender === 'male' ? (config.tokens_browse_cost_men ?? 100) : (config.tokens_browse_cost_women ?? 0)} tokens</span>
-              </div>
-              <div className="flex justify-between">
-                <span>{t('token_cost_send_message')} <span className="text-xs text-amber-600 font-medium">({t('token_cost_verification_required')})</span></span>
-                <span>{profile.gender === 'male' ? (config.tokens_msg_cost_men ?? 2) : (config.tokens_msg_cost_women ?? 0)} tokens</span>
-              </div>
-              {((profile.gender === 'male' && config.stripe_payment_link_enabled_men) || (profile.gender === 'female' && config.stripe_payment_link_enabled_women)) && (
-              <div className="flex justify-between">
-                <span>{t('token.action.embed_payment_link')} <span className="text-xs text-amber-600 font-medium">({t('token_cost_verification_required')})</span></span>
-                <span>{config.stripe_link_message_credit_cost ?? 5} tokens</span>
-              </div>
-              )}
-              <div className="flex justify-between">
-                <span>{t('token_cost_view_private_photos')} <span className="text-xs text-amber-600 font-medium">({t('token_cost_verification_required')})</span></span>
-                <span>{profile.gender === 'male' ? '5 tokens / photo' : 'Free'}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>ID Verification</span>
-                <span>{profile.gender === 'male' ? (config.tokens_verify_cost_men ?? 200) : (config.tokens_verify_cost_women ?? 200)} tokens</span>
-              </div>
-              {config.ad_free_enabled !== false && (
-              <div className="flex justify-between">
-                <span>{t('token_cost_remove_ads')}</span>
-                <span>{config.ad_free_token_cost ?? 200} tokens</span>
-              </div>
-              )}
-            </div>
-          </div>
+          {/* Cost Breakdown — dynamically generated based on user gender and config */}
+          <TokenCostsList profile={profile} config={config} />
         </CardContent>
       </Card>
 
