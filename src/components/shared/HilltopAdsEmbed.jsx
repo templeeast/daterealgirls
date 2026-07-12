@@ -57,13 +57,25 @@ export default function HilltopAdsEmbed({ scriptUrl, scriptUrlMobile }) {
 
     const doc = iframe.contentDocument || iframe.contentWindow?.document;
     if (doc) {
+      // Replicate the exact HilltopAds IIFE loader — the script expects
+      // s.settings to be set and inserts itself at the last script's position.
+      const loader =
+        '(function(cn){' +
+        'var d=document,s=d.createElement("script"),l=d.scripts[d.scripts.length-1];' +
+        's.settings=cn||{};' +
+        's.src="' + fullUrl + '";' +
+        's.async=true;' +
+        's.referrerPolicy="no-referrer-when-downgrade";' +
+        'l.parentNode.insertBefore(s,l);' +
+        '})({})';
+
       doc.open();
       doc.write(
         '<!DOCTYPE html><html><head><meta charset="utf-8">' +
         '<meta name="viewport" content="width=device-width, initial-scale=1">' +
         '<style>*{margin:0;padding:0;overflow:hidden;}html,body{width:300px;height:250px;}</style>' +
         '</head><body>' +
-        '<script async src="' + fullUrl + '"><\/script>' +
+        '<script>' + loader + '<\/script>' +
         '</body></html>'
       );
       doc.close();
