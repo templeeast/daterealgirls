@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer-when-downgrade">
+<style>
+  * { margin: 0; padding: 0; overflow: hidden; }
+  html, body { width: 100%; height: 100%; }
+  body { display: flex; align-items: center; justify-content: center; }
+</style>
+</head>
+<body>
+<script>
+(function() {
+  var params = new URLSearchParams(window.location.search);
+  var url = params.get('url');
+  var w = params.get('w') || 300;
+  var h = params.get('h') || 250;
+  document.documentElement.style.width = w + 'px';
+  document.documentElement.style.height = h + 'px';
+  document.body.style.width = w + 'px';
+  document.body.style.height = h + 'px';
+  if (!url) return;
+  var s = document.createElement('script');
+  s.settings = {};
+  s.src = url;
+  s.async = true;
+  s.referrerPolicy = 'no-referrer-when-downgrade';
+  document.body.appendChild(s);
+})();
+</script>
+</body>
+</html>
