@@ -53,7 +53,11 @@ export default function HilltopAdsEmbed({ scriptUrl, scriptUrlMobile }) {
     iframe.setAttribute('referrerpolicy', 'no-referrer-when-downgrade');
     containerRef.current.appendChild(iframe);
 
-    const fullUrl = activeUrl.startsWith('//') ? 'https:' + activeUrl : activeUrl;
+    // HilltopAds code blocks display s.src with escaped slashes (\/). When
+    // copy-pasted into the admin form, backslashes are stored literally.
+    // Strip them so the URL becomes a clean //loud-hall.com/... value.
+    const cleanUrl = activeUrl.replace(/\\/g, '');
+    const fullUrl = cleanUrl.startsWith('//') ? 'https:' + cleanUrl : cleanUrl;
 
     const doc = iframe.contentDocument || iframe.contentWindow?.document;
     if (doc) {
