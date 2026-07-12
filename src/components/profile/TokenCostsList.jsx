@@ -69,9 +69,8 @@ export default function TokenCostsList({ profile, config }) {
     isFree: !isMale,
   });
 
-  // 6. Send a video in message — only if videos in chat are enabled for this gender
-  const videoChatEnabled = isMale ? config?.videos_chat_men_enabled : config?.videos_chat_women_enabled;
-  if (videoChatEnabled) {
+  // 6. Send a video in message — shown when enabled for the user's gender
+  if (isMale ? config?.videos_chat_men_enabled : config?.videos_chat_women_enabled) {
     const cost = isMale ? (config?.tokens_msg_video_cost_men ?? 10) : (config?.tokens_msg_video_cost_women ?? 10);
     rows.push({
       label: t('token_cost_send_video'),
@@ -103,10 +102,9 @@ export default function TokenCostsList({ profile, config }) {
     verificationRequired: true,
   });
 
-  // 9. View private videos — only if private videos are enabled for this gender
-  const privateVideoEnabled = isMale ? config?.videos_private_men_enabled : config?.videos_private_women_enabled;
-  if (privateVideoEnabled) {
-    const cost = config?.tokens_private_video_cost ?? 10;
+  // 9. View private videos — shown when enabled for the user's gender
+  if (isMale ? config?.videos_private_men_enabled : config?.videos_private_women_enabled) {
+    const cost = config?.tokens_private_video_cost ?? 25;
     rows.push({
       label: t('token_cost_view_private_video'),
       cost: isMale
