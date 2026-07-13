@@ -150,6 +150,15 @@ const sections = [
       { id: 'wink-11', label: 'My Profile page: "Winks Received" card is hidden when no winks have been received' },
       { id: 'wink-12', label: 'Wink entity: each record has correct sender_id, recipient_profile_id, sender_name, sender_photo' },
       { id: 'wink-13', label: 'Duplicate wink prevention: clicking Wink a second time shows "already winked" toast and does not create a duplicate record' },
+      // --- Wink Expiration ---
+      { id: 'wink-14', label: 'ADMIN CONFIG: Wink Expiry (hours) field appears in the admin Winks card under Token Economy Settings' },
+      { id: 'wink-15', label: 'ADMIN CONFIG: Changing the Wink Expiry value saves to SiteConfig.wink_expiry_hours and persists on reload' },
+      { id: 'wink-16', label: 'ADMIN CONFIG: Setting wink_expiry_hours to 0 disables expiration (winks are never auto-deleted)' },
+      { id: 'wink-17', label: 'EXPIRY: Winks older than the configured wink_expiry_hours are deleted by the deleteExpiredWinks backend function' },
+      { id: 'wink-18', label: 'EXPIRY: The "Delete Expired Winks" scheduled automation runs hourly and invokes deleteExpiredWinks' },
+      { id: 'wink-19', label: 'EXPIRY: After deletion, expired winks no longer appear in the recipient\'s Winks page or count badge' },
+      { id: 'wink-20', label: 'EXPIRY: Winks within the expiry window remain visible and are NOT deleted' },
+      { id: 'wink-21', label: 'EXPIRY: Manually invoking deleteExpiredWinks returns correct count of deleted winks and the cutoff timestamp' },
     ],
   },
   {
