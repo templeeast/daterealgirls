@@ -185,6 +185,11 @@
       "default": 200,
       "description": "Token cost to purchase ad-free time"
     },
+    "wink_expiry_hours": {
+      "type": "number",
+      "default": 168,
+      "description": "Number of hours before a wink expires and is automatically deleted (168 = 7 days, 0 = never expire)"
+    },
     "msg_rate_limit_count": {
       "type": "number",
       "default": 5

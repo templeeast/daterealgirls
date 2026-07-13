@@ -155,6 +155,13 @@ export default function TokenEconomySettings({ form, updateField }) {
               <Input type="number" value={form.tokens_wink_cost_women ?? 0} onChange={e => num('tokens_wink_cost_women', e.target.value)} />
             </div>
           </div>
+          <div className="grid grid-cols-2 gap-4 border-t pt-4">
+            <div className="space-y-2">
+              <Label>Wink Expiry (hours)</Label>
+              <Input type="number" value={form.wink_expiry_hours ?? 168} onChange={e => num('wink_expiry_hours', e.target.value)} />
+              <p className="text-xs text-muted-foreground">Winks older than this are automatically deleted. 168 = 7 days, 0 = never expire.</p>
+            </div>
+          </div>
         </CardContent>
       </Card>
 
