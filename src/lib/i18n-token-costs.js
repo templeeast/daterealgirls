@@ -1,6 +1,9 @@
 export const tokenCostsTranslations = {
   en: {
     token_cost_costs_title: 'Token Costs',
+    token_cost_browse_free: 'Browse {{n}} profiles',
+    token_cost_browse_all: 'Browse all profiles',
+    token_cost_send_message: 'Send a message',
     token_cost_send_wink: 'Send a wink',
     token_cost_send_video: 'Send a video in message',
     token_cost_view_private_video: 'View private videos',
@@ -10,6 +13,9 @@ export const tokenCostsTranslations = {
   },
   es: {
     token_cost_costs_title: 'Costos de Tokens',
+    token_cost_browse_free: 'Explorar {{n}} perfiles',
+    token_cost_browse_all: 'Explorar todos los perfiles',
+    token_cost_send_message: 'Enviar un mensaje',
     token_cost_send_wink: 'Enviar un guiño',
     token_cost_send_video: 'Enviar un video en mensaje',
     token_cost_view_private_video: 'Ver videos privados',
@@ -19,6 +25,9 @@ export const tokenCostsTranslations = {
   },
   th: {
     token_cost_costs_title: 'ค่าโทเค็น',
+    token_cost_browse_free: 'เรียกดู {{n}} โปรไฟล์',
+    token_cost_browse_all: 'เรียกดูโปรไฟล์ทั้งหมด',
+    token_cost_send_message: 'ส่งข้อความ',
     token_cost_send_wink: 'ส่งการแว๊บ',
     token_cost_send_video: 'ส่งวิดีโอในข้อความ',
     token_cost_view_private_video: 'ดูวิดีโอส่วนตัว',
@@ -28,6 +37,9 @@ export const tokenCostsTranslations = {
   },
   zh: {
     token_cost_costs_title: '代币费用',
+    token_cost_browse_free: '浏览 {{n}} 个资料',
+    token_cost_browse_all: '浏览所有资料',
+    token_cost_send_message: '发送消息',
     token_cost_send_wink: '发送眨眼',
     token_cost_send_video: '在消息中发送视频',
     token_cost_view_private_video: '查看私密视频',
@@ -37,6 +49,9 @@ export const tokenCostsTranslations = {
   },
   de: {
     token_cost_costs_title: 'Token-Kosten',
+    token_cost_browse_free: '{{n}} Profile durchsuchen',
+    token_cost_browse_all: 'Alle Profile durchsuchen',
+    token_cost_send_message: 'Eine Nachricht senden',
     token_cost_send_wink: 'Ein Zwinkern senden',
     token_cost_send_video: 'Video in Nachricht senden',
     token_cost_view_private_video: 'Private Videos ansehen',
@@ -46,6 +61,9 @@ export const tokenCostsTranslations = {
   },
   vi: {
     token_cost_costs_title: 'Chi Phí Token',
+    token_cost_browse_free: 'Xem {{n}} hồ sơ',
+    token_cost_browse_all: 'Xem tất cả hồ sơ',
+    token_cost_send_message: 'Gửi tin nhắn',
     token_cost_send_wink: 'Gửi một nháy mắt',
     token_cost_send_video: 'Gửi video trong tin nhắn',
     token_cost_view_private_video: 'Xem video riêng tư',
@@ -55,6 +73,9 @@ export const tokenCostsTranslations = {
   },
   pt: {
     token_cost_costs_title: 'Custos de Tokens',
+    token_cost_browse_free: 'Navegar {{n}} perfis',
+    token_cost_browse_all: 'Navegar todos os perfis',
+    token_cost_send_message: 'Enviar uma mensagem',
     token_cost_send_wink: 'Enviar um piscar de olho',
     token_cost_send_video: 'Enviar vídeo em mensagem',
     token_cost_view_private_video: 'Ver vídeos privados',
@@ -64,6 +85,9 @@ export const tokenCostsTranslations = {
   },
   tl: {
     token_cost_costs_title: 'Gastos sa Token',
+    token_cost_browse_free: 'Tignan ang {{n}} profiles',
+    token_cost_browse_all: 'Tignan lahat ng profiles',
+    token_cost_send_message: 'Magpadala ng mensahe',
     token_cost_send_wink: 'Magpadala ng wink',
     token_cost_send_video: 'Magpadala ng video sa mensahe',
     token_cost_view_private_video: 'Tingnan ang mga pribadong video',
