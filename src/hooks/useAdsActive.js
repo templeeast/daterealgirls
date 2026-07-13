@@ -19,19 +19,19 @@ export default function useAdsActive({ juicyZone, juicyZoneMobile, hilltopUrl, h
   const isAdFree = adFreeUntil && new Date(adFreeUntil) > new Date();
 
   // --- JuicyAds ---
-  const juicyActiveZone = (juicyZoneMobile && isMobile) ? juicyZoneMobile : juicyZone;
+  const juicyActiveZone = (isMobile && juicyZoneMobile?.trim()) ? juicyZoneMobile : juicyZone;
   const juicyActive =
     config?.juicyads_enabled &&
-    juicyActiveZone &&
+    juicyActiveZone?.trim() &&
     !isAdFree &&
     !(gender === 'male' && config?.juicyads_show_men === false) &&
     !(gender === 'female' && !config?.juicyads_show_women);
 
   // --- HilltopAds ---
-  const hilltopActiveUrl = (isMobile && hilltopUrlMobile) ? hilltopUrlMobile : hilltopUrl;
+  const hilltopActiveUrl = (isMobile && hilltopUrlMobile?.trim()) ? hilltopUrlMobile : hilltopUrl;
   const hilltopActive =
     config?.hilltopads_enabled &&
-    hilltopActiveUrl &&
+    hilltopActiveUrl?.trim() &&
     !isAdFree &&
     !(gender === 'male' && config?.hilltopads_show_men === false) &&
     !(gender === 'female' && !config?.hilltopads_show_women);
