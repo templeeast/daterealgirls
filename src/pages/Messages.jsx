@@ -12,11 +12,18 @@ import useSiteConfig from '@/hooks/useSiteConfig';
 import StickyAdBar from '@/components/shared/StickyAdBar';
 import HilltopAdBar from '@/components/shared/HilltopAdBar';
 import AdFreeBanner from '@/components/shared/AdFreeBanner';
+import useAdsActive from '@/hooks/useAdsActive';
 
 export default function Messages() {
   const { user } = useMyProfile();
   const { t } = useTranslation();
   const { config } = useSiteConfig();
+  const adsActive = useAdsActive({
+    juicyZone: config?.juicyads_zone_messages,
+    juicyZoneMobile: config?.juicyads_zone_messages_mobile,
+    hilltopUrl: config?.hilltopads_zone_winks_messages_favorites,
+    hilltopUrlMobile: config?.hilltopads_zone_winks_messages_favorites_mobile,
+  });
 
   const { data: conversations, isLoading } = useQuery({
     queryKey: ['conversations', user?.id],
@@ -61,7 +68,7 @@ export default function Messages() {
       <HilltopAdBar scriptUrl={config?.hilltopads_zone_winks_messages_favorites} scriptUrlMobile={config?.hilltopads_zone_winks_messages_favorites_mobile} />
 
       {/* Token-based ad removal */}
-      <AdFreeBanner />
+      <AdFreeBanner adsActive={adsActive} />
 
       {isLoading ? (
         <div className="space-y-3">

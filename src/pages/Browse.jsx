@@ -17,6 +17,7 @@ import CountryCitySelector from '@/components/shared/CountryCitySelector';
 import StickyAdBar from '@/components/shared/StickyAdBar';
 import HilltopAdBar from '@/components/shared/HilltopAdBar';
 import AdFreeBanner from '@/components/shared/AdFreeBanner';
+import useAdsActive from '@/hooks/useAdsActive';
 import { getCountryCode, haversineDistance } from '@/lib/geoUtils';
 
 export default function Browse() {
@@ -26,6 +27,13 @@ export default function Browse() {
   const { t } = useTranslation();
   const { config } = useSiteConfig();
   const queryClient = useQueryClient();
+
+  const adsActive = useAdsActive({
+    juicyZone: config?.juicyads_zone_browse,
+    juicyZoneMobile: config?.juicyads_zone_browse_mobile,
+    hilltopUrl: config?.hilltopads_zone_browse_profile,
+    hilltopUrlMobile: config?.hilltopads_zone_browse_profile_mobile,
+  });
 
   // Token-based browse gating
   const isMale = profile?.gender === 'male';
@@ -227,7 +235,7 @@ export default function Browse() {
       <HilltopAdBar scriptUrl={config?.hilltopads_zone_browse_profile} scriptUrlMobile={config?.hilltopads_zone_browse_profile_mobile} />
 
       {/* Token-based ad removal */}
-      <AdFreeBanner />
+      <AdFreeBanner adsActive={adsActive} />
 
       {/* Token balance banner */}
       {currentTokens < 200 && !isUnverifiedGate && (

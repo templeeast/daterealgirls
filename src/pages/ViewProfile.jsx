@@ -12,6 +12,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import useMyProfile from '@/hooks/useMyProfile';
 import useSiteConfig from '@/hooks/useSiteConfig';
 import AdFreeBanner from '@/components/shared/AdFreeBanner';
+import useAdsActive from '@/hooks/useAdsActive';
 import PrivatePhotosViewer from '@/components/profile/PrivatePhotosViewer';
 import PhotoZoomModal from '@/components/profile/PhotoZoomModal';
 import { useToast } from '@/components/ui/use-toast';
@@ -28,6 +29,12 @@ export default function ViewProfile() {
 
   const { profile: myProfile } = useMyProfile();
   const { config } = useSiteConfig();
+  const adsActive = useAdsActive({
+    juicyZone: config?.juicyads_zone_profile,
+    juicyZoneMobile: config?.juicyads_zone_profile_mobile,
+    hilltopUrl: config?.hilltopads_zone_browse_profile,
+    hilltopUrlMobile: config?.hilltopads_zone_browse_profile_mobile,
+  });
 
   // Interaction gate: must be verified AND have purchased browse-all
   const isMale = myProfile?.gender === 'male';
@@ -162,7 +169,7 @@ export default function ViewProfile() {
       </Button>
 
       {/* Token-based ad removal */}
-      <AdFreeBanner />
+      <AdFreeBanner adsActive={adsActive} />
 
       {/* Photos */}
       {photos.length > 0 ? (

@@ -10,6 +10,7 @@ import useSiteConfig from '@/hooks/useSiteConfig';
 import StickyAdBar from '@/components/shared/StickyAdBar';
 import HilltopAdBar from '@/components/shared/HilltopAdBar';
 import AdFreeBanner from '@/components/shared/AdFreeBanner';
+import useAdsActive from '@/hooks/useAdsActive';
 import { useTranslation } from 'react-i18next';
 
 export default function Favorites() {
@@ -17,6 +18,12 @@ export default function Favorites() {
   const { t } = useTranslation();
   const { config } = useSiteConfig();
   const queryClient = useQueryClient();
+  const adsActive = useAdsActive({
+    juicyZone: config?.juicyads_zone_favorites,
+    juicyZoneMobile: config?.juicyads_zone_favorites_mobile,
+    hilltopUrl: config?.hilltopads_zone_winks_messages_favorites,
+    hilltopUrlMobile: config?.hilltopads_zone_winks_messages_favorites_mobile,
+  });
 
   const { data: rawFavorites, isLoading } = useQuery({
     queryKey: ['myFavorites', user?.id],
@@ -50,7 +57,7 @@ export default function Favorites() {
       <HilltopAdBar scriptUrl={config?.hilltopads_zone_winks_messages_favorites} scriptUrlMobile={config?.hilltopads_zone_winks_messages_favorites_mobile} />
 
       {/* Token-based ad removal */}
-      <AdFreeBanner />
+      <AdFreeBanner adsActive={adsActive} />
 
       <h1 className="font-heading text-3xl font-bold mb-6">{t('favorites_title')}</h1>
 

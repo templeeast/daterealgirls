@@ -9,6 +9,7 @@ import useSiteConfig from '@/hooks/useSiteConfig';
 import StickyAdBar from '@/components/shared/StickyAdBar';
 import HilltopAdBar from '@/components/shared/HilltopAdBar';
 import AdFreeBanner from '@/components/shared/AdFreeBanner';
+import useAdsActive from '@/hooks/useAdsActive';
 import { formatDistanceToNow } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 
@@ -17,6 +18,12 @@ export default function Winks() {
   const { profile, isLoading: profileLoading } = useMyProfile();
   const { config } = useSiteConfig();
   const { t } = useTranslation();
+  const adsActive = useAdsActive({
+    juicyZone: config?.juicyads_zone_winks,
+    juicyZoneMobile: config?.juicyads_zone_winks_mobile,
+    hilltopUrl: config?.hilltopads_zone_winks_messages_favorites,
+    hilltopUrlMobile: config?.hilltopads_zone_winks_messages_favorites_mobile,
+  });
   const [receivedWinks, setReceivedWinks] = useState(null);
   const [sentWinks, setSentWinks] = useState(null);
   const [sentProfiles, setSentProfiles] = useState({});
@@ -67,7 +74,7 @@ export default function Winks() {
       <HilltopAdBar scriptUrl={config?.hilltopads_zone_winks_messages_favorites} scriptUrlMobile={config?.hilltopads_zone_winks_messages_favorites_mobile} />
 
       {/* Token-based ad removal */}
-      <AdFreeBanner />
+      <AdFreeBanner adsActive={adsActive} />
 
       {/* Tab toggle */}
       <div className="flex gap-2 mb-6">

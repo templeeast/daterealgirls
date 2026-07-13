@@ -13,7 +13,7 @@ import useMyProfile from '@/hooks/useMyProfile';
  * Shows near ad placements on Winks, Messages, Favorites, and Profile pages.
  * Renders nothing when ad-free is already active or the feature is disabled.
  */
-export default function AdFreeBanner() {
+export default function AdFreeBanner({ adsActive = true }) {
   const { config } = useSiteConfig();
   const { profile, refetch } = useMyProfile();
   const { toast } = useToast();
@@ -30,7 +30,7 @@ export default function AdFreeBanner() {
   const isActive = adFreeUntil && new Date(adFreeUntil) > new Date();
   const insufficient = tokens < cost;
 
-  if (!enabled || isActive) return null;
+  if (!enabled || isActive || !adsActive) return null;
 
   const handlePurchase = async () => {
     setPurchasing(true);
