@@ -88,10 +88,10 @@ export default function TokenGuide() {
                     <div className="text-xs text-muted-foreground">{t('token_cost_per_wink')}</div>
                   </td>
                   <td className="text-center px-6 py-4">
-                    {config.tokens_wink_women_enabled ? (
-                      <div className="font-semibold">{t('token_cost_n_tokens', { n: config.tokens_wink_cost_women ?? 0 })}</div>
-                    ) : (
+                    {(config.tokens_wink_cost_women ?? 0) === 0 ? (
                       <span className="text-green-600 font-semibold">{t('free')}</span>
+                    ) : (
+                      <div className="font-semibold">{t('token_cost_n_tokens', { n: config.tokens_wink_cost_women ?? 0 })}</div>
                     )}
                     <div className="text-xs text-muted-foreground">{t('token_cost_per_wink')}</div>
                   </td>
@@ -168,7 +168,11 @@ export default function TokenGuide() {
                     <div className="text-xs text-muted-foreground">{t('token_cost_per_photo')}</div>
                   </td>
                   <td className="text-center px-6 py-4">
-                    <div className="font-semibold text-green-600">{t('free')}</div>
+                    {(config.tokens_private_photo_cost_women ?? 0) === 0 ? (
+                      <span className="text-green-600 font-semibold">{t('free')}</span>
+                    ) : (
+                      <div className="font-semibold">{t('token_cost_n_tokens', { n: config.tokens_private_photo_cost_women ?? 0 })}</div>
+                    )}
                     <div className="text-xs text-muted-foreground">{t('token_cost_per_photo')}</div>
                   </td>
                 </tr>
@@ -181,7 +185,11 @@ export default function TokenGuide() {
                     <div className="text-xs text-muted-foreground">{t('token_cost_per_video')}</div>
                   </td>
                   <td className="text-center px-6 py-4">
-                    <div className="font-semibold text-green-600">{t('free')}</div>
+                    {(config.tokens_private_video_cost_women ?? 0) === 0 ? (
+                      <span className="text-green-600 font-semibold">{t('free')}</span>
+                    ) : (
+                      <div className="font-semibold">{t('token_cost_n_tokens', { n: config.tokens_private_video_cost_women ?? 0 })}</div>
+                    )}
                     <div className="text-xs text-muted-foreground">{t('token_cost_per_video')}</div>
                   </td>
                 </tr>
