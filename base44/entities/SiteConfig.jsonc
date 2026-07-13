@@ -382,7 +382,12 @@
     "tokens_msg_photo_cost": {
       "type": "number",
       "default": 5,
-      "description": "Token cost to send a photo in a chat message (charged to male users)"
+      "description": "Token cost for men to send a photo in a chat message"
+    },
+    "tokens_msg_photo_cost_women": {
+      "type": "number",
+      "default": 0,
+      "description": "Token cost for women to send a photo in a chat message"
     },
     "tokens_msg_video_cost_men": {
       "type": "number",
@@ -397,12 +402,22 @@
     "tokens_private_photo_cost": {
       "type": "number",
       "default": 5,
-      "description": "Token cost to view a private photo (charged to male viewers)"
+      "description": "Token cost for male viewers to view a private photo"
+    },
+    "tokens_private_photo_cost_women": {
+      "type": "number",
+      "default": 0,
+      "description": "Token cost for female viewers to view a private photo"
     },
     "tokens_private_video_cost": {
       "type": "number",
       "default": 10,
-      "description": "Token cost to view a private video (charged to male viewers)"
+      "description": "Token cost for male viewers to view a private video"
+    },
+    "tokens_private_video_cost_women": {
+      "type": "number",
+      "default": 0,
+      "description": "Token cost for female viewers to view a private video"
     }
   },
   "required": [

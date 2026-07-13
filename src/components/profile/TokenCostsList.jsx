@@ -59,15 +59,15 @@ export default function TokenCostsList({ profile, config }) {
     });
   }
 
-  // 5. Send a photo in message — charged to male users
-  const photoCost = config?.tokens_msg_photo_cost ?? 5;
-  rows.push({
-    label: t('token_cost_send_photo'),
-    cost: isMale
-      ? `${t('token_cost_n_tokens', { n: photoCost })} (${t('token_cost_per_photo')})`
-      : t('free'),
-    isFree: !isMale,
-  });
+  // 5. Send a photo in message — gender-specific cost
+  {
+    const photoCost = isMale ? (config?.tokens_msg_photo_cost ?? 5) : (config?.tokens_msg_photo_cost_women ?? 0);
+    rows.push({
+      label: t('token_cost_send_photo'),
+      cost: photoCost === 0 ? t('free') : `${t('token_cost_n_tokens', { n: photoCost })} (${t('token_cost_per_photo')})`,
+      isFree: photoCost === 0,
+    });
+  }
 
   // 6. Send a video in message — shown when enabled for the user's gender
   if (isMale ? config?.videos_chat_men_enabled : config?.videos_chat_women_enabled) {
@@ -91,26 +91,24 @@ export default function TokenCostsList({ profile, config }) {
     });
   }
 
-  // 8. View private photos — verification required
-  const privatePhotoCost = config?.tokens_private_photo_cost ?? 5;
-  rows.push({
-    label: t('token_cost_view_private_photos'),
-    cost: isMale
-      ? `${t('token_cost_n_tokens', { n: privatePhotoCost })} (${t('token_cost_per_photo')})`
-      : t('free'),
-    isFree: !isMale,
-    verificationRequired: true,
-  });
+  // 8. View private photos — verification required, gender-specific cost
+  {
+    const privatePhotoCost = isMale ? (config?.tokens_private_photo_cost ?? 5) : (config?.tokens_private_photo_cost_women ?? 0);
+    rows.push({
+      label: t('token_cost_view_private_photos'),
+      cost: privatePhotoCost === 0 ? t('free') : `${t('token_cost_n_tokens', { n: privatePhotoCost })} (${t('token_cost_per_photo')})`,
+      isFree: privatePhotoCost === 0,
+      verificationRequired: true,
+    });
+  }
 
   // 9. View private videos — shown when enabled for the user's gender
   if (isMale ? config?.videos_private_men_enabled : config?.videos_private_women_enabled) {
-    const cost = config?.tokens_private_video_cost ?? 25;
+    const cost = isMale ? (config?.tokens_private_video_cost ?? 25) : (config?.tokens_private_video_cost_women ?? 0);
     rows.push({
       label: t('token_cost_view_private_video'),
-      cost: isMale
-        ? `${t('token_cost_n_tokens', { n: cost })} (${t('token_cost_per_video')})`
-        : t('free'),
-      isFree: !isMale,
+      cost: cost === 0 ? t('free') : `${t('token_cost_n_tokens', { n: cost })} (${t('token_cost_per_video')})`,
+      isFree: cost === 0,
       verificationRequired: true,
     });
   }

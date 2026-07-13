@@ -270,19 +270,34 @@ export default function TokenEconomySettings({ form, updateField }) {
           </div>
           <div className="grid grid-cols-2 gap-4 border-t pt-4">
             <div className="space-y-2">
-              <Label>Token Cost — Send Photo in Message</Label>
+              <Label>Token Cost — Send Photo in Message (Men)</Label>
               <Input type="number" value={form.tokens_msg_photo_cost ?? 5} onChange={e => num('tokens_msg_photo_cost', e.target.value)} />
               <p className="text-xs text-muted-foreground">Charged to male users per photo sent in chat.</p>
             </div>
             <div className="space-y-2">
-              <Label>Token Cost — View Private Photo</Label>
+              <Label>Token Cost — Send Photo in Message (Women)</Label>
+              <Input type="number" value={form.tokens_msg_photo_cost_women ?? 0} onChange={e => num('tokens_msg_photo_cost_women', e.target.value)} />
+              <p className="text-xs text-muted-foreground">Charged to female users per photo sent in chat.</p>
+            </div>
+            <div className="space-y-2">
+              <Label>Token Cost — View Private Photo (Men)</Label>
               <Input type="number" value={form.tokens_private_photo_cost ?? 5} onChange={e => num('tokens_private_photo_cost', e.target.value)} />
               <p className="text-xs text-muted-foreground">Charged to male viewers per private photo unlock.</p>
             </div>
             <div className="space-y-2">
-              <Label>Token Cost — View Private Video</Label>
+              <Label>Token Cost — View Private Photo (Women)</Label>
+              <Input type="number" value={form.tokens_private_photo_cost_women ?? 0} onChange={e => num('tokens_private_photo_cost_women', e.target.value)} />
+              <p className="text-xs text-muted-foreground">Charged to female viewers per private photo unlock.</p>
+            </div>
+            <div className="space-y-2">
+              <Label>Token Cost — View Private Video (Men)</Label>
               <Input type="number" value={form.tokens_private_video_cost ?? 10} onChange={e => num('tokens_private_video_cost', e.target.value)} />
               <p className="text-xs text-muted-foreground">Charged to male viewers per private video unlock.</p>
+            </div>
+            <div className="space-y-2">
+              <Label>Token Cost — View Private Video (Women)</Label>
+              <Input type="number" value={form.tokens_private_video_cost_women ?? 0} onChange={e => num('tokens_private_video_cost_women', e.target.value)} />
+              <p className="text-xs text-muted-foreground">Charged to female viewers per private video unlock.</p>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4 border-t pt-4">
