@@ -102,8 +102,8 @@ export default function TokenCostsList({ profile, config }) {
     });
   }
 
-  // 9. View private videos — shown when enabled for the user's gender
-  if (isMale ? config?.videos_private_men_enabled : config?.videos_private_women_enabled) {
+  // 9. View private videos — always shown, gender-specific cost
+  {
     const cost = isMale ? (config?.tokens_private_video_cost ?? 25) : (config?.tokens_private_video_cost_women ?? 0);
     rows.push({
       label: t('token_cost_view_private_video'),
