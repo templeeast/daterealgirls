@@ -171,8 +171,8 @@ export default function PrivatePhotosViewer({ ownerProfileId, myProfile }) {
           <div className="grid grid-cols-3 gap-3 mb-3 opacity-30 pointer-events-none select-none">
             {Array(Math.min(approvedPhotos.length || 3, 3)).fill(0).map((_, i) => (
               <div key={i} className="aspect-square rounded-xl bg-muted flex flex-col items-center justify-center gap-1">
-                {approvedPhotos[i]?.media_type === 'video' && <Video className="w-5 h-5 text-muted-foreground/40" />}
-                <Lock className="w-6 h-6 text-muted-foreground/40" />
+                {approvedPhotos[i]?.media_type === 'video' && <Video className="w-5 h-5 text-muted-foreground" />}
+                <Lock className="w-8 h-8 text-muted-foreground" />
               </div>
             ))}
           </div>
