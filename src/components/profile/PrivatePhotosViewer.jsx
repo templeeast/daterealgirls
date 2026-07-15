@@ -170,7 +170,7 @@ export default function PrivatePhotosViewer({ ownerProfileId, myProfile }) {
         <div className="text-center py-4 space-y-2">
           <div className="grid grid-cols-3 gap-3 mb-3 pointer-events-none select-none">
             {Array(Math.min(approvedPhotos.length || 3, 3)).fill(0).map((_, i) => (
-              <div key={i} className="aspect-square rounded-xl bg-muted flex flex-col items-center justify-center gap-1">
+              <div key={i} className="aspect-square rounded-xl bg-muted-foreground/15 border border-muted-foreground/20 flex flex-col items-center justify-center gap-1">
                 {approvedPhotos[i]?.media_type === 'video' && <Video className="w-5 h-5 text-muted-foreground" />}
                 <Lock className="w-8 h-8 text-muted-foreground" />
               </div>
@@ -198,7 +198,7 @@ export default function PrivatePhotosViewer({ ownerProfileId, myProfile }) {
       <div className="text-center py-4 space-y-3">
         <div className="grid grid-cols-3 gap-3 mb-3 pointer-events-none select-none">
             {Array(Math.min(approvedPhotos.length || 3, 3)).fill(0).map((_, i) => (
-              <div key={i} className="aspect-square rounded-xl bg-muted flex flex-col items-center justify-center gap-1">
+              <div key={i} className="aspect-square rounded-xl bg-muted-foreground/15 border border-muted-foreground/20 flex flex-col items-center justify-center gap-1">
                 {approvedPhotos[i]?.media_type === 'video' && <Video className="w-5 h-5 text-muted-foreground" />}
                 <Lock className="w-8 h-8 text-muted-foreground" />
               </div>
