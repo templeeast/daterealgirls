@@ -2,6 +2,7 @@ import React from 'react';
 import { Outlet } from 'react-router-dom';
 import Navbar from './Navbar';
 import MobileBottomNav from './MobileBottomNav';
+import InstallPrompt from '@/components/shared/InstallPrompt';
 
 export default function AppLayout() {
   return (
@@ -11,6 +12,7 @@ export default function AppLayout() {
         <Outlet />
       </main>
       <MobileBottomNav />
+      <InstallPrompt />
     </div>
   );
 }
