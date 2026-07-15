@@ -168,7 +168,7 @@ export default function PrivatePhotosViewer({ ownerProfileId, myProfile }) {
     if (status === 'pending') {
       return (
         <div className="text-center py-4 space-y-2">
-          <div className="grid grid-cols-3 gap-3 mb-3 opacity-30 pointer-events-none select-none">
+          <div className="grid grid-cols-3 gap-3 mb-3 pointer-events-none select-none">
             {Array(Math.min(approvedPhotos.length || 3, 3)).fill(0).map((_, i) => (
               <div key={i} className="aspect-square rounded-xl bg-muted flex flex-col items-center justify-center gap-1">
                 {approvedPhotos[i]?.media_type === 'video' && <Video className="w-5 h-5 text-muted-foreground" />}
@@ -196,14 +196,14 @@ export default function PrivatePhotosViewer({ ownerProfileId, myProfile }) {
     // No record or revoked
     return (
       <div className="text-center py-4 space-y-3">
-        <div className="grid grid-cols-3 gap-3 mb-3 opacity-20 pointer-events-none select-none">
-          {Array(Math.min(approvedPhotos.length || 3, 3)).fill(0).map((_, i) => (
-            <div key={i} className="aspect-square rounded-xl bg-muted flex flex-col items-center justify-center gap-1">
-              {approvedPhotos[i]?.media_type === 'video' && <Video className="w-5 h-5 text-muted-foreground/40" />}
-              <Lock className="w-6 h-6 text-muted-foreground/40" />
-            </div>
-          ))}
-        </div>
+        <div className="grid grid-cols-3 gap-3 mb-3 pointer-events-none select-none">
+            {Array(Math.min(approvedPhotos.length || 3, 3)).fill(0).map((_, i) => (
+              <div key={i} className="aspect-square rounded-xl bg-muted flex flex-col items-center justify-center gap-1">
+                {approvedPhotos[i]?.media_type === 'video' && <Video className="w-5 h-5 text-muted-foreground" />}
+                <Lock className="w-8 h-8 text-muted-foreground" />
+              </div>
+            ))}
+          </div>
         {approvedPhotos.length > 0 && (
           <p className="text-sm text-muted-foreground">
             This member has {approvedPhotos.length} private photo{approvedPhotos.length !== 1 ? 's' : ''}.
