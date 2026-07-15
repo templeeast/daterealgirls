@@ -2,7 +2,6 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Sparkles, Hand, MessageCircle, User } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import useMyProfile from '@/hooks/useMyProfile';
 
 /**
  * Fixed bottom navigation bar for mobile devices.
@@ -11,7 +10,6 @@ import useMyProfile from '@/hooks/useMyProfile';
  */
 export default function MobileBottomNav() {
   const location = useLocation();
-  const { profile } = useMyProfile();
   const { t } = useTranslation();
 
   const items = [

@@ -1,12 +1,23 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import useSiteConfig from '@/hooks/useSiteConfig';
 import useMyProfile from '@/hooks/useMyProfile';
-import { useIsMobile } from '@/hooks/use-mobile';
 
 export default function JuicyAdsEmbed({ zone, zoneMobile }) {
+  // Lazy initial state — correct on first render, no undefined→true flash
+  // that would cause the useEffect to run twice (desktop zone then mobile zone)
+  const [isMobile, setIsMobile] = useState(() =>
+    typeof window !== 'undefined' && window.innerWidth < 768
+  );
+
+  useEffect(() => {
+    const mql = window.matchMedia('(max-width: 767px)');
+    const onChange = () => setIsMobile(window.innerWidth < 768);
+    mql.addEventListener('change', onChange);
+    return () => mql.removeEventListener('change', onChange);
+  }, []);
+
   const { config } = useSiteConfig();
   const { profile } = useMyProfile();
-  const isMobile = useIsMobile();
 
   const activeZone = (zoneMobile && isMobile) ? zoneMobile : zone;
 
