@@ -45,19 +45,23 @@ export default function HilltopAdsEmbed({ scriptUrl, scriptUrlMobile }) {
   const genderBlocked =
     (gender === 'male' && !showMen) || (gender === 'female' && !showWomen);
 
-  const shouldRender =
-    enabled &&
-    activeUrl &&
-    !isAdFree &&
-    !genderBlocked;
+  const c1 = Boolean(enabled);
+  const c2 = Boolean(activeUrl);
+  const c3 = Boolean(!isAdFree);
+  const c4 = Boolean(!genderBlocked);
+  const shouldRender = c1 && c2 && c3 && c4;
 
   // Debug trace — remove after resolving
-  console.log('[HilltopAdsEmbed]', {
-    enabled, activeUrl, gender, showMen, showWomen,
-    isAdFree, genderBlocked, shouldRender,
-    scriptUrlProp: scriptUrl, scriptUrlMobileProp: scriptUrlMobile,
-    isMobile, configLoaded: !!config?.hilltopads_enabled,
-    profileLoaded: !!profile,
+  console.log('[HilltopAdsEmbed] conditions', {
+    c1_enabled: c1,
+    c2_activeUrl: c2,
+    c3_notAdFree: c3,
+    c4_notGenderBlocked: c4,
+    shouldRender,
+    isAdFree_type: typeof isAdFree,
+    isAdFree_val: isAdFree,
+    activeUrl_type: typeof activeUrl,
+    activeUrl_len: activeUrl ? activeUrl.length : 0,
   });
 
   if (!shouldRender) return null;
