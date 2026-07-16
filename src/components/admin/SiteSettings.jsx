@@ -345,7 +345,7 @@ export default function SiteSettings() {
           <div className="flex items-center justify-between border-t pt-4">
             <div>
               <p className="font-medium text-sm">Show New Site Promo Banner</p>
-              <p className="text-xs text-muted-foreground mt-0.5">When the scrolling profiles banner is hidden, show a promotional banner for the FIRST500 token bonus instead.</p>
+              <p className="text-xs text-muted-foreground mt-0.5">Show a promotional banner for the FIRST500 token bonus.</p>
             </div>
             <Switch
               checked={form.landing_new_site_promo_enabled}
