@@ -146,7 +146,7 @@ export default function TokenCostsList({ profile, config }) {
             <span>
               {row.label}
               {row.verificationRequired && (
-                <span className="text-xs text-amber-600 font-medium"> ({t('token_cost_verification_required')})</span>
+                <span className="text-xs text-amber-600 font-medium whitespace-nowrap">&nbsp;({t('token_cost_verification_required')})</span>
               )}
             </span>
             <span className={`text-right whitespace-nowrap shrink-0 ${row.isFree ? 'text-green-600 font-medium' : ''}`}>{row.cost}</span>
