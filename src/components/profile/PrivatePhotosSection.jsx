@@ -174,6 +174,7 @@ export default function PrivatePhotosSection({ profile, onRefetch, maxPrivatePho
         <CardHeader>
           <CardTitle className="font-heading text-lg flex items-center gap-2">🔒 Private Photos</CardTitle>
           <CardDescription>{videosPrivateEnabled ? t(isMale ? 'private_photos_videos_desc_men' : 'private_photos_videos_desc_women', { n: maxPrivatePhotos }) : t('private_photos_desc', { n: maxPrivatePhotos })}</CardDescription>
+          <p className="text-xs text-primary font-medium mt-2">{t('private_photos_creator_earnings_desc', { percentage: config?.private_media_creator_share_percentage ?? 80 })}</p>
         </CardHeader>
         <CardContent className="space-y-4">
           {uploadError && (

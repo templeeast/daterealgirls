@@ -320,6 +320,23 @@ export default function TokenEconomySettings({ form, updateField }) {
         </CardContent>
       </Card>
 
+      {/* Creator Earnings */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="font-heading text-lg">Creator Earnings — Private Media</CardTitle>
+          <CardDescription>When a member pays tokens to view someone's private photo or video, the content creator receives this percentage of the tokens charged (rounded up to the nearest whole token).</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Creator Share (%)</Label>
+              <Input type="number" min="0" max="100" value={form.private_media_creator_share_percentage ?? 80} onChange={e => num('private_media_creator_share_percentage', e.target.value)} />
+              <p className="text-xs text-muted-foreground">Default: 80%. The creator earns this share each time their private photo or video is unlocked by a paying viewer.</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Token Packs */}
       <Card>
         <CardHeader>

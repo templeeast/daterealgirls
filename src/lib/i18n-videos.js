@@ -12,6 +12,7 @@ export const videoTranslations = {
     token_cost_send_video: 'Send a video in message',
     token_cost_view_private_video: 'View private video',
     token_cost_per_video: 'per video',
+    private_photos_creator_earnings_desc: '💰 You earn {{percentage}}% of the tokens each time a member views your private photos or videos (rounded up).',
   },
   es: {
     private_photos_and_videos_title: 'Fotos y Videos Privados',
@@ -26,6 +27,7 @@ export const videoTranslations = {
     token_cost_send_video: 'Enviar un video en mensaje',
     token_cost_view_private_video: 'Ver video privado',
     token_cost_per_video: 'por video',
+    private_photos_creator_earnings_desc: '💰 Ganas el {{percentage}}% de los tokens cada vez que un miembro ve tus fotos o videos privados (redondeado hacia arriba).',
   },
   th: {
     private_photos_and_videos_title: 'รูปและวิดีโอส่วนตัว',
@@ -40,6 +42,7 @@ export const videoTranslations = {
     token_cost_send_video: 'ส่งวิดีโอในข้อความ',
     token_cost_view_private_video: 'ดูวิดีโอส่วนตัว',
     token_cost_per_video: 'ต่อวิดีโอ',
+    private_photos_creator_earnings_desc: '💰 คุณจะได้รับ {{percentage}}% ของโทเค็นทุกครั้งที่สมาชิกดูรูปหรือวิดีโอส่วนตัวของคุณ (ปัดขึ้น)',
   },
   zh: {
     private_photos_and_videos_title: '私密照片和视频',
@@ -54,6 +57,7 @@ export const videoTranslations = {
     token_cost_send_video: '在消息中发送视频',
     token_cost_view_private_video: '查看私密视频',
     token_cost_per_video: '每个视频',
+    private_photos_creator_earnings_desc: '💰 每次会员查看您的私密照片或视频时，您将获得{{percentage}}%的代币（向上取整）。',
   },
   de: {
     private_photos_and_videos_title: 'Private Fotos und Videos',
@@ -68,6 +72,7 @@ export const videoTranslations = {
     token_cost_send_video: 'Video in Nachricht senden',
     token_cost_view_private_video: 'Privates Video ansehen',
     token_cost_per_video: 'pro Video',
+    private_photos_creator_earnings_desc: '💰 Du erhältst {{percentage}}% der Token, sobald ein Mitglied deine privaten Fotos oder Videos ansieht (aufgerundet).',
   },
   vi: {
     private_photos_and_videos_title: 'Ảnh và Video Riêng tư',
@@ -82,6 +87,7 @@ export const videoTranslations = {
     token_cost_send_video: 'Gửi video trong tin nhắn',
     token_cost_view_private_video: 'Xem video riêng tư',
     token_cost_per_video: 'mỗi video',
+    private_photos_creator_earnings_desc: '💰 Bạn nhận được {{percentage}}% số token mỗi khi thành viên xem ảnh hoặc video riêng tư của bạn (làm tròn lên).',
   },
   pt: {
     private_photos_and_videos_title: 'Fotos e Vídeos Privados',
@@ -96,6 +102,7 @@ export const videoTranslations = {
     token_cost_send_video: 'Enviar vídeo em mensagem',
     token_cost_view_private_video: 'Ver vídeo privado',
     token_cost_per_video: 'por vídeo',
+    private_photos_creator_earnings_desc: '💰 Você ganha {{percentage}}% dos tokens cada vez que um membro vê suas fotos ou vídeos privados (arredondado para cima).',
   },
   tl: {
     private_photos_and_videos_title: 'Pribadong Larawan at Video',
@@ -110,5 +117,6 @@ export const videoTranslations = {
     token_cost_send_video: 'Magpadala ng video sa mensahe',
     token_cost_view_private_video: 'Tingnan ang pribadong video',
     token_cost_per_video: 'bawat video',
+    private_photos_creator_earnings_desc: '💰 Nakakakuha ka ng {{percentage}}% ng mga token tuwing may miyembro na tinitingnan ang iyong mga pribadong larawan o video (rounded up).',
   },
 };

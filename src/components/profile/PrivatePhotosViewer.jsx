@@ -129,6 +129,26 @@ export default function PrivatePhotosViewer({ ownerProfileId, myProfile }) {
       viewed_at: new Date().toISOString(),
       tokens_spent: viewCost,
     });
+
+    // Award the content creator their configurable share of the tokens
+    const creatorSharePct = config?.private_media_creator_share_percentage ?? 80;
+    const creatorTokens = Math.ceil((viewCost * creatorSharePct) / 100);
+    if (creatorTokens > 0) {
+      const ownerProfiles = await base44.entities.MemberProfile.filter({ id: ownerProfileId });
+      const owner = ownerProfiles[0];
+      if (owner) {
+        await base44.entities.MemberProfile.update(owner.id, {
+          tokens: (owner.tokens || 0) + creatorTokens,
+        });
+        await base44.entities.TokenTransaction.create({
+          user_id: owner.user_id,
+          type: 'bonus',
+          tokens: creatorTokens,
+          description: `Earnings from private ${confirmPhoto.media_type === 'video' ? 'video' : 'photo'} view`,
+        });
+      }
+    }
+
     setUnlockedIds(prev => new Set([...prev, confirmPhoto.id]));
     setConfirmPhoto(null);
     setUnlocking(false);

@@ -433,6 +433,11 @@
       "type": "number",
       "default": 0,
       "description": "Token cost for female viewers to view a private video"
+    },
+    "private_media_creator_share_percentage": {
+      "type": "number",
+      "default": 80,
+      "description": "Percentage of private photo/video view tokens awarded to the content creator (0-100, rounded up to nearest whole token)"
     }
   },
   "required": [
