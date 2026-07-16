@@ -26,8 +26,8 @@ export default function TokenCostsList({ profile, config }) {
   if (browseEnabled) {
     const cost = isMale ? (config?.tokens_browse_cost_men ?? 100) : (config?.tokens_browse_cost_women ?? 0);
     rows.push({
-      label: `${t('token_cost_browse_all')} (1 ${t('token_cost_week')})`,
-      cost: cost === 0 ? t('free') : t('token_cost_n_tokens', { n: cost }),
+      label: t('token_cost_browse_all'),
+      cost: cost === 0 ? t('free') : `${t('token_cost_n_tokens', { n: cost })} (1 ${t('token_cost_week')})`,
       isFree: cost === 0,
     });
   }
