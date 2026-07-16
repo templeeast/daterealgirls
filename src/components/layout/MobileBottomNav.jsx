@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Search, Zap, MessageCircle, User } from 'lucide-react';
+import { Search, Zap, MessageCircle, User, Heart } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
@@ -34,6 +34,7 @@ export default function MobileBottomNav() {
     { path: '/browse', label: t('nav_browse', 'Browse'), icon: Search, restricted: true, needsVerification: false },
     { path: '/winks', label: t('nav_winks', 'Winks'), icon: Zap, restricted: true, needsVerification: true, badge: winksCount },
     { path: '/messages', label: t('nav_messages', 'Messages'), icon: MessageCircle, restricted: true, needsVerification: true },
+    { path: '/favorites', label: t('nav_favorites', 'Favorites'), icon: Heart, restricted: true, needsVerification: true },
     { path: '/my-profile', label: t('nav_profile', 'Profile'), icon: User, restricted: false },
   ];
 
