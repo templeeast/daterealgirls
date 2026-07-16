@@ -879,6 +879,36 @@ const sections = [
       { id: 'af-42', label: 'BANNER: Banner disappears from all five pages after ad-free is activated (no page reload needed)' },
     ],
   },
+  {
+    id: 'creator_earnings',
+    icon: Camera,
+    title: 'Creator Earnings — Private Media Revenue Sharing',
+    color: 'text-emerald-600',
+    items: [
+      // --- Entity & Config ---
+      { id: 'ce-1', label: 'ENTITY: SiteConfig has private_media_creator_share_percentage field (number, default 80)' },
+      // --- Admin Settings ---
+      { id: 'ce-2', label: 'ADMIN SETTINGS: "Creator Earnings — Private Media" card appears in Token Economy Settings with percentage input' },
+      { id: 'ce-3', label: 'ADMIN SETTINGS: Changing the Creator Share (%) saves to SiteConfig.private_media_creator_share_percentage and persists on reload' },
+      { id: 'ce-4', label: 'ADMIN SETTINGS: Default value is 80 when the field has not been previously set' },
+      // --- Token Award Logic ---
+      { id: 'ce-5', label: 'EARNINGS: When a male viewer unlocks a private photo (5 tokens), the content creator receives Math.ceil(5 * percentage / 100) tokens' },
+      { id: 'ce-6', label: 'EARNINGS: When a male viewer unlocks a private video (10 tokens), the content creator receives Math.ceil(10 * percentage / 100) tokens' },
+      { id: 'ce-7', label: 'EARNINGS: Token award is rounded UP to the nearest whole token (e.g. 80% of 5 = 4, 80% of 10 = 8)' },
+      { id: 'ce-8', label: 'EARNINGS: Creator token balance is incremented by the correct amount immediately after the viewer pays' },
+      { id: 'ce-9', label: 'EARNINGS: A TokenTransaction record is created for the creator with type="bonus" and description "Earnings from private photo/video view"' },
+      { id: 'ce-10', label: 'EARNINGS: Viewer is still charged the full token cost (creator share does NOT reduce the viewer cost)' },
+      { id: 'ce-11', label: 'EARNINGS: Female viewer (0 token cost) does NOT trigger a creator award (viewCost is 0)' },
+      { id: 'ce-12', label: 'EARNINGS: Setting percentage to 0 awards 0 tokens to the creator (viewer still charged normally)' },
+      { id: 'ce-13', label: 'EARNINGS: Setting percentage to 100 awards the full token cost to the creator' },
+      // --- UI Description ---
+      { id: 'ce-14', label: 'MY PROFILE: Private Photos section shows creator earnings description "💰 You earn {{percentage}}% of the tokens each time a member unlocks one of your private photos or videos (rounded up)."' },
+      { id: 'ce-15', label: 'MY PROFILE: Description displays the current configured percentage from SiteConfig' },
+      // --- i18n ---
+      { id: 'ce-16', label: 'i18n: Creator earnings description renders correctly in all 8 supported languages (EN, ES, TH, ZH, DE, VI, PT, TL)' },
+      { id: 'ce-17', label: 'i18n: All translations use "unlocks one of" wording (not "views")' },
+    ],
+  },
 ];
 
 export default function TestPlan() {
