@@ -12,7 +12,7 @@ export const videoTranslations = {
     token_cost_send_video: 'Send a video in message',
     token_cost_view_private_video: 'View private video',
     token_cost_per_video: 'per video',
-    private_photos_creator_earnings_desc: '💰 You earn {{percentage}}% of the tokens each time a member views your private photos or videos (rounded up).',
+    private_photos_creator_earnings_desc: '💰 You earn {{percentage}}% of the tokens each time a member unlocks one of your private photos or videos (rounded up).',
   },
   es: {
     private_photos_and_videos_title: 'Fotos y Videos Privados',
