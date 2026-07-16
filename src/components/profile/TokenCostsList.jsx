@@ -142,14 +142,14 @@ export default function TokenCostsList({ profile, config }) {
       <h4 className="text-sm font-semibold mb-3">{t('token_cost_costs_title')}</h4>
       <div className="space-y-2 text-sm">
         {rows.map((row, idx) => (
-          <div key={idx} className="flex justify-between">
+          <div key={idx} className="flex items-start justify-between gap-4">
             <span>
               {row.label}
               {row.verificationRequired && (
                 <span className="text-xs text-amber-600 font-medium"> ({t('token_cost_verification_required')})</span>
               )}
             </span>
-            <span className={row.isFree ? 'text-green-600 font-medium' : ''}>{row.cost}</span>
+            <span className={`text-right whitespace-nowrap shrink-0 ${row.isFree ? 'text-green-600 font-medium' : ''}`}>{row.cost}</span>
           </div>
         ))}
       </div>
