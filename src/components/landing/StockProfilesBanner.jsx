@@ -71,7 +71,10 @@ export default function StockProfilesBanner() {
     return () => { active = false; };
   }, [config.banner_show_women_only, config.landing_profiles_min_members]);
 
-  if (hidden) return <NewSitePromoBanner />;
+  if (hidden) {
+    if (config.landing_new_site_promo_enabled === false) return null;
+    return <NewSitePromoBanner />;
+  }
 
   const items = [...profiles, ...profiles, ...profiles];
 

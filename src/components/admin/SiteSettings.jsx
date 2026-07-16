@@ -38,6 +38,7 @@ export default function SiteSettings() {
     primary_color: '',
     banner_show_women_only: true,
     landing_profiles_min_members: 100,
+    landing_new_site_promo_enabled: true,
     payment_processor: 'whop',
     authorizenet_use_hosted_page: false,
     authorizenet_hosted_page_url: '',
@@ -139,6 +140,7 @@ export default function SiteSettings() {
         primary_color: existingConfig.primary_color || '',
         banner_show_women_only: existingConfig.banner_show_women_only !== false,
         landing_profiles_min_members: existingConfig.landing_profiles_min_members ?? 100,
+        landing_new_site_promo_enabled: existingConfig.landing_new_site_promo_enabled !== false,
         payment_processor: existingConfig.payment_processor || 'whop',
         authorizenet_use_hosted_page: existingConfig.authorizenet_use_hosted_page || false,
         authorizenet_hosted_page_url: existingConfig.authorizenet_hosted_page_url || '',
@@ -338,6 +340,16 @@ export default function SiteSettings() {
               value={form.landing_profiles_min_members}
               onChange={e => updateField('landing_profiles_min_members', Number(e.target.value))}
               className="w-28"
+            />
+          </div>
+          <div className="flex items-center justify-between border-t pt-4">
+            <div>
+              <p className="font-medium text-sm">Show New Site Promo Banner</p>
+              <p className="text-xs text-muted-foreground mt-0.5">When the scrolling profiles banner is hidden, show a promotional banner for the FIRST500 token bonus instead.</p>
+            </div>
+            <Switch
+              checked={form.landing_new_site_promo_enabled}
+              onCheckedChange={v => updateField('landing_new_site_promo_enabled', v)}
             />
           </div>
         </CardContent>

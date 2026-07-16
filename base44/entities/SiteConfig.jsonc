@@ -38,6 +38,11 @@
       "default": 100,
       "description": "Minimum number of active site members required to show the scrolling profiles banner on the landing page"
     },
+    "landing_new_site_promo_enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether to show the New Site promo banner (FIRST500) in place of the hidden scrolling profiles banner"
+    },
     "payment_processor": {
       "type": "string",
       "enum": [
