@@ -5,7 +5,6 @@ import { useAuth } from '@/lib/AuthContext';
 import useSiteConfig from '@/hooks/useSiteConfig';
 import { Badge } from '@/components/ui/badge';
 import { useTranslation } from 'react-i18next';
-import NewSitePromoBanner from '@/components/landing/NewSitePromoBanner';
 
 const STOCK_PROFILES = [
   { id: 's1', display_name: 'Valentina', location_city: 'Miami', photo: 'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=400&h=600&fit=crop&crop=face', verified: Math.random() > 0.5 },
@@ -71,10 +70,7 @@ export default function StockProfilesBanner() {
     return () => { active = false; };
   }, [config.banner_show_women_only, config.landing_profiles_min_members]);
 
-  if (hidden) {
-    if (config.landing_new_site_promo_enabled === false) return null;
-    return <NewSitePromoBanner />;
-  }
+  if (hidden) return null;
 
   const items = [...profiles, ...profiles, ...profiles];
 

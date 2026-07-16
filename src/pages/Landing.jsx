@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import useSiteConfig from '@/hooks/useSiteConfig';
 import ProfilesBelowHero from '@/components/landing/ProfilesBelowHero';
 import StockProfilesBanner from '@/components/landing/StockProfilesBanner';
+import NewSitePromoBanner from '@/components/landing/NewSitePromoBanner';
 import StackPromosCard from '@/components/landing/StackPromosCard';
 import { useAuth } from '@/lib/AuthContext';
 import { useTranslation } from 'react-i18next';
@@ -171,6 +172,9 @@ export default function Landing() {
 
       {/* Scrolling profiles banner */}
       <StockProfilesBanner />
+
+      {/* New Site Promo Banner — shown independently based on the admin toggle */}
+      {config.landing_new_site_promo_enabled !== false && <NewSitePromoBanner />}
 
       {/* Token Pricing */}
       <section className="pt-32 pb-24">
