@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Gift } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 import useMyProfile from '@/hooks/useMyProfile';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Compact promotional banner shown in place of the scrolling profiles banner
@@ -15,6 +16,7 @@ export default function NewSitePromoBanner() {
   const { isAuthenticated, navigateToLogin } = useAuth();
   const { profile } = useMyProfile();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handleCTA = () => {
     if (!isAuthenticated) {
@@ -36,18 +38,16 @@ export default function NewSitePromoBanner() {
         </div>
         <div className="flex-1 min-w-0">
           <span className="text-xs font-semibold uppercase tracking-wide text-primary">
-            New Site Launch Special
+            {t('new_site_promo_badge')}
           </span>
           <p className="text-lg sm:text-xl font-heading font-bold text-foreground mt-0.5">
-            Get <span className="text-primary">3,000 free tokens</span> with code{' '}
-            <span className="font-mono text-primary">FIRST500</span>
+            {t('new_site_promo_title', { tokens: '3,000', code: 'FIRST500' })}
           </p>
           <p className="text-sm text-muted-foreground mt-1 hidden sm:block">
-            Create a profile, complete ID verification, and be one of the first 500
-            members to claim your bonus.
+            {t('new_site_promo_desc_desktop')}
           </p>
           <p className="text-xs text-muted-foreground mt-0.5 sm:hidden">
-            Verify your ID &amp; be one of the first 500 members.
+            {t('new_site_promo_desc_mobile')}
           </p>
         </div>
         <Button
@@ -55,8 +55,8 @@ export default function NewSitePromoBanner() {
           onClick={handleCTA}
         >
           <Gift className="w-4 h-4" />
-          <span className="hidden sm:inline">{isAuthenticated ? 'Get Started' : 'Sign Up'}</span>
-          <span className="sm:hidden">{isAuthenticated ? 'Start' : 'Join'}</span>
+          <span className="hidden sm:inline">{isAuthenticated ? t('new_site_promo_btn_get_started') : t('new_site_promo_btn_sign_up')}</span>
+          <span className="sm:hidden">{isAuthenticated ? t('new_site_promo_btn_start') : t('new_site_promo_btn_join')}</span>
         </Button>
       </div>
     </section>
