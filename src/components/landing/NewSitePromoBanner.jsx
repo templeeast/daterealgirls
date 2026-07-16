@@ -29,7 +29,7 @@ export default function NewSitePromoBanner() {
   };
 
   return (
-    <section className="py-2 bg-secondary/30 overflow-hidden border-y border-border">
+    <section className="relative z-10 py-2 bg-secondary overflow-hidden border-y border-border">
       <div className="flex items-center gap-4 px-4 sm:px-6 max-w-6xl mx-auto min-h-[192px] sm:min-h-[240px]">
         <div className="flex-shrink-0 inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-primary/15">
           <Gift className="w-7 h-7 sm:w-8 sm:h-8 text-primary" />
