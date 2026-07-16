@@ -37,6 +37,7 @@ export default function SiteSettings() {
     msg_rate_limit_seconds: 10,
     primary_color: '',
     banner_show_women_only: true,
+    landing_profiles_min_members: 100,
     payment_processor: 'whop',
     authorizenet_use_hosted_page: false,
     authorizenet_hosted_page_url: '',
@@ -137,6 +138,7 @@ export default function SiteSettings() {
         msg_rate_limit_seconds: existingConfig.msg_rate_limit_seconds ?? 10,
         primary_color: existingConfig.primary_color || '',
         banner_show_women_only: existingConfig.banner_show_women_only !== false,
+        landing_profiles_min_members: existingConfig.landing_profiles_min_members ?? 100,
         payment_processor: existingConfig.payment_processor || 'whop',
         authorizenet_use_hosted_page: existingConfig.authorizenet_use_hosted_page || false,
         authorizenet_hosted_page_url: existingConfig.authorizenet_hosted_page_url || '',
@@ -324,6 +326,18 @@ export default function SiteSettings() {
             <Switch
               checked={form.banner_show_women_only}
               onCheckedChange={v => updateField('banner_show_women_only', v)}
+            />
+          </div>
+          <div className="flex items-center justify-between border-t pt-4">
+            <div>
+              <p className="font-medium text-sm">Min Members for Scrolling Banner</p>
+              <p className="text-xs text-muted-foreground mt-0.5">The scrolling profiles banner is hidden until the site has at least this many active members. Set to 0 to always show.</p>
+            </div>
+            <Input
+              type="number"
+              value={form.landing_profiles_min_members}
+              onChange={e => updateField('landing_profiles_min_members', Number(e.target.value))}
+              className="w-28"
             />
           </div>
         </CardContent>

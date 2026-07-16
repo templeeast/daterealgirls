@@ -33,6 +33,11 @@
       "type": "boolean",
       "default": true
     },
+    "landing_profiles_min_members": {
+      "type": "number",
+      "default": 100,
+      "description": "Minimum number of active site members required to show the scrolling profiles banner on the landing page"
+    },
     "payment_processor": {
       "type": "string",
       "enum": [

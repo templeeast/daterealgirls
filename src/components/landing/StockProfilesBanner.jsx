@@ -26,15 +26,30 @@ const STOCK_PROFILES = [
 
 export default function StockProfilesBanner() {
   const [profiles, setProfiles] = useState([]);
+  const [hidden, setHidden] = useState(false);
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const { config } = useSiteConfig();
   const { t } = useTranslation();
 
   useEffect(() => {
-    const filterQuery = { gender: 'female', is_active: true, profile_complete: true, is_suspended: false };
-    base44.entities.MemberProfile.filter(filterQuery, '-created_date', 20)
+    const minMembers = config.landing_profiles_min_members ?? 100;
+    let active = true;
+
+    // Hide the banner until the site has enough active members
+    base44.entities.MemberProfile.filter({ is_active: true }, '-created_date', minMembers)
+      .then(countData => {
+        if (!active) return null;
+        if (countData.length < minMembers) {
+          setHidden(true);
+          setProfiles([]);
+          return null;
+        }
+        const filterQuery = { gender: 'female', is_active: true, profile_complete: true, is_suspended: false };
+        return base44.entities.MemberProfile.filter(filterQuery, '-created_date', 20);
+      })
       .then(data => {
+        if (!active || !data) return;
         const real = data.filter(p => p.photo_1).map(p => ({
           id: p.id,
           display_name: p.display_name,
@@ -47,8 +62,15 @@ export default function StockProfilesBanner() {
         const combined = real.length >= 6 ? real : [...real, ...STOCK_PROFILES.slice(0, Math.max(6, 10 - real.length))];
         setProfiles(combined);
       })
-      .catch(() => setProfiles(STOCK_PROFILES));
-  }, [config.banner_show_women_only]);
+      .catch(() => {
+        if (!active) return;
+        setProfiles(STOCK_PROFILES);
+      });
+
+    return () => { active = false; };
+  }, [config.banner_show_women_only, config.landing_profiles_min_members]);
+
+  if (hidden) return null;
 
   const items = [...profiles, ...profiles, ...profiles];
 
