@@ -10,6 +10,7 @@ export const tokenCostsTranslations = {
     token_cost_per_video: 'per video',
     token_cost_id_verification: 'ID Verification',
     token_cost_week: 'week',
+    token_cost_verification_footnote: '* (verification required)',
   },
   es: {
     token_cost_costs_title: 'Costos de Tokens',
@@ -22,6 +23,7 @@ export const tokenCostsTranslations = {
     token_cost_per_video: 'por video',
     token_cost_id_verification: 'Verificación de ID',
     token_cost_week: 'semana',
+    token_cost_verification_footnote: '* (verificación requerida)',
   },
   th: {
     token_cost_costs_title: 'ค่าโทเค็น',
@@ -34,6 +36,7 @@ export const tokenCostsTranslations = {
     token_cost_per_video: 'ต่อวิดีโอ',
     token_cost_id_verification: 'การยืนยัน ID',
     token_cost_week: 'สัปดาห์',
+    token_cost_verification_footnote: '* (ต้องยืนยันตัวตน)',
   },
   zh: {
     token_cost_costs_title: '代币费用',
@@ -46,6 +49,7 @@ export const tokenCostsTranslations = {
     token_cost_per_video: '每个视频',
     token_cost_id_verification: '身份验证',
     token_cost_week: '周',
+    token_cost_verification_footnote: '* (需要验证)',
   },
   de: {
     token_cost_costs_title: 'Token-Kosten',
@@ -58,6 +62,7 @@ export const tokenCostsTranslations = {
     token_cost_per_video: 'pro Video',
     token_cost_id_verification: 'ID-Verifizierung',
     token_cost_week: 'Woche',
+    token_cost_verification_footnote: '* (Verifizierung erforderlich)',
   },
   vi: {
     token_cost_costs_title: 'Chi Phí Token',
@@ -70,6 +75,7 @@ export const tokenCostsTranslations = {
     token_cost_per_video: 'mỗi video',
     token_cost_id_verification: 'Xác Minh ID',
     token_cost_week: 'tuần',
+    token_cost_verification_footnote: '* (yêu cầu xác minh)',
   },
   pt: {
     token_cost_costs_title: 'Custos de Tokens',
@@ -82,6 +88,7 @@ export const tokenCostsTranslations = {
     token_cost_per_video: 'por vídeo',
     token_cost_id_verification: 'Verificação de ID',
     token_cost_week: 'semana',
+    token_cost_verification_footnote: '* (verificação necessária)',
   },
   tl: {
     token_cost_costs_title: 'Gastos sa Token',
@@ -94,5 +101,6 @@ export const tokenCostsTranslations = {
     token_cost_per_video: 'bawat video',
     token_cost_id_verification: 'Pagpapatunay ng ID',
     token_cost_week: 'linggo',
+    token_cost_verification_footnote: '* (kailangan ang pagpapatunay)',
   },
 };
