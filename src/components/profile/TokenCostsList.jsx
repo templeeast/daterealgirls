@@ -56,6 +56,7 @@ export default function TokenCostsList({ profile, config }) {
       label: t('token_cost_send_wink'),
       cost: cost === 0 ? t('free') : t('token_cost_n_tokens', { n: cost }),
       isFree: cost === 0,
+      verificationRequired: true,
     });
   }
 
