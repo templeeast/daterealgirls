@@ -12,6 +12,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import useMyProfile from '@/hooks/useMyProfile';
 import useSiteConfig from '@/hooks/useSiteConfig';
 import AdFreeBanner from '@/components/shared/AdFreeBanner';
+import StickyAdBar from '@/components/shared/StickyAdBar';
+import HilltopAdBar from '@/components/shared/HilltopAdBar';
 import useAdsActive from '@/hooks/useAdsActive';
 import PrivatePhotosViewer from '@/components/profile/PrivatePhotosViewer';
 import PhotoZoomModal from '@/components/profile/PhotoZoomModal';
@@ -167,6 +169,10 @@ export default function ViewProfile() {
       <Button variant="ghost" className="mb-4" onClick={() => navigate(-1)}>
         <ArrowLeft className="w-4 h-4 mr-2" /> {t('back')}
       </Button>
+
+      {/* Sticky ad bars — only render when configured for this user */}
+      <StickyAdBar zone={config?.juicyads_zone_profile} zoneMobile={config?.juicyads_zone_profile_mobile} />
+      <HilltopAdBar scriptUrl={config?.hilltopads_zone_browse_profile} scriptUrlMobile={config?.hilltopads_zone_browse_profile_mobile} />
 
       {/* Token-based ad removal */}
       <AdFreeBanner adsActive={adsActive} />
