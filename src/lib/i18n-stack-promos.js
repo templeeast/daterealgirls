@@ -8,7 +8,6 @@ export const stackPromosTranslations = {
     stack_promos_step3: 'Use code after 1st purchase',
     stack_promos_reward: '+1,000 tokens',
     stack_promos_view_token_guide: 'See what you can do with your tokens',
-    stack_promos_separate_note: '3 separate codes — each is its own promo. Different from the FIRST500 bonus above.',
   },
   es: {
     stack_promos_badge: 'Promos de Lanzamiento',
@@ -19,7 +18,6 @@ export const stackPromosTranslations = {
     stack_promos_step3: 'Usa el código después de la 1ª compra',
     stack_promos_reward: '+1,000 tokens',
     stack_promos_view_token_guide: 'Mira lo que puedes hacer con tus tokens',
-    stack_promos_separate_note: '3 códigos separados — cada uno es su propia promo. Diferente del bono FIRST500 de arriba.',
   },
   th: {
     stack_promos_badge: 'โปรโมชั่นเปิดตัว',
@@ -30,7 +28,6 @@ export const stackPromosTranslations = {
     stack_promos_step3: 'ใช้รหัสหลังซื้อครั้งแรก',
     stack_promos_reward: '+1,000 โทเค็น',
     stack_promos_view_token_guide: 'ดูสิ่งที่คุณทำได้กับโทเค็นของคุณ',
-    stack_promos_separate_note: '3 รหัสแยกกัน — แต่ละรหัสเป็นโปรโมชั่นของตัวเอง ไม่เหมือนโบนัส FIRST500 ด้านบน',
   },
   zh: {
     stack_promos_badge: '启动促销',
@@ -41,7 +38,6 @@ export const stackPromosTranslations = {
     stack_promos_step3: '首次购买后使用代码',
     stack_promos_reward: '+1,000 代币',
     stack_promos_view_token_guide: '查看你可以用代币做什么',
-    stack_promos_separate_note: '3个独立代码 — 每个都是单独的促销。与上方的FIRST500奖励不同。',
   },
   de: {
     stack_promos_badge: 'Launch-Promos',
@@ -52,7 +48,6 @@ export const stackPromosTranslations = {
     stack_promos_step3: 'Code nach dem 1. Kauf verwenden',
     stack_promos_reward: '+1.000 Token',
     stack_promos_view_token_guide: 'Sieh, was du mit deinen Token machen kannst',
-    stack_promos_separate_note: '3 separate Codes — jeder ist eine eigene Promo. Anders als der FIRST500-Bonus oben.',
   },
   vi: {
     stack_promos_badge: 'Khuyến mãi Ra mắt',
@@ -63,7 +58,6 @@ export const stackPromosTranslations = {
     stack_promos_step3: 'Dùng mã sau lần mua đầu tiên',
     stack_promos_reward: '+1.000 token',
     stack_promos_view_token_guide: 'Xem những gì bạn có thể làm với token',
-    stack_promos_separate_note: '3 mã riêng biệt — mỗi mã là một khuyến mãi riêng. Khác với phần thưởng FIRST500 ở trên.',
   },
   pt: {
     stack_promos_badge: 'Promos de Lançamento',
@@ -74,7 +68,6 @@ export const stackPromosTranslations = {
     stack_promos_step3: 'Use o código após a 1ª compra',
     stack_promos_reward: '+1.000 tokens',
     stack_promos_view_token_guide: 'Veja o que você pode fazer com seus tokens',
-    stack_promos_separate_note: '3 códigos separados — cada um é sua própria promo. Diferente do bônus FIRST500 acima.',
   },
   tl: {
     stack_promos_badge: 'Launch Promos',
@@ -85,6 +78,5 @@ export const stackPromosTranslations = {
     stack_promos_step3: 'Gamitin ang code pagkatapos ng 1st purchase',
     stack_promos_reward: '+1,000 token',
     stack_promos_view_token_guide: 'Tingnan kung ano ang magagawa mo sa iyong mga token',
-    stack_promos_separate_note: '3 hiwalay na code — bawat isa ay sariling promo. Iba sa FIRST500 bonus sa itaas.',
   },
 };

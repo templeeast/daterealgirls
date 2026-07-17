@@ -8,7 +8,7 @@ export const newSitePromoTranslations = {
     new_site_promo_btn_sign_up: 'Sign Up',
     new_site_promo_btn_start: 'Start',
     new_site_promo_btn_join: 'Join',
-    new_site_promo_separate_note: 'Separate from the 3 Launch Promos below — claim both!',
+    new_site_promo_separate_note: 'Checkout more promos below!',
   },
   es: {
     new_site_promo_badge: 'Lanzamiento de Nuevo Sitio',
@@ -19,7 +19,7 @@ export const newSitePromoTranslations = {
     new_site_promo_btn_sign_up: 'Regístrate',
     new_site_promo_btn_start: 'Inicio',
     new_site_promo_btn_join: 'Únete',
-    new_site_promo_separate_note: 'Separado de las 3 Promos de Lanzamiento a continuación — ¡reclama ambas!',
+    new_site_promo_separate_note: '¡Echa un vistazo a más promos abajo!',
   },
   th: {
     new_site_promo_badge: 'โปรโมชั่นเปิดเว็บใหม่',
@@ -30,7 +30,7 @@ export const newSitePromoTranslations = {
     new_site_promo_btn_sign_up: 'สมัคร',
     new_site_promo_btn_start: 'เริ่ม',
     new_site_promo_btn_join: 'เข้าร่วม',
-    new_site_promo_separate_note: 'แยกจาก 3 โปรโมชั่นเปิดตัวด้านล่าง — รับทั้งสองได้!',
+    new_site_promo_separate_note: 'ดูโปรโมชั่นเพิ่มเติมด้านล่าง!',
   },
   zh: {
     new_site_promo_badge: '新站上线特惠',
@@ -41,7 +41,7 @@ export const newSitePromoTranslations = {
     new_site_promo_btn_sign_up: '注册',
     new_site_promo_btn_start: '开始',
     new_site_promo_btn_join: '加入',
-    new_site_promo_separate_note: '与下方的3个启动促销分开 — 两个都可领取！',
+    new_site_promo_separate_note: '查看下方更多促销！',
   },
   de: {
     new_site_promo_badge: 'Neue Website Sonderaktion',
@@ -52,7 +52,7 @@ export const newSitePromoTranslations = {
     new_site_promo_btn_sign_up: 'Anmelden',
     new_site_promo_btn_start: 'Start',
     new_site_promo_btn_join: 'Beitreten',
-    new_site_promo_separate_note: 'Separat von den 3 Launch-Promos unten — beanspruche beide!',
+    new_site_promo_separate_note: 'Schau dir unten weitere Promos an!',
   },
   vi: {
     new_site_promo_badge: 'Khuyến Mãi Khai Trương',
@@ -63,7 +63,7 @@ export const newSitePromoTranslations = {
     new_site_promo_btn_sign_up: 'Đăng Ký',
     new_site_promo_btn_start: 'Bắt đầu',
     new_site_promo_btn_join: 'Tham gia',
-    new_site_promo_separate_note: 'Tách biệt với 3 Khuyến mãi Ra mắt bên dưới — nhận cả hai!',
+    new_site_promo_separate_note: 'Xem thêm khuyến mãi bên dưới!',
   },
   pt: {
     new_site_promo_badge: 'Lançamento de Novo Site',
@@ -74,7 +74,7 @@ export const newSitePromoTranslations = {
     new_site_promo_btn_sign_up: 'Cadastre-se',
     new_site_promo_btn_start: 'Início',
     new_site_promo_btn_join: 'Entrar',
-    new_site_promo_separate_note: 'Separado das 3 Promos de Lançamento abaixo — resgate ambas!',
+    new_site_promo_separate_note: 'Confira mais promos abaixo!',
   },
   tl: {
     new_site_promo_badge: 'Espesyal na Paglulunsad ng Bagong Site',
@@ -85,6 +85,6 @@ export const newSitePromoTranslations = {
     new_site_promo_btn_sign_up: 'Mag-sign Up',
     new_site_promo_btn_start: 'Simula',
     new_site_promo_btn_join: 'Sumali',
-    new_site_promo_separate_note: 'Hiwalay sa 3 Launch Promos sa ibaba — kunin ang dalawa!',
+    new_site_promo_separate_note: 'Tingnan ang iba pang promos sa ibaba!',
   },
 };
