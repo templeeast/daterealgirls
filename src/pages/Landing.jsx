@@ -217,7 +217,7 @@ export default function Landing() {
           </div>
 
           {/* Stack Promos Card */}
-          <div>
+          <div id="launch-promos">
             <StackPromosCard />
           </div>
         </div>

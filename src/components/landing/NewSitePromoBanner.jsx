@@ -49,9 +49,12 @@ export default function NewSitePromoBanner() {
           <p className="text-xs text-muted-foreground mt-0.5 sm:hidden">
             {t('new_site_promo_desc_mobile')}
           </p>
-          <p className="text-xs font-semibold text-primary mt-1.5">
-            {t('new_site_promo_separate_note')}
-          </p>
+          <button
+            onClick={() => document.getElementById('launch-promos')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+            className="text-xs font-bold text-primary mt-1.5 hover:underline cursor-pointer"
+          >
+            {t('new_site_promo_separate_note')} ↓
+          </button>
         </div>
         <Button
           className="flex-shrink-0 gap-1.5 rounded-full"
