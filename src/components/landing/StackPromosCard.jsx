@@ -34,6 +34,7 @@ export default function StackPromosCard() {
           </span>
           <h3 className="font-heading text-2xl sm:text-4xl font-bold mb-3 text-foreground">{t('stack_promos_title')}</h3>
           <p className="text-muted-foreground text-sm sm:text-base max-w-xl mx-auto">{t('stack_promos_subtitle')}</p>
+          <p className="text-xs font-semibold text-primary mt-2 max-w-xl mx-auto">{t('stack_promos_separate_note')}</p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
