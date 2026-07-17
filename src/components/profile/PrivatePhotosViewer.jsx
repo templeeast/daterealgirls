@@ -47,6 +47,12 @@ export default function PrivatePhotosViewer({ ownerProfileId, myProfile }) {
   });
 
   const approvedPhotos = photos.filter(p => p.status !== 'rejected');
+  const privatePhotoCount = approvedPhotos.filter(p => p.media_type !== 'video').length;
+  const privateVideoCount = approvedPhotos.filter(p => p.media_type === 'video').length;
+  const privateMediaCountText = [
+    privatePhotoCount > 0 ? `${privatePhotoCount} private photo${privatePhotoCount !== 1 ? 's' : ''}` : null,
+    privateVideoCount > 0 ? `${privateVideoCount} private video${privateVideoCount !== 1 ? 's' : ''}` : null,
+  ].filter(Boolean).join(' and ');
   const accessRecord = accessRecords[0];
   const isViewerMale = myProfile?.gender === 'male';
   const paidViewSet = new Set(myViews.map(v => v.private_photo_id));
@@ -196,9 +202,11 @@ export default function PrivatePhotosViewer({ ownerProfileId, myProfile }) {
               </div>
             ))}
           </div>
-          <p className="text-sm text-muted-foreground">
-            This member has {approvedPhotos.length} private photo{approvedPhotos.length !== 1 ? 's' : ''}.
-          </p>
+          {privateMediaCountText && (
+            <p className="text-sm text-muted-foreground">
+              This member has {privateMediaCountText}.
+            </p>
+          )}
           <p className="text-sm text-amber-600 font-medium">Your access request is pending their approval.</p>
         </div>
       );
@@ -224,9 +232,9 @@ export default function PrivatePhotosViewer({ ownerProfileId, myProfile }) {
               </div>
             ))}
           </div>
-        {approvedPhotos.length > 0 && (
+        {privateMediaCountText && (
           <p className="text-sm text-muted-foreground">
-            This member has {approvedPhotos.length} private photo{approvedPhotos.length !== 1 ? 's' : ''}.
+            This member has {privateMediaCountText}.
           </p>
         )}
         {status === 'revoked' && (
