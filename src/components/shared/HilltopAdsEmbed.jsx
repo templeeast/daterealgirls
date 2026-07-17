@@ -56,31 +56,44 @@ export default function HilltopAdsEmbed({ scriptUrl, scriptUrlMobile }) {
     const cleanUrl = activeUrl.replace(/\\/g, '');
     const fullUrl = cleanUrl.startsWith('//') ? 'https:' + cleanUrl : cleanUrl;
 
-    // Cache-buster: browsers won't re-execute a script with the same src,
-    // so on SPA navigations the ad never renders. A unique query param
-    // forces the browser to treat each injection as a fresh resource.
-    const cacheBustUrl = fullUrl + (fullUrl.includes('?') ? '&' : '?') + '_cb=' + Date.now();
+    // Use an about:blank iframe (via document.write) so each SPA navigation
+    // gets a fresh document scope. HilltopAds maintains global JS state that
+    // prevents re-rendering when the script is re-injected into the main
+    // document. An about:blank iframe inherits the parent page's referrer,
+    // satisfying HilltopAds' domain validation, while isolating JS state.
+    const iframe = document.createElement('iframe');
+    iframe.style.width = width + 'px';
+    iframe.style.height = height + 'px';
+    iframe.style.border = 'none';
+    iframe.style.display = 'block';
+    iframe.style.margin = '0 auto';
+    iframe.setAttribute('scrolling', 'no');
+    iframe.setAttribute('frameborder', '0');
+    containerRef.current.appendChild(iframe);
 
-    // Standard HilltopAds integration: create a script element with
-    // s.settings and s.src, then append it to the container.
-    const s = document.createElement('script');
-    s.type = 'text/javascript';
-    s.async = true;
-    s.referrerPolicy = 'no-referrer-when-downgrade';
-    try {
-      s.settings = {};
-    } catch (e) {
-      // Some browsers don't allow setting arbitrary properties on script elements
-    }
-    s.src = cacheBustUrl;
-    containerRef.current.appendChild(s);
+    const doc = iframe.contentWindow.document;
+    doc.open();
+    doc.write(
+      '<html><head><style>body{margin:0;padding:0;overflow:hidden;}</style></head><body>' +
+      '<scr' + 'ipt type="text/javascript">' +
+      'var s=document.createElement("script");' +
+      's.type="text/javascript";' +
+      's.async=true;' +
+      's.referrerPolicy="no-referrer-when-downgrade";' +
+      'try{s.settings={};}catch(e){}' +
+      's.src=' + JSON.stringify(fullUrl) + ';' +
+      'document.body.appendChild(s);' +
+      '</scr' + 'ipt>' +
+      '</body></html>'
+    );
+    doc.close();
 
     return () => {
       if (containerRef.current) {
         containerRef.current.innerHTML = '';
       }
     };
-  }, [shouldRender, activeUrl]);
+  }, [shouldRender, activeUrl, width, height]);
 
   if (!shouldRender) return null;
 
