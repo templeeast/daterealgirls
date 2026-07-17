@@ -23,21 +23,26 @@ Deno.serve(async (req) => {
     const batchSize = 200;
 
     while (hasMore) {
-      const oldWinks = await base44.asServiceRole.entities.Wink.filter(
-        { created_date: { $lt: cutoff.toISOString() } },
+      const winks = await base44.asServiceRole.entities.Wink.list(
         undefined,
         batchSize,
         skip
       );
 
-      if (oldWinks.length === 0) {
+      if (winks.length === 0) {
         hasMore = false;
         break;
       }
 
-      const ids = oldWinks.map(w => w.id);
-      await base44.asServiceRole.entities.Wink.deleteMany({ id: { $in: ids } });
-      deleted += oldWinks.length;
+      // Filter in JavaScript — the $lt operator on created_date doesn't work
+      // reliably due to stored date format (no timezone suffix)
+      const oldWinks = winks.filter(w => new Date(w.created_date) < cutoff);
+      if (oldWinks.length > 0) {
+        const ids = oldWinks.map(w => w.id);
+        await base44.asServiceRole.entities.Wink.deleteMany({ id: { $in: ids } });
+        deleted += oldWinks.length;
+      }
+
       skip += batchSize;
     }
 
