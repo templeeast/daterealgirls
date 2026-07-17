@@ -23,6 +23,7 @@ export const winkTranslations = {
     winks_empty_received_desc: "When someone winks at you, they'll appear here.",
     winks_empty_sent_title: 'No winks sent',
     winks_empty_sent_desc: 'Winks you send will appear here.',
+    winks_expiry_notice: '⏳ Winks are automatically deleted after {{days}} days.',
   },
   es: {
     token_cost_send_wink: 'Enviar un guiño',
@@ -47,6 +48,7 @@ export const winkTranslations = {
     winks_empty_received_desc: 'Cuando alguien te guiñe, aparecerá aquí.',
     winks_empty_sent_title: 'Sin guiños enviados',
     winks_empty_sent_desc: 'Los guiños que envíes aparecerán aquí.',
+    winks_expiry_notice: '⏳ Los guiños se eliminan automáticamente después de {{days}} días.',
   },
   th: {
     token_cost_send_wink: 'ส่งวิงค์',
@@ -71,6 +73,7 @@ export const winkTranslations = {
     winks_empty_received_desc: 'เมื่อมีคนวิงค์ให้คุณ พวกเขาจะปรากฏที่นี่',
     winks_empty_sent_title: 'ยังไม่มีวิงค์ที่ส่ง',
     winks_empty_sent_desc: 'วิงค์ที่คุณส่งจะปรากฏที่นี่',
+    winks_expiry_notice: '⏳ วิงค์จะถูกลบโดยอัตโนมัติหลังจาก {{days}} วัน',
   },
   zh: {
     token_cost_send_wink: '发送眨眼',
@@ -95,6 +98,7 @@ export const winkTranslations = {
     winks_empty_received_desc: '当有人向您眨眼时，他们会出现在这里。',
     winks_empty_sent_title: '未发送眨眼',
     winks_empty_sent_desc: '您发送的眨眼将出现在这里。',
+    winks_expiry_notice: '⏳ 眨眼将在{{days}}天后自动删除。',
   },
   de: {
     token_cost_send_wink: 'Zwinkern senden',
@@ -119,6 +123,7 @@ export const winkTranslations = {
     winks_empty_received_desc: 'Wenn dir jemand zuzwinkert, erscheint die Person hier.',
     winks_empty_sent_title: 'Keine Zwinkern gesendet',
     winks_empty_sent_desc: 'Von dir gesendete Zwinkern erscheinen hier.',
+    winks_expiry_notice: '⏳ Zwinkern werden nach {{days}} Tagen automatisch gelöscht.',
   },
   vi: {
     token_cost_send_wink: 'Gửi nháy mắt',
@@ -143,6 +148,7 @@ export const winkTranslations = {
     winks_empty_received_desc: 'Khi ai đó nháy mắt với bạn, họ sẽ xuất hiện ở đây.',
     winks_empty_sent_title: 'Chưa gửi nháy mắt',
     winks_empty_sent_desc: 'Nháy mắt bạn gửi sẽ xuất hiện ở đây.',
+    winks_expiry_notice: '⏳ Nháy mắt sẽ tự động bị xóa sau {{days}} ngày.',
   },
   pt: {
     token_cost_send_wink: 'Enviar um flerte',
@@ -167,6 +173,7 @@ export const winkTranslations = {
     winks_empty_received_desc: 'Quando alguém piscar para você, aparecerá aqui.',
     winks_empty_sent_title: 'Sem piscadelas enviadas',
     winks_empty_sent_desc: 'Piscadelas que você enviar aparecerão aqui.',
+    winks_expiry_notice: '⏳ As piscadelas são excluídas automaticamente após {{days}} dias.',
   },
   tl: {
     token_cost_send_wink: 'Magpadala ng kindat',
@@ -191,5 +198,6 @@ export const winkTranslations = {
     winks_empty_received_desc: 'Kapag may nagkindat sa iyo, lalabas sila dito.',
     winks_empty_sent_title: 'Wala pang naipadalang kindat',
     winks_empty_sent_desc: 'Mga kindat na iyong ipapadala ay lalabas dito.',
+    winks_expiry_notice: '⏳ Ang mga kindat ay awtomatikong buburin pagkatapos ng {{days}} araw.',
   },
 };

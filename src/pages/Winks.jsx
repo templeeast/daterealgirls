@@ -100,6 +100,12 @@ export default function Winks() {
         </Button>
       </div>
 
+      {config?.wink_expiry_hours > 0 && (
+        <p className="text-xs text-muted-foreground mb-4 text-center">
+          {t('winks_expiry_notice', { days: Math.round(config.wink_expiry_hours / 24) })}
+        </p>
+      )}
+
       {tab === 'received' && (
         <>
           <h1 className="font-heading text-2xl font-bold mb-6 flex items-center gap-2">
