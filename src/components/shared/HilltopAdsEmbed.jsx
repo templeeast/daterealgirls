@@ -56,6 +56,11 @@ export default function HilltopAdsEmbed({ scriptUrl, scriptUrlMobile }) {
     const cleanUrl = activeUrl.replace(/\\/g, '');
     const fullUrl = cleanUrl.startsWith('//') ? 'https:' + cleanUrl : cleanUrl;
 
+    // Cache-buster: browsers won't re-execute a script with the same src,
+    // so on SPA navigations the ad never renders. A unique query param
+    // forces the browser to treat each injection as a fresh resource.
+    const cacheBustUrl = fullUrl + (fullUrl.includes('?') ? '&' : '?') + '_cb=' + Date.now();
+
     // Standard HilltopAds integration: create a script element with
     // s.settings and s.src, then append it to the container.
     const s = document.createElement('script');
@@ -67,7 +72,7 @@ export default function HilltopAdsEmbed({ scriptUrl, scriptUrlMobile }) {
     } catch (e) {
       // Some browsers don't allow setting arbitrary properties on script elements
     }
-    s.src = fullUrl;
+    s.src = cacheBustUrl;
     containerRef.current.appendChild(s);
 
     return () => {
