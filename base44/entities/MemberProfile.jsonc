@@ -357,6 +357,11 @@
       "type": "string",
       "format": "date-time",
       "description": "Timestamp until which ads are hidden for this user"
+    },
+    "is_private": {
+      "type": "boolean",
+      "default": false,
+      "description": "When true, this profile is excluded from browse/search and only reachable by exact Member Tag ID lookup"
     }
   },
   "required": [

@@ -77,6 +77,8 @@ export default function MyProfile() {
   const [cardCvv, setCardCvv] = useState('');
   const [purchasePromoCode, setPurchasePromoCode] = useState('');
   const [purchasing, setPurchasing] = useState(false);
+  const [privacyToggling, setPrivacyToggling] = useState(false);
+  const [privacyConfirm, setPrivacyConfirm] = useState(false);
 
   const packNameMap = {
     'Starter Pack': 'starter',
@@ -341,6 +343,28 @@ export default function MyProfile() {
     setEditingTagId(false);
     setTagIdSaving(false);
     refetch();
+  };
+
+  const privacyCost = config?.tokens_profile_privacy_toggle_cost ?? 100;
+
+  const handleTogglePrivacy = async () => {
+    setPrivacyConfirm(false);
+    setPrivacyToggling(true);
+    try {
+      const res = await base44.functions.invoke('toggleProfilePrivacy', {});
+      const data = res.data ?? res;
+      if (data.success) {
+        toast({ title: t('profile_privacy_toggled', { state: data.is_private ? t('profile_privacy_state_private') : t('profile_privacy_state_public') }) });
+        refetch();
+      } else {
+        toast({ title: data.error || 'Failed to toggle privacy', variant: 'destructive' });
+      }
+    } catch (err) {
+      const errorMsg = err?.response?.data?.error || err?.message || 'Failed to toggle privacy';
+      toast({ title: errorMsg, variant: 'destructive' });
+    } finally {
+      setPrivacyToggling(false);
+    }
   };
 
   const handleSave = async () => {
@@ -642,6 +666,25 @@ export default function MyProfile() {
                 }}
               />
             </div>
+            {/* Profile Privacy Toggle */}
+            <div className="flex items-start justify-between pt-1 border-t border-border gap-3">
+              <div className="flex-1">
+                <p className="text-sm font-medium">{t('profile_privacy_title')}</p>
+                <p className="text-xs text-muted-foreground mt-0.5">{t('profile_privacy_desc')}</p>
+                <p className="text-xs text-primary font-medium mt-1">{t('profile_privacy_cost_note', { n: privacyCost })}</p>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  {profile.is_private ? t('profile_privacy_current_private') : t('profile_privacy_current_public')}
+                </p>
+              </div>
+              <Switch
+                checked={profile.is_private === true}
+                disabled={privacyToggling}
+                onCheckedChange={(v) => {
+                  if (v === (profile.is_private === true)) return;
+                  setPrivacyConfirm(true);
+                }}
+              />
+            </div>
           </div>
           <div className="space-y-2">
             <Label>{t('display_name_label')}</Label>
@@ -880,6 +923,30 @@ export default function MyProfile() {
                 <>Pay ${buyDialog.pack?.price}</>
               )}
             </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Profile Privacy Confirmation Dialog */}
+      <Dialog open={privacyConfirm} onOpenChange={setPrivacyConfirm}>
+        <DialogContent className="sm:max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Lock className="w-5 h-5 text-primary" /> {t('profile_privacy_confirm_title')}
+            </DialogTitle>
+            <DialogDescription>
+              {t('profile_privacy_confirm_desc', {
+                n: privacyCost,
+                state: profile.is_private ? t('profile_privacy_state_public') : t('profile_privacy_state_private')
+              })}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="flex-col gap-2 sm:flex-col">
+            <Button onClick={handleTogglePrivacy} disabled={privacyToggling} className="w-full gap-2">
+              {privacyToggling ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+              {t('profile_privacy_confirm_title')} ({privacyCost} {t('tokens_label')})
+            </Button>
+            <Button variant="outline" className="w-full" onClick={() => setPrivacyConfirm(false)} disabled={privacyToggling}>Cancel</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

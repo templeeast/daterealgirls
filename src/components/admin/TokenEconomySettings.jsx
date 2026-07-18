@@ -337,6 +337,23 @@ export default function TokenEconomySettings({ form, updateField }) {
         </CardContent>
       </Card>
 
+      {/* Profile Privacy Toggle */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="font-heading text-lg">Profile Privacy Toggle</CardTitle>
+          <CardDescription>Token cost to toggle a profile between private and public (charged in both directions). Private profiles are hidden from browse/search but reachable by exact Member Tag ID lookup.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Token Cost per Toggle</Label>
+              <Input type="number" value={form.tokens_profile_privacy_toggle_cost ?? 100} onChange={e => num('tokens_profile_privacy_toggle_cost', e.target.value)} />
+              <p className="text-xs text-muted-foreground">Default: 100. Charged each time a user toggles their profile privacy (both public→private and private→public).</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Token Packs */}
       <Card>
         <CardHeader>

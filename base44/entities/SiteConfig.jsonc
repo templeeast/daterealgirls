@@ -438,6 +438,11 @@
       "type": "number",
       "default": 80,
       "description": "Percentage of private photo/video view tokens awarded to the content creator (0-100, rounded up to nearest whole token)"
+    },
+    "tokens_profile_privacy_toggle_cost": {
+      "type": "number",
+      "default": 100,
+      "description": "Token cost to toggle a profile between private and public (charged in both directions)"
     }
   },
   "required": [

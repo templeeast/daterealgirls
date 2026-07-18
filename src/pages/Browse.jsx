@@ -193,6 +193,22 @@ export default function Browse() {
   const filtered = profiles.filter(p => {
     if (user && p.user_id === user.id) return false;
     if (p.verification_status === 'rejected' || p.profile_review_status === 'rejected') return false;
+
+    // Private profiles: excluded from browse/search unless exact Member Tag ID match.
+    // Exact match = query with/without @ prefix, with/without DRG- prefix equals tag suffix.
+    if (p.is_private) {
+      if (!search) return false;
+      const normalizeTag = (s) => {
+        let r = s.trim().toUpperCase();
+        if (r.startsWith('@')) r = r.slice(1);
+        if (r.startsWith('DRG-')) r = r.slice(4);
+        return r;
+      };
+      const queryNorm = normalizeTag(search);
+      const tagNorm = normalizeTag(p.tag_id || '');
+      return tagNorm.length > 0 && queryNorm === tagNorm;
+    }
+
     if (genderFilter !== 'all' && p.gender !== genderFilter) return false;
     if (lookingForFilter !== 'all' && p.looking_for !== lookingForFilter) return false;
     if (ageMin !== '' && (p.age == null || p.age < parseInt(ageMin))) return false;

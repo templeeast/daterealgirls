@@ -204,6 +204,17 @@ export default function TokenGuide() {
                     <div className="text-xs text-muted-foreground">{t('token_cost_one_time')}</div>
                   </td>
                 </tr>
+                <tr className="border-b">
+                  <td className="px-6 py-4 font-medium">{t('token_cost_profile_privacy_toggle')}</td>
+                  <td className="text-center px-6 py-4">
+                    <div className="font-semibold">{t('token_cost_n_tokens', { n: config.tokens_profile_privacy_toggle_cost ?? 100 })}</div>
+                    <div className="text-xs text-muted-foreground">{t('token_cost_per_toggle')}</div>
+                  </td>
+                  <td className="text-center px-6 py-4">
+                    <div className="font-semibold">{t('token_cost_n_tokens', { n: config.tokens_profile_privacy_toggle_cost ?? 100 })}</div>
+                    <div className="text-xs text-muted-foreground">{t('token_cost_per_toggle')}</div>
+                  </td>
+                </tr>
                 {config.ad_free_enabled !== false && (
                 <tr className="border-t bg-muted/30">
                   <td className="px-6 py-4 font-medium">{t('token_cost_remove_ads')}</td>

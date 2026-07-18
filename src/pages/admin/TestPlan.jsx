@@ -909,6 +909,53 @@ const sections = [
       { id: 'ce-17', label: 'i18n: All translations use "unlocks one of" wording (not "views")' },
     ],
   },
+  {
+    id: 'profile_privacy',
+    icon: Lock,
+    title: 'Profile Privacy Toggle',
+    color: 'text-indigo-500',
+    items: [
+      // --- Entity & Config ---
+      { id: 'pp-1', label: 'ENTITY: MemberProfile has is_private field (boolean, default false)' },
+      { id: 'pp-2', label: 'ENTITY: SiteConfig has tokens_profile_privacy_toggle_cost field (number, default 100)' },
+      // --- Admin Settings ---
+      { id: 'pp-3', label: 'ADMIN SETTINGS: "Profile Privacy Toggle" card appears in Token Economy Settings with token cost input' },
+      { id: 'pp-4', label: 'ADMIN SETTINGS: Changing the token cost saves to SiteConfig.tokens_profile_privacy_toggle_cost and persists on reload' },
+      { id: 'pp-5', label: 'ADMIN SETTINGS: Default value is 100 when the field has not been previously set' },
+      { id: 'pp-6', label: 'ADMIN SETTINGS: Updated cost value is reflected on the toggle UI, Token Costs section, and Token Guide after save' },
+      // --- My Profile UI ---
+      { id: 'pp-7', label: 'MY PROFILE: Private/public toggle appears near the Member Tag ID section' },
+      { id: 'pp-8', label: 'MY PROFILE: Toggle shows short explanation of what private mode does' },
+      { id: 'pp-9', label: 'MY PROFILE: Toggle shows current token cost next to the explanation' },
+      { id: 'pp-10', label: 'MY PROFILE: Toggle shows current privacy state ("Your profile is currently private/public")' },
+      { id: 'pp-11', label: 'MY PROFILE: Clicking the toggle opens a confirmation dialog showing cost and target state' },
+      // --- Token Deduction ---
+      { id: 'pp-12', label: 'TOGGLE public→private: Sufficient tokens — confirmation calls toggleProfilePrivacy, deducts tokens, sets is_private=true, shows success toast' },
+      { id: 'pp-13', label: 'TOGGLE private→public: Sufficient tokens — confirmation calls toggleProfilePrivacy, deducts tokens, sets is_private=false, shows success toast' },
+      { id: 'pp-14', label: 'TOGGLE: After toggle, a TokenTransaction record is created with type="spend", correct negative tokens, and "Profile set to private/public" description' },
+      { id: 'pp-15', label: 'TOGGLE: Insufficient token balance blocks the toggle with "You need N tokens" error message' },
+      // --- Browse/Search Exclusion ---
+      { id: 'pp-16', label: 'BROWSE: Private profile does NOT appear in browse listing when no search query is entered' },
+      { id: 'pp-17', label: 'BROWSE: Private profile does NOT appear in search results for partial/substring queries (e.g. searching "20FO" does not return @DRG-20FOL0)' },
+      { id: 'pp-18', label: 'BROWSE: Private profile IS returned by exact tag ID match: searching "@DRG-20FOL0" returns the profile' },
+      { id: 'pp-19', label: 'BROWSE: Private profile IS returned by exact tag ID match: searching "DRG-20FOL0" returns the profile' },
+      { id: 'pp-20', label: 'BROWSE: Private profile IS returned by exact tag ID match: searching "20FOL0" returns the profile' },
+      { id: 'pp-21', label: 'BROWSE: Exact-match lookup bypasses gender/age/location filters (private profile appears regardless of active filters)' },
+      // --- Backend Function ---
+      { id: 'pp-22', label: 'BACKEND: toggleProfilePrivacy returns 401 for unauthenticated requests' },
+      { id: 'pp-23', label: 'BACKEND: toggleProfilePrivacy returns 404 when MemberProfile not found' },
+      { id: 'pp-24', label: 'BACKEND: toggleProfilePrivacy returns 402 with error message when user has insufficient tokens' },
+      { id: 'pp-25', label: 'BACKEND: toggleProfilePrivacy deducts correct token amount from MemberProfile.tokens' },
+      { id: 'pp-26', label: 'BACKEND: toggleProfilePrivacy toggles is_private to the opposite of current value' },
+      { id: 'pp-27', label: 'BACKEND: toggleProfilePrivacy creates TokenTransaction with type="spend" and "Profile set to private/public" description' },
+      // --- Token Guide & Token Costs ---
+      { id: 'pp-28', label: 'TOKEN GUIDE: "Toggle profile privacy" row appears in the token cost table with correct cost for both men and women' },
+      { id: 'pp-29', label: 'TOKEN COSTS: "Toggle profile privacy" row appears in the Token Costs section on My Profile' },
+      { id: 'pp-30', label: 'TOKEN COSTS: Row reflects the current configured cost from SiteConfig' },
+      // --- i18n ---
+      { id: 'pp-31', label: 'i18n: Toggle label, description, cost note, current state text, confirmation dialog, and success toast render correctly in all 8 supported languages' },
+    ],
+  },
 ];
 
 export default function TestPlan() {

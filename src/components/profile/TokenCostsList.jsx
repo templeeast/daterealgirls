@@ -138,6 +138,16 @@ export default function TokenCostsList({ profile, config }) {
     });
   }
 
+  // 12. Toggle profile privacy
+  {
+    const cost = config?.tokens_profile_privacy_toggle_cost ?? 100;
+    rows.push({
+      label: t('token_cost_profile_privacy_toggle'),
+      cost: t('token_cost_n_tokens', { n: cost }),
+      isFree: false,
+    });
+  }
+
   return (
     <div className="bg-muted/50 rounded-xl p-4">
       <h4 className="text-sm font-semibold mb-3">{t('token_cost_costs_title')}</h4>
