@@ -117,7 +117,7 @@ export default function PrivatePhotosSection({ profile, onRefetch, maxPrivatePho
       const mediaUrl = res.data?.url;
       const thumbnailUrl = res.data?.thumbnail_url;
       if (!mediaUrl) { setUploadError('Upload failed. Please try again.'); setUploading(false); return; }
-      const tokenCostToView = isMale ? (isVideo ? (config?.tokens_private_video_cost ?? 10) : 5) : 0;
+      const tokenCostToView = isMale ? (isVideo ? (config?.tokens_private_video_cost ?? 10) : (config?.tokens_private_photo_cost ?? 5)) : 0;
       if (isMale && uploadCost > 0) {
         await base44.entities.MemberProfile.update(profile.id, { tokens: Math.max(0, (profile.tokens || 0) - uploadCost) });
         await base44.entities.TokenTransaction.create({ user_id: profile.user_id, type: 'spend', tokens: -uploadCost, description: `Private ${mediaType} upload fee` });
@@ -173,7 +173,7 @@ export default function PrivatePhotosSection({ profile, onRefetch, maxPrivatePho
       <Card className="mb-6">
         <CardHeader>
           <CardTitle className="font-heading text-lg flex items-center gap-2">🔒 Private Photos</CardTitle>
-          <CardDescription>{videosPrivateEnabled ? t(isMale ? 'private_photos_videos_desc_men' : 'private_photos_videos_desc_women', { n: maxPrivatePhotos }) : t('private_photos_desc', { n: maxPrivatePhotos })}</CardDescription>
+          <CardDescription>{videosPrivateEnabled ? t(isMale ? 'private_photos_videos_desc_men' : 'private_photos_videos_desc_women', { n: maxPrivatePhotos, photoCost: config?.tokens_private_photo_cost ?? 5, videoCost: config?.tokens_private_video_cost ?? 10 }) : t('private_photos_desc', { n: maxPrivatePhotos, photoCost: config?.tokens_private_photo_cost ?? 5 })}</CardDescription>
           <p className="text-xs text-primary font-medium mt-2">{t('private_photos_creator_earnings_desc', { percentage: config?.private_media_creator_share_percentage ?? 80 })}</p>
         </CardHeader>
         <CardContent className="space-y-4">
