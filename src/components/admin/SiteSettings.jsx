@@ -125,6 +125,7 @@ export default function SiteSettings() {
     ad_free_enabled: true,
     ad_free_duration_days: 7,
     ad_free_token_cost: 200,
+    verification_mismatch_action: 'admin_review',
   });
 
   useEffect(() => {
@@ -229,6 +230,7 @@ export default function SiteSettings() {
         ad_free_enabled: existingConfig.ad_free_enabled !== false,
         ad_free_duration_days: existingConfig.ad_free_duration_days ?? 7,
         ad_free_token_cost: existingConfig.ad_free_token_cost ?? 200,
+        verification_mismatch_action: existingConfig.verification_mismatch_action || 'admin_review',
       });
     }
   }, [existingConfig]);
@@ -694,6 +696,17 @@ export default function SiteSettings() {
           <p className="text-xs text-muted-foreground">
             Callback URL: <code className="bg-muted px-1 rounded">/verify/complete</code>
           </p>
+          <div className="border-t pt-4 space-y-2">
+            <Label className="text-sm font-semibold">Mismatch Action</Label>
+            <Select value={form.verification_mismatch_action} onValueChange={v => updateField('verification_mismatch_action', v)}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="admin_review">Admin Review (flag for manual review)</SelectItem>
+                <SelectItem value="hard_reject">Hard Reject (auto-reject verification)</SelectItem>
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-muted-foreground">Controls what happens when Didit detects a gender or age mismatch on an Approved ID scan. "Admin Review" flags the profile for manual review (default). "Hard Reject" automatically sets verification_status to "rejected".</p>
+          </div>
         </CardContent>
       </Card>
 

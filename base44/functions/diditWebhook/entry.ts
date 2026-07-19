@@ -135,18 +135,44 @@ Deno.serve(async (req) => {
         const ageReviewNeeded = ageUnderage || ageMismatch || ageUnknown;
 
         if (genderReviewNeeded || ageReviewNeeded) {
-          // Flag for admin review — do not auto-verify
-          await base44.asServiceRole.entities.MemberProfile.update(profile.id, {
-            didit_session_id:          session_id,
-            didit_verification_status: "Approved",
-            didit_verified_at:         new Date().toISOString(),
-            didit_extracted_gender:    diditGender || 'U',
-            didit_date_of_birth:       diditDob || null,
-            didit_age:                 diditAge !== null ? diditAge : null,
-            gender_review_needed:      genderReviewNeeded,
-            age_review_needed:         ageReviewNeeded,
-            profile_review_status:     "pending",
-          });
+          // Mismatch detected — check admin setting for review vs. hard-reject
+          const hardReject = config.verification_mismatch_action === 'hard_reject';
+
+          if (hardReject) {
+            // Automatically reject the verification
+            const reasons = [];
+            if (ageUnderage) reasons.push('underage');
+            if (genderMismatch || genderUnknown) reasons.push('photo_mismatch');
+            if (ageMismatch) reasons.push('invalid_id');
+            if (ageUnknown) reasons.push('incomplete_verification');
+            await base44.asServiceRole.entities.MemberProfile.update(profile.id, {
+              didit_session_id:               session_id,
+              didit_verification_status:      "Approved",
+              didit_verified_at:              new Date().toISOString(),
+              didit_extracted_gender:         diditGender || 'U',
+              didit_date_of_birth:            diditDob || null,
+              didit_age:                      diditAge !== null ? diditAge : null,
+              gender_review_needed:           genderReviewNeeded,
+              age_review_needed:              ageReviewNeeded,
+              verification_status:            "rejected",
+              verification_rejection_reason:  reasons[0] || 'other',
+              verification_rejection_details: `Automatically rejected: ${reasons.join(', ') || 'mismatch detected'}`,
+              profile_review_status:          "pending",
+            });
+          } else {
+            // Flag for admin review — do not auto-verify
+            await base44.asServiceRole.entities.MemberProfile.update(profile.id, {
+              didit_session_id:          session_id,
+              didit_verification_status: "Approved",
+              didit_verified_at:         new Date().toISOString(),
+              didit_extracted_gender:    diditGender || 'U',
+              didit_date_of_birth:       diditDob || null,
+              didit_age:                 diditAge !== null ? diditAge : null,
+              gender_review_needed:      genderReviewNeeded,
+              age_review_needed:         ageReviewNeeded,
+              profile_review_status:     "pending",
+            });
+          }
         } else {
           // Gender and age match — auto-verify as before
           await base44.asServiceRole.entities.MemberProfile.update(profile.id, {

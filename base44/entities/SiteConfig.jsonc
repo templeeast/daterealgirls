@@ -453,6 +453,15 @@
       "type": "number",
       "default": 100,
       "description": "Token cost to toggle a profile between private and public (charged in both directions)"
+    },
+    "verification_mismatch_action": {
+      "type": "string",
+      "enum": [
+        "admin_review",
+        "hard_reject"
+      ],
+      "default": "admin_review",
+      "description": "What happens when Didit ID verification detects a gender or age mismatch: 'admin_review' flags the profile for manual admin review; 'hard_reject' automatically rejects the verification"
     }
   },
   "required": [
