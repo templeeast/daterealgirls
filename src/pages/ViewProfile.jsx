@@ -43,7 +43,7 @@ export default function ViewProfile() {
   const browseCost = isMale ? (config?.tokens_browse_cost_men ?? 100) : (config?.tokens_browse_cost_women ?? 0);
   const isVerified = myProfile?.verification_status === 'verified';
   const browseUnlockedUntil = myProfile?.browse_unlocked_until ? new Date(myProfile.browse_unlocked_until) : null;
-  const isBrowseUnlocked = browseUnlockedUntil && browseUnlockedUntil > new Date();
+  const isBrowseUnlocked = browseCost === 0 || (browseUnlockedUntil && browseUnlockedUntil > new Date());
   const canInteract = isVerified && !!isBrowseUnlocked;
   const [browseAllDialogOpen, setBrowseAllDialogOpen] = useState(false);
   const [zoomPhotoIndex, setZoomPhotoIndex] = useState(null);
