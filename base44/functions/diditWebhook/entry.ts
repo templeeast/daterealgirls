@@ -83,13 +83,16 @@ Deno.serve(async (req) => {
       if (!profile) return Response.json({ received: true });
 
       if (status === "Approved") {
-        // Extract gender from webhook payload, or fall back to decision API
+        // Extract gender, DOB, and age from webhook payload, falling back to decision API
         let diditGender = null;
+        let diditDob = null;
+        let diditAge = null;
         const idv = (body.id_verifications ?? [])[0];
-        if (idv?.gender) {
-          diditGender = idv.gender;
-        }
-        if (!diditGender) {
+        if (idv?.gender) diditGender = idv.gender;
+        if (idv?.date_of_birth) diditDob = idv.date_of_birth;
+        if (typeof idv?.age === 'number') diditAge = idv.age;
+
+        if (!diditGender || !diditDob || diditAge === null) {
           try {
             const apiKey = isDevMode
               ? Deno.env.get('DIDIT_API_KEY_DEV')
@@ -101,9 +104,11 @@ Deno.serve(async (req) => {
             if (decisionRes.ok) {
               const decision = await decisionRes.json();
               const decisionIdv = (decision.id_verifications ?? [])[0];
-              if (decisionIdv?.gender) diditGender = decisionIdv.gender;
+              if (!diditGender && decisionIdv?.gender) diditGender = decisionIdv.gender;
+              if (!diditDob && decisionIdv?.date_of_birth) diditDob = decisionIdv.date_of_birth;
+              if (diditAge === null && typeof decisionIdv?.age === 'number') diditAge = decisionIdv.age;
             }
-          } catch (e) { /* proceed without gender if decision API fails */ }
+          } catch (e) { /* proceed without decision data if API fails */ }
         }
 
         // Map Didit gender codes to profile gender values
@@ -111,26 +116,49 @@ Deno.serve(async (req) => {
         const mappedGender = genderMap[diditGender] || null;
         const genderMismatch = mappedGender && mappedGender !== profile.gender;
         const genderUnknown = !mappedGender; // "U" or not present on document
+        const genderReviewNeeded = genderMismatch || genderUnknown;
 
-        if (genderMismatch || genderUnknown) {
+        // Age validation: under-18, mismatch vs entered age, DOB mismatch, or unextractable
+        const MIN_AGE = 18;
+        let ageUnderage = false;
+        let ageMismatch = false;
+        let ageUnknown = false;
+        if (diditAge !== null) {
+          if (diditAge < MIN_AGE) ageUnderage = true;
+          else if (profile.age && Math.abs(diditAge - profile.age) > 1) ageMismatch = true;
+        } else {
+          ageUnknown = true;
+        }
+        if (diditDob && profile.date_of_birth && diditDob !== profile.date_of_birth) {
+          ageMismatch = true;
+        }
+        const ageReviewNeeded = ageUnderage || ageMismatch || ageUnknown;
+
+        if (genderReviewNeeded || ageReviewNeeded) {
           // Flag for admin review — do not auto-verify
           await base44.asServiceRole.entities.MemberProfile.update(profile.id, {
             didit_session_id:          session_id,
             didit_verification_status: "Approved",
             didit_verified_at:         new Date().toISOString(),
             didit_extracted_gender:    diditGender || 'U',
-            gender_review_needed:      true,
+            didit_date_of_birth:       diditDob || null,
+            didit_age:                 diditAge !== null ? diditAge : null,
+            gender_review_needed:      genderReviewNeeded,
+            age_review_needed:         ageReviewNeeded,
             profile_review_status:     "pending",
           });
         } else {
-          // Gender matches — auto-verify as before
+          // Gender and age match — auto-verify as before
           await base44.asServiceRole.entities.MemberProfile.update(profile.id, {
             didit_session_id:          session_id,
             didit_verification_status: "Approved",
             didit_verified_at:         new Date().toISOString(),
             verification_status:       "verified",
             didit_extracted_gender:    diditGender || null,
+            didit_date_of_birth:       diditDob,
+            didit_age:                 diditAge,
             gender_review_needed:      false,
+            age_review_needed:         false,
           });
         }
       } else if (status === "Declined") {

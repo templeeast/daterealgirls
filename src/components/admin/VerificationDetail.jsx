@@ -125,6 +125,29 @@ export default function VerificationDetail({ profile: p, onBack, onVerify }) {
             </div>
           )}
 
+          {/* Age Mismatch / Underage Warning */}
+          {p.age_review_needed && (
+            <div className="rounded-xl bg-amber-50 border border-amber-300 p-4 space-y-1">
+              <div className="flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4 text-amber-600" />
+                <p className="text-sm font-semibold text-amber-800">Age Review Required</p>
+              </div>
+              <p className="text-xs text-amber-700">
+                Profile age: <span className="font-medium">{p.age ?? '—'}</span>
+                {p.date_of_birth && <> {' · '} Profile DOB: <span className="font-medium">{p.date_of_birth}</span></>}
+                {p.didit_age != null && <> {' · '} Didit ID age: <span className="font-medium">{p.didit_age}</span></>}
+                {p.didit_date_of_birth && <> {' · '} Didit ID DOB: <span className="font-medium">{p.didit_date_of_birth}</span></>}
+              </p>
+              <p className="text-xs text-amber-600">
+                {p.didit_age != null && p.didit_age < 18
+                  ? 'The ID document indicates the holder is under 18. This profile must be rejected — do not approve.'
+                  : p.didit_age == null
+                    ? 'Didit could not extract an age or date of birth from the ID document. Please review the ID images and approve or reject manually.'
+                    : 'Didit approved the ID, but the age/date of birth on the document does not match the age the member entered on their profile. Please review the ID images and approve or reject manually.'}
+              </p>
+            </div>
+          )}
+
           {/* Didit Images */}
           {!p.didit_session_id ? (
             <div className="w-full rounded-xl bg-muted flex items-center justify-center py-10">
