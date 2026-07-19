@@ -61,10 +61,13 @@ export default function PrivatePhotosSection({ profile, onRefetch, maxPrivatePho
 
   const isMale = profile.gender === 'male';
   const uploadCost = isMale ? 10 : 0;
+  const photosPrivateEnabled = isMale ? (config?.photos_private_men_enabled !== false) : (config?.photos_private_women_enabled !== false);
   const videosPrivateEnabled = isMale ? (config?.videos_private_men_enabled === true) : (config?.videos_private_women_enabled === true);
+  const anyUploadEnabled = photosPrivateEnabled || videosPrivateEnabled;
 
   const handleUploadClick = () => {
     setUploadError('');
+    if (!anyUploadEnabled) return;
     if (!requiresIdVerification(profile)) { setShowVerifModal(true); return; }
     if (isMale && (profile.tokens || 0) < 10) {
       setUploadError('You need 10 tokens to post a private photo.');
@@ -84,6 +87,14 @@ export default function PrivatePhotosSection({ profile, onRefetch, maxPrivatePho
     }
     const isVideo = file.type.startsWith('video/');
     const mediaType = isVideo ? 'video' : 'image';
+    if (isVideo && !videosPrivateEnabled) {
+      setUploadError('Video uploads are not currently enabled for your account.');
+      return;
+    }
+    if (!isVideo && !photosPrivateEnabled) {
+      setUploadError('Photo uploads are not currently enabled for your account.');
+      return;
+    }
     if (isVideo) {
       const maxDuration = config?.max_video_duration_seconds ?? 30;
       const maxSizeMB = config?.max_video_file_size_mb ?? 25;
@@ -186,11 +197,17 @@ export default function PrivatePhotosSection({ profile, onRefetch, maxPrivatePho
             </div>
           )}
 
-          <Button variant="outline" className="gap-2" onClick={handleUploadClick} disabled={uploading}>
-            {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
-            {uploading ? 'Uploading...' : `Upload Private ${videosPrivateEnabled ? 'Photo/Video' : 'Photo'}${isMale ? ' (10 tokens)' : ''}`}
-          </Button>
-          <input ref={fileRef} type="file" accept={videosPrivateEnabled ? "image/*,video/*" : "image/*"} className="hidden" onChange={handleFileChange} />
+          {anyUploadEnabled ? (
+            <>
+              <Button variant="outline" className="gap-2" onClick={handleUploadClick} disabled={uploading}>
+                {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+                {uploading ? 'Uploading...' : `Upload Private ${videosPrivateEnabled && photosPrivateEnabled ? 'Photo/Video' : videosPrivateEnabled ? 'Video' : 'Photo'}${isMale ? ' (10 tokens)' : ''}`}
+              </Button>
+              <input ref={fileRef} type="file" accept={videosPrivateEnabled && photosPrivateEnabled ? "image/*,video/*" : videosPrivateEnabled ? "video/*" : "image/*"} className="hidden" onChange={handleFileChange} />
+            </>
+          ) : (
+            <p className="text-sm text-muted-foreground bg-muted rounded-lg px-3 py-2">Private photo and video uploads are currently disabled.</p>
+          )}
 
           {displayPhotos.length > 0 && (
             <div className="grid grid-cols-3 gap-3">

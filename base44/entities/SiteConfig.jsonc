@@ -364,6 +364,16 @@
       "type": "number",
       "default": 5
     },
+    "photos_private_men_enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether male members can upload private photos to their profile"
+    },
+    "photos_private_women_enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether female members can upload private photos to their profile"
+    },
     "videos_private_men_enabled": {
       "type": "boolean",
       "default": false,

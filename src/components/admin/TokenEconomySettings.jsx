@@ -230,14 +230,28 @@ export default function TokenEconomySettings({ form, updateField }) {
         </CardContent>
       </Card>
 
-      {/* Video Features */}
+      {/* Private Media & Video Features */}
       <Card>
         <CardHeader>
-          <CardTitle className="font-heading text-lg">Video Features</CardTitle>
-          <CardDescription>Enable video uploads and configure token costs for private photos and chat messages.</CardDescription>
+          <CardTitle className="font-heading text-lg">Private Media & Video Features</CardTitle>
+          <CardDescription>Enable private photo/video uploads and configure token costs for private media and chat messages.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between">
+            <div>
+              <p className="font-medium text-sm">Enable Private Photos — Men</p>
+              <p className="text-xs text-muted-foreground">When ON, male members can upload private photos to their profile.</p>
+            </div>
+            <Switch checked={form.photos_private_men_enabled !== false} onCheckedChange={v => toggle('photos_private_men_enabled', v)} />
+          </div>
+          <div className="flex items-center justify-between border-t pt-4">
+            <div>
+              <p className="font-medium text-sm">Enable Private Photos — Women</p>
+              <p className="text-xs text-muted-foreground">When ON, female members can upload private photos to their profile.</p>
+            </div>
+            <Switch checked={form.photos_private_women_enabled !== false} onCheckedChange={v => toggle('photos_private_women_enabled', v)} />
+          </div>
+          <div className="flex items-center justify-between border-t pt-4">
             <div>
               <p className="font-medium text-sm">Enable Videos for Private Photos — Men</p>
               <p className="text-xs text-muted-foreground">When ON, male members can upload short video clips as private photos.</p>
