@@ -77,6 +77,15 @@ const sections = [
       { id: 'browse-36', label: 'INTERACT GATE: Verified user WITHOUT browse-all purchase sees lock icon on profile cards (interactions still gated)' },
       { id: 'browse-37', label: 'INTERACT GATE: Verified user WITH active browse-all purchase sees wink and favorite buttons on profile cards' },
       { id: 'browse-38', label: 'INTERACT GATE: i18n — browse-all dialog, banner, and locked overlay text render correctly in all 8 supported languages' },
+      // --- Auto-unlock when browse cost is 0 ---
+      { id: 'browse-39', label: 'AUTO-UNLOCK (0 COST): When tokens_browse_cost_women is 0 and tokens_browse_women_enabled is true, a verified female user sees all profiles without any gate or banner' },
+      { id: 'browse-40', label: 'AUTO-UNLOCK (0 COST): When tokens_browse_cost_men is 0 and tokens_browse_men_enabled is true, a verified male user sees all profiles without any gate or banner' },
+      { id: 'browse-41', label: 'AUTO-UNLOCK (0 COST): The "Unlock All Profiles" banner does NOT appear when the configured browse cost for the user\'s gender is 0' },
+      { id: 'browse-42', label: 'AUTO-UNLOCK (0 COST): The BrowseAllDialog does NOT open (and is not needed) when the configured browse cost is 0' },
+      { id: 'browse-43', label: 'AUTO-UNLOCK (0 COST): Verified user with 0-cost browse can interact (wink, favorite, message) without purchasing browse-all' },
+      { id: 'browse-44', label: 'AUTO-UNLOCK (0 COST): Unverified user with 0-cost browse still sees the unverified gate (verification is still required)' },
+      { id: 'browse-45', label: 'AUTO-UNLOCK (0 COST): No TokenTransaction is created and no tokens are deducted when browse cost is 0' },
+      { id: 'browse-46', label: 'AUTO-UNLOCK (0 COST): Setting browse cost back to a positive number re-enables the Unlock All banner and purchase flow' },
     ],
   },
   {

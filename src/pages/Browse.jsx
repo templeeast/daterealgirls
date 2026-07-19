@@ -54,9 +54,10 @@ export default function Browse() {
   const isVerified = profile?.verification_status === 'verified' || profile?.didit_verification_status === 'Approved';
   const isUnverifiedGate = !isVerified;
 
-  // Browse-all unlock: user paid browseCost tokens for 7 days of unlimited browsing
+  // Browse-all unlock: user paid browseCost tokens for 7 days of unlimited browsing.
+  // When the configured cost for the user's gender is 0 tokens, browsing is automatically unlocked (no purchase needed).
   const browseUnlockedUntil = profile?.browse_unlocked_until ? new Date(profile.browse_unlocked_until) : null;
-  const isBrowseUnlocked = browseUnlockedUntil && browseUnlockedUntil > new Date();
+  const isBrowseUnlocked = browseCost === 0 || (browseUnlockedUntil && browseUnlockedUntil > new Date());
 
   // Can interact (message/wink/favorite) only if verified AND has purchased browse-all
   const canInteract = isVerified && !!isBrowseUnlocked;
