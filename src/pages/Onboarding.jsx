@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Heart, Upload, User, ChevronRight, ChevronLeft } from 'lucide-react';
+import { Heart, Upload, User, ChevronRight, ChevronLeft, LogOut } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import useSiteConfig from '@/hooks/useSiteConfig';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -418,6 +418,16 @@ export default function Onboarding() {
                 </Button>
               )}
             </div>
+          <div className="flex justify-center mt-6">
+            <button
+              type="button"
+              onClick={() => base44.auth.logout('/')}
+              className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              {t('logout_btn')}
+            </button>
+          </div>
         </CardContent>
       </Card>
     </div>
