@@ -49,8 +49,9 @@ export default function Browse() {
   const effectiveBrowseCount = needsWeekReset ? 0 : (profile?.browse_count_this_week ?? 0);
   const isPastFreeLimit = effectiveBrowseCount >= browseLimit;
 
-  // Unverified users are limited to the free browse limit, same as token-gated users
-  const isVerified = profile?.verification_status === 'verified';
+  // A member is considered verified if either the platform verification_status is set
+  // OR Didit returned an Approved result (these can diverge when gender review is pending)
+  const isVerified = profile?.verification_status === 'verified' || profile?.didit_verification_status === 'Approved';
   const isUnverifiedGate = !isVerified;
 
   // Browse-all unlock: user paid browseCost tokens for 7 days of unlimited browsing
