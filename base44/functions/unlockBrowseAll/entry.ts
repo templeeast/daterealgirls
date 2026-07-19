@@ -14,8 +14,9 @@ Deno.serve(async (req) => {
     const profile = profiles[0];
     if (!profile) return Response.json({ error: 'Profile not found' }, { status: 404 });
 
-    // Must be verified
-    if (profile.verification_status !== 'verified') {
+    // Must be verified (either platform verification_status or Didit Approved)
+    const isVerified = profile.verification_status === 'verified' || profile.didit_verification_status === 'Approved';
+    if (!isVerified) {
       return Response.json({ error: 'You must complete ID verification first.' }, { status: 403 });
     }
 
