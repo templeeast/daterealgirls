@@ -211,6 +211,7 @@ export default function MyProfile() {
         stripe_payment_link: profile.stripe_payment_link || '',
         show_stripe_payment_link: profile.show_stripe_payment_link === true,
         buymeacoffee_link: profile.buymeacoffee_link || '',
+        show_buymeacoffee_link: profile.show_buymeacoffee_link === true,
       });
     }
   }, [profile, isLoading, form, navigate]);
@@ -867,6 +868,17 @@ export default function MyProfile() {
               <a href="https://www.buymeacoffee.com/" target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline inline-flex items-center gap-1">
                 <ExternalLink className="w-3 h-3" /> {t('bmc.docs_link')}
               </a>
+            </div>
+            <div className="flex items-center justify-between border-t pt-3">
+              <div>
+                <p className="text-sm font-medium">{t('bmc.show_on_profile_label')}</p>
+                <p className="text-xs text-muted-foreground">{t('bmc.show_on_profile_hint')}</p>
+              </div>
+              <Switch
+                checked={form.show_buymeacoffee_link === true}
+                disabled={profile.verification_status !== 'verified'}
+                onCheckedChange={v => updateField('show_buymeacoffee_link', v)}
+              />
             </div>
           </CardContent>
         </Card>

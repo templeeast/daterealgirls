@@ -371,6 +371,11 @@
       "type": "string",
       "description": "BuyMeACoffee profile URL for receiving tips from other members"
     },
+    "show_buymeacoffee_link": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether to show the BuyMeACoffee link on the public profile (requires verified status)"
+    },
     "ad_free_until": {
       "type": "string",
       "format": "date-time",

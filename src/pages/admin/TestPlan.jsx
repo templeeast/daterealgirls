@@ -558,6 +558,12 @@ const sections = [
       { id: 'bmc-006', label: 'TC-BMC-006 | PROFILE FIELD: "Go to BuyMeACoffee" external link is displayed beneath the input field and opens buymeacoffee.com in a new tab' },
       { id: 'bmc-007', label: 'TC-BMC-007 | PROFILE FIELD: Card description text reads "Add your BuyMeACoffee link so members can gift you a virtual coffee break. It can be embedded in chat messages."' },
       { id: 'bmc-008', label: 'TC-BMC-008 | PROFILE FIELD: Unverified user sees amber warning notice "You must be ID-verified to use this feature." beneath the card description' },
+      { id: 'bmc-008a', label: 'TC-BMC-008a | PROFILE FIELD: "Show on public profile" toggle appears in the BMC card beneath the input field' },
+      { id: 'bmc-008b', label: 'TC-BMC-008b | PROFILE FIELD: "Show on public profile" toggle is DISABLED (grayed out) when user is NOT ID-verified' },
+      { id: 'bmc-008c', label: 'TC-BMC-008c | PROFILE FIELD: "Show on public profile" toggle is ENABLED and interactive when user IS ID-verified' },
+      { id: 'bmc-008d', label: 'TC-BMC-008d | PROFILE FIELD: Verified member toggles ON — show_buymeacoffee_link saves as true in MemberProfile' },
+      { id: 'bmc-008e', label: 'TC-BMC-008e | PROFILE FIELD: Verified member toggles OFF — show_buymeacoffee_link saves as false in MemberProfile' },
+      { id: 'bmc-008f', label: 'TC-BMC-008f | PROFILE FIELD: Toggle label reads "Show on public profile" with hint "Only visible to other verified members."' },
       // --- Admin Controls ---
       { id: 'bmc-010', label: 'TC-BMC-010 | ADMIN: "BuyMeACoffee Links in Chat" card appears in Token Economy Settings with men/women toggles and credit cost field' },
       { id: 'bmc-011', label: 'TC-BMC-011 | ADMIN: Toggling buymeacoffee_enabled_men to true allows ID-verified male members to see/use the field; female members are unaffected' },
