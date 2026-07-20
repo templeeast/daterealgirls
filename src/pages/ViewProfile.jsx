@@ -5,7 +5,7 @@ import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import { MapPin, Shield, Star, MessageCircle, Flag, Heart, ArrowLeft, Instagram, Facebook, Lock, Coffee } from 'lucide-react';
+import { MapPin, Shield, Star, MessageCircle, Flag, Heart, ArrowLeft, Instagram, Facebook, Lock, Coffee, CreditCard } from 'lucide-react';
 import WinkButton from '@/components/profile/WinkButton';
 import BrowseAllDialog from '@/components/browse/BrowseAllDialog';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -322,6 +322,18 @@ export default function ViewProfile() {
                 <Badge variant="outline" className="gap-1">TikTok: {profile.tiktok}</Badge>
               )}
             </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Stripe Payment Link — only show if the member has opted in and is verified */}
+      {profile.show_stripe_payment_link && profile.verification_status === 'verified' && profile.stripe_payment_link && (
+        <Card className="mb-6">
+          <CardContent className="pt-6 flex items-center gap-3">
+            <CreditCard className="w-5 h-5 text-primary" />
+            <a href={profile.stripe_payment_link} target="_blank" rel="noopener noreferrer" className="text-primary font-medium hover:underline">
+              {t('stripe.payment_link.send_button.label')}
+            </a>
           </CardContent>
         </Card>
       )}
