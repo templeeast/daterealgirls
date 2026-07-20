@@ -298,8 +298,8 @@ export default function ViewProfile() {
         </CardContent>
       </Card>
 
-      {/* Social */}
-      {(profile.instagram || profile.facebook || profile.tiktok) && (
+      {/* Social — only show if the member has opted in via show_social_media */}
+      {profile.show_social_media && (profile.instagram || profile.facebook || profile.tiktok) && (
         <Card>
           <CardContent className="pt-6">
             <h3 className="font-heading text-lg font-semibold mb-3">{t('social_section')}</h3>
