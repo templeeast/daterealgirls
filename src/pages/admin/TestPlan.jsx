@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { CheckSquare, Square, ChevronDown, ChevronRight, Shield, Users, CreditCard, MessageSquare, Heart, Settings, Bug, Globe, Trash2, RefreshCw, Tag, Camera, Lock, Image, Key, Link, Monitor, Video, MapPin, EyeOff } from 'lucide-react';
+import { CheckSquare, Square, ChevronDown, ChevronRight, Shield, Users, CreditCard, MessageSquare, Heart, Settings, Bug, Globe, Trash2, RefreshCw, Tag, Camera, Lock, Image, Key, Link, Monitor, Video, MapPin, EyeOff, Coffee } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import useMyProfile from '@/hooks/useMyProfile';
 import { base44 } from '@/api/base44Client';
@@ -541,6 +541,50 @@ const sections = [
       // --- i18n ---
       { id: 'spl-040', label: 'TC-SPL-040 | i18n: All new Stripe Payment Link strings (labels, instructions, tooltips, cost notices, admin labels) render correctly in all 8 supported languages with no untranslated fallback keys' },
       { id: 'spl-041', label: 'TC-SPL-041 | i18n: The {{n}} credit cost variable in the cost_notice string is replaced with the correct numeric value in all 8 supported languages' },
+    ],
+  },
+  {
+    id: 'buymeacoffee',
+    icon: Coffee,
+    title: 'BuyMeACoffee Link Integration',
+    color: 'text-amber-500',
+    items: [
+      // --- Profile Field ---
+      { id: 'bmc-001', label: 'TC-BMC-001 | PROFILE FIELD: BuyMeACoffee Link field is NOT visible or editable when admin has enabled the feature but user is NOT yet ID-verified' },
+      { id: 'bmc-002', label: 'TC-BMC-002 | PROFILE FIELD: BuyMeACoffee Link input field and instructions section ARE visible and editable when admin has enabled the feature AND user IS ID-verified' },
+      { id: 'bmc-003', label: 'TC-BMC-003 | PROFILE FIELD: Valid URL beginning with https://www.buymeacoffee.com/ is accepted and saved without a validation error' },
+      { id: 'bmc-004', label: 'TC-BMC-004 | PROFILE FIELD: Valid URL beginning with https://buymeacoffee.com/ is accepted and saved without a validation error' },
+      { id: 'bmc-005', label: 'TC-BMC-005 | PROFILE FIELD: URL that does NOT contain buymeacoffee.com (e.g. https://paypal.me/example) is rejected with a validation error and not saved' },
+      { id: 'bmc-006', label: 'TC-BMC-006 | PROFILE FIELD: "Go to BuyMeACoffee" external link is displayed beneath the input field and opens buymeacoffee.com in a new tab' },
+      { id: 'bmc-007', label: 'TC-BMC-007 | PROFILE FIELD: Card description text reads "Add your BuyMeACoffee link so members can gift you a virtual coffee break. It can be embedded in chat messages."' },
+      { id: 'bmc-008', label: 'TC-BMC-008 | PROFILE FIELD: Unverified user sees amber warning notice "You must be ID-verified to use this feature." beneath the card description' },
+      // --- Admin Controls ---
+      { id: 'bmc-010', label: 'TC-BMC-010 | ADMIN: "BuyMeACoffee Links in Chat" card appears in Token Economy Settings with men/women toggles and credit cost field' },
+      { id: 'bmc-011', label: 'TC-BMC-011 | ADMIN: Toggling buymeacoffee_enabled_men to true allows ID-verified male members to see/use the field; female members are unaffected' },
+      { id: 'bmc-012', label: 'TC-BMC-012 | ADMIN: Toggling buymeacoffee_enabled_women to true allows ID-verified female members to see/use the field; male members are unaffected' },
+      { id: 'bmc-013', label: 'TC-BMC-013 | ADMIN: Disabling the toggle for a gender hides the Profile field AND removes the Coffee embed button from chat for those users' },
+      { id: 'bmc-014', label: 'TC-BMC-014 | ADMIN: Updating buymeacoffee_message_credit_cost saves correctly; embedding a BMC link in chat now costs the new credit amount and cost_notice reflects it' },
+      // --- Message Embed ---
+      { id: 'bmc-030', label: 'TC-BMC-030 | MESSAGE EMBED: Coffee icon embed button is visible and enabled in the chat composer when user is ID-verified, has a saved link, feature is admin-enabled, and has sufficient tokens' },
+      { id: 'bmc-031', label: 'TC-BMC-031 | MESSAGE EMBED: Clicking embed button inserts the BMC link as a tappable link in the sent message AND deducts the configured token amount from the user\'s balance' },
+      { id: 'bmc-032', label: 'TC-BMC-032 | MESSAGE EMBED: Clicking embed button when user has fewer tokens than the configured cost shows an insufficient-tokens notice with "Buy tokens" link; message is not sent with the link' },
+      { id: 'bmc-033', label: 'TC-BMC-033 | MESSAGE EMBED: Button is disabled with a prompt directing user to profile settings when no BuyMeACoffee link has been saved' },
+      { id: 'bmc-034', label: 'TC-BMC-034 | MESSAGE EMBED: Button is disabled with not_verified tooltip when user has a saved link but is NOT ID-verified' },
+      { id: 'bmc-035', label: 'TC-BMC-035 | MESSAGE EMBED: Button is disabled with not_enabled tooltip when user is ID-verified and has a saved link but admin has disabled the feature for their gender' },
+      { id: 'bmc-036', label: 'TC-BMC-036 | MESSAGE EMBED: Sent BMC link message renders as a clickable hyperlink (not plain text) in the chat bubble' },
+      { id: 'bmc-037', label: 'TC-BMC-037 | MESSAGE EMBED: Clicking the BMC link in a chat message opens the URL in a new tab' },
+      { id: 'bmc-038', label: 'TC-BMC-038 | MESSAGE EMBED: Token cost hint (Coffee icon + "N tokens per BuyMeACoffee link") is shown in the composer area when the feature is enabled for the user\'s gender' },
+      { id: 'bmc-039', label: 'TC-BMC-039 | MESSAGE EMBED: Conversation last_message and unread_count are updated after embedding a BMC link' },
+      { id: 'bmc-040', label: 'TC-BMC-040 | MESSAGE EMBED: After sending, the messages and myProfile queries are invalidated so the token balance and message list refresh immediately' },
+      // --- Token Costs List ---
+      { id: 'bmc-050', label: 'TC-BMC-050 | TOKEN COSTS: "Embed BuyMeACoffee link in chat" row appears in the Token Costs list on My Profile when the feature is enabled for the user\'s gender' },
+      { id: 'bmc-051', label: 'TC-BMC-051 | TOKEN COSTS: Row shows the correct token cost from buymeacoffee_message_credit_cost' },
+      { id: 'bmc-052', label: 'TC-BMC-052 | TOKEN COSTS: Row is marked with verification-required asterisk' },
+      { id: 'bmc-053', label: 'TC-BMC-053 | TOKEN COSTS: Row is hidden when the feature is disabled for the user\'s gender' },
+      // --- i18n ---
+      { id: 'bmc-060', label: 'TC-BMC-060 | i18n: All BMC strings (card title, description, input label, input hint, tooltips, cost notices, admin labels) render correctly in all 8 supported languages with no untranslated fallback keys' },
+      { id: 'bmc-061', label: 'TC-BMC-061 | i18n: The {{n}} token cost variable in chat_cost_hint and cost_notice strings is replaced with the correct numeric value in all 8 supported languages' },
+      { id: 'bmc-062', label: 'TC-BMC-062 | i18n: "Embed BuyMeACoffee link in chat" token costs list label renders correctly in all 8 supported languages' },
     ],
   },
   {
