@@ -326,26 +326,23 @@ export default function ViewProfile() {
         </Card>
       )}
 
-      {/* Stripe Payment Link — only show if the member has opted in and is verified */}
-      {profile.show_stripe_payment_link && profile.verification_status === 'verified' && profile.stripe_payment_link && (
+      {/* Payment / Tip Links — single card; shows whichever link(s) the verified member has enabled */}
+      {profile.verification_status === 'verified' && (
+        (profile.show_stripe_payment_link && profile.stripe_payment_link) ||
+        (profile.show_buymeacoffee_link && profile.buymeacoffee_link)
+      ) && (
         <Card className="mb-6">
-          <CardContent className="pt-6 flex items-center gap-3">
-            <CreditCard className="w-5 h-5 text-primary" />
-            <a href={profile.stripe_payment_link} target="_blank" rel="noopener noreferrer" className="text-primary font-medium hover:underline">
-              {t('stripe.payment_link.send_button.label')}
-            </a>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* BuyMeACoffee — only show if the member has opted in and is verified */}
-      {profile.show_buymeacoffee_link && profile.verification_status === 'verified' && profile.buymeacoffee_link && (
-        <Card className="mb-6">
-          <CardContent className="pt-6 flex items-center gap-3">
-            <Coffee className="w-5 h-5 text-primary" />
-            <a href={profile.buymeacoffee_link} target="_blank" rel="noopener noreferrer" className="text-primary font-medium hover:underline">
-              {t('bmc.public_button_label')}
-            </a>
+          <CardContent className="pt-6 flex flex-wrap items-center gap-4">
+            {profile.show_stripe_payment_link && profile.stripe_payment_link && (
+              <a href={profile.stripe_payment_link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-primary font-medium hover:underline">
+                <CreditCard className="w-5 h-5" /> {t('stripe.payment_link.send_button.label')}
+              </a>
+            )}
+            {profile.show_buymeacoffee_link && profile.buymeacoffee_link && (
+              <a href={profile.buymeacoffee_link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-primary font-medium hover:underline">
+                <Coffee className="w-5 h-5" /> {t('bmc.public_button_label')}
+              </a>
+            )}
           </CardContent>
         </Card>
       )}
