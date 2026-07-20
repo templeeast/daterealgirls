@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
-import { Upload, Shield, Camera, Save, Trash2, Eye, EyeOff, AlertTriangle, Smile, ExternalLink, Coins, ShoppingCart, CreditCard, Lock, Loader2, History } from 'lucide-react';
+import { Upload, Shield, Camera, Save, Trash2, Eye, EyeOff, AlertTriangle, Smile, ExternalLink, Coins, ShoppingCart, CreditCard, Lock, Loader2, History, Coffee } from 'lucide-react';
 import WhopTokenCheckout from '@/components/subscription/WhopTokenCheckout';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { formatDistanceToNow } from 'date-fns';
@@ -210,6 +210,7 @@ export default function MyProfile() {
         show_social_media: profile.show_social_media === true,
         stripe_payment_link: profile.stripe_payment_link || '',
         show_stripe_payment_link: profile.show_stripe_payment_link === true,
+        buymeacoffee_link: profile.buymeacoffee_link || '',
       });
     }
   }, [profile, isLoading, form, navigate]);
@@ -835,6 +836,37 @@ export default function MyProfile() {
                 disabled={profile.verification_status !== 'verified'}
                 onCheckedChange={v => updateField('show_stripe_payment_link', v)}
               />
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* BuyMeACoffee Link */}
+      {((profile.gender === 'male' && config.buymeacoffee_enabled_men) || (profile.gender === 'female' && config.buymeacoffee_enabled_women)) && (
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle className="font-heading text-lg flex items-center gap-2">
+              <Coffee className="w-5 h-5 text-primary" /> {t('bmc.card_title')}
+            </CardTitle>
+            <CardDescription>
+              {t('bmc.card_desc')}
+              {profile.verification_status !== 'verified' && (
+                <span className="block mt-1 text-amber-600 font-medium">⚠ {t('bmc.not_verified.tooltip')}</span>
+              )}
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label>{t('bmc.input_label')}</Label>
+              <Input
+                placeholder="https://www.buymeacoffee.com/..."
+                value={form.buymeacoffee_link || ''}
+                onChange={e => updateField('buymeacoffee_link', e.target.value)}
+              />
+              <p className="text-xs text-muted-foreground">{t('bmc.input_hint')}</p>
+              <a href="https://www.buymeacoffee.com/" target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline inline-flex items-center gap-1">
+                <ExternalLink className="w-3 h-3" /> {t('bmc.docs_link')}
+              </a>
             </div>
           </CardContent>
         </Card>

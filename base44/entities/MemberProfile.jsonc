@@ -367,6 +367,10 @@
       "default": false,
       "description": "Whether to show the Stripe payment link on the public profile (requires verified status)"
     },
+    "buymeacoffee_link": {
+      "type": "string",
+      "description": "BuyMeACoffee profile URL for receiving tips from other members"
+    },
     "ad_free_until": {
       "type": "string",
       "format": "date-time",

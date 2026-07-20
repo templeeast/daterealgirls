@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ArrowLeft, Send, User, Image as ImageIcon, Trash2, Coins, Lock, CheckCircle, XCircle, BadgeDollarSign, Video as VideoIcon } from 'lucide-react';
+import { ArrowLeft, Send, User, Image as ImageIcon, Trash2, Coins, Lock, CheckCircle, XCircle, BadgeDollarSign, Video as VideoIcon, Coffee } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import useMyProfile from '@/hooks/useMyProfile';
 import useSiteConfig from '@/hooks/useSiteConfig';
@@ -449,7 +449,7 @@ export default function Chat() {
                       </div>
                     )}
                     {msg.content && msg.content !== '📷 Photo' && msg.content !== '🎥 Video' && (
-                      msg.content.startsWith('https://buy.stripe.com/') ? (
+                      (msg.content.startsWith('https://buy.stripe.com/') || msg.content.includes('buymeacoffee.com')) ? (
                         <a
                           href={msg.content}
                           target="_blank"
@@ -514,6 +514,15 @@ export default function Chat() {
                   </span>
                 ) : null;
               })()}
+              {(() => {
+                const bmcEnabled = isMale ? config?.buymeacoffee_enabled_men : config?.buymeacoffee_enabled_women;
+                const bmcCost = config?.buymeacoffee_message_credit_cost ?? 5;
+                return bmcEnabled && bmcCost > 0 ? (
+                  <span className="text-xs text-muted-foreground flex items-center gap-1">
+                    <Coins className="w-3 h-3" /> {t('bmc.chat_cost_hint', { n: bmcCost })}
+                  </span>
+                ) : null;
+              })()}
               <span className="text-xs text-muted-foreground">· {t('chat_token_balance', { n: tokens.toLocaleString() })}</span>
             </div>
           ) : null}
@@ -548,6 +557,30 @@ export default function Chat() {
                   onClick={() => navigate('/my-profile')}
                 >
                   {t('stripe.payment_link.message_embed.buy_tokens')}
+                </Button>
+              </div>
+            ) : null;
+          })()}
+          {/* BuyMeACoffee insufficient tokens notice */}
+          {(() => {
+            const isVerified = requiresIdVerification(profile);
+            const bmcEnabled = isMale ? config?.buymeacoffee_enabled_men : config?.buymeacoffee_enabled_women;
+            const hasBmcLink = !!profile?.buymeacoffee_link;
+            const bmcCost = config?.buymeacoffee_message_credit_cost ?? 5;
+            const showBmcBtn = isVerified && bmcEnabled;
+            const insufficientTokens = showBmcBtn && hasBmcLink && tokens < bmcCost;
+            return insufficientTokens ? (
+              <div className="flex items-center justify-center gap-2 mb-1 max-w-3xl mx-auto px-1">
+                <p className="text-xs text-amber-600 dark:text-amber-400">
+                  {t('bmc.message_embed.insufficient_tokens', { n: bmcCost })}
+                </p>
+                <Button
+                  size="sm"
+                  variant="link"
+                  className="h-auto p-0 text-xs text-primary"
+                  onClick={() => navigate('/my-profile')}
+                >
+                  {t('bmc.message_embed.buy_tokens')}
                 </Button>
               </div>
             ) : null;
@@ -611,6 +644,53 @@ export default function Chat() {
                   onClick={handleEmbedPaymentLink}
                 >
                   <BadgeDollarSign className="w-5 h-5" />
+                </Button>
+              );
+            })()}
+            {/* BuyMeACoffee embed button */}
+            {(() => {
+              const isVerified = requiresIdVerification(profile);
+              const bmcEnabled = isMale ? config?.buymeacoffee_enabled_men : config?.buymeacoffee_enabled_women;
+              const hasBmcLink = !!profile?.buymeacoffee_link;
+              const bmcCost = config?.buymeacoffee_message_credit_cost ?? 5;
+              let tooltipMsg = '';
+              let btnDisabled = true;
+              if (!isVerified) tooltipMsg = t('bmc.not_verified.tooltip');
+              else if (!bmcEnabled) tooltipMsg = t('bmc.not_enabled.tooltip');
+              else if (!hasBmcLink) tooltipMsg = t('bmc.missing.prompt');
+              else if (tokens < bmcCost) tooltipMsg = t('bmc.message_embed.cost_notice', { n: bmcCost });
+              else btnDisabled = false;
+              if (!bmcEnabled) return null;
+              const handleEmbedBmcLink = async () => {
+                if (btnDisabled) { if (tooltipMsg) alert(tooltipMsg); return; }
+                const myProfile = (await base44.entities.MemberProfile.filter({ user_id: user.id }))[0];
+                await base44.entities.MemberProfile.update(myProfile.id, { tokens: Math.max(0, tokens - bmcCost) });
+                await base44.entities.Message.create({
+                  conversation_id: conversationId,
+                  sender_id: user.id,
+                  sender_name: myProfile?.display_name || 'User',
+                  content: profile.buymeacoffee_link,
+                });
+                const isP1 = conversation.participant_1_id === user.id;
+                await base44.entities.Conversation.update(conversationId, {
+                  last_message: profile.buymeacoffee_link,
+                  last_message_date: new Date().toISOString(),
+                  [isP1 ? 'unread_count_2' : 'unread_count_1']:
+                    (isP1 ? (conversation.unread_count_2 || 0) : (conversation.unread_count_1 || 0)) + 1,
+                });
+                queryClient.invalidateQueries({ queryKey: ['messages', conversationId] });
+                queryClient.invalidateQueries({ queryKey: ['myProfile'] });
+              };
+              return (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="shrink-0"
+                  title={btnDisabled ? tooltipMsg : t('bmc.message_embed.tooltip')}
+                  disabled={btnDisabled}
+                  onClick={handleEmbedBmcLink}
+                >
+                  <Coffee className="w-5 h-5" />
                 </Button>
               );
             })()}

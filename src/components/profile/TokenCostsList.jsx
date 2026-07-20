@@ -92,6 +92,18 @@ export default function TokenCostsList({ profile, config }) {
     });
   }
 
+  // 7b. Embed BuyMeACoffee link in chat — verification required, conditional on gender enable
+  const bmcEnabled = isMale ? config?.buymeacoffee_enabled_men : config?.buymeacoffee_enabled_women;
+  if (bmcEnabled) {
+    const bmcCost = config?.buymeacoffee_message_credit_cost ?? 5;
+    rows.push({
+      label: t('token.action.embed_bmc_link'),
+      cost: t('token_cost_n_tokens', { n: bmcCost }),
+      isFree: false,
+      verificationRequired: true,
+    });
+  }
+
   // 8. View private photos — verification required, gender-specific cost
   {
     const privatePhotoCost = isMale ? (config?.tokens_private_photo_cost ?? 5) : (config?.tokens_private_photo_cost_women ?? 0);
