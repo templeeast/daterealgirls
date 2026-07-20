@@ -2,7 +2,7 @@
 export const buymeacoffeeTranslations = {
   en: {
     'bmc.card_title': 'BuyMeACoffee Link',
-    'bmc.card_desc': 'Add your BuyMeACoffee link so members can support you with a tip. It can be embedded in chat messages.',
+    'bmc.card_desc': 'Add your BuyMeACoffee link so members can give you a virtual coffee break. It can be embedded in chat messages.',
     'bmc.input_label': 'Your BuyMeACoffee URL',
     'bmc.input_hint': 'Must start with https://www.buymeacoffee.com/ or https://buymeacoffee.com/. Create one at buymeacoffee.com.',
     'bmc.docs_link': 'Go to BuyMeACoffee',
@@ -18,7 +18,7 @@ export const buymeacoffeeTranslations = {
   },
   es: {
     'bmc.card_title': 'Enlace de BuyMeACoffee',
-    'bmc.card_desc': 'Anade tu enlace de BuyMeACoffee para que los miembros puedan apoyarte con una propina. Se puede insertar en mensajes de chat.',
+    'bmc.card_desc': 'Anade tu enlace de BuyMeACoffee para que los miembros puedan darte un descanso con un cafe virtual. Se puede insertar en mensajes de chat.',
     'bmc.input_label': 'Tu URL de BuyMeACoffee',
     'bmc.input_hint': 'Debe comenzar con https://www.buymeacoffee.com/ o https://buymeacoffee.com/. Crea uno en buymeacoffee.com.',
     'bmc.docs_link': 'Ir a BuyMeACoffee',
@@ -34,7 +34,7 @@ export const buymeacoffeeTranslations = {
   },
   th: {
     'bmc.card_title': '\u0e25\u0e34\u0e07\u0e01\u0e4c BuyMeACoffee',
-    'bmc.card_desc': '\u0e40\u0e1e\u0e34\u0e48\u0e21\u0e25\u0e34\u0e07\u0e01\u0e4c BuyMeACoffee \u0e02\u0e2d\u0e07\u0e04\u0e38\u0e13\u0e40\u0e1e\u0e37\u0e48\u0e2d\u0e43\u0e2b\u0e49\u0e2a\u0e21\u0e32\u0e0a\u0e34\u0e01\u0e2a\u0e32\u0e21\u0e32\u0e23\u0e16\u0e2a\u0e19\u0e31\u0e1a\u0e2a\u0e19\u0e38\u0e19\u0e04\u0e38\u0e13\u0e14\u0e49\u0e27\u0e22\u0e17\u0e34\u0e1b \u0e2a\u0e32\u0e21\u0e32\u0e23\u0e16\u0e41\u0e17\u0e23\u0e01\u0e43\u0e19\u0e02\u0e49\u0e2d\u0e04\u0e27\u0e32\u0e21\u0e41\u0e0a\u0e17\u0e44\u0e14\u0e49',
+    'bmc.card_desc': '\u0e40\u0e1e\u0e34\u0e48\u0e21\u0e25\u0e34\u0e07\u0e01\u0e4c BuyMeACoffee \u0e02\u0e2d\u0e07\u0e04\u0e38\u0e13\u0e40\u0e1e\u0e37\u0e48\u0e2d\u0e43\u0e2b\u0e49\u0e2a\u0e21\u0e32\u0e0a\u0e34\u0e01\u0e2a\u0e32\u0e21\u0e32\u0e23\u0e16\u0e21\u0e2d\u0e1a\u0e04\u0e32\u0e40\u0e1f\u0e48\u0e2d\u0e2d\u0e19\u0e44\u0e25\u0e19\u0e4c\u0e43\u0e2b\u0e49\u0e04\u0e38\u0e13\u0e44\u0e14\u0e49 \u0e2a\u0e32\u0e21\u0e32\u0e23\u0e16\u0e41\u0e17\u0e23\u0e01\u0e43\u0e19\u0e02\u0e49\u0e2d\u0e04\u0e27\u0e32\u0e21\u0e41\u0e0a\u0e17\u0e44\u0e14\u0e49',
     'bmc.input_label': 'URL BuyMeACoffee \u0e02\u0e2d\u0e07\u0e04\u0e38\u0e13',
     'bmc.input_hint': '\u0e15\u0e49\u0e2d\u0e07\u0e40\u0e23\u0e34\u0e48\u0e21\u0e15\u0e49\u0e19\u0e14\u0e49\u0e27\u0e22 https://www.buymeacoffee.com/ \u0e2b\u0e23\u0e37\u0e2d https://buymeacoffee.com/ \u0e2a\u0e23\u0e49\u0e32\u0e07\u0e44\u0e14\u0e49\u0e17\u0e35\u0e48 buymeacoffee.com',
     'bmc.docs_link': '\u0e44\u0e1b\u0e17\u0e35\u0e48 BuyMeACoffee',
@@ -50,7 +50,7 @@ export const buymeacoffeeTranslations = {
   },
   zh: {
     'bmc.card_title': 'BuyMeACoffee 链接',
-    'bmc.card_desc': '添加您的 BuyMeACoffee 链接，让会员可以通过打赏支持您。它可以嵌入到聊天消息中。',
+    'bmc.card_desc': '添加您的 BuyMeACoffee 链接，让会员可以给您一个虚拟咖啡休息。它可以嵌入到聊天消息中。',
     'bmc.input_label': '您的 BuyMeACoffee URL',
     'bmc.input_hint': '必须以 https://www.buymeacoffee.com/ 或 https://buymeacoffee.com/ 开头。在 buymeacoffee.com 创建。',
     'bmc.docs_link': '前往 BuyMeACoffee',
@@ -66,7 +66,7 @@ export const buymeacoffeeTranslations = {
   },
   de: {
     'bmc.card_title': 'BuyMeACoffee-Link',
-    'bmc.card_desc': 'Fuege deinen BuyMeACoffee-Link hinzu, damit Mitglieder dich mit einem Trinkgeld unterstuetzen koennen. Er kann in Chat-Nachrichten eingebettet werden.',
+    'bmc.card_desc': 'Fuege deinen BuyMeACoffee-Link hinzu, damit Mitglieder dir eine virtuelle Kaffeepause geben koennen. Er kann in Chat-Nachrichten eingebettet werden.',
     'bmc.input_label': 'Deine BuyMeACoffee-URL',
     'bmc.input_hint': 'Muss mit https://www.buymeacoffee.com/ oder https://buymeacoffee.com/ beginnen. Erstelle einen auf buymeacoffee.com.',
     'bmc.docs_link': 'Zu BuyMeACoffee',
@@ -82,7 +82,7 @@ export const buymeacoffeeTranslations = {
   },
   vi: {
     'bmc.card_title': 'Lien ket BuyMeACoffee',
-    'bmc.card_desc': 'Them lien ket BuyMeACoffee cua ban de thanh vien co the ung ho ban bang tien tip. Co the nhuung vao tin nhan chat.',
+    'bmc.card_desc': 'Them lien ket BuyMeACoffee cua ban de thanh vien co the tang ban mot qua cafe ao. Co the nhuung vao tin nhan chat.',
     'bmc.input_label': 'URL BuyMeACoffee cua ban',
     'bmc.input_hint': 'Phai bat dau bang https://www.buymeacoffee.com/ hoac https://buymeacoffee.com/. Tao mot tai buymeacoffee.com.',
     'bmc.docs_link': 'Den BuyMeACoffee',
@@ -98,7 +98,7 @@ export const buymeacoffeeTranslations = {
   },
   pt: {
     'bmc.card_title': 'Link do BuyMeACoffee',
-    'bmc.card_desc': 'Adicione seu link do BuyMeACoffee para que os membros possam apoiar voce com uma gorjeta. Ele pode ser incorporado em mensagens de chat.',
+    'bmc.card_desc': 'Adicione seu link do BuyMeACoffee para que os membros possam lhe dar uma pausa para um cafe virtual. Ele pode ser incorporado em mensagens de chat.',
     'bmc.input_label': 'Sua URL do BuyMeACoffee',
     'bmc.input_hint': 'Deve comecar com https://www.buymeacoffee.com/ ou https://buymeacoffee.com/. Crie um em buymeacoffee.com.',
     'bmc.docs_link': 'Ir para BuyMeACoffee',
@@ -114,7 +114,7 @@ export const buymeacoffeeTranslations = {
   },
   tl: {
     'bmc.card_title': 'Link ng BuyMeACoffee',
-    'bmc.card_desc': 'Idagdag ang iyong link ng BuyMeACoffee para makapagbigay ng suporta ang mga miyembro sa iyo gamit ang tip. Maaari itong i-embed sa mga chat message.',
+    'bmc.card_desc': 'Idagdag ang iyong link ng BuyMeACoffee para makapagbigay ang mga miyembro ng isang virtual na coffee break sa iyo. Maaari itong i-embed sa mga chat message.',
     'bmc.input_label': 'Iyong URL ng BuyMeACoffee',
     'bmc.input_hint': 'Dapat magsimula sa https://www.buymeacoffee.com/ o https://buymeacoffee.com/. Gumawa sa buymeacoffee.com.',
     'bmc.docs_link': 'Pumunta sa BuyMeACoffee',
