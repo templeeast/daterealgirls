@@ -137,6 +137,29 @@ export default function Chat() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  // Mark conversation as read when opened (clears the unread badge on Messages list)
+  useEffect(() => {
+    if (!conversation || !user?.id) return;
+    const isP1 = conversation.participant_1_id === user.id;
+    const myUnread = isP1 ? (conversation.unread_count_1 || 0) : (conversation.unread_count_2 || 0);
+    if (myUnread === 0) return;
+    (async () => {
+      // Mark incoming unread messages as read
+      const incoming = (messages || []).filter(m => m.sender_id !== user.id && !m.is_read);
+      if (incoming.length > 0) {
+        await base44.entities.Message.bulkUpdate(
+          incoming.map(m => ({ id: m.id, is_read: true }))
+        );
+      }
+      // Reset this participant's unread count
+      await base44.entities.Conversation.update(conversation.id, {
+        [isP1 ? 'unread_count_1' : 'unread_count_2']: 0,
+      });
+      queryClient.invalidateQueries({ queryKey: ['messages', conversationId] });
+      queryClient.invalidateQueries({ queryKey: ['conversations'] });
+    })();
+  }, [conversation?.id, user?.id]);
+
   const sendMutation = useMutation({
     mutationFn: async (content) => {
       const myProfile = (await base44.entities.MemberProfile.filter({ user_id: user.id }))[0];
