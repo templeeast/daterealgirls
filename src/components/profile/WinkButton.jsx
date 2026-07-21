@@ -3,18 +3,21 @@ import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import { useTranslation } from 'react-i18next';
-
-const WINK_COST_MEN = 5;
+import useSiteConfig from '@/hooks/useSiteConfig';
 
 // Wink emoji icon – no lucide import needed
 export default function WinkButton({ myProfile, targetProfileId, existingWink, onWinked, size = 'default' }) {
   const { toast } = useToast();
   const { t } = useTranslation();
+  const { config } = useSiteConfig();
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(!!existingWink);
 
   const isMale = myProfile?.gender === 'male';
-  const winkCost = isMale ? WINK_COST_MEN : 0;
+  const winkEnabled = isMale ? config.tokens_wink_men_enabled !== false : config.tokens_wink_women_enabled !== false;
+  const winkCost = isMale
+    ? (winkEnabled ? (config.tokens_wink_cost_men ?? 5) : 0)
+    : (winkEnabled ? (config.tokens_wink_cost_women ?? 0) : 0);
 
   const handleWink = async (e) => {
     e.preventDefault();
@@ -25,21 +28,21 @@ export default function WinkButton({ myProfile, targetProfileId, existingWink, o
       return;
     }
 
-    if (isMale && (myProfile?.tokens || 0) < WINK_COST_MEN) {
+    if (winkCost > 0 && (myProfile?.tokens || 0) < winkCost) {
       toast({ title: t('wink_insufficient_tokens'), variant: 'destructive' });
       return;
     }
 
     setLoading(true);
 
-    if (isMale) {
+    if (winkCost > 0) {
       await base44.entities.MemberProfile.update(myProfile.id, {
-        tokens: (myProfile.tokens || 0) - WINK_COST_MEN,
+        tokens: (myProfile.tokens || 0) - winkCost,
       });
       await base44.entities.TokenTransaction.create({
         user_id: myProfile.user_id,
         type: 'spend',
-        tokens: -WINK_COST_MEN,
+        tokens: -winkCost,
         description: 'Sent a wink',
       });
     }

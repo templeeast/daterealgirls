@@ -63,14 +63,16 @@ export default function VerificationDetail({ profile: p, onBack, onVerify }) {
 
   useEffect(() => {
     if (!p.didit_session_id) return;
+    let stale = false;
     setDiditLoading(true);
     setDiditImages(null);
     setDiditError(null);
     base44.functions.invoke('fetchDiditSession', { sessionId: p.didit_session_id })
-      .then(res  => setDiditImages(res.data ?? res))
-      .catch(err => setDiditError(err.message))
-      .finally(() => setDiditLoading(false));
-  }, [p.didit_session_id]);
+      .then(res  => { if (!stale) setDiditImages(res.data ?? res); })
+      .catch(err => { if (!stale) setDiditError(err.message); })
+      .finally(() => { if (!stale) setDiditLoading(false); });
+    return () => { stale = true; };
+  }, [p.didit_session_id, p.id]);
 
   const handleConfirmReject = () => {
     onVerify(p.id, 'rejected', 'rejected', {
