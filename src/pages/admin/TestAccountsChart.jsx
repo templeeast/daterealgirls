@@ -84,6 +84,29 @@ const ACCOUNT_GROUPS = [
     ],
   },
   {
+    stateLabel: 'Verified (browse-all active)',
+    stateDesc: 'verification_status = "verified", browse_unlocked_until is in the future — tests full browse-all access, no token gating on browse, ad-free experience.',
+    accounts: [
+      {
+        gender: 'Male',
+        displayName: 'Joe',
+        email: 'joetiger@clevo.testinator.com',
+        userId: '6a5d3f96793c5309deff1c59',
+        profileId: '6a5d4029481e6d196eff009a',
+        tagId: '@DRG-O055EL',
+        age: 41,
+        location: 'Cleveland, United States',
+        profileComplete: true,
+        verification: 'verified (didit: Approved)',
+        reviewStatus: 'approved',
+        tokens: 0,
+        browseAll: 'active (until 2026-07-26 21:30 UTC)',
+        suspended: false,
+        note: 'Bio: "I am a dummy account setup for testing". Has active browse-all — useful for testing unrestricted browse experience.',
+      },
+    ],
+  },
+  {
     stateLabel: 'Verified (no browse-all)',
     stateDesc: 'verification_status = "verified", browse_unlocked_until expired or null — tests verified-but-locked interaction gate, BrowseAllDialog from profile page.',
     accounts: [
@@ -129,6 +152,7 @@ const SUMMARY_ROWS = [
   { state: 'Incomplete-Profile', gender: 'Female', name: 'Leena Bunny', email: 'leenabunny@clevo.testinator.com' },
   { state: 'Unverified', gender: 'Male', name: 'Sam', email: 'samhain@clevo.testinator.com' },
   { state: 'Unverified', gender: 'Female', name: 'Bambi Bunny Test', email: 'bambibunny@clevo.testinator.com' },
+  { state: 'Verified (browse-all)', gender: 'Male', name: 'Joe', email: 'joetiger@clevo.testinator.com' },
   { state: 'Verified (no browse)', gender: 'Male', name: 'Steve', email: 'smaier@cloudevolution.dev' },
   { state: 'Verified (no browse)', gender: 'Female', name: 'Yumi Bunny', email: 'yumibunny@clevo.testinator.com' },
 ];
