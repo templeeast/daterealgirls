@@ -352,7 +352,17 @@ export default function Chat() {
       <VerificationRequiredModal
         open={showVerifModal}
         onClose={() => setShowVerifModal(false)}
-        onVerify={() => navigate('/onboarding')}
+        onVerify={async () => {
+          if (!profile?.id) throw new Error('Profile not found');
+          const res = await base44.functions.invoke('createDiditSession', { memberId: profile.id });
+          const result = res.data;
+          if (!result?.url) throw new Error('Could not start verification. Please try again.');
+          await base44.entities.MemberProfile.update(profile.id, {
+            didit_session_id: result.session_id,
+            didit_verification_status: 'pending',
+          });
+          window.location.href = result.url;
+        }}
       />
       {/* Header */}
       <div className="border-b bg-card px-4 py-3 flex items-center gap-3">

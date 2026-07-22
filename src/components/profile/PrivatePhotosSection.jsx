@@ -133,9 +133,9 @@ export default function PrivatePhotosSection({ profile, onRefetch, maxPrivatePho
         await base44.entities.MemberProfile.update(profile.id, { tokens: Math.max(0, (profile.tokens || 0) - uploadCost) });
         await base44.entities.TokenTransaction.create({ user_id: profile.user_id, type: 'spend', tokens: -uploadCost, description: `Private ${mediaType} upload fee` });
       }
-      await base44.entities.PrivatePhoto.create({ member_id: profile.id, photo_url: mediaUrl, media_type: mediaType, thumbnail_url: thumbnailUrl || '', status: 'approved', token_cost_to_view: tokenCostToView, uploaded_at: new Date().toISOString() });
+      await base44.entities.PrivatePhoto.create({ member_id: profile.id, photo_url: mediaUrl, media_type: mediaType, thumbnail_url: thumbnailUrl || '', status: 'pending_review', token_cost_to_view: tokenCostToView, uploaded_at: new Date().toISOString() });
       await base44.entities.PhotoReview.create({ photo_url: mediaUrl, media_type: mediaType, thumbnail_url: thumbnailUrl || '', source_type: 'private', source_description: `Private ${mediaType} of ${profile.display_name || 'Unknown'}`, source_profile_id: profile.id, source_user_id: profile.user_id, source_field: 'private_photo', review_status: 'pending' });
-      toast({ title: `Your private ${mediaType} has been uploaded and is now visible.` });
+      toast({ title: `Your private ${mediaType} has been uploaded and is pending review. It will be visible to others once approved.` });
       refetch();
       if (onRefetch) onRefetch();
       setUploading(false);
@@ -180,7 +180,17 @@ export default function PrivatePhotosSection({ profile, onRefetch, maxPrivatePho
 
   return (
     <>
-      <VerificationRequiredModal open={showVerifModal} onClose={() => setShowVerifModal(false)} onVerify={() => navigate('/onboarding')} />
+      <VerificationRequiredModal open={showVerifModal} onClose={() => setShowVerifModal(false)} onVerify={async () => {
+        if (!profile?.id) throw new Error('Profile not found');
+        const res = await base44.functions.invoke('createDiditSession', { memberId: profile.id });
+        const result = res.data;
+        if (!result?.url) throw new Error('Could not start verification. Please try again.');
+        await base44.entities.MemberProfile.update(profile.id, {
+          didit_session_id: result.session_id,
+          didit_verification_status: 'pending',
+        });
+        window.location.href = result.url;
+      }} />
       <Card className="mb-6">
         <CardHeader>
           <CardTitle className="font-heading text-lg flex items-center gap-2">🔒 Private Photos</CardTitle>

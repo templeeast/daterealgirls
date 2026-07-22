@@ -25,10 +25,12 @@ export default function ContactUs() {
     e.preventDefault();
     setLoading(true);
     try {
-      await base44.integrations.Core.SendEmail({
-        to: 'support@' + (config.site_name || 'daterealgirlsdating').toLowerCase().replace(/\s/g, '') + '.com',
-        subject: `[Contact Form] ${form.subject}`,
-        body: `Name: ${form.name}\nEmail: ${form.email}\n\n${form.message}`,
+      await base44.entities.SupportTicket.create({
+        user_id: user?.id || 'guest',
+        user_email: user?.email || form.email,
+        category: 'general',
+        subject: form.subject,
+        description: `Name: ${form.name}\nEmail: ${form.email}\n\n${form.message}`,
       });
       setSubmitted(true);
       toast({ title: t('contact_success') });
