@@ -10,11 +10,10 @@ export default function SignupsChart() {
   const { data: profiles, isLoading } = useQuery({
     queryKey: ['allProfiles'],
     queryFn: () => base44.entities.MemberProfile.list(),
-    initialData: [],
   });
 
   const chartData = useMemo(() => {
-    if (!profiles.length) return [];
+    if (!profiles || !profiles.length) return [];
 
     const last30Days = [];
     for (let i = 29; i >= 0; i--) {
