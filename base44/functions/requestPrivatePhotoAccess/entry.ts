@@ -66,13 +66,27 @@ Deno.serve(async (req) => {
     });
 
     // Send request message
+    const messageContent = '🔒 Requested access to your private photos.';
     await base44.asServiceRole.entities.Message.create({
       conversation_id:         conversationId,
       sender_id:               user.id,
       sender_name:             myProfile.display_name || 'A member',
-      content:                 '🔒 Requested access to your private photos.',
+      content:                 messageContent,
       message_type:            'private_photo_request',
       private_photo_access_id: access.id,
+    });
+
+    // Update conversation so it appears in the Messages list and shows an unread badge
+    const isRequesterP1 = existing_convo
+      ? existing_convo.participant_1_id === user.id
+      : true; // new conversations always have requester as P1
+    const ownerUnread = isRequesterP1
+      ? (existing_convo?.unread_count_2 || 0)
+      : (existing_convo?.unread_count_1 || 0);
+    await base44.asServiceRole.entities.Conversation.update(conversationId, {
+      last_message: messageContent.slice(0, 100),
+      last_message_date: new Date().toISOString(),
+      [isRequesterP1 ? 'unread_count_2' : 'unread_count_1']: ownerUnread + 1,
     });
 
     return Response.json({ success: true, accessId: access.id });

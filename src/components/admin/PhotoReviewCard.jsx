@@ -114,7 +114,7 @@ export default function PhotoReviewCard({ review, onApprove, onReject }) {
               Uploaded: {format(new Date(review.uploaded_date), 'MMM d, yyyy h:mm a')}
             </p>
           )}
-          {review.reviewed_date && (
+          {review.reviewed_date && review.review_status !== 'pending' && (
             <p className="text-xs text-muted-foreground">
               {review.review_status === 'approved' ? 'Approved' : 'Rejected'}: {format(new Date(review.reviewed_date), 'MMM d, yyyy')}
             </p>

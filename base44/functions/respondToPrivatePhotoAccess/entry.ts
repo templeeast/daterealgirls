@@ -28,7 +28,7 @@ Deno.serve(async (req) => {
     const viewerProfiles = await base44.asServiceRole.entities.MemberProfile.filter({ id: access.viewer_member_id });
     const viewerProfile = viewerProfiles[0];
 
-    let conversationId;
+    let convo;
     if (viewerProfile) {
       const convos1 = await base44.asServiceRole.entities.Conversation.filter({
         participant_1_id: user.id, participant_2_id: viewerProfile.user_id,
@@ -36,20 +36,31 @@ Deno.serve(async (req) => {
       const convos2 = await base44.asServiceRole.entities.Conversation.filter({
         participant_1_id: viewerProfile.user_id, participant_2_id: user.id,
       });
-      conversationId = [...convos1, ...convos2][0]?.id;
+      convo = [...convos1, ...convos2][0];
     }
 
-    if (conversationId) {
+    if (convo) {
       const replyContent = response === 'granted'
         ? '✅ Access to my private photos has been granted!'
         : '❌ Private photo access request was declined.';
       await base44.asServiceRole.entities.Message.create({
-        conversation_id:         conversationId,
+        conversation_id:         convo.id,
         sender_id:               user.id,
         sender_name:             myProfile.display_name || 'A member',
         content:                 replyContent,
         message_type:            response === 'granted' ? 'private_photo_access_granted' : 'private_photo_access_denied',
         private_photo_access_id: access.id,
+      });
+
+      // Update conversation so the reply appears in the Messages list with an unread badge
+      const isOwnerP1 = convo.participant_1_id === user.id;
+      const viewerUnread = isOwnerP1
+        ? (convo.unread_count_2 || 0)
+        : (convo.unread_count_1 || 0);
+      await base44.asServiceRole.entities.Conversation.update(convo.id, {
+        last_message: replyContent.slice(0, 100),
+        last_message_date: new Date().toISOString(),
+        [isOwnerP1 ? 'unread_count_2' : 'unread_count_1']: viewerUnread + 1,
       });
     }
 
