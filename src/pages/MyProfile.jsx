@@ -472,6 +472,7 @@ export default function MyProfile() {
               placeholder="Enter promo code"
               value={generalPromoCode}
               onChange={e => setGeneralPromoCode(e.target.value.toUpperCase())}
+              onKeyDown={e => { if (e.key === 'Enter' && generalPromoCode.trim()) handleApplyGeneralPromo(); }}
               className="font-mono flex-1"
             />
             <Button onClick={handleApplyGeneralPromo} disabled={applyingGeneralPromo || !generalPromoCode.trim()} className="shrink-0">

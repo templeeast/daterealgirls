@@ -135,7 +135,7 @@ export default function EligiblePromosCard({ profile, onRefetch }) {
                 placeholder={`Enter ${promo.code}`}
                 value={customInputs[promo.id] ?? ''}
                 onChange={e => setCustomInputs(prev => ({ ...prev, [promo.id]: e.target.value.toUpperCase() }))}
-                onKeyDown={e => e.key === 'Enter' && customInputs[promo.id] && handleCustomApply(customInputs[promo.id])}
+                onKeyDown={e => { if (e.key === 'Enter' && (customInputs[promo.id] || '').trim()) handleCustomApply(customInputs[promo.id]); }}
                 className="font-mono flex-1"
               />
               <Button
