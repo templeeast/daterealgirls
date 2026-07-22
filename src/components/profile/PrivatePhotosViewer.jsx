@@ -57,6 +57,9 @@ export default function PrivatePhotosViewer({ ownerProfileId, myProfile }) {
   const isViewerMale = myProfile?.gender === 'male';
   const paidViewSet = new Set(myViews.map(v => v.private_photo_id));
   const isUnlocked = (photo) => paidViewSet.has(photo.id) || unlockedIds.has(photo.id);
+  const getViewCost = (photo) => photo.media_type === 'video'
+    ? (config?.tokens_private_video_cost ?? 10)
+    : (config?.tokens_private_photo_cost ?? 5);
 
   if (approvedPhotos.length === 0 && !accessRecord) return null;
 
@@ -112,7 +115,7 @@ export default function PrivatePhotosViewer({ ownerProfileId, myProfile }) {
 
   const handleConfirmPurchase = async () => {
     if (!confirmPhoto) return;
-    const viewCost = confirmPhoto.media_type === 'video' ? (config?.tokens_private_video_cost ?? 10) : 5;
+    const viewCost = getViewCost(confirmPhoto);
     setUnlocking(true);
     if ((myProfile.tokens || 0) < viewCost) {
       toast({ title: `You need ${viewCost} tokens to view this ${confirmPhoto.media_type === 'video' ? 'video' : 'photo'}.`, variant: 'destructive' });
@@ -181,7 +184,7 @@ export default function PrivatePhotosViewer({ ownerProfileId, myProfile }) {
                 {!unlocked && (
                   <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/30">
                     <Lock className="w-6 h-6 text-white mb-1" />
-                    <span className="text-white text-xs font-medium">{isViewerMale ? `${photo.media_type === 'video' ? (config?.tokens_private_video_cost ?? 10) : 5} tokens to unlock` : 'Tap to view'}</span>
+                    <span className="text-white text-xs font-medium">{isViewerMale ? `${getViewCost(photo)} tokens to unlock` : 'Tap to view'}</span>
                   </div>
                 )}
               </div>
@@ -254,12 +257,12 @@ export default function PrivatePhotosViewer({ ownerProfileId, myProfile }) {
         <DialogContent className="max-w-sm">
           <DialogHeader>
             <DialogTitle>Unlock Private {confirmPhoto?.media_type === 'video' ? 'Video' : 'Photo'}</DialogTitle>
-            <DialogDescription>Spend {confirmPhoto?.media_type === 'video' ? (config?.tokens_private_video_cost ?? 10) : 5} tokens to view this private {confirmPhoto?.media_type === 'video' ? 'video' : 'photo'}?</DialogDescription>
+            <DialogDescription>Spend {confirmPhoto ? getViewCost(confirmPhoto) : 0} tokens to view this private {confirmPhoto?.media_type === 'video' ? 'video' : 'photo'}?</DialogDescription>
           </DialogHeader>
           <DialogFooter className="flex-col gap-2 sm:flex-col">
             <Button onClick={handleConfirmPurchase} disabled={unlocking} className="w-full gap-2">
               {unlocking ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
-              Confirm ({confirmPhoto?.media_type === 'video' ? (config?.tokens_private_video_cost ?? 10) : 5} tokens)
+              Confirm ({confirmPhoto ? getViewCost(confirmPhoto) : 0} tokens)
             </Button>
             <Button variant="outline" className="w-full" onClick={() => setConfirmPhoto(null)} disabled={unlocking}>Cancel</Button>
           </DialogFooter>
