@@ -13,7 +13,7 @@ import { useAuth } from '@/lib/AuthContext';
 import { useToast } from '@/components/ui/use-toast';
 
 const emptyPromoForm = { code: '', description: '', tokens: '', type: 'purchase', gender: 'all', is_active: true, visible: true, auto_award: false, max_uses: '', expires_at: '' };
-const emptyBonusForm = { user_id: '', tokens: '', reason: '' };
+const emptyBonusForm = { user_id: '', tokens: '', reason: '', gender: 'all' };
 
 export default function BonusesAndPromos() {
   const navigate = useNavigate();
@@ -85,9 +85,12 @@ export default function BonusesAndPromos() {
       }
 
       if (awardToAll) {
-        if (!profiles || profiles.length === 0) throw new Error('No members to award');
+        const targetProfiles = data.gender && data.gender !== 'all'
+          ? (profiles || []).filter(p => p.gender === data.gender)
+          : (profiles || []);
+        if (targetProfiles.length === 0) throw new Error('No members to award');
         await Promise.all(
-          profiles.map(async (profile) => {
+          targetProfiles.map(async (profile) => {
             const currentTokens = profile.tokens || 0;
             await base44.asServiceRole.entities.MemberProfile.update(profile.id, {
               tokens: currentTokens + tokensToAdd,
@@ -127,7 +130,7 @@ export default function BonusesAndPromos() {
       setBonusForm(emptyBonusForm);
       setAwardToAll(false);
       setAwardingBonus(false);
-      toast({ title: `Bonus awarded to ${awardToAll ? 'all members' : 'member'} successfully!` });
+      toast({ title: `Bonus awarded to ${awardToAll ? (bonusForm.gender && bonusForm.gender !== 'all' ? `all ${bonusForm.gender} members` : 'all members') : 'member'} successfully!` });
     },
     onError: (err) => {
       toast({ title: err.message || 'Failed to award bonus', variant: 'destructive' });
@@ -426,6 +429,19 @@ export default function BonusesAndPromos() {
                 />
                 <label htmlFor="award_all" className="text-sm font-medium cursor-pointer flex-1">Award to all members</label>
               </div>
+              {awardToAll && (
+                <div>
+                  <label className="text-sm font-medium mb-2 block">Gender</label>
+                  <Select value={bonusForm.gender} onValueChange={v => setBonusForm(f => ({ ...f, gender: v }))}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All members</SelectItem>
+                      <SelectItem value="male">Male members only</SelectItem>
+                      <SelectItem value="female">Female members only</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
               <div>
                 <label className="text-sm font-medium mb-2 block">Select Member {!awardToAll && '*'}</label>
                 <Select value={bonusForm.user_id} onValueChange={v => setBonusForm(f => ({ ...f, user_id: v }))} disabled={awardToAll}>
@@ -465,7 +481,7 @@ export default function BonusesAndPromos() {
                 {awardBonusMutation.isPending ? (
                   <><Loader2 className="w-4 h-4 animate-spin" /> Awarding...</>
                 ) : (
-                  <><Gift className="w-4 h-4" /> Award Bonus {awardToAll && `to All (${profiles?.length || 0})`}</>
+                  <><Gift className="w-4 h-4" /> Award Bonus {awardToAll && `to ${bonusForm.gender && bonusForm.gender !== 'all' ? `${bonusForm.gender === 'male' ? 'Male' : 'Female'} (${(profiles || []).filter(p => p.gender === bonusForm.gender).length})` : `All (${profiles?.length || 0})`}`}</>
                 )}
               </Button>
             </CardContent>
