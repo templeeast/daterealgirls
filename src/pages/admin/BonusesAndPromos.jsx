@@ -12,7 +12,7 @@ import { ArrowLeft, Plus, Pencil, Trash2, Tag, Gift, CheckCircle2, XCircle, Load
 import { useAuth } from '@/lib/AuthContext';
 import { useToast } from '@/components/ui/use-toast';
 
-const emptyPromoForm = { code: '', description: '', tokens: '', type: 'purchase', is_active: true, max_uses: '', expires_at: '' };
+const emptyPromoForm = { code: '', description: '', tokens: '', type: 'purchase', is_active: true, visible: true, auto_award: false, max_uses: '', expires_at: '' };
 const emptyBonusForm = { user_id: '', tokens: '', reason: '' };
 
 export default function BonusesAndPromos() {
@@ -142,6 +142,8 @@ export default function BonusesAndPromos() {
       tokens: String(code.tokens),
       type: code.type,
       is_active: code.is_active,
+      visible: code.visible !== false,
+      auto_award: code.auto_award === true,
       max_uses: code.max_uses ? String(code.max_uses) : '',
       expires_at: code.expires_at || '',
     });
@@ -279,6 +281,32 @@ export default function BonusesAndPromos() {
                     />
                     <label htmlFor="is_active" className="text-sm font-medium">Active</label>
                   </div>
+                  <div className="flex items-center gap-3 pt-5">
+                    <input
+                      type="checkbox"
+                      id="visible"
+                      checked={promoForm.visible}
+                      onChange={e => setPromoForm(f => ({ ...f, visible: e.target.checked }))}
+                      className="w-4 h-4 accent-primary"
+                    />
+                    <div>
+                      <label htmlFor="visible" className="text-sm font-medium">Visible on profile</label>
+                      <p className="text-xs text-muted-foreground">Uncheck for targeted (code-only) promos</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 pt-5">
+                    <input
+                      type="checkbox"
+                      id="auto_award"
+                      checked={promoForm.auto_award}
+                      onChange={e => setPromoForm(f => ({ ...f, auto_award: e.target.checked }))}
+                      className="w-4 h-4 accent-primary"
+                    />
+                    <div>
+                      <label htmlFor="auto_award" className="text-sm font-medium">Automatic award</label>
+                      <p className="text-xs text-muted-foreground">Awarded automatically by the system (e.g. profile completion) — hidden from manual "use this code" suggestions</p>
+                    </div>
+                  </div>
                 </div>
                 <div className="flex gap-3 mt-5">
                   <Button
@@ -315,6 +343,12 @@ export default function BonusesAndPromos() {
                           {code.is_active
                             ? <Badge className="bg-green-100 text-green-700">Active</Badge>
                             : <Badge variant="outline">Inactive</Badge>}
+                          {code.visible === false
+                            ? <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200">Hidden</Badge>
+                            : null}
+                          {code.auto_award === true
+                            ? <Badge variant="outline" className="bg-indigo-50 text-indigo-700 border-indigo-200">Auto-Award</Badge>
+                            : null}
                         </div>
                         <p className="text-sm text-muted-foreground mt-0.5">{code.description || '—'}</p>
                         <div className="flex flex-wrap gap-4 mt-1.5 text-xs text-muted-foreground">
