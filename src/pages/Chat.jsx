@@ -651,6 +651,12 @@ export default function Chat() {
                 if (btnDisabled) { if (tooltipMsg) alert(tooltipMsg); return; }
                 const myProfile = (await base44.entities.MemberProfile.filter({ user_id: user.id }))[0];
                 await base44.entities.MemberProfile.update(myProfile.id, { tokens: Math.max(0, tokens - linkCost) });
+                await base44.entities.TokenTransaction.create({
+                  user_id: user.id,
+                  type: 'spend',
+                  tokens: -linkCost,
+                  description: 'Stripe payment link message embed',
+                });
                 await base44.entities.Message.create({
                   conversation_id: conversationId,
                   sender_id: user.id,
@@ -698,6 +704,12 @@ export default function Chat() {
                 if (btnDisabled) { if (tooltipMsg) alert(tooltipMsg); return; }
                 const myProfile = (await base44.entities.MemberProfile.filter({ user_id: user.id }))[0];
                 await base44.entities.MemberProfile.update(myProfile.id, { tokens: Math.max(0, tokens - bmcCost) });
+                await base44.entities.TokenTransaction.create({
+                  user_id: user.id,
+                  type: 'spend',
+                  tokens: -bmcCost,
+                  description: 'BuyMeACoffee link message embed',
+                });
                 await base44.entities.Message.create({
                   conversation_id: conversationId,
                   sender_id: user.id,
