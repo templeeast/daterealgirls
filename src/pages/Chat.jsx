@@ -168,6 +168,12 @@ export default function Chat() {
         await base44.entities.MemberProfile.update(myProfile.id, {
           tokens: Math.max(0, tokens - msgTokenCost),
         });
+        await base44.entities.TokenTransaction.create({
+          user_id: user.id,
+          type: 'spend',
+          tokens: -msgTokenCost,
+          description: 'Chat message',
+        });
       }
       await base44.entities.Message.create({
         conversation_id: conversationId,
