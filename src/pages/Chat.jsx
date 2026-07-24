@@ -254,6 +254,12 @@ export default function Chat() {
         await base44.entities.MemberProfile.update(myProfile.id, {
           tokens: Math.max(0, tokens - photoTokenCost),
         });
+        await base44.entities.TokenTransaction.create({
+          user_id: user.id,
+          type: 'spend',
+          tokens: -photoTokenCost,
+          description: 'Photo message embed',
+        });
       }
 
       await base44.entities.Message.create({
@@ -315,6 +321,12 @@ export default function Chat() {
         if (videoTokenCost > 0) {
           await base44.entities.MemberProfile.update(myProfile.id, {
             tokens: Math.max(0, tokens - videoTokenCost),
+          });
+          await base44.entities.TokenTransaction.create({
+            user_id: user.id,
+            type: 'spend',
+            tokens: -videoTokenCost,
+            description: 'Video message embed',
           });
         }
         await base44.entities.Message.create({
