@@ -81,6 +81,23 @@ const ACCOUNT_GROUPS = [
         suspended: false,
         note: 'didit_verification_status is "Approved" but verification_status is still "unverified" — possibly flagged for gender/age review.',
       },
+      {
+        gender: 'Female',
+        displayName: 'Tigra',
+        email: 'tigrabunny@clevo.testinator.com',
+        userId: '6a637b94dc2eaa7de4366a85',
+        profileId: '6a637cf446cfaf200070f4d5',
+        tagId: '@DRG-EZPFX4',
+        age: 39,
+        location: 'Phoenix, United States',
+        profileComplete: true,
+        verification: 'unverified (didit: not started)',
+        reviewStatus: 'pending',
+        tokens: 1000,
+        browseAll: 'not active',
+        suspended: false,
+        note: 'Bio: "I like to dance and go on moonlight boat rides."',
+      },
     ],
   },
   {
@@ -152,6 +169,7 @@ const SUMMARY_ROWS = [
   { state: 'Incomplete-Profile', gender: 'Female', name: 'Leena Bunny', email: 'leenabunny@clevo.testinator.com' },
   { state: 'Unverified', gender: 'Male', name: 'Sam', email: 'samhain@clevo.testinator.com' },
   { state: 'Unverified', gender: 'Female', name: 'Bambi Bunny Test', email: 'bambibunny@clevo.testinator.com' },
+  { state: 'Unverified', gender: 'Female', name: 'Tigra', email: 'tigrabunny@clevo.testinator.com' },
   { state: 'Verified (browse-all)', gender: 'Male', name: 'Joe', email: 'joetiger@clevo.testinator.com' },
   { state: 'Verified (no browse)', gender: 'Male', name: 'Steve', email: 'smaier@cloudevolution.dev' },
   { state: 'Verified (no browse)', gender: 'Female', name: 'Yumi Bunny', email: 'yumibunny@clevo.testinator.com' },
@@ -159,7 +177,7 @@ const SUMMARY_ROWS = [
 
 const DB_COUNTS = [
   { state: 'Incomplete-Profile', counts: '1 male, 1 female (2 total)' },
-  { state: 'Unverified (clean)', counts: '1 male, 4 females (5 total)' },
+  { state: 'Unverified (clean)', counts: '1 male, 5 females (6 total)' },
   { state: 'Verified (no browse)', counts: '3 males, 38 females (41 total)' },
 ];
 
