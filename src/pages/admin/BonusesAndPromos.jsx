@@ -35,7 +35,7 @@ export default function BonusesAndPromos() {
 
   const { data: profiles = [], isLoading: profilesLoading } = useQuery({
     queryKey: ['member-profiles'],
-    queryFn: () => base44.asServiceRole.entities.MemberProfile.list('-created_date', 500),
+    queryFn: () => base44.entities.MemberProfile.list('-created_date', 500),
     enabled: activeTab === 'bonuses',
   });
 
@@ -92,10 +92,10 @@ export default function BonusesAndPromos() {
         await Promise.all(
           targetProfiles.map(async (profile) => {
             const currentTokens = profile.tokens || 0;
-            await base44.asServiceRole.entities.MemberProfile.update(profile.id, {
+            await base44.entities.MemberProfile.update(profile.id, {
               tokens: currentTokens + tokensToAdd,
             });
-            await base44.asServiceRole.entities.TokenTransaction.create({
+            await base44.entities.TokenTransaction.create({
               user_id: profile.user_id,
               type: 'bonus',
               tokens: tokensToAdd,
@@ -111,11 +111,11 @@ export default function BonusesAndPromos() {
         if (!profile) throw new Error('Profile not found');
 
         const currentTokens = profile.tokens || 0;
-        await base44.asServiceRole.entities.MemberProfile.update(profileId, {
+        await base44.entities.MemberProfile.update(profileId, {
           tokens: currentTokens + tokensToAdd,
         });
 
-        await base44.asServiceRole.entities.TokenTransaction.create({
+        await base44.entities.TokenTransaction.create({
           user_id: profile.user_id,
           type: 'bonus',
           tokens: tokensToAdd,
