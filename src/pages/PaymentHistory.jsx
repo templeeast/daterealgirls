@@ -245,7 +245,7 @@ export default function PaymentHistory() {
                         <div className="flex items-center gap-3 shrink-0">
                           <span className="font-semibold text-sm">
                             {rec.amount_paid != null
-                              ? new Intl.NumberFormat(undefined, { style: 'currency', currency: rec.currency || 'USD' }).format(rec.amount_paid / 100)
+                              ? new Intl.NumberFormat(undefined, { style: 'currency', currency: (rec.currency || 'USD').toUpperCase() }).format(rec.amount_paid)
                               : '—'}
                           </span>
                           {whopStatusBadge(rec.payment_status)}
