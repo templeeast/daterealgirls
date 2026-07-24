@@ -682,6 +682,7 @@ export default function MyProfile() {
                 </p>
               </div>
               <Switch
+                key={`privacy-${profile.is_private}`}
                 checked={profile.is_private === true}
                 disabled={privacyToggling}
                 onCheckedChange={(v) => {
