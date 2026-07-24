@@ -98,6 +98,10 @@ Deno.serve(async (req) => {
           const alreadyUsed = usedCodes.includes(normalizedPromo);
 
           if (!expired && !maxedOut && !alreadyUsed) {
+            // Gender targeting check
+            if (promoRecord.gender && promoRecord.gender !== 'all' && promoRecord.gender !== profile.gender) {
+              return Response.json({ error: 'This promo code is not available for your gender.' }, { status: 400 });
+            }
             promoBonus = promoRecord.tokens;
             promoApplied = normalizedPromo;
             promoDescription = promoRecord.description;

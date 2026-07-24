@@ -12,7 +12,7 @@ import { ArrowLeft, Plus, Pencil, Trash2, Tag, Gift, CheckCircle2, XCircle, Load
 import { useAuth } from '@/lib/AuthContext';
 import { useToast } from '@/components/ui/use-toast';
 
-const emptyPromoForm = { code: '', description: '', tokens: '', type: 'purchase', is_active: true, visible: true, auto_award: false, max_uses: '', expires_at: '' };
+const emptyPromoForm = { code: '', description: '', tokens: '', type: 'purchase', gender: 'all', is_active: true, visible: true, auto_award: false, max_uses: '', expires_at: '' };
 const emptyBonusForm = { user_id: '', tokens: '', reason: '' };
 
 export default function BonusesAndPromos() {
@@ -141,6 +141,7 @@ export default function BonusesAndPromos() {
       description: code.description || '',
       tokens: String(code.tokens),
       type: code.type,
+      gender: code.gender || 'all',
       is_active: code.is_active,
       visible: code.visible !== false,
       auto_award: code.auto_award === true,
@@ -255,6 +256,17 @@ export default function BonusesAndPromos() {
                     </Select>
                   </div>
                   <div>
+                    <label className="text-sm font-medium mb-1 block">Gender Targeting</label>
+                    <Select value={promoForm.gender} onValueChange={v => setPromoForm(f => ({ ...f, gender: v }))}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All — available to everyone</SelectItem>
+                        <SelectItem value="male">Male only</SelectItem>
+                        <SelectItem value="female">Female only</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
                     <label className="text-sm font-medium mb-1 block">Max Uses (blank = unlimited)</label>
                     <Input
                       type="number"
@@ -340,6 +352,9 @@ export default function BonusesAndPromos() {
                         <div className="flex items-center gap-2 flex-wrap">
                           <span className="font-mono font-bold text-lg tracking-wider">{code.code}</span>
                           <Badge className={typeBadgeClass[code.type]}>{typeLabel[code.type]}</Badge>
+                          {code.gender && code.gender !== 'all'
+                            ? <Badge variant="outline" className="bg-pink-50 text-pink-700 border-pink-200">{code.gender === 'male' ? 'Male Only' : 'Female Only'}</Badge>
+                            : null}
                           {code.is_active
                             ? <Badge className="bg-green-100 text-green-700">Active</Badge>
                             : <Badge variant="outline">Inactive</Badge>}

@@ -10,44 +10,6 @@ export default function TokenEconomySettings({ form, updateField }) {
 
   return (
     <div className="space-y-6">
-      {/* First Purchase Bonus */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="font-heading text-lg">First Purchase Bonus</CardTitle>
-          <CardDescription>Bonus tokens granted automatically on a user's very first token purchase. Configurable per gender.</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {/* Men */}
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="font-medium text-sm">Enable First Purchase Bonus — Men</p>
-              <p className="text-xs text-muted-foreground">When ON, men receive bonus tokens on their first token purchase.</p>
-            </div>
-            <Switch checked={form.first_purchase_bonus_men_enabled !== false} onCheckedChange={v => toggle('first_purchase_bonus_men_enabled', v)} />
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>Bonus Tokens — Men</Label>
-              <Input type="number" value={form.first_purchase_bonus_men_tokens ?? 5000} onChange={e => num('first_purchase_bonus_men_tokens', e.target.value)} disabled={form.first_purchase_bonus_men_enabled === false} />
-            </div>
-          </div>
-          {/* Women */}
-          <div className="flex items-center justify-between border-t pt-4">
-            <div>
-              <p className="font-medium text-sm">Enable First Purchase Bonus — Women</p>
-              <p className="text-xs text-muted-foreground">When ON, women receive bonus tokens on their first token purchase.</p>
-            </div>
-            <Switch checked={form.first_purchase_bonus_women_enabled === true} onCheckedChange={v => toggle('first_purchase_bonus_women_enabled', v)} />
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>Bonus Tokens — Women</Label>
-              <Input type="number" value={form.first_purchase_bonus_women_tokens ?? 0} onChange={e => num('first_purchase_bonus_women_tokens', e.target.value)} disabled={!form.first_purchase_bonus_women_enabled} />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
       {/* Browsing Costs */}
       <Card>
         <CardHeader>

@@ -34,6 +34,7 @@ export default function EligiblePromosCard({ profile, onRefetch }) {
     return promoCodes.filter(p => {
       if (p.visible === false) return false;
       if (p.auto_award === true) return false;
+      if (p.gender && p.gender !== 'all' && p.gender !== profile?.gender) return false;
       // Purchase-type promos are only claimable here after first purchase
       // (before first purchase they appear in PromoSuggestionsBanner as suggestions)
       if (p.type === 'purchase' && !hasPurchased) return false;
@@ -43,7 +44,7 @@ export default function EligiblePromosCard({ profile, onRefetch }) {
       if (p.type === 'verification' && !isVerified) return false;
       return true;
     });
-  }, [promoCodes, usedCodes, isVerified, hasPurchased]);
+  }, [promoCodes, usedCodes, isVerified, hasPurchased, profile?.gender]);
 
   const verificationTeaserPromos = useMemo(() => {
     if (isVerified) return [];
@@ -51,13 +52,14 @@ export default function EligiblePromosCard({ profile, onRefetch }) {
     return promoCodes.filter(p => {
       if (p.visible === false) return false;
       if (p.auto_award === true) return false;
+      if (p.gender && p.gender !== 'all' && p.gender !== profile?.gender) return false;
       if (p.type !== 'verification') return false;
       if (usedCodes.includes(p.code)) return false;
       if (p.expires_at && new Date(p.expires_at) < now) return false;
       if (p.max_uses && (p.times_used || 0) >= p.max_uses) return false;
       return true;
     });
-  }, [promoCodes, usedCodes, isVerified]);
+  }, [promoCodes, usedCodes, isVerified, profile?.gender]);
 
   if (isLoading || (claimablePromos.length === 0 && verificationTeaserPromos.length === 0)) return null;
 

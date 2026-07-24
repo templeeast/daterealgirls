@@ -24,6 +24,16 @@
       "default": "purchase",
       "description": "Where this code can be applied: on token purchase, after ID verification, or anywhere"
     },
+    "gender": {
+      "type": "string",
+      "enum": [
+        "all",
+        "male",
+        "female"
+      ],
+      "default": "all",
+      "description": "Gender targeting: 'all' for everyone, 'male' for male-only, 'female' for female-only"
+    },
     "is_active": {
       "type": "boolean",
       "default": true,

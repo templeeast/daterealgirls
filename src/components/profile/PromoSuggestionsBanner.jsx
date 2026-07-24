@@ -25,6 +25,7 @@ export default function PromoSuggestionsBanner({ profile }) {
     return promoCodes.filter(p => {
       if (p.visible === false) return false;
       if (p.auto_award === true) return false;
+      if (p.gender && p.gender !== 'all' && p.gender !== profile?.gender) return false;
       if (usedCodes.includes(p.code)) return false;
       if (p.expires_at && new Date(p.expires_at) < now) return false;
       if (p.max_uses && (p.times_used || 0) >= p.max_uses) return false;
@@ -35,7 +36,7 @@ export default function PromoSuggestionsBanner({ profile }) {
       if (hasPurchased) return false;
       return true;
     });
-  }, [promoCodes, usedCodes, isVerified, hasPurchased]);
+  }, [promoCodes, usedCodes, isVerified, hasPurchased, profile?.gender]);
 
   if (isLoading || suggestions.length === 0) return null;
 

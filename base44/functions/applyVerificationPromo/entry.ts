@@ -38,6 +38,11 @@ Deno.serve(async (req) => {
 
     const profile = profiles[0];
 
+    // Gender targeting
+    if (promoRecord.gender && promoRecord.gender !== 'all' && promoRecord.gender !== profile.gender) {
+      return Response.json({ error: 'This promo code is not available for your gender.' }, { status: 400 });
+    }
+
     // Verification type requires ID verification
     if (promoRecord.type === 'verification' && profile.verification_status !== 'verified') {
       return Response.json({ error: 'Your ID must be verified before applying this promo code.' }, { status: 400 });
