@@ -44,7 +44,7 @@ Deno.serve(async (req) => {
           sender_id:               user.id,
           sender_name:             myProfile.display_name || 'A member',
           content:                 '🔒 Private photo access has been revoked.',
-          message_type:            'private_photo_access_denied',
+          message_type:            'private_photo_access_revoked',
           private_photo_access_id: access.id,
         });
       }

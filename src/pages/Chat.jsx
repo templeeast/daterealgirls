@@ -373,7 +373,7 @@ export default function Chat() {
         onVerify={async () => {
           if (!profile?.id) throw new Error('Profile not found');
           const res = await base44.functions.invoke('createDiditSession', { memberId: profile.id });
-          const result = res.data;
+          const result = res.data ?? res;
           if (!result?.url) throw new Error('Could not start verification. Please try again.');
           await base44.entities.MemberProfile.update(profile.id, {
             didit_session_id: result.session_id,
@@ -456,6 +456,16 @@ export default function Chat() {
                 <div key={msg.id} className="flex justify-center">
                   <div className="flex items-center gap-2 bg-muted border rounded-xl px-4 py-2 text-sm text-muted-foreground">
                     <Lock className="w-4 h-4" /> Private photo access was declined.
+                  </div>
+                </div>
+              );
+            }
+
+            if (msg.message_type === 'private_photo_access_revoked') {
+              return (
+                <div key={msg.id} className="flex justify-center">
+                  <div className="flex items-center gap-2 bg-muted border rounded-xl px-4 py-2 text-sm text-muted-foreground">
+                    <Lock className="w-4 h-4" /> Private photo access has been revoked.
                   </div>
                 </div>
               );

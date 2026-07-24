@@ -183,7 +183,7 @@ export default function PrivatePhotosSection({ profile, onRefetch, maxPrivatePho
       <VerificationRequiredModal open={showVerifModal} onClose={() => setShowVerifModal(false)} onVerify={async () => {
         if (!profile?.id) throw new Error('Profile not found');
         const res = await base44.functions.invoke('createDiditSession', { memberId: profile.id });
-        const result = res.data;
+        const result = res.data ?? res;
         if (!result?.url) throw new Error('Could not start verification. Please try again.');
         await base44.entities.MemberProfile.update(profile.id, {
           didit_session_id: result.session_id,

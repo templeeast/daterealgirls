@@ -43,7 +43,8 @@
         "video",
         "private_photo_request",
         "private_photo_access_granted",
-        "private_photo_access_denied"
+        "private_photo_access_denied",
+        "private_photo_access_revoked"
       ],
       "default": "text",
       "description": "Type of message"

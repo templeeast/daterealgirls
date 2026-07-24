@@ -63,7 +63,7 @@ export default function DiditVerificationStep({ form, config, alreadyVerified })
       }
 
       const res = await base44.functions.invoke('createDiditSession', { memberId: profile.id });
-      const result = res.data;
+      const result = res.data ?? res;
       if (!result?.url) {
         setError('Could not start verification. Please try again.');
         setLoading(false);
