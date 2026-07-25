@@ -163,6 +163,8 @@ export default function PrivatePhotosViewer({ ownerProfileId, myProfile }) {
     setUnlocking(false);
   };
 
+  const unlockedPhotos = approvedPhotos.filter(p => isUnlocked(p));
+
   const renderContent = () => {
     const status = accessRecord?.status;
 
@@ -270,8 +272,8 @@ export default function PrivatePhotosViewer({ ownerProfileId, myProfile }) {
       </Dialog>
 
       <PhotoZoomModal
-        items={approvedPhotos.map(p => ({ url: p.photo_url, type: p.media_type || 'image', poster: p.thumbnail_url }))}
-        initialIndex={zoomIndex}
+        items={unlockedPhotos.map(p => ({ url: p.photo_url, type: p.media_type || 'image', poster: p.thumbnail_url }))}
+        initialIndex={zoomIndex !== null ? unlockedPhotos.findIndex(p => p.id === approvedPhotos[zoomIndex]?.id) : 0}
         open={zoomIndex !== null}
         onOpenChange={(v) => { if (!v) setZoomIndex(null); }}
       />
