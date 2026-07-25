@@ -89,18 +89,39 @@ export default function LogoAssets() {
     try {
       if (description?.trim()) {
         const assetLabels = { appIcon: 'square app icon', horizontal: 'horizontal logo', vertical: 'vertical logo', billboard: 'billboard advertisement' };
-        const prompt = `A professional ${assetLabels[key] || 'branding asset'} for ${siteName}, a dating platform. ${description.trim()}. Use pink/red primary color (#e32652) with dark navy (#1a1a2e) and white. High quality, clean, modern design.`;
-        const res = await base44.integrations.Core.GenerateImage({ prompt });
-        if (res.url) {
-          setCustomAssets(prev => ({ ...prev, [key]: res.url }));
-          toast.success('Asset regenerated with AI');
+        const basePrompt = `for ${siteName}, a dating platform. ${description.trim()}. Use pink/red primary color (#e32652) with dark navy (#1a1a2e) and white. High quality, clean, modern design.`;
+
+        if (key === 'billboard') {
+          const rawPrompt = `A professional billboard advertisement graphic — FLAT 2D design only, NO physical billboard, NO pole, NO street, NO frame, just the advertisement image itself ${basePrompt}`;
+          const contextPrompt = `A professional billboard advertisement displayed on a large roadside billboard at night in a city setting ${basePrompt}`;
+          const [rawRes, contextRes] = await Promise.all([
+            base44.integrations.Core.GenerateImage({ prompt: rawPrompt }),
+            base44.integrations.Core.GenerateImage({ prompt: contextPrompt }),
+          ]);
+          const updates = {};
+          if (rawRes.url) updates.billboard = rawRes.url;
+          if (contextRes.url) updates.billboard_context = contextRes.url;
+          if (Object.keys(updates).length > 0) {
+            setCustomAssets(prev => ({ ...prev, ...updates }));
+            toast.success('Billboard assets regenerated with AI');
+          } else {
+            toast.error('Failed to generate images');
+          }
         } else {
-          toast.error('Failed to generate image');
+          const prompt = `A professional ${assetLabels[key] || 'branding asset'} ${basePrompt}`;
+          const res = await base44.integrations.Core.GenerateImage({ prompt });
+          if (res.url) {
+            setCustomAssets(prev => ({ ...prev, [key]: res.url }));
+            toast.success('Asset regenerated with AI');
+          } else {
+            toast.error('Failed to generate image');
+          }
         }
       } else {
         setCustomAssets(prev => {
           const next = { ...prev };
           delete next[key];
+          if (key === 'billboard') delete next.billboard_context;
           return next;
         });
         toast.success('Reset to default SVG');
@@ -224,7 +245,7 @@ export default function LogoAssets() {
         <LogoAssetCard
           icon={Megaphone}
           title="Billboard Logo"
-          description="Large format for electronic billboards and digital displays. Choose from multiple landscape resolutions."
+          description="Large format for electronic billboards and digital displays. Generates two images: the raw graphic and an on-billboard mockup."
           previewUrl={svgToDataUrl(billboardSvg)}
           customUrl={customAssets.billboard}
           previewClassName="min-h-[100px]"
@@ -245,6 +266,9 @@ export default function LogoAssets() {
           regenerating={regeneratingKey === 'billboard'}
           regenerateDescription={regenerateDescriptions.billboard || ''}
           onRegenerateDescriptionChange={(val) => updateDescription('billboard', val)}
+          secondaryCustomUrl={customAssets.billboard_context}
+          secondaryLabel="On Billboard (Mockup)"
+          onDownloadSecondary={() => downloadFromUrl(customAssets.billboard_context, `${slug}-billboard-on-billboard.png`)}
         />
       </div>
     </div>

@@ -22,6 +22,9 @@ export default function LogoAssetCard({
   resolutions,
   regenerateDescription = '',
   onRegenerateDescriptionChange,
+  secondaryCustomUrl,
+  secondaryLabel = 'On Billboard',
+  onDownloadSecondary,
 }) {
   const fileInputRef = useRef(null);
   const [selectedRes, setSelectedRes] = useState(0);
@@ -108,6 +111,23 @@ export default function LogoAssetCard({
             />
           </div>
         </div>
+        {secondaryCustomUrl && (
+          <div className="mt-4 pt-4 border-t">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{secondaryLabel}</span>
+            </div>
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+              <div className={`flex-1 rounded-lg bg-muted/50 flex items-center justify-center min-h-[120px] p-6 ${previewClassName}`}>
+                <img src={secondaryCustomUrl} alt={secondaryLabel} className="max-w-full max-h-[160px] object-contain" />
+              </div>
+              <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-col sm:w-36 shrink-0">
+                <Button className="bg-black text-white hover:bg-black/80 gap-2" onClick={onDownloadSecondary} disabled={uploading || regenerating}>
+                  <Download className="w-4 h-4" /> PNG
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
         {onRegenerateDescriptionChange && (
           <div className="mt-4 space-y-1.5">
             <Label className="text-xs text-muted-foreground">Describe how you want this to regenerate</Label>
