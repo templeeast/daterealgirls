@@ -65,6 +65,19 @@ export default function MemberManagement() {
       base44.entities.MemberProfile.update(id, {
         is_suspended: suspend,
         suspension_reason: suspend ? [rejectionReason, rejectionDetails].filter(Boolean).join(' — ') : '',
+        ...(suspend
+          ? {
+              verification_status: 'rejected',
+              profile_review_status: 'rejected',
+              verification_rejection_reason: rejectionReason || 'other',
+              verification_rejection_details: rejectionDetails || '',
+            }
+          : {
+              verification_status: 'unverified',
+              verification_rejection_reason: '',
+              verification_rejection_details: '',
+            }
+        ),
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['allProfiles'] });

@@ -74,19 +74,19 @@ const AuthenticatedApp = () => {
     return <AppDisabledScreen message={config.app_disabled_message} />;
   }
 
-  // Suspended members see suspension screen (admins exempt; /support still accessible)
-  if (myProfile?.is_suspended && user?.role !== 'admin') {
-    const isSupportPath = currentPath === '/support' || currentPath.startsWith('/support/');
-    if (!isSupportPath) {
-      return <SuspensionScreen profile={myProfile} />;
-    }
-  }
-
   // Rejected members see rejection screen (admins exempt; /support still accessible)
   if (myProfile?.verification_status === 'rejected' && user?.role !== 'admin') {
     const isSupportPath = currentPath === '/support' || currentPath.startsWith('/support/');
     if (!isSupportPath) {
       return <RejectionScreen profile={myProfile} />;
+    }
+  }
+
+  // Suspended members see suspension screen (admins exempt; /support still accessible)
+  if (myProfile?.is_suspended && user?.role !== 'admin') {
+    const isSupportPath = currentPath === '/support' || currentPath.startsWith('/support/');
+    if (!isSupportPath) {
+      return <SuspensionScreen profile={myProfile} />;
     }
   }
 
