@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Shield, AppWindow, StretchHorizontal, StretchVertical, Megaphone } from 'lucide-react';
+import { Shield, AppWindow, StretchHorizontal, StretchVertical, Megaphone, Save, Loader2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import useSiteConfig from '@/hooks/useSiteConfig';
 import useMyProfile from '@/hooks/useMyProfile';
 import LogoAssetCard from '@/components/admin/LogoAssetCard';
@@ -38,6 +39,7 @@ export default function LogoAssets() {
   const [uploadingKey, setUploadingKey] = useState(null);
   const [regeneratingKey, setRegeneratingKey] = useState(null);
   const [assetsInitialized, setAssetsInitialized] = useState(false);
+  const [savingTagline, setSavingTagline] = useState(false);
 
   useEffect(() => {
     if (config && !assetsInitialized) {
@@ -180,6 +182,19 @@ export default function LogoAssets() {
 
   const hasUnsavedChanges = (key) => (customAssets[key] || null) !== (savedAssets[key] || null);
 
+  const handleSaveTagline = async () => {
+    if (!config?.id) return;
+    setSavingTagline(true);
+    try {
+      await base44.entities.SiteConfig.update(config.id, { tagline: customTagline });
+      toast.success('Tagline saved — will appear on next page load');
+    } catch (e) {
+      toast.error(e.message || 'Save failed');
+    } finally {
+      setSavingTagline(false);
+    }
+  };
+
   const makePngHandler = (key, svgString, filename, defaultW, defaultH) => {
     return async (w, h) => {
       const customUrl = customAssets[key];
@@ -245,13 +260,24 @@ export default function LogoAssets() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="custom-tagline">Custom Tagline</Label>
-              <Input
-                id="custom-tagline"
-                value={customTagline}
-                onChange={(e) => setCustomTagline(e.target.value)}
-                disabled={!includeTagline}
-                placeholder="Enter your tagline"
-              />
+              <div className="flex gap-2">
+                <Input
+                  id="custom-tagline"
+                  value={customTagline}
+                  onChange={(e) => setCustomTagline(e.target.value)}
+                  disabled={!includeTagline}
+                  placeholder="Enter your tagline"
+                />
+                <Button
+                  variant="outline"
+                  className="gap-2 shrink-0"
+                  onClick={handleSaveTagline}
+                  disabled={savingTagline || !includeTagline || !config || customTagline === config?.tagline}
+                >
+                  {savingTagline ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                  Save
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>
