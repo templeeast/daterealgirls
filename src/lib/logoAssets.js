@@ -80,12 +80,12 @@ export function generateVerticalLogo(siteName, tagline, includeTagline = true) {
   return svg;
 }
 
-export function generateBillboardLogo(siteName, tagline, includeTagline = true) {
+export function generateBillboardLogo(siteName, tagline, includeTagline = true, width = 1400, height = 400) {
   const name = getDisplayName(siteName);
   const initials = getInitials(siteName);
   const domain = getDomain(siteName);
-  const w = 1400;
-  const h = 400;
+  const w = width;
+  const h = height;
   const iconSize = 120;
   const pad = 60;
 
@@ -150,4 +150,14 @@ export function downloadPng(svgString, filename, width, height) {
 
 export function svgToDataUrl(svgString) {
   return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svgString)}`;
+}
+
+export function downloadFromUrl(url, filename) {
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.target = '_blank';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
 }

@@ -4,11 +4,9 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
 import useSiteConfig from '@/hooks/useSiteConfig';
 import useMyProfile from '@/hooks/useMyProfile';
 import LogoAssetCard from '@/components/admin/LogoAssetCard';
-import BillboardPlacements from '@/components/admin/BillboardPlacements';
 import {
   generateAppIcon,
   generateHorizontalLogo,
@@ -16,15 +14,26 @@ import {
   generateBillboardLogo,
   downloadSvg,
   downloadPng,
+  downloadFromUrl,
   svgToDataUrl,
 } from '@/lib/logoAssets';
+import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
+
+const BILLBOARD_RESOLUTIONS = [
+  { label: '1400 × 400', width: 1400, height: 400 },
+  { label: '1200 × 400', width: 1200, height: 400 },
+  { label: '1000 × 400', width: 1000, height: 400 },
+];
 
 export default function LogoAssets() {
   const { user } = useMyProfile();
   const { config } = useSiteConfig();
   const [includeTagline, setIncludeTagline] = useState(true);
   const [customTagline, setCustomTagline] = useState(config?.tagline || 'Where Real Connections Begin');
+  const [customAssets, setCustomAssets] = useState({});
+  const [uploadingKey, setUploadingKey] = useState(null);
+  const [regeneratingKey, setRegeneratingKey] = useState(null);
 
   if (user?.role !== 'admin') {
     return (
@@ -47,6 +56,54 @@ export default function LogoAssets() {
     }
   };
 
+  const handleUpload = async (key, file) => {
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please upload an image file');
+      return;
+    }
+    setUploadingKey(key);
+    try {
+      const base64 = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result.split(',')[1]);
+        reader.onerror = () => reject(new Error('Failed to read file'));
+        reader.readAsDataURL(file);
+      });
+      const res = await base44.functions.invoke('uploadToCloudinary', { file: base64, filename: file.name });
+      if (res.data?.url) {
+        setCustomAssets(prev => ({ ...prev, [key]: res.data.url }));
+        toast.success('Asset uploaded');
+      } else {
+        toast.error(res.data?.error || 'Upload failed');
+      }
+    } catch (e) {
+      toast.error(e.message || 'Upload failed');
+    } finally {
+      setUploadingKey(null);
+    }
+  };
+
+  const handleRegenerate = (key) => {
+    setRegeneratingKey(key);
+    setCustomAssets(prev => {
+      const next = { ...prev };
+      delete next[key];
+      return next;
+    });
+    setTimeout(() => setRegeneratingKey(null), 600);
+  };
+
+  const makePngHandler = (key, svgString, filename, defaultW, defaultH) => {
+    return async (w, h) => {
+      const customUrl = customAssets[key];
+      if (customUrl) {
+        downloadFromUrl(customUrl, filename);
+      } else {
+        await handlePng(svgString, filename, w || defaultW, h || defaultH);
+      }
+    };
+  };
+
   const appIconSvg = generateAppIcon(siteName);
   const horizontalSvg = generateHorizontalLogo(siteName, tagline, includeTagline);
   const verticalSvg = generateVerticalLogo(siteName, tagline, includeTagline);
@@ -67,9 +124,14 @@ export default function LogoAssets() {
           title="App Icon"
           description="A square icon, perfect for social media profiles and app store listings."
           previewUrl={svgToDataUrl(appIconSvg)}
+          customUrl={customAssets.appIcon}
           previewClassName="rounded-xl"
-          onDownloadPng={() => handlePng(appIconSvg, `${slug}-icon.png`, 512, 512)}
+          onDownloadPng={makePngHandler('appIcon', appIconSvg, `${slug}-icon.png`, 512, 512)}
           onDownloadSvg={() => downloadSvg(appIconSvg, `${slug}-icon.svg`)}
+          onRegenerate={() => handleRegenerate('appIcon')}
+          onUpload={(file) => handleUpload('appIcon', file)}
+          uploading={uploadingKey === 'appIcon'}
+          regenerating={regeneratingKey === 'appIcon'}
         />
 
         <Card>
@@ -107,8 +169,13 @@ export default function LogoAssets() {
           title="Horizontal Logo"
           description="Best for website headers and wide spaces."
           previewUrl={svgToDataUrl(horizontalSvg)}
-          onDownloadPng={() => handlePng(horizontalSvg, `${slug}-horizontal.png`, 400, 80)}
+          customUrl={customAssets.horizontal}
+          onDownloadPng={makePngHandler('horizontal', horizontalSvg, `${slug}-horizontal.png`, 400, 80)}
           onDownloadSvg={() => downloadSvg(horizontalSvg, `${slug}-horizontal.svg`)}
+          onRegenerate={() => handleRegenerate('horizontal')}
+          onUpload={(file) => handleUpload('horizontal', file)}
+          uploading={uploadingKey === 'horizontal'}
+          regenerating={regeneratingKey === 'horizontal'}
         />
 
         <LogoAssetCard
@@ -116,22 +183,39 @@ export default function LogoAssets() {
           title="Vertical Logo"
           description="Useful for stacked layouts or square-like spaces."
           previewUrl={svgToDataUrl(verticalSvg)}
-          onDownloadPng={() => handlePng(verticalSvg, `${slug}-vertical.png`, 260, 160)}
+          customUrl={customAssets.vertical}
+          onDownloadPng={makePngHandler('vertical', verticalSvg, `${slug}-vertical.png`, 260, 160)}
           onDownloadSvg={() => downloadSvg(verticalSvg, `${slug}-vertical.svg`)}
+          onRegenerate={() => handleRegenerate('vertical')}
+          onUpload={(file) => handleUpload('vertical', file)}
+          uploading={uploadingKey === 'vertical'}
+          regenerating={regeneratingKey === 'vertical'}
         />
 
         <LogoAssetCard
           icon={Megaphone}
           title="Billboard Logo"
-          description="Large format for electronic billboards and digital displays (1400x400px)."
+          description="Large format for electronic billboards and digital displays. Choose from multiple landscape resolutions."
           previewUrl={svgToDataUrl(billboardSvg)}
+          customUrl={customAssets.billboard}
           previewClassName="min-h-[100px]"
-          onDownloadPng={() => handlePng(billboardSvg, `${slug}-billboard.png`, 1400, 400)}
+          resolutions={BILLBOARD_RESOLUTIONS}
+          onDownloadPng={async (w, h) => {
+            const customUrl = customAssets.billboard;
+            if (customUrl) {
+              downloadFromUrl(customUrl, `${slug}-billboard.png`);
+            } else {
+              const svg = generateBillboardLogo(siteName, tagline, includeTagline, w, h);
+              await handlePng(svg, `${slug}-billboard-${w}x${h}.png`, w, h);
+            }
+          }}
           onDownloadSvg={() => downloadSvg(billboardSvg, `${slug}-billboard.svg`)}
+          onRegenerate={() => handleRegenerate('billboard')}
+          onUpload={(file) => handleUpload('billboard', file)}
+          uploading={uploadingKey === 'billboard'}
+          regenerating={regeneratingKey === 'billboard'}
         />
       </div>
-
-      <BillboardPlacements />
     </div>
   );
 }
