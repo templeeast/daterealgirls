@@ -50,9 +50,10 @@ export default function MobileBottomNav() {
       style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
     >
       <div className="flex items-stretch justify-around h-16">
-        {items.map(({ path, label, icon: Icon, badge }) => {
+        {items.map((item) => {
+          const { path, label, icon: Icon, badge } = item;
           const active = location.pathname === path;
-          const disabled = isDisabled({ path, restricted: true, needsVerification: false });
+          const disabled = isDisabled(item);
           const content = (
             <>
               <Icon className={`w-5 h-5 ${active ? 'text-primary' : 'text-muted-foreground'}`} />
