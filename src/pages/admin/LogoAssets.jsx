@@ -32,6 +32,7 @@ export default function LogoAssets() {
   const [includeTagline, setIncludeTagline] = useState(true);
   const [customTagline, setCustomTagline] = useState(config?.tagline || 'Where Real Connections Begin');
   const [customAssets, setCustomAssets] = useState({});
+  const [regenerateDescriptions, setRegenerateDescriptions] = useState({});
   const [uploadingKey, setUploadingKey] = useState(null);
   const [regeneratingKey, setRegeneratingKey] = useState(null);
 
@@ -83,14 +84,36 @@ export default function LogoAssets() {
     }
   };
 
-  const handleRegenerate = (key) => {
+  const handleRegenerate = async (key, description) => {
     setRegeneratingKey(key);
-    setCustomAssets(prev => {
-      const next = { ...prev };
-      delete next[key];
-      return next;
-    });
-    setTimeout(() => setRegeneratingKey(null), 600);
+    try {
+      if (description?.trim()) {
+        const assetLabels = { appIcon: 'square app icon', horizontal: 'horizontal logo', vertical: 'vertical logo', billboard: 'billboard advertisement' };
+        const prompt = `A professional ${assetLabels[key] || 'branding asset'} for ${siteName}, a dating platform. ${description.trim()}. Use pink/red primary color (#e32652) with dark navy (#1a1a2e) and white. High quality, clean, modern design.`;
+        const res = await base44.integrations.Core.GenerateImage({ prompt });
+        if (res.url) {
+          setCustomAssets(prev => ({ ...prev, [key]: res.url }));
+          toast.success('Asset regenerated with AI');
+        } else {
+          toast.error('Failed to generate image');
+        }
+      } else {
+        setCustomAssets(prev => {
+          const next = { ...prev };
+          delete next[key];
+          return next;
+        });
+        toast.success('Reset to default SVG');
+      }
+    } catch (e) {
+      toast.error(e.message || 'Regeneration failed');
+    } finally {
+      setRegeneratingKey(null);
+    }
+  };
+
+  const updateDescription = (key, val) => {
+    setRegenerateDescriptions(prev => ({ ...prev, [key]: val }));
   };
 
   const makePngHandler = (key, svgString, filename, defaultW, defaultH) => {
@@ -128,10 +151,12 @@ export default function LogoAssets() {
           previewClassName="rounded-xl"
           onDownloadPng={makePngHandler('appIcon', appIconSvg, `${slug}-icon.png`, 512, 512)}
           onDownloadSvg={() => downloadSvg(appIconSvg, `${slug}-icon.svg`)}
-          onRegenerate={() => handleRegenerate('appIcon')}
+          onRegenerate={() => handleRegenerate('appIcon', regenerateDescriptions.appIcon)}
           onUpload={(file) => handleUpload('appIcon', file)}
           uploading={uploadingKey === 'appIcon'}
           regenerating={regeneratingKey === 'appIcon'}
+          regenerateDescription={regenerateDescriptions.appIcon || ''}
+          onRegenerateDescriptionChange={(val) => updateDescription('appIcon', val)}
         />
 
         <Card>
@@ -172,10 +197,12 @@ export default function LogoAssets() {
           customUrl={customAssets.horizontal}
           onDownloadPng={makePngHandler('horizontal', horizontalSvg, `${slug}-horizontal.png`, 400, 80)}
           onDownloadSvg={() => downloadSvg(horizontalSvg, `${slug}-horizontal.svg`)}
-          onRegenerate={() => handleRegenerate('horizontal')}
+          onRegenerate={() => handleRegenerate('horizontal', regenerateDescriptions.horizontal)}
           onUpload={(file) => handleUpload('horizontal', file)}
           uploading={uploadingKey === 'horizontal'}
           regenerating={regeneratingKey === 'horizontal'}
+          regenerateDescription={regenerateDescriptions.horizontal || ''}
+          onRegenerateDescriptionChange={(val) => updateDescription('horizontal', val)}
         />
 
         <LogoAssetCard
@@ -186,10 +213,12 @@ export default function LogoAssets() {
           customUrl={customAssets.vertical}
           onDownloadPng={makePngHandler('vertical', verticalSvg, `${slug}-vertical.png`, 260, 160)}
           onDownloadSvg={() => downloadSvg(verticalSvg, `${slug}-vertical.svg`)}
-          onRegenerate={() => handleRegenerate('vertical')}
+          onRegenerate={() => handleRegenerate('vertical', regenerateDescriptions.vertical)}
           onUpload={(file) => handleUpload('vertical', file)}
           uploading={uploadingKey === 'vertical'}
           regenerating={regeneratingKey === 'vertical'}
+          regenerateDescription={regenerateDescriptions.vertical || ''}
+          onRegenerateDescriptionChange={(val) => updateDescription('vertical', val)}
         />
 
         <LogoAssetCard
@@ -210,10 +239,12 @@ export default function LogoAssets() {
             }
           }}
           onDownloadSvg={() => downloadSvg(billboardSvg, `${slug}-billboard.svg`)}
-          onRegenerate={() => handleRegenerate('billboard')}
+          onRegenerate={() => handleRegenerate('billboard', regenerateDescriptions.billboard)}
           onUpload={(file) => handleUpload('billboard', file)}
           uploading={uploadingKey === 'billboard'}
           regenerating={regeneratingKey === 'billboard'}
+          regenerateDescription={regenerateDescriptions.billboard || ''}
+          onRegenerateDescriptionChange={(val) => updateDescription('billboard', val)}
         />
       </div>
     </div>

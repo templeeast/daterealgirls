@@ -2,6 +2,8 @@ import React, { useRef, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
 import { Download, FileCode, RefreshCw, UploadCloud, Loader2 } from 'lucide-react';
 
 export default function LogoAssetCard({
@@ -18,6 +20,8 @@ export default function LogoAssetCard({
   uploading = false,
   regenerating = false,
   resolutions,
+  regenerateDescription = '',
+  onRegenerateDescriptionChange,
 }) {
   const fileInputRef = useRef(null);
   const [selectedRes, setSelectedRes] = useState(0);
@@ -104,6 +108,19 @@ export default function LogoAssetCard({
             />
           </div>
         </div>
+        {onRegenerateDescriptionChange && (
+          <div className="mt-4 space-y-1.5">
+            <Label className="text-xs text-muted-foreground">Describe how you want this to regenerate</Label>
+            <Textarea
+              value={regenerateDescription}
+              onChange={(e) => onRegenerateDescriptionChange(e.target.value)}
+              placeholder={`e.g., A minimalist heart icon with a pink-to-red gradient, clean and modern`}
+              className="text-sm resize-none"
+              rows={2}
+            />
+            <p className="text-xs text-muted-foreground/70">Leave empty to regenerate the default SVG. Enter a description to generate a custom image with AI.</p>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
