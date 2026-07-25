@@ -23,6 +23,7 @@ import TestAccountsChart from '@/pages/admin/TestAccountsChart';
 import ContentReview from '@/pages/admin/ContentReview';
 import AdminTodo from '@/pages/admin/AdminTodo';
 import BonusesAndPromos from '@/pages/admin/BonusesAndPromos';
+import LogoAssets from '@/pages/admin/LogoAssets';
 import AppLayout from '@/components/layout/AppLayout';
 import useSiteConfig from '@/hooks/useSiteConfig';
 import ProfileCompleteGuard from '@/components/layout/ProfileCompleteGuard';
@@ -112,6 +113,7 @@ const AuthenticatedApp = () => {
         <Route path="/admin/todo" element={<AdminTodo />} />
         <Route path="/admin/content-review" element={<ContentReview />} />
         <Route path="/admin/bonuses-and-promos" element={<BonusesAndPromos />} />
+        <Route path="/admin/logo-assets" element={<LogoAssets />} />
       </Route>
       <Route path="/privacy" element={<Privacy />} />
       <Route path="/terms" element={<Terms />} />
