@@ -16,6 +16,7 @@ import { useTranslation } from 'react-i18next';
 import CountryCitySelector from '@/components/shared/CountryCitySelector';
 import { getCountryCode } from '@/lib/geoUtils';
 import DiditVerificationStep from '@/components/onboarding/DiditVerificationStep';
+import { ETHNICITY_VALUES } from '@/lib/ethnicityOptions';
 
 const INTERESTS = [
   'Travel', 'Music', 'Movies', 'Cooking', 'Fitness', 'Reading',
@@ -177,6 +178,7 @@ export default function Onboarding() {
 
     // Profile may already exist if it was created during the verification step
     const existing = await base44.entities.MemberProfile.filter({ user_id: me.id });
+    const validEthnicity = ETHNICITY_VALUES.includes(form.ethnicity) ? form.ethnicity : null;
     let newProfile;
     if (existing[0]) {
       let tokenBalance = config.welcome_tokens ?? 5000;
@@ -203,6 +205,7 @@ export default function Onboarding() {
         ...form,
         ...geoData,
         age,
+        ethnicity: validEthnicity,
         profile_complete: true,
         tokens: tokenBalance,
       };
@@ -217,6 +220,7 @@ export default function Onboarding() {
         ...geoData,
         user_id: me.id,
         age,
+        ethnicity: validEthnicity,
         tag_id: generateTagId(),
         verification_status: 'unverified',
         is_active: true,
@@ -269,7 +273,7 @@ export default function Onboarding() {
       </div>
       <div className="space-y-2">
         <Label>{t('ethnicity_label', { defaultValue: 'Ethnicity (optional)' })}</Label>
-        <Select value={form.ethnicity} onValueChange={v => updateField('ethnicity', v)}>
+        <Select value={ETHNICITY_VALUES.includes(form.ethnicity) ? form.ethnicity : undefined} onValueChange={v => updateField('ethnicity', v)}>
           <SelectTrigger><SelectValue placeholder={t('ethnicity_placeholder', { defaultValue: 'Select ethnicity' })} /></SelectTrigger>
           <SelectContent>
             <SelectItem value="asian">{t('ethnicity_asian', { defaultValue: 'Asian' })}</SelectItem>

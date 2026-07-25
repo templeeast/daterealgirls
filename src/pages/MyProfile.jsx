@@ -29,6 +29,7 @@ import { getCountryCode } from '@/lib/geoUtils';
 import PrivatePhotosSection from '@/components/profile/PrivatePhotosSection';
 import AdFreeCard from '@/components/profile/AdFreeCard';
 import TokenCostsList from '@/components/profile/TokenCostsList';
+import { ETHNICITY_VALUES } from '@/lib/ethnicityOptions';
 
 const INTERESTS = [
   { key: 'Travel', tKey: 'interest_travel' },
@@ -391,7 +392,9 @@ export default function MyProfile() {
           }
         }
       }
-      await base44.entities.MemberProfile.update(profile.id, { ...form, ...geoData });
+      const updateData = { ...form, ...geoData };
+      updateData.ethnicity = ETHNICITY_VALUES.includes(form.ethnicity) ? form.ethnicity : null;
+      await base44.entities.MemberProfile.update(profile.id, updateData);
       queryClient.invalidateQueries({ queryKey: ['myProfile'] });
       if (zipInvalid) {
         toast({ title: 'Profile saved', description: `Zip code "${form.location_zip}" was not recognized — location was not updated.`, variant: 'destructive' });
@@ -752,7 +755,7 @@ export default function MyProfile() {
 
           <div className="space-y-2">
             <Label>{t('ethnicity_label', { defaultValue: 'Ethnicity (optional)' })}</Label>
-            <Select value={form.ethnicity} onValueChange={v => updateField('ethnicity', v)}>
+            <Select value={ETHNICITY_VALUES.includes(form.ethnicity) ? form.ethnicity : undefined} onValueChange={v => updateField('ethnicity', v)}>
               <SelectTrigger><SelectValue placeholder={t('ethnicity_placeholder', { defaultValue: 'Select ethnicity' })} /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="asian">{t('ethnicity_asian', { defaultValue: 'Asian' })}</SelectItem>

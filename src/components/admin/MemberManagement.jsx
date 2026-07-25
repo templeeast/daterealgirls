@@ -13,7 +13,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
-import { Search, Ban, Eye, RotateCcw, X, Instagram, Facebook, MapPin, Calendar, User, ExternalLink, Trash2, Shield, Loader2, Coins } from 'lucide-react';
+import { Search, Ban, Eye, RotateCcw, X, Instagram, Facebook, MapPin, Calendar, User, ExternalLink, Trash2, Shield, Loader2, Coins, Globe } from 'lucide-react';
+import { getEthnicityLabel } from '@/lib/ethnicityOptions';
 
 const SUSPEND_REASON_OPTIONS = [
   { value: 'fake_profile', labelKey: 'rej_reason_fake_profile' },
@@ -296,6 +297,10 @@ export default function MemberManagement() {
                 <div className="flex items-center gap-2 text-muted-foreground"><User className="w-4 h-4" /> <span className="font-medium text-foreground capitalize">{detailMember.gender}</span></div>
                 <div className="flex items-center gap-2 text-muted-foreground"><Calendar className="w-4 h-4" /> Age: <span className="font-medium text-foreground">{detailMember.age || '—'}</span></div>
                 <div className="flex items-center gap-2 text-muted-foreground col-span-2"><MapPin className="w-4 h-4" /> <span className="font-medium text-foreground">{[detailMember.location_city, detailMember.location_country].filter(Boolean).join(', ') || '—'}</span></div>
+                <div className="flex items-center gap-2 text-muted-foreground"><Globe className="w-4 h-4" /> Ethnicity: <span className="font-medium text-foreground">{getEthnicityLabel(detailMember.ethnicity)}</span></div>
+                {detailMember.marital_status && (
+                  <div className="flex items-center gap-2 text-muted-foreground"><User className="w-4 h-4" /> <span className="font-medium text-foreground capitalize">{detailMember.marital_status.replace(/_/g, ' ')}</span></div>
+                )}
               </div>
 
               {/* Bio */}
