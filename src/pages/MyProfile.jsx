@@ -373,22 +373,30 @@ export default function MyProfile() {
     setSaving(true);
     try {
       let geoData = {};
+      let zipInvalid = false;
       if (form.location_zip) {
         const countryCode = getCountryCode(form.location_country);
         if (countryCode) {
           try {
             const geoRes = await base44.functions.invoke('geocodeZip', { zip: form.location_zip, country_code: countryCode });
-            if (geoRes.data?.latitude != null) {
-              geoData = { latitude: geoRes.data.latitude, longitude: geoRes.data.longitude };
+            const data = geoRes.data ?? geoRes;
+            if (data?.latitude != null) {
+              geoData = { latitude: data.latitude, longitude: data.longitude };
+            } else {
+              zipInvalid = true;
             }
           } catch (e) {
-            console.warn('Zip geocoding failed:', e.message);
+            zipInvalid = true;
           }
         }
       }
       await base44.entities.MemberProfile.update(profile.id, { ...form, ...geoData });
       queryClient.invalidateQueries({ queryKey: ['myProfile'] });
-      toast({ title: t('profile_updated') });
+      if (zipInvalid) {
+        toast({ title: 'Profile saved', description: `Zip code "${form.location_zip}" was not recognized — location was not updated.`, variant: 'destructive' });
+      } else {
+        toast({ title: t('profile_updated') });
+      }
     } finally {
       setSaving(false);
     }
