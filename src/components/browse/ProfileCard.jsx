@@ -37,13 +37,22 @@ export default function ProfileCard({ profile, onFavorite, isFavorited, myProfil
           {/* Overlay gradient */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
 
-          {/* Badge: Verified / Un-Verified based on ID verification status */}
-          {profile.verification_status === 'verified' ? (
+          {/* Badge: reflects both profile review and ID verification status
+              Verified  = profile_review_status approved AND verification_status verified
+              Un-Verified = profile_review_status approved but NOT yet ID verified
+              Pending   = profile not yet reviewed (profile_review_status not approved)
+              Rejected  = profile or verification rejected */}
+          {profile.verification_status === 'verified' && profile.profile_review_status === 'approved' ? (
             <div className="absolute top-3 left-3 bg-green-500/90 backdrop-blur-sm text-white px-2 py-1 rounded-full flex items-center gap-1 text-xs font-medium">
               <Shield className="w-3 h-3" />
               Verified
             </div>
-          ) : profile.verification_status === 'rejected' ? (
+          ) : profile.profile_review_status === 'approved' ? (
+            <div className="absolute top-3 left-3 bg-slate-500/90 backdrop-blur-sm text-white px-2 py-1 rounded-full flex items-center gap-1 text-xs font-medium">
+              <AlertCircle className="w-3 h-3" />
+              Un-Verified
+            </div>
+          ) : profile.verification_status === 'rejected' || profile.profile_review_status === 'rejected' ? (
             <div className="absolute top-3 left-3 bg-red-500/90 backdrop-blur-sm text-white px-2 py-1 rounded-full flex items-center gap-1 text-xs font-medium">
               <AlertCircle className="w-3 h-3" />
               Rejected

@@ -108,7 +108,7 @@ const sections = [
       { id: 'profile-19', label: 'SOCIAL MEDIA: Public View Profile page shows social media links only when show_social_media is true AND viewer is looking at a verified member' },
       { id: 'profile-20', label: 'SOCIAL MEDIA: Public View Profile page hides social media section when show_social_media is false or member is unverified' },
       { id: 'profile-11', label: 'Profile card badge reflects correct phase: Pending (unreviewed), Verified (approved + ID verified), Un-Verified (approved but not ID verified)' },
-      { id: 'profile-12', label: 'Re-upload selfie and ID document on My Profile works and updates selfie_url_2 / id_document_url_2' },
+      { id: 'profile-12', label: 'Re-verify identity on My Profile re-launches a new Didit-hosted verification session (no native selfie/ID upload fields exist — verification is fully Didit-hosted)' },
       { id: 'profile-13', label: 'Incomplete profile warning banner shows when profile_complete is false' },
       // --- ViewProfile Interaction Gating ---
       { id: 'profile-21', label: 'VIEWPROFILE GATE: Unverified user viewing a profile sees locked prompt bar instead of Message/Favorite/Wink buttons' },
@@ -199,7 +199,7 @@ const sections = [
       { id: 'ver-7', label: 'FILTER — Rejected profiles (profile_review_status: "rejected" or verification_status: "rejected") do NOT appear in Browse results' },
       { id: 'ver-8', label: 'Private selfie and ID document URLs are only accessible to admins (not leaked in frontend)' },
       { id: 'ver-9', label: 'Didit: verification flow launches correctly from onboarding and My Profile' },
-      { id: 'ver-10', label: 'Re-upload of selfie/ID on My Profile updates _url_2 fields and resets verification_status to "unverified" for re-review' },
+      { id: 'ver-10', label: 'Re-starting Didit verification from My Profile creates a new session, replaces didit_session_id, and sets didit_verification_status to "pending" for re-review' },
       // --- Reject flow ---
       { id: 'ver-11', label: 'VERIFICATION QUEUE: Admin clicks Reject button in VerificationDetail and a rejection dialog opens with reason dropdown (8 options) and details textarea' },
       { id: 'ver-12', label: 'REJECT: Selecting a reason and entering details, then confirming, sets verification_status to "rejected" on the MemberProfile' },
