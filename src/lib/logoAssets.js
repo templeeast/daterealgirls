@@ -21,12 +21,11 @@ function getDomain(siteName) {
 }
 
 export function generateAppIcon(siteName, size = 512) {
-  const initials = getInitials(siteName);
-  const r = size * 0.22;
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 512 512">
 <defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="${PRIMARY}"/><stop offset="100%" stop-color="${PRIMARY_DARK}"/></linearGradient></defs>
-<rect width="${size}" height="${size}" rx="${r}" fill="url(#g)"/>
-<text x="50%" y="50%" text-anchor="middle" dominant-baseline="central" font-family="Arial, sans-serif" font-size="${size * 0.36}" font-weight="bold" fill="${WHITE}">${initials}</text>
+<rect width="512" height="512" rx="112" fill="url(#g)"/>
+<path d="M 256 392 C 256 392, 108 296, 108 194 C 108 140, 147 102, 196 102 C 227 102, 248 123, 256 146 C 264 123, 285 102, 316 102 C 365 102, 404 140, 404 194 C 404 296, 256 392, 256 392 Z" fill="none" stroke="${WHITE}" stroke-width="10" stroke-linejoin="round"/>
+<path d="M 256 168 C 231 168, 211 187, 211 212 C 211 227, 206 240, 198 252 C 207 248, 216 247, 225 250 C 229 257, 235 262, 241 265 C 211 277, 186 297, 176 326 C 172 338, 173 349, 179 358 L 333 358 C 339 349, 340 338, 336 326 C 326 297, 301 277, 271 265 C 277 262, 283 257, 287 250 C 296 247, 305 248, 314 252 C 306 240, 301 227, 301 212 C 301 187, 281 168, 256 168 Z" fill="${WHITE}"/>
 </svg>`;
 }
 
