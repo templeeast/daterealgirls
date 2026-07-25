@@ -108,11 +108,16 @@ export default function LogoAssets() {
         const basePrompt = `for ${siteName}, a dating platform. ${description.trim()}. Use pink/red primary color (#e32652) with dark navy (#1a1a2e) and white. High quality, clean, modern design.`;
 
         if (key === 'billboard') {
-          const contextPrompt = `A professional billboard advertisement displayed on a large roadside billboard at night in a city setting ${basePrompt}`;
-          const contextRes = await base44.integrations.Core.GenerateImage({ prompt: contextPrompt });
-          if (contextRes.url) {
-            setCustomAssets(prev => ({ ...prev, billboard: contextRes.url, billboard_context: contextRes.url }));
-            toast.success('Billboard asset regenerated with AI');
+          const rawPrompt = `A professional billboard advertisement graphic — FLAT 2D design only, NO physical billboard, NO pole, NO street, NO frame, just the advertisement image itself ${basePrompt}`;
+          const contextPrompt = `Display this exact advertisement graphic on a large roadside billboard at night in a city setting ${basePrompt}`;
+          const rawRes = await base44.integrations.Core.GenerateImage({ prompt: rawPrompt });
+          if (rawRes.url) {
+            setCustomAssets(prev => ({ ...prev, billboard: rawRes.url }));
+            const contextRes = await base44.integrations.Core.GenerateImage({ prompt: contextPrompt, existing_image_urls: [rawRes.url] });
+            if (contextRes.url) {
+              setCustomAssets(prev => ({ ...prev, billboard_context: contextRes.url }));
+            }
+            toast.success('Billboard assets regenerated with AI');
           } else {
             toast.error('Failed to generate image');
           }
