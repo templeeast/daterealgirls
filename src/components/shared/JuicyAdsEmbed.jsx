@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import useSiteConfig from '@/hooks/useSiteConfig';
 import useMyProfile from '@/hooks/useMyProfile';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -7,6 +7,7 @@ export default function JuicyAdsEmbed({ zone, zoneMobile }) {
   const { config } = useSiteConfig();
   const { profile } = useMyProfile();
   const isMobile = useIsMobile();
+  const containerRef = useRef(null);
 
   const activeZone = (zoneMobile && isMobile) ? zoneMobile : zone;
 
@@ -26,7 +27,19 @@ export default function JuicyAdsEmbed({ zone, zoneMobile }) {
     !(gender === 'female' && !showWomen);
 
   useEffect(() => {
-    if (!shouldRender || !activeZone) return;
+    if (!shouldRender || !activeZone || !containerRef.current) return;
+
+    // Create the <ins> element imperatively so React's virtual DOM
+    // doesn't conflict with jads.js modifying its innerHTML.
+    const container = containerRef.current;
+    container.innerHTML = '';
+
+    const ins = document.createElement('ins');
+    ins.className = 'adsbyjuicy';
+    ins.setAttribute('data-adzone', String(activeZone));
+    ins.style.display = 'block';
+    ins.style.margin = '0 auto';
+    container.appendChild(ins);
 
     // Remove any existing loader so jads.js re-initializes and processes
     // the zone fresh — required for SPA page navigations.
@@ -44,20 +57,15 @@ export default function JuicyAdsEmbed({ zone, zoneMobile }) {
     loader.setAttribute('data-cfasync', 'false');
     loader.src = 'https://adserver.juicyads.com/js/jads.js';
     document.head.appendChild(loader);
+
+    return () => {
+      container.innerHTML = '';
+    };
   }, [activeZone, shouldRender]);
 
   if (!shouldRender) return null;
 
   return (
-    <div className="my-4 flex justify-center">
-      <ins
-        id={String(activeZone)}
-        className="adsbyjuicy"
-        data-adzone={String(activeZone)}
-        data-width={isMobile ? '300' : '728'}
-        data-height={isMobile ? '100' : '90'}
-        style={{ display: 'block', width: isMobile ? '300px' : '728px', height: isMobile ? '100px' : '90px', margin: '0 auto' }}
-      />
-    </div>
+    <div className="my-4 flex justify-center" ref={containerRef} />
   );
 }
