@@ -536,8 +536,9 @@ export default function Chat() {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input */}
-      {showTokenLock ? (
+      {/* Input — verification gate takes priority over token lock so unverified users
+          are always steered toward the free verification step, not the buy-tokens prompt */}
+      {showTokenLock && requiresIdVerification(profile) ? (
         <div className="border-t bg-card px-4 py-4">
           <div className="flex items-center justify-center gap-3 max-w-3xl mx-auto bg-accent/50 rounded-xl p-3">
             <Coins className="w-4 h-4 text-muted-foreground shrink-0" />
