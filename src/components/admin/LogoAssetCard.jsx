@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Download, FileCode, RefreshCw, UploadCloud, Loader2 } from 'lucide-react';
+import { Download, FileCode, RefreshCw, UploadCloud, Loader2, Save } from 'lucide-react';
 
 export default function LogoAssetCard({
   icon: Icon,
@@ -22,6 +22,9 @@ export default function LogoAssetCard({
   resolutions,
   regenerateDescription = '',
   onRegenerateDescriptionChange,
+  onSave,
+  hasUnsavedChanges = false,
+  saving = false,
   secondaryCustomUrl,
   secondaryLabel = 'On Billboard',
   onDownloadSecondary,
@@ -100,6 +103,12 @@ export default function LogoAssetCard({
               <Button variant="outline" className="gap-2" onClick={() => fileInputRef.current?.click()} disabled={uploading || regenerating}>
                 {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <UploadCloud className="w-4 h-4" />}
                 Upload
+              </Button>
+            )}
+            {onSave && (
+              <Button variant="outline" className="gap-2" onClick={onSave} disabled={saving || !hasUnsavedChanges}>
+                {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                Save
               </Button>
             )}
             <input

@@ -8,6 +8,10 @@
     "logo_url": {
       "type": "string"
     },
+    "saved_logo_assets": {
+      "type": "string",
+      "description": "JSON map of saved branding asset URLs (appIcon, horizontal, vertical, billboard, billboard_context)"
+    },
     "tagline": {
       "type": "string"
     },

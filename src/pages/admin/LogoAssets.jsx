@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Shield, AppWindow, StretchHorizontal, StretchVertical, Megaphone } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
@@ -32,9 +32,23 @@ export default function LogoAssets() {
   const [includeTagline, setIncludeTagline] = useState(true);
   const [customTagline, setCustomTagline] = useState(config?.tagline || 'Where Real Connections Begin');
   const [customAssets, setCustomAssets] = useState({});
+  const [savedAssets, setSavedAssets] = useState({});
+  const [savingKey, setSavingKey] = useState(null);
   const [regenerateDescriptions, setRegenerateDescriptions] = useState({});
   const [uploadingKey, setUploadingKey] = useState(null);
   const [regeneratingKey, setRegeneratingKey] = useState(null);
+  const [assetsInitialized, setAssetsInitialized] = useState(false);
+
+  useEffect(() => {
+    if (config && !assetsInitialized) {
+      try {
+        const parsed = config.saved_logo_assets ? JSON.parse(config.saved_logo_assets) : {};
+        setCustomAssets(parsed);
+        setSavedAssets(parsed);
+      } catch {}
+      setAssetsInitialized(true);
+    }
+  }, [config, assetsInitialized]);
 
   if (user?.role !== 'admin') {
     return (
@@ -137,6 +151,35 @@ export default function LogoAssets() {
     setRegenerateDescriptions(prev => ({ ...prev, [key]: val }));
   };
 
+  const handleSave = async (key) => {
+    if (!config?.id) return;
+    setSavingKey(key);
+    try {
+      const newSaved = { ...savedAssets };
+      if (customAssets[key]) {
+        newSaved[key] = customAssets[key];
+      } else {
+        delete newSaved[key];
+      }
+      if (key === 'billboard') {
+        if (customAssets.billboard_context) {
+          newSaved.billboard_context = customAssets.billboard_context;
+        } else {
+          delete newSaved.billboard_context;
+        }
+      }
+      await base44.entities.SiteConfig.update(config.id, { saved_logo_assets: JSON.stringify(newSaved) });
+      setSavedAssets({ ...newSaved });
+      toast.success('Asset saved — will appear on next page load');
+    } catch (e) {
+      toast.error(e.message || 'Save failed');
+    } finally {
+      setSavingKey(null);
+    }
+  };
+
+  const hasUnsavedChanges = (key) => (customAssets[key] || null) !== (savedAssets[key] || null);
+
   const makePngHandler = (key, svgString, filename, defaultW, defaultH) => {
     return async (w, h) => {
       const customUrl = customAssets[key];
@@ -178,6 +221,9 @@ export default function LogoAssets() {
           regenerating={regeneratingKey === 'appIcon'}
           regenerateDescription={regenerateDescriptions.appIcon || ''}
           onRegenerateDescriptionChange={(val) => updateDescription('appIcon', val)}
+          onSave={() => handleSave('appIcon')}
+          hasUnsavedChanges={hasUnsavedChanges('appIcon')}
+          saving={savingKey === 'appIcon'}
         />
 
         <Card>
@@ -224,6 +270,9 @@ export default function LogoAssets() {
           regenerating={regeneratingKey === 'horizontal'}
           regenerateDescription={regenerateDescriptions.horizontal || ''}
           onRegenerateDescriptionChange={(val) => updateDescription('horizontal', val)}
+          onSave={() => handleSave('horizontal')}
+          hasUnsavedChanges={hasUnsavedChanges('horizontal')}
+          saving={savingKey === 'horizontal'}
         />
 
         <LogoAssetCard
@@ -240,6 +289,9 @@ export default function LogoAssets() {
           regenerating={regeneratingKey === 'vertical'}
           regenerateDescription={regenerateDescriptions.vertical || ''}
           onRegenerateDescriptionChange={(val) => updateDescription('vertical', val)}
+          onSave={() => handleSave('vertical')}
+          hasUnsavedChanges={hasUnsavedChanges('vertical')}
+          saving={savingKey === 'vertical'}
         />
 
         <LogoAssetCard
@@ -266,6 +318,9 @@ export default function LogoAssets() {
           regenerating={regeneratingKey === 'billboard'}
           regenerateDescription={regenerateDescriptions.billboard || ''}
           onRegenerateDescriptionChange={(val) => updateDescription('billboard', val)}
+          onSave={() => handleSave('billboard')}
+          hasUnsavedChanges={hasUnsavedChanges('billboard')}
+          saving={savingKey === 'billboard'}
           secondaryCustomUrl={customAssets.billboard_context}
           secondaryLabel="On Billboard (Mockup)"
           onDownloadSecondary={() => downloadFromUrl(customAssets.billboard_context, `${slug}-billboard-on-billboard.png`)}
