@@ -71,6 +71,22 @@
       ],
       "description": "Marital status of the member"
     },
+    "ethnicity": {
+      "type": "string",
+      "enum": [
+        "asian",
+        "black",
+        "caucasian",
+        "hispanic",
+        "middle_eastern",
+        "native_american",
+        "pacific_islander",
+        "mixed",
+        "other",
+        "rather_not_say"
+      ],
+      "description": "Ethnicity of the member (optional \u2014 used for future ethnicity-based subdomain filtering)"
+    },
     "photo_1": {
       "type": "string",
       "description": "Photo 1 URL"

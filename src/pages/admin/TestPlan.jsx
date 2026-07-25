@@ -1082,6 +1082,26 @@ const sections = [
       { id: 'pp-31', label: 'i18n: Toggle label, description, cost note, current state text, confirmation dialog, and success toast render correctly in all 8 supported languages' },
     ],
   },
+  {
+    id: 'ethnicity',
+    icon: Globe,
+    title: 'Ethnicity Selection',
+    color: 'text-teal-500',
+    items: [
+      { id: 'eth-1', label: 'Onboarding Step 1: Ethnicity dropdown appears with all 10 options (Asian, Black/African American, Caucasian/White, Hispanic/Latino, Middle Eastern, Native American, Pacific Islander, Mixed/Multiracial, Other, Prefer not to say)' },
+      { id: 'eth-2', label: 'Onboarding Step 1: Ethnicity field is optional — user can proceed without selecting an ethnicity' },
+      { id: 'eth-3', label: 'Onboarding Step 1: Selected ethnicity is saved to MemberProfile on profile creation' },
+      { id: 'eth-4', label: 'Onboarding Step 1: Pre-existing profile’s ethnicity is pre-filled when returning to incomplete onboarding' },
+      { id: 'eth-5', label: 'My Profile page: Ethnicity dropdown appears in the Profile Info section with all 10 options' },
+      { id: 'eth-6', label: 'My Profile page: Current ethnicity value is pre-selected when the form loads' },
+      { id: 'eth-7', label: 'My Profile page: User can change ethnicity and save — updated value persists after page reload' },
+      { id: 'eth-8', label: 'My Profile page: User can clear/change to "Prefer not to say" and save successfully' },
+      { id: 'eth-9', label: 'Ethnicity field does not affect profile_complete status (optional field)' },
+      { id: 'eth-10', label: 'Ethnicity field does not affect verification status or flow' },
+      { id: 'eth-11', label: 'Admin Member Management: Ethnicity is visible in the admin member detail view' },
+      { id: 'eth-12', label: 'Database: ethnicity field accepts only valid enum values — invalid values are rejected' },
+    ],
+  },
 ];
 
 export default function TestPlan() {

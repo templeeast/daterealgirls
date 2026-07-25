@@ -196,6 +196,7 @@ export default function MyProfile() {
         location_zip: profile.location_zip || '',
         looking_for: profile.looking_for || '',
         marital_status: profile.marital_status || '',
+        ethnicity: profile.ethnicity || '',
         interests: profile.interests || [],
         ...Object.fromEntries(
           Array.from({ length: 15 }, (_, i) => i + 1).flatMap(n => [
@@ -745,6 +746,25 @@ export default function MyProfile() {
                 <SelectItem value="widowed">{t('marital_widowed')}</SelectItem>
                 <SelectItem value="separated">{t('marital_separated')}</SelectItem>
                 <SelectItem value="rather_not_say">{t('marital_rather_not_say')}</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label>{t('ethnicity_label', { defaultValue: 'Ethnicity (optional)' })}</Label>
+            <Select value={form.ethnicity} onValueChange={v => updateField('ethnicity', v)}>
+              <SelectTrigger><SelectValue placeholder={t('ethnicity_placeholder', { defaultValue: 'Select ethnicity' })} /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="asian">{t('ethnicity_asian', { defaultValue: 'Asian' })}</SelectItem>
+                <SelectItem value="black">{t('ethnicity_black', { defaultValue: 'Black / African American' })}</SelectItem>
+                <SelectItem value="caucasian">{t('ethnicity_caucasian', { defaultValue: 'Caucasian / White' })}</SelectItem>
+                <SelectItem value="hispanic">{t('ethnicity_hispanic', { defaultValue: 'Hispanic / Latino' })}</SelectItem>
+                <SelectItem value="middle_eastern">{t('ethnicity_middle_eastern', { defaultValue: 'Middle Eastern' })}</SelectItem>
+                <SelectItem value="native_american">{t('ethnicity_native_american', { defaultValue: 'Native American' })}</SelectItem>
+                <SelectItem value="pacific_islander">{t('ethnicity_pacific_islander', { defaultValue: 'Pacific Islander' })}</SelectItem>
+                <SelectItem value="mixed">{t('ethnicity_mixed', { defaultValue: 'Mixed / Multiracial' })}</SelectItem>
+                <SelectItem value="other">{t('ethnicity_other', { defaultValue: 'Other' })}</SelectItem>
+                <SelectItem value="rather_not_say">{t('ethnicity_rather_not_say', { defaultValue: 'Prefer not to say' })}</SelectItem>
               </SelectContent>
             </Select>
           </div>
