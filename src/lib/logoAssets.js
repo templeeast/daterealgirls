@@ -174,7 +174,12 @@ export async function downloadResizedImage(imageUrl, filename, width, height) {
       const ctx = canvas.getContext('2d');
       const img = new Image();
       img.onload = () => {
-        ctx.drawImage(img, 0, 0, width, height);
+        const scale = Math.max(width / img.width, height / img.height);
+        const scaledW = img.width * scale;
+        const scaledH = img.height * scale;
+        const offsetX = (width - scaledW) / 2;
+        const offsetY = (height - scaledH) / 2;
+        ctx.drawImage(img, offsetX, offsetY, scaledW, scaledH);
         canvas.toBlob((pngBlob) => {
           if (!pngBlob) { reject(new Error('Failed to create PNG')); return; }
           const dlUrl = URL.createObjectURL(pngBlob);
