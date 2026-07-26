@@ -174,6 +174,22 @@ export async function downloadResizedImage(imageUrl, filename, width, height) {
       const ctx = canvas.getContext('2d');
       const img = new Image();
       img.onload = () => {
+        const sampleCanvas = document.createElement('canvas');
+        sampleCanvas.width = img.width;
+        sampleCanvas.height = img.height;
+        const sampleCtx = sampleCanvas.getContext('2d');
+        sampleCtx.drawImage(img, 0, 0);
+        const corners = [
+          sampleCtx.getImageData(0, 0, 1, 1).data,
+          sampleCtx.getImageData(img.width - 1, 0, 1, 1).data,
+          sampleCtx.getImageData(0, img.height - 1, 1, 1).data,
+          sampleCtx.getImageData(img.width - 1, img.height - 1, 1, 1).data,
+        ];
+        const avgR = Math.round(corners.reduce((s, c) => s + c[0], 0) / 4);
+        const avgG = Math.round(corners.reduce((s, c) => s + c[1], 0) / 4);
+        const avgB = Math.round(corners.reduce((s, c) => s + c[2], 0) / 4);
+        ctx.fillStyle = `rgb(${avgR}, ${avgG}, ${avgB})`;
+        ctx.fillRect(0, 0, width, height);
         const scale = Math.min(width / img.width, height / img.height);
         const scaledW = img.width * scale;
         const scaledH = img.height * scale;
