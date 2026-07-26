@@ -270,7 +270,11 @@ export default function LogoAssets() {
     return async (w, h) => {
       const customUrl = customAssets[key];
       if (customUrl) {
-        downloadFromUrl(customUrl, filename);
+        try {
+          await downloadResizedImage(customUrl, filename, w || defaultW, h || defaultH);
+        } catch {
+          toast.error('Failed to generate PNG at target size');
+        }
       } else {
         await handlePng(svgString, filename, w || defaultW, h || defaultH);
       }
