@@ -55,6 +55,8 @@ export default function LogoAssets() {
     } catch {}
   }, [regenerateDescriptions]);
 
+  const [applyToExisting, setApplyToExisting] = useState({});
+
   useEffect(() => {
     if (config && !assetsInitialized) {
       try {
@@ -114,7 +116,7 @@ export default function LogoAssets() {
     }
   };
 
-  const handleRegenerate = async (key, description) => {
+  const handleRegenerate = async (key, description, useExisting) => {
     setRegeneratingKey(key);
     try {
       if (description?.trim()) {
@@ -124,7 +126,11 @@ export default function LogoAssets() {
         if (key === 'billboard') {
           const rawPrompt = `A professional billboard advertisement graphic — FLAT 2D design only, NO physical billboard, NO pole, NO street, NO frame, just the advertisement image itself ${basePrompt}`;
           const contextPrompt = `Display this exact advertisement graphic on a large roadside billboard at night in a city setting ${basePrompt}`;
-          const rawRes = await base44.integrations.Core.GenerateImage({ prompt: rawPrompt });
+          const existingUrl = useExisting ? customAssets.billboard : null;
+          const rawRes = await base44.integrations.Core.GenerateImage({
+            prompt: rawPrompt,
+            ...(existingUrl ? { existing_image_urls: [existingUrl] } : {}),
+          });
           if (rawRes.url) {
             setCustomAssets(prev => ({ ...prev, billboard: rawRes.url }));
             const contextRes = await base44.integrations.Core.GenerateImage({ prompt: contextPrompt, existing_image_urls: [rawRes.url] });
@@ -137,7 +143,11 @@ export default function LogoAssets() {
           }
         } else {
           const prompt = `A professional ${assetLabels[key] || 'branding asset'} ${basePrompt}`;
-          const res = await base44.integrations.Core.GenerateImage({ prompt });
+          const existingUrl = useExisting ? customAssets[key] : null;
+          const res = await base44.integrations.Core.GenerateImage({
+            prompt,
+            ...(existingUrl ? { existing_image_urls: [existingUrl] } : {}),
+          });
           if (res.url) {
             setCustomAssets(prev => ({ ...prev, [key]: res.url }));
             toast.success('Asset regenerated with AI');
@@ -242,12 +252,14 @@ export default function LogoAssets() {
           previewClassName="rounded-xl"
           onDownloadPng={makePngHandler('appIcon', appIconSvg, `${slug}-icon.png`, 512, 512)}
           onDownloadSvg={() => downloadSvg(appIconSvg, `${slug}-icon.svg`)}
-          onRegenerate={() => handleRegenerate('appIcon', regenerateDescriptions.appIcon)}
+          onRegenerate={() => handleRegenerate('appIcon', regenerateDescriptions.appIcon, applyToExisting.appIcon)}
           onUpload={(file) => handleUpload('appIcon', file)}
           uploading={uploadingKey === 'appIcon'}
           regenerating={regeneratingKey === 'appIcon'}
           regenerateDescription={regenerateDescriptions.appIcon || ''}
           onRegenerateDescriptionChange={(val) => updateDescription('appIcon', val)}
+          applyToExisting={applyToExisting.appIcon || false}
+          onApplyToExistingChange={(checked) => setApplyToExisting(prev => ({ ...prev, appIcon: checked }))}
           onSave={() => handleSave('appIcon')}
           hasUnsavedChanges={hasUnsavedChanges('appIcon')}
           saving={savingKey === 'appIcon'}
@@ -302,12 +314,14 @@ export default function LogoAssets() {
           customUrl={customAssets.horizontal}
           onDownloadPng={makePngHandler('horizontal', horizontalSvg, `${slug}-horizontal.png`, 400, 80)}
           onDownloadSvg={() => downloadSvg(horizontalSvg, `${slug}-horizontal.svg`)}
-          onRegenerate={() => handleRegenerate('horizontal', regenerateDescriptions.horizontal)}
+          onRegenerate={() => handleRegenerate('horizontal', regenerateDescriptions.horizontal, applyToExisting.horizontal)}
           onUpload={(file) => handleUpload('horizontal', file)}
           uploading={uploadingKey === 'horizontal'}
           regenerating={regeneratingKey === 'horizontal'}
           regenerateDescription={regenerateDescriptions.horizontal || ''}
           onRegenerateDescriptionChange={(val) => updateDescription('horizontal', val)}
+          applyToExisting={applyToExisting.horizontal || false}
+          onApplyToExistingChange={(checked) => setApplyToExisting(prev => ({ ...prev, horizontal: checked }))}
           onSave={() => handleSave('horizontal')}
           hasUnsavedChanges={hasUnsavedChanges('horizontal')}
           saving={savingKey === 'horizontal'}
@@ -321,12 +335,14 @@ export default function LogoAssets() {
           customUrl={customAssets.vertical}
           onDownloadPng={makePngHandler('vertical', verticalSvg, `${slug}-vertical.png`, 260, 160)}
           onDownloadSvg={() => downloadSvg(verticalSvg, `${slug}-vertical.svg`)}
-          onRegenerate={() => handleRegenerate('vertical', regenerateDescriptions.vertical)}
+          onRegenerate={() => handleRegenerate('vertical', regenerateDescriptions.vertical, applyToExisting.vertical)}
           onUpload={(file) => handleUpload('vertical', file)}
           uploading={uploadingKey === 'vertical'}
           regenerating={regeneratingKey === 'vertical'}
           regenerateDescription={regenerateDescriptions.vertical || ''}
           onRegenerateDescriptionChange={(val) => updateDescription('vertical', val)}
+          applyToExisting={applyToExisting.vertical || false}
+          onApplyToExistingChange={(checked) => setApplyToExisting(prev => ({ ...prev, vertical: checked }))}
           onSave={() => handleSave('vertical')}
           hasUnsavedChanges={hasUnsavedChanges('vertical')}
           saving={savingKey === 'vertical'}
@@ -350,12 +366,14 @@ export default function LogoAssets() {
             }
           }}
           onDownloadSvg={() => downloadSvg(billboardSvg, `${slug}-billboard.svg`)}
-          onRegenerate={() => handleRegenerate('billboard', regenerateDescriptions.billboard)}
+          onRegenerate={() => handleRegenerate('billboard', regenerateDescriptions.billboard, applyToExisting.billboard)}
           onUpload={(file) => handleUpload('billboard', file)}
           uploading={uploadingKey === 'billboard'}
           regenerating={regeneratingKey === 'billboard'}
           regenerateDescription={regenerateDescriptions.billboard || ''}
           onRegenerateDescriptionChange={(val) => updateDescription('billboard', val)}
+          applyToExisting={applyToExisting.billboard || false}
+          onApplyToExistingChange={(checked) => setApplyToExisting(prev => ({ ...prev, billboard: checked }))}
           onSave={() => handleSave('billboard')}
           hasUnsavedChanges={hasUnsavedChanges('billboard')}
           saving={savingKey === 'billboard'}

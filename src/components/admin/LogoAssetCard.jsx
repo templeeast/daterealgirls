@@ -5,6 +5,7 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Download, FileCode, RefreshCw, UploadCloud, Loader2, Save } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
 
 export default function LogoAssetCard({
   icon: Icon,
@@ -22,6 +23,8 @@ export default function LogoAssetCard({
   resolutions,
   regenerateDescription = '',
   onRegenerateDescriptionChange,
+  applyToExisting = false,
+  onApplyToExistingChange,
   onSave,
   hasUnsavedChanges = false,
   saving = false,
@@ -147,7 +150,19 @@ export default function LogoAssetCard({
               className="text-sm resize-none"
               rows={2}
             />
-            <p className="text-xs text-muted-foreground/70">Leave empty to regenerate the default SVG. Enter a description to generate a custom image with AI.</p>
+            {hasCustom && (
+              <div className="flex items-center gap-2 pt-1">
+                <Checkbox
+                  id={`apply-existing-${title}`}
+                  checked={applyToExisting}
+                  onCheckedChange={onApplyToExistingChange}
+                />
+                <Label htmlFor={`apply-existing-${title}`} className="text-xs text-muted-foreground cursor-pointer">
+                  Apply to existing image (modify) instead of starting over
+                </Label>
+              </div>
+            )}
+            <p className="text-xs text-muted-foreground/70">{hasCustom && applyToExisting ? 'The description will be applied to your current image as a modification.' : 'Leave empty to regenerate the default SVG. Enter a description to generate a custom image with AI.'}</p>
           </div>
         )}
       </CardContent>
