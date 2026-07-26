@@ -161,3 +161,37 @@ export function downloadFromUrl(url, filename) {
   a.click();
   document.body.removeChild(a);
 }
+
+export async function downloadResizedImage(imageUrl, filename, width, height) {
+  const response = await fetch(imageUrl);
+  const blob = await response.blob();
+  const objectUrl = URL.createObjectURL(blob);
+  try {
+    await new Promise((resolve, reject) => {
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+      img.onload = () => {
+        ctx.drawImage(img, 0, 0, width, height);
+        canvas.toBlob((pngBlob) => {
+          if (!pngBlob) { reject(new Error('Failed to create PNG')); return; }
+          const dlUrl = URL.createObjectURL(pngBlob);
+          const a = document.createElement('a');
+          a.href = dlUrl;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(dlUrl);
+          resolve();
+        }, 'image/png');
+      };
+      img.onerror = () => reject(new Error('Failed to load image'));
+      img.src = objectUrl;
+    });
+  } finally {
+    URL.revokeObjectURL(objectUrl);
+  }
+}

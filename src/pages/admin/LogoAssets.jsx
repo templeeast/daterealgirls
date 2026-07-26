@@ -16,6 +16,7 @@ import {
   downloadSvg,
   downloadPng,
   downloadFromUrl,
+  downloadResizedImage,
   svgToDataUrl,
 } from '@/lib/logoAssets';
 import { base44 } from '@/api/base44Client';
@@ -359,7 +360,11 @@ export default function LogoAssets() {
           onDownloadPng={async (w, h) => {
             const customUrl = customAssets.billboard;
             if (customUrl) {
-              downloadFromUrl(customUrl, `${slug}-billboard.png`);
+              try {
+                await downloadResizedImage(customUrl, `${slug}-billboard-${w}x${h}.png`, w, h);
+              } catch {
+                toast.error('Failed to generate PNG at target size');
+              }
             } else {
               const svg = generateBillboardLogo(siteName, tagline, includeTagline, w, h);
               await handlePng(svg, `${slug}-billboard-${w}x${h}.png`, w, h);
