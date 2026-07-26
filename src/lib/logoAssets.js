@@ -174,7 +174,7 @@ export async function downloadResizedImage(imageUrl, filename, width, height) {
       const ctx = canvas.getContext('2d');
       const img = new Image();
       img.onload = () => {
-        const scale = Math.max(width / img.width, height / img.height);
+        const scale = Math.min(width / img.width, height / img.height);
         const scaledW = img.width * scale;
         const scaledH = img.height * scale;
         const offsetX = (width - scaledW) / 2;
