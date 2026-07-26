@@ -125,7 +125,7 @@ export default function LogoAssets() {
         const basePrompt = `for ${siteName}, a dating platform. ${description.trim()}. Use pink/red primary color (#e32652) with dark navy (#1a1a2e) and white. High quality, clean, modern design.`;
 
         if (key === 'billboard') {
-          const rawPrompt = `A professional billboard advertisement graphic — FLAT 2D design only, NO physical billboard, NO pole, NO street, NO frame, just the advertisement image itself. CRITICAL: The image MUST be an ultra-wide landscape banner with a 3.5:1 aspect ratio (approximately 1400×400 pixels). Design the layout to fill the ENTIRE wide horizontal canvas — spread all elements across the full width, do NOT concentrate content in the center or leave empty areas on the sides. ${basePrompt}`;
+          const rawPrompt = `A professional billboard advertisement graphic — FLAT 2D design only, NO physical billboard, NO pole, NO street, NO frame, just the advertisement image itself. IMPORTANT: This image will be cropped to a wide banner (1400×400 pixels). Place ALL content — logo, text, graphics, call-to-action — in a horizontal band across the CENTER of the image, occupying only the middle 35% vertically. The top and bottom portions must be solid dark background only — no content there. Spread all content horizontally across the full width of the image, edge to edge. ${basePrompt}`;
           const contextPrompt = `Display this exact advertisement graphic on a large roadside billboard at night in a city setting ${basePrompt}`;
           const existingUrl = useExisting ? customAssets.billboard : null;
           const rawRes = await base44.integrations.Core.GenerateImage({

@@ -190,7 +190,7 @@ export async function downloadResizedImage(imageUrl, filename, width, height) {
         const avgB = Math.round(corners.reduce((s, c) => s + c[2], 0) / 4);
         ctx.fillStyle = `rgb(${avgR}, ${avgG}, ${avgB})`;
         ctx.fillRect(0, 0, width, height);
-        const scale = Math.min(width / img.width, height / img.height);
+        const scale = Math.max(width / img.width, height / img.height);
         const scaledW = img.width * scale;
         const scaledH = img.height * scale;
         const offsetX = (width - scaledW) / 2;
