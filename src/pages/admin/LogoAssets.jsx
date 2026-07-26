@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Shield, AppWindow, StretchHorizontal, StretchVertical, Megaphone, Save, Loader2 } from 'lucide-react';
+import { Shield, AppWindow, StretchHorizontal, StretchVertical, Megaphone, Save, Loader2, Image as ImageIcon, Share2, Smartphone } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
@@ -13,6 +13,9 @@ import {
   generateHorizontalLogo,
   generateVerticalLogo,
   generateBillboardLogo,
+  generateAppLogo,
+  generateFacebookAd,
+  generateTikTokAd,
   downloadSvg,
   downloadPng,
   downloadFromUrl,
@@ -27,6 +30,25 @@ const BILLBOARD_RESOLUTIONS = [
   { label: '840 × 400', width: 840, height: 400 },
   { label: '1200 × 400', width: 1200, height: 400 },
   { label: '1710 × 330', width: 1710, height: 330 },
+];
+
+const APP_LOGO_RESOLUTIONS = [
+  { label: '1024 × 1024 (App Store)', width: 1024, height: 1024 },
+  { label: '512 × 512 (General)', width: 512, height: 512 },
+  { label: '192 × 192 (PWA)', width: 192, height: 192 },
+];
+
+const FACEBOOK_AD_RESOLUTIONS = [
+  { label: '1200 × 628 (Feed Landscape)', width: 1200, height: 628 },
+  { label: '1080 × 1080 (Feed Square)', width: 1080, height: 1080 },
+  { label: '1080 × 1350 (Feed Portrait)', width: 1080, height: 1350 },
+  { label: '1200 × 1200 (Right Column)', width: 1200, height: 1200 },
+];
+
+const TIKTOK_AD_RESOLUTIONS = [
+  { label: '1080 × 1920 (In-Feed 9:16)', width: 1080, height: 1920 },
+  { label: '640 × 640 (Square)', width: 640, height: 640 },
+  { label: '540 × 960 (Vertical)', width: 540, height: 960 },
 ];
 
 export default function LogoAssets() {
@@ -121,7 +143,7 @@ export default function LogoAssets() {
     setRegeneratingKey(key);
     try {
       if (description?.trim()) {
-        const assetLabels = { appIcon: 'square app icon', horizontal: 'horizontal logo', vertical: 'vertical logo', billboard: 'billboard advertisement' };
+        const assetLabels = { appIcon: 'square app icon', appLogo: 'full app logo with brand name and tagline', horizontal: 'horizontal logo', vertical: 'vertical logo', billboard: 'billboard advertisement', facebookAd: 'Facebook advertisement', tiktokAd: 'TikTok advertisement' };
         const basePrompt = `for ${siteName}, a dating platform. ${description.trim()}. Use pink/red primary color (#e32652) with dark navy (#1a1a2e) and white. High quality, clean, modern design.`;
 
         if (key === 'billboard') {
@@ -139,6 +161,32 @@ export default function LogoAssets() {
               setCustomAssets(prev => ({ ...prev, billboard_context: contextRes.url }));
             }
             toast.success('Billboard assets regenerated with AI');
+          } else {
+            toast.error('Failed to generate image');
+          }
+        } else if (key === 'facebookAd') {
+          const fbPrompt = `A Facebook advertisement image — FLAT 2D design only, no mockup, no browser frame, just the ad creative itself. Include the brand name, a compelling dating headline "Meet Verified Singles Today", and a "Join Now" call-to-action button. Design should be eye-catching and optimized for Facebook feed ads. IMPORTANT: This image may be cropped to various aspect ratios (landscape, square, portrait). Keep all important content centered. ${basePrompt}`;
+          const existingUrl = useExisting ? customAssets.facebookAd : null;
+          const res = await base44.integrations.Core.GenerateImage({
+            prompt: fbPrompt,
+            ...(existingUrl ? { existing_image_urls: [existingUrl] } : {}),
+          });
+          if (res.url) {
+            setCustomAssets(prev => ({ ...prev, facebookAd: res.url }));
+            toast.success('Facebook ad regenerated with AI');
+          } else {
+            toast.error('Failed to generate image');
+          }
+        } else if (key === 'tiktokAd') {
+          const ttPrompt = `A TikTok advertisement image for full-screen vertical mobile display (9:16). Include the brand name, a compelling dating headline "Meet Verified Singles Today", and a "Join Now" call-to-action. Design should be bold, eye-catching, and optimized for vertical full-screen mobile viewing. Place all content in the center of the image. ${basePrompt}`;
+          const existingUrl = useExisting ? customAssets.tiktokAd : null;
+          const res = await base44.integrations.Core.GenerateImage({
+            prompt: ttPrompt,
+            ...(existingUrl ? { existing_image_urls: [existingUrl] } : {}),
+          });
+          if (res.url) {
+            setCustomAssets(prev => ({ ...prev, tiktokAd: res.url }));
+            toast.success('TikTok ad regenerated with AI');
           } else {
             toast.error('Failed to generate image');
           }
@@ -233,6 +281,9 @@ export default function LogoAssets() {
   const horizontalSvg = generateHorizontalLogo(siteName, tagline, includeTagline);
   const verticalSvg = generateVerticalLogo(siteName, tagline, includeTagline);
   const billboardSvg = generateBillboardLogo(siteName, tagline, includeTagline);
+  const appLogoSvg = generateAppLogo(siteName, tagline, includeTagline);
+  const facebookAdSvg = generateFacebookAd(siteName, tagline, includeTagline);
+  const tiktokAdSvg = generateTikTokAd(siteName, tagline, includeTagline);
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
@@ -385,6 +436,111 @@ export default function LogoAssets() {
           secondaryCustomUrl={customAssets.billboard_context}
           secondaryLabel="On Billboard (Mockup)"
           onDownloadSecondary={() => downloadFromUrl(customAssets.billboard_context, `${slug}-billboard-on-billboard.png`)}
+        />
+
+        <LogoAssetCard
+          icon={ImageIcon}
+          title="App Logo"
+          description="Full brand logo with icon and name — ideal for app store listings, splash screens, and promotional materials."
+          previewUrl={svgToDataUrl(appLogoSvg)}
+          customUrl={customAssets.appLogo}
+          previewClassName="rounded-xl"
+          resolutions={APP_LOGO_RESOLUTIONS}
+          onDownloadPng={async (w, h) => {
+            const customUrl = customAssets.appLogo;
+            if (customUrl) {
+              try {
+                await downloadResizedImage(customUrl, `${slug}-app-logo-${w}x${h}.png`, w, h);
+              } catch {
+                toast.error('Failed to generate PNG at target size');
+              }
+            } else {
+              const svg = generateAppLogo(siteName, tagline, includeTagline);
+              await handlePng(svg, `${slug}-app-logo-${w}x${h}.png`, w, h);
+            }
+          }}
+          onDownloadSvg={() => downloadSvg(appLogoSvg, `${slug}-app-logo.svg`)}
+          onRegenerate={() => handleRegenerate('appLogo', regenerateDescriptions.appLogo, applyToExisting.appLogo)}
+          onUpload={(file) => handleUpload('appLogo', file)}
+          uploading={uploadingKey === 'appLogo'}
+          regenerating={regeneratingKey === 'appLogo'}
+          regenerateDescription={regenerateDescriptions.appLogo || ''}
+          onRegenerateDescriptionChange={(val) => updateDescription('appLogo', val)}
+          applyToExisting={applyToExisting.appLogo || false}
+          onApplyToExistingChange={(checked) => setApplyToExisting(prev => ({ ...prev, appLogo: checked }))}
+          onSave={() => handleSave('appLogo')}
+          hasUnsavedChanges={hasUnsavedChanges('appLogo')}
+          saving={savingKey === 'appLogo'}
+        />
+
+        <LogoAssetCard
+          icon={Share2}
+          title="Facebook Ad Image"
+          description="Advertisement creatives in standard Facebook ad sizes — feed landscape, square, portrait, and right column."
+          previewUrl={svgToDataUrl(facebookAdSvg)}
+          customUrl={customAssets.facebookAd}
+          previewClassName="min-h-[100px]"
+          resolutions={FACEBOOK_AD_RESOLUTIONS}
+          onDownloadPng={async (w, h) => {
+            const customUrl = customAssets.facebookAd;
+            if (customUrl) {
+              try {
+                await downloadResizedImage(customUrl, `${slug}-facebook-ad-${w}x${h}.png`, w, h);
+              } catch {
+                toast.error('Failed to generate PNG at target size');
+              }
+            } else {
+              const svg = generateFacebookAd(siteName, tagline, includeTagline, w, h);
+              await handlePng(svg, `${slug}-facebook-ad-${w}x${h}.png`, w, h);
+            }
+          }}
+          onDownloadSvg={() => downloadSvg(facebookAdSvg, `${slug}-facebook-ad.svg`)}
+          onRegenerate={() => handleRegenerate('facebookAd', regenerateDescriptions.facebookAd, applyToExisting.facebookAd)}
+          onUpload={(file) => handleUpload('facebookAd', file)}
+          uploading={uploadingKey === 'facebookAd'}
+          regenerating={regeneratingKey === 'facebookAd'}
+          regenerateDescription={regenerateDescriptions.facebookAd || ''}
+          onRegenerateDescriptionChange={(val) => updateDescription('facebookAd', val)}
+          applyToExisting={applyToExisting.facebookAd || false}
+          onApplyToExistingChange={(checked) => setApplyToExisting(prev => ({ ...prev, facebookAd: checked }))}
+          onSave={() => handleSave('facebookAd')}
+          hasUnsavedChanges={hasUnsavedChanges('facebookAd')}
+          saving={savingKey === 'facebookAd'}
+        />
+
+        <LogoAssetCard
+          icon={Smartphone}
+          title="TikTok Ad Image"
+          description="Vertical and square ad creatives optimized for TikTok in-feed placements and full-screen mobile viewing."
+          previewUrl={svgToDataUrl(tiktokAdSvg)}
+          customUrl={customAssets.tiktokAd}
+          previewClassName="min-h-[100px]"
+          resolutions={TIKTOK_AD_RESOLUTIONS}
+          onDownloadPng={async (w, h) => {
+            const customUrl = customAssets.tiktokAd;
+            if (customUrl) {
+              try {
+                await downloadResizedImage(customUrl, `${slug}-tiktok-ad-${w}x${h}.png`, w, h);
+              } catch {
+                toast.error('Failed to generate PNG at target size');
+              }
+            } else {
+              const svg = generateTikTokAd(siteName, tagline, includeTagline, w, h);
+              await handlePng(svg, `${slug}-tiktok-ad-${w}x${h}.png`, w, h);
+            }
+          }}
+          onDownloadSvg={() => downloadSvg(tiktokAdSvg, `${slug}-tiktok-ad.svg`)}
+          onRegenerate={() => handleRegenerate('tiktokAd', regenerateDescriptions.tiktokAd, applyToExisting.tiktokAd)}
+          onUpload={(file) => handleUpload('tiktokAd', file)}
+          uploading={uploadingKey === 'tiktokAd'}
+          regenerating={regeneratingKey === 'tiktokAd'}
+          regenerateDescription={regenerateDescriptions.tiktokAd || ''}
+          onRegenerateDescriptionChange={(val) => updateDescription('tiktokAd', val)}
+          applyToExisting={applyToExisting.tiktokAd || false}
+          onApplyToExistingChange={(checked) => setApplyToExisting(prev => ({ ...prev, tiktokAd: checked }))}
+          onSave={() => handleSave('tiktokAd')}
+          hasUnsavedChanges={hasUnsavedChanges('tiktokAd')}
+          saving={savingKey === 'tiktokAd'}
         />
       </div>
     </div>

@@ -108,6 +108,107 @@ export function generateBillboardLogo(siteName, tagline, includeTagline = true, 
   return svg;
 }
 
+export function generateAppLogo(siteName, tagline, includeTagline = true) {
+  const name = getDisplayName(siteName);
+  const domain = getDomain(siteName);
+  const initials = getInitials(siteName);
+  const size = 1024;
+  const cx = size / 2;
+  const iconSize = 340;
+  const iconY = 160;
+
+  let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+<defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="${PRIMARY}"/><stop offset="100%" stop-color="${PRIMARY_DARK}"/></linearGradient></defs>
+<rect width="${size}" height="${size}" fill="${DARK}"/>`;
+  svg += `<rect x="${cx - iconSize / 2}" y="${iconY}" width="${iconSize}" height="${iconSize}" rx="${iconSize * 0.22}" fill="url(#g)"/>`;
+  svg += `<text x="${cx}" y="${iconY + iconSize / 2}" text-anchor="middle" dominant-baseline="central" font-family="Arial, sans-serif" font-size="${iconSize * 0.36}" font-weight="bold" fill="${WHITE}">${initials}</text>`;
+  svg += `<text x="${cx}" y="${iconY + iconSize + 90}" text-anchor="middle" dominant-baseline="central" font-family="Arial, sans-serif" font-size="64" font-weight="bold" fill="${WHITE}">${name}</text>`;
+  if (includeTagline && tagline) {
+    svg += `<text x="${cx}" y="${iconY + iconSize + 150}" text-anchor="middle" dominant-baseline="central" font-family="Arial, sans-serif" font-size="28" fill="${GREY}">${tagline}</text>`;
+  }
+  svg += `<text x="${cx}" y="${iconY + iconSize + 230}" text-anchor="middle" dominant-baseline="central" font-family="Arial, sans-serif" font-size="24" fill="${PRIMARY}">${domain}</text>`;
+  svg += `</svg>`;
+  return svg;
+}
+
+export function generateFacebookAd(siteName, tagline, includeTagline = true, width = 1200, height = 628) {
+  const name = getDisplayName(siteName);
+  const initials = getInitials(siteName);
+  const cx = width / 2;
+  const cy = height / 2;
+  const isLandscape = width > height * 1.3;
+  const iconSize = Math.min(width * 0.16, height * 0.32, 200);
+  const nameFS = Math.min(width, height) * 0.06;
+  const headlineFS = Math.min(width, height) * 0.045;
+  const tagFS = Math.min(width, height) * 0.03;
+  const btnW = Math.min(width * 0.22, 240);
+  const btnH = Math.min(height * 0.1, 60);
+
+  let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+<defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="${PRIMARY}"/><stop offset="100%" stop-color="${PRIMARY_DARK}"/></linearGradient></defs>
+<rect width="${width}" height="${height}" fill="${DARK}"/>`;
+
+  if (isLandscape) {
+    const iconX = width * 0.06;
+    const iconY = cy - iconSize / 2;
+    const textX = iconX + iconSize + 40;
+    svg += `<rect x="${iconX}" y="${iconY}" width="${iconSize}" height="${iconSize}" rx="${iconSize * 0.22}" fill="url(#g)"/>`;
+    svg += `<text x="${iconX + iconSize / 2}" y="${iconY + iconSize / 2}" text-anchor="middle" dominant-baseline="central" font-family="Arial, sans-serif" font-size="${iconSize * 0.36}" font-weight="bold" fill="${WHITE}">${initials}</text>`;
+    svg += `<text x="${textX}" y="${cy - 55}" dominant-baseline="central" font-family="Arial, sans-serif" font-size="${nameFS}" font-weight="bold" fill="${WHITE}">${name}</text>`;
+    if (includeTagline && tagline) {
+      svg += `<text x="${textX}" y="${cy - 15}" dominant-baseline="central" font-family="Arial, sans-serif" font-size="${tagFS}" fill="${GREY}">${tagline}</text>`;
+    }
+    svg += `<text x="${textX}" y="${cy + 35}" dominant-baseline="central" font-family="Arial, sans-serif" font-size="${headlineFS}" fill="${WHITE}">Meet Verified Singles Today</text>`;
+    svg += `<rect x="${textX}" y="${cy + 65}" width="${btnW}" height="${btnH}" rx="${btnH / 2}" fill="url(#g)"/>`;
+    svg += `<text x="${textX + btnW / 2}" y="${cy + 65 + btnH / 2}" text-anchor="middle" dominant-baseline="central" font-family="Arial, sans-serif" font-size="${btnH * 0.4}" font-weight="bold" fill="${WHITE}">Join Now</text>`;
+  } else {
+    const iconY = height * 0.1;
+    svg += `<rect x="${cx - iconSize / 2}" y="${iconY}" width="${iconSize}" height="${iconSize}" rx="${iconSize * 0.22}" fill="url(#g)"/>`;
+    svg += `<text x="${cx}" y="${iconY + iconSize / 2}" text-anchor="middle" dominant-baseline="central" font-family="Arial, sans-serif" font-size="${iconSize * 0.36}" font-weight="bold" fill="${WHITE}">${initials}</text>`;
+    svg += `<text x="${cx}" y="${iconY + iconSize + 55}" text-anchor="middle" dominant-baseline="central" font-family="Arial, sans-serif" font-size="${nameFS}" font-weight="bold" fill="${WHITE}">${name}</text>`;
+    if (includeTagline && tagline) {
+      svg += `<text x="${cx}" y="${iconY + iconSize + 95}" text-anchor="middle" dominant-baseline="central" font-family="Arial, sans-serif" font-size="${tagFS}" fill="${GREY}">${tagline}</text>`;
+    }
+    svg += `<text x="${cx}" y="${iconY + iconSize + 150}" text-anchor="middle" dominant-baseline="central" font-family="Arial, sans-serif" font-size="${headlineFS}" fill="${WHITE}">Meet Verified Singles Today</text>`;
+    svg += `<rect x="${cx - btnW / 2}" y="${iconY + iconSize + 190}" width="${btnW}" height="${btnH}" rx="${btnH / 2}" fill="url(#g)"/>`;
+    svg += `<text x="${cx}" y="${iconY + iconSize + 190 + btnH / 2}" text-anchor="middle" dominant-baseline="central" font-family="Arial, sans-serif" font-size="${btnH * 0.4}" font-weight="bold" fill="${WHITE}">Join Now</text>`;
+  }
+  svg += `</svg>`;
+  return svg;
+}
+
+export function generateTikTokAd(siteName, tagline, includeTagline = true, width = 1080, height = 1920) {
+  const name = getDisplayName(siteName);
+  const initials = getInitials(siteName);
+  const cx = width / 2;
+  const iconSize = Math.min(width * 0.3, 280);
+  const iconY = height * 0.1;
+  const nameFS = width * 0.07;
+  const headlineFS = width * 0.06;
+  const tagFS = width * 0.035;
+  const btnW = Math.min(width * 0.5, 400);
+  const btnH = Math.min(width * 0.1, 70);
+
+  let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+<defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="${PRIMARY}"/><stop offset="100%" stop-color="${PRIMARY_DARK}"/></linearGradient></defs>
+<rect width="${width}" height="${height}" fill="${DARK}"/>`;
+  svg += `<rect x="${cx - iconSize / 2}" y="${iconY}" width="${iconSize}" height="${iconSize}" rx="${iconSize * 0.22}" fill="url(#g)"/>`;
+  svg += `<text x="${cx}" y="${iconY + iconSize / 2}" text-anchor="middle" dominant-baseline="central" font-family="Arial, sans-serif" font-size="${iconSize * 0.36}" font-weight="bold" fill="${WHITE}">${initials}</text>`;
+  svg += `<text x="${cx}" y="${iconY + iconSize + 80}" text-anchor="middle" dominant-baseline="central" font-family="Arial, sans-serif" font-size="${nameFS}" font-weight="bold" fill="${WHITE}">${name}</text>`;
+  if (includeTagline && tagline) {
+    svg += `<text x="${cx}" y="${iconY + iconSize + 130}" text-anchor="middle" dominant-baseline="central" font-family="Arial, sans-serif" font-size="${tagFS}" fill="${GREY}">${tagline}</text>`;
+  }
+  const headlineY = height * 0.5;
+  svg += `<text x="${cx}" y="${headlineY}" text-anchor="middle" dominant-baseline="central" font-family="Arial, sans-serif" font-size="${headlineFS}" font-weight="bold" fill="${WHITE}">Meet Verified</text>`;
+  svg += `<text x="${cx}" y="${headlineY + headlineFS * 1.4}" text-anchor="middle" dominant-baseline="central" font-family="Arial, sans-serif" font-size="${headlineFS}" font-weight="bold" fill="${WHITE}">Singles Today</text>`;
+  const btnY = height * 0.72;
+  svg += `<rect x="${cx - btnW / 2}" y="${btnY}" width="${btnW}" height="${btnH}" rx="${btnH / 2}" fill="url(#g)"/>`;
+  svg += `<text x="${cx}" y="${btnY + btnH / 2}" text-anchor="middle" dominant-baseline="central" font-family="Arial, sans-serif" font-size="${btnH * 0.4}" font-weight="bold" fill="${WHITE}">Join Now</text>`;
+  svg += `<text x="${cx}" y="${height * 0.9}" text-anchor="middle" dominant-baseline="central" font-family="Arial, sans-serif" font-size="${tagFS}" fill="${WHITE}" opacity="0.6">Swipe up to learn more</text>`;
+  svg += `</svg>`;
+  return svg;
+}
+
 export function downloadSvg(svgString, filename) {
   const blob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
   const url = URL.createObjectURL(blob);
