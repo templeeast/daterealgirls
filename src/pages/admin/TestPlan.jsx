@@ -178,10 +178,24 @@ const sections = [
     title: 'Payments & Token Purchases',
     color: 'text-yellow-500',
     items: [
-      // --- CodaPay ---
-      { id: 'pay-c1', label: 'CODAPAY: CodaPay initPayment and checkStatus work correctly in sandbox mode' },
       // --- General ---
       { id: 'pay-g5', label: 'Switching payment_processor in SiteConfig correctly changes the processor shown to users' },
+      // --- Whop Successful Purchase (confirmed in QA Session 35) ---
+      { id: 'pay-w1', label: 'WHOP SUCCESS: Token-pack purchase via Whop checkout using sandbox card 4242 4242 4242 4242 completes successfully — correct token amount granted, TokenTransaction type="purchase" created, has_purchased_tokens set to true (confirmed QA Session 35)' },
+      // --- Payment Failure: Declined Card ---
+      { id: 'pay-f1', label: 'PAYMENT FAILURE: Declined card shows a clear failure message — attempting a token-pack purchase via Whop checkout using sandbox declined-card 4000 0000 0000 0002 results in a visible error message in the app UI, not a silent success or blank/stuck state' },
+      { id: 'pay-f2', label: 'PAYMENT FAILURE: Declined purchase does not grant tokens — member token balance is unchanged after a declined attempt' },
+      { id: 'pay-f3', label: 'PAYMENT FAILURE: Declined purchase does not create a successful TokenTransaction record — no type="purchase" record is created, or any record created is clearly marked as failed/declined' },
+      { id: 'pay-f4', label: 'PAYMENT FAILURE: Declined purchase does not trigger the first-purchase bonus or any purchase-linked promo auto-award' },
+      { id: 'pay-f5', label: 'PAYMENT FAILURE: has_purchased_tokens remains false after a declined purchase (for a never-purchased account) — only flips to true on a genuinely completed purchase' },
+      { id: 'pay-f6', label: 'PAYMENT FAILURE: Member can immediately retry after a decline — retrying the same token pack with a valid card (4242 4242 4242 4242) succeeds with no lockout, cooldown, or duplicate-prevention blocking' },
+      // --- Payment Failure: Abandoned Checkout ---
+      { id: 'pay-f7', label: 'PAYMENT FAILURE: Abandoned checkout (closed without completing) has no side effects — no tokens granted, no TokenTransaction created, no error message shown (normal cancellation, not a failure state)' },
+      // --- Payment Failure: 3D Secure ---
+      { id: 'pay-3ds1', label: 'PAYMENT FAILURE (3D SECURE): 3DS challenge appears and successful completion grants tokens normally — using Whop 3DS test card 5385 3083 6013 5181 triggers a 3D Secure challenge; entering code Checkout1! completes the purchase with correct token amount and TokenTransaction' },
+      { id: 'pay-3ds2', label: 'PAYMENT FAILURE (3D SECURE): Failing or abandoning the 3DS challenge behaves like a decline — no tokens granted, no side effects, clear failure message' },
+      // --- Webhook (backend-only — verify via Whop sandbox webhook simulator or function logs, not live-browser UI) ---
+      { id: 'pay-wh1', label: 'WEBHOOK: whopPaymentWebhook correctly ignores/rejects a failed payment event — does not grant tokens, mark a transaction successful, or fire any purchase-linked bonus when receiving a failed/declined event from Whop (backend-only — verify via Whop sandbox webhook simulator or function logs, not the live-browser UI)' },
     ],
   },
   {
@@ -297,7 +311,6 @@ const sections = [
       { id: 'promo-fb3', label: 'FIRST PURCHASE BONUS: A TokenTransaction record of type "bonus" with description "First purchase bonus" is created for the automatic award' },
       { id: 'promo-fb4', label: 'FIRST PURCHASE BONUS: Second token purchase does NOT grant the automatic bonus again (has_purchased_tokens is now true)' },
       { id: 'promo-fb5', label: 'FIRST PURCHASE BONUS: Whop checkout path grants the automatic bonus on first purchase via whopPaymentWebhook' },
-      { id: 'promo-fb6', label: 'FIRST PURCHASE BONUS: Authorize.net purchaseTokens path grants the automatic bonus on first purchase' },
       { id: 'promo-fb7', label: 'FIRST PURCHASE BONUS: When gender bonus is disabled, first purchase grants 0 bonus tokens and no bonus TokenTransaction is created' },
       { id: 'promo-fb8', label: 'FUNDATES AFTER BONUS: User applies FUNDATES promo code on their first token purchase — BOTH the automatic first purchase bonus AND the FUNDATES promo tokens are granted' },
       { id: 'promo-fb9', label: 'FUNDATES AFTER BONUS: Two separate TokenTransaction records are created — one type "bonus" (automatic) and one type "promo" with promo_code "FUNDATES"' },
