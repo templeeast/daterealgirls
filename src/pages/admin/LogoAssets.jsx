@@ -23,8 +23,9 @@ import { toast } from 'sonner';
 
 const BILLBOARD_RESOLUTIONS = [
   { label: '1400 × 400', width: 1400, height: 400 },
+  { label: '840 × 400', width: 840, height: 400 },
   { label: '1200 × 400', width: 1200, height: 400 },
-  { label: '1000 × 400', width: 1000, height: 400 },
+  { label: '1710 × 330', width: 1710, height: 330 },
 ];
 
 export default function LogoAssets() {
@@ -35,11 +36,24 @@ export default function LogoAssets() {
   const [customAssets, setCustomAssets] = useState({});
   const [savedAssets, setSavedAssets] = useState({});
   const [savingKey, setSavingKey] = useState(null);
-  const [regenerateDescriptions, setRegenerateDescriptions] = useState({});
+  const [regenerateDescriptions, setRegenerateDescriptions] = useState(() => {
+    try {
+      const saved = localStorage.getItem('logoAssetRegenerateDescriptions');
+      return saved ? JSON.parse(saved) : {};
+    } catch {
+      return {};
+    }
+  });
   const [uploadingKey, setUploadingKey] = useState(null);
   const [regeneratingKey, setRegeneratingKey] = useState(null);
   const [assetsInitialized, setAssetsInitialized] = useState(false);
   const [savingTagline, setSavingTagline] = useState(false);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('logoAssetRegenerateDescriptions', JSON.stringify(regenerateDescriptions));
+    } catch {}
+  }, [regenerateDescriptions]);
 
   useEffect(() => {
     if (config && !assetsInitialized) {
