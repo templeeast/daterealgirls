@@ -21,8 +21,8 @@ export default function TokenCostsList({ profile, config }) {
 
   // 2. Browse all profiles (1 week)
   const browseEnabled = isMale
-    ? config?.tokens_browse_men_enabled !== false
-    : config?.tokens_browse_women_enabled !== false;
+    ? (config?.tokens_browse_men_enabled ?? true)
+    : (config?.tokens_browse_women_enabled ?? false);
   if (browseEnabled) {
     const cost = isMale ? (config?.tokens_browse_cost_men ?? 100) : (config?.tokens_browse_cost_women ?? 0);
     rows.push({
@@ -34,8 +34,8 @@ export default function TokenCostsList({ profile, config }) {
 
   // 3. Send a message — verification required
   const msgEnabled = isMale
-    ? config?.tokens_msg_men_enabled !== false
-    : config?.tokens_msg_women_enabled !== false;
+    ? (config?.tokens_msg_men_enabled ?? true)
+    : (config?.tokens_msg_women_enabled ?? false);
   if (msgEnabled) {
     const cost = isMale ? (config?.tokens_msg_cost_men ?? 2) : (config?.tokens_msg_cost_women ?? 0);
     rows.push({
@@ -48,8 +48,8 @@ export default function TokenCostsList({ profile, config }) {
 
   // 4. Send a wink
   const winkEnabled = isMale
-    ? config?.tokens_wink_men_enabled !== false
-    : config?.tokens_wink_women_enabled !== false;
+    ? (config?.tokens_wink_men_enabled ?? true)
+    : (config?.tokens_wink_women_enabled ?? false);
   if (winkEnabled) {
     const cost = isMale ? (config?.tokens_wink_cost_men ?? 5) : (config?.tokens_wink_cost_women ?? 0);
     rows.push({
@@ -117,7 +117,7 @@ export default function TokenCostsList({ profile, config }) {
 
   // 9. View private videos — always shown, gender-specific cost
   {
-    const cost = isMale ? (config?.tokens_private_video_cost ?? 25) : (config?.tokens_private_video_cost_women ?? 0);
+    const cost = isMale ? (config?.tokens_private_video_cost ?? 10) : (config?.tokens_private_video_cost_women ?? 0);
     rows.push({
       label: t('token_cost_view_private_video'),
       cost: cost === 0 ? t('free') : `${t('token_cost_n_tokens', { n: cost })} (${t('token_cost_per_video')})`,
@@ -128,8 +128,8 @@ export default function TokenCostsList({ profile, config }) {
 
   // 10. ID Verification
   const verifyEnabled = isMale
-    ? config?.tokens_verify_men_enabled !== false
-    : config?.tokens_verify_women_enabled !== false;
+    ? (config?.tokens_verify_men_enabled ?? true)
+    : (config?.tokens_verify_women_enabled ?? true);
   if (verifyEnabled) {
     const cost = isMale ? (config?.tokens_verify_cost_men ?? 300) : (config?.tokens_verify_cost_women ?? 300);
     rows.push({
@@ -140,7 +140,7 @@ export default function TokenCostsList({ profile, config }) {
   }
 
   // 11. Remove ads
-  if (config?.ad_free_enabled !== false) {
+  if ((config?.ad_free_enabled ?? true)) {
     const cost = config?.ad_free_token_cost ?? 200;
     const days = config?.ad_free_duration_days ?? 7;
     rows.push({
