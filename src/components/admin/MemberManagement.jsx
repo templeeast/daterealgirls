@@ -110,6 +110,10 @@ export default function MemberManagement() {
       base44.entities.MemberProfile.update(id, {
         profile_review_status: reviewStatus,
         verification_status: verificationStatus,
+        ...(verificationStatus === 'verified' && {
+          gender_review_needed: false,
+          age_review_needed: false,
+        }),
         ...(verificationStatus === 'rejected' && {
           is_suspended: true,
           suspension_reason: 'verification_rejected',

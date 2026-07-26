@@ -61,8 +61,8 @@ export default function PrivatePhotosSection({ profile, onRefetch, maxPrivatePho
 
   const isMale = profile.gender === 'male';
   const uploadCost = isMale ? 10 : 0;
-  const photosPrivateEnabled = isMale ? (config?.photos_private_men_enabled !== false) : (config?.photos_private_women_enabled !== false);
-  const videosPrivateEnabled = isMale ? (config?.videos_private_men_enabled === true) : (config?.videos_private_women_enabled === true);
+  const photosPrivateEnabled = isMale ? (config?.photos_private_men_enabled ?? true) : (config?.photos_private_women_enabled ?? true);
+  const videosPrivateEnabled = isMale ? (config?.videos_private_men_enabled ?? false) : (config?.videos_private_women_enabled ?? false);
   const anyUploadEnabled = photosPrivateEnabled || videosPrivateEnabled;
 
   const handleUploadClick = () => {

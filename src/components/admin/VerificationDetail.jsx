@@ -61,6 +61,8 @@ export default function VerificationDetail({ profile: p, onBack, onVerify }) {
   const [rejectReason, setRejectReason] = useState('');
   const [rejectDetails, setRejectDetails] = useState('');
 
+  const isUnderage = p.age_review_needed && p.didit_age != null && p.didit_age < 18;
+
   useEffect(() => {
     if (!p.didit_session_id) return;
     let stale = false;
@@ -100,7 +102,7 @@ export default function VerificationDetail({ profile: p, onBack, onVerify }) {
               <DiditStatusBadge profile={p} />
             </div>
             <div className="flex gap-2 shrink-0">
-              <Button size="sm" className="gap-1" onClick={() => onVerify(p.id, 'approved', 'verified')}>
+              <Button size="sm" className="gap-1" disabled={isUnderage} title={isUnderage ? 'Cannot approve an underage profile — must be rejected' : undefined} onClick={() => onVerify(p.id, 'approved', 'verified')}>
                 <CheckCircle className="w-4 h-4" /> Approve
               </Button>
               <Button size="sm" variant="destructive" className="gap-1" onClick={() => setShowRejectDialog(true)}>

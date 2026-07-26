@@ -630,10 +630,8 @@ export default function MyProfile() {
         </CardContent>
       </Card>
 
-      {/* Private Photos */}
-      {((profile.gender === 'male' && config.photos_private_men_enabled) || (profile.gender === 'female' && config.photos_private_women_enabled)) && (
-        <PrivatePhotosSection profile={profile} onRefetch={refetch} maxPrivatePhotos={config.max_private_photos ?? 10} />
-      )}
+      {/* Private Photos — always rendered; component shows disabled message when uploads are off */}
+      <PrivatePhotosSection profile={profile} onRefetch={refetch} maxPrivatePhotos={config.max_private_photos ?? 10} />
 
       {/* Profile Info */}
       <Card className="mb-6">
