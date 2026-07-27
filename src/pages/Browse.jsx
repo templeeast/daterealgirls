@@ -19,6 +19,7 @@ import HilltopAdBar from '@/components/shared/HilltopAdBar';
 import AdFreeBanner from '@/components/shared/AdFreeBanner';
 import useAdsActive from '@/hooks/useAdsActive';
 import { getCountryCode, haversineDistance } from '@/lib/geoUtils';
+import { ETHNICITY_VALUES, ETHNICITY_LABELS } from '@/lib/ethnicityOptions';
 
 export default function Browse() {
   const navigate = useNavigate();
@@ -76,6 +77,7 @@ export default function Browse() {
   const [search, setSearch] = useState(() => loadFilter('search', ''));
   const [genderFilter, setGenderFilter] = useState(() => loadFilter('gender', 'all'));
   const [lookingForFilter, setLookingForFilter] = useState(() => loadFilter('lookingFor', 'all'));
+  const [ethnicityFilter, setEthnicityFilter] = useState(() => loadFilter('ethnicity', 'all'));
   const [ageMin, setAgeMin] = useState(() => loadFilter('ageMin', ''));
   const [ageMax, setAgeMax] = useState(() => loadFilter('ageMax', ''));
   const [showFilters, setShowFilters] = useState(() => loadFilter('showFilters', false));
@@ -90,6 +92,7 @@ export default function Browse() {
   const handleSearch = v => { setSearch(v); saveFilter('search', v); };
   const handleGender = v => { setGenderFilter(v); saveFilter('gender', v); };
   const handleLookingFor = v => { setLookingForFilter(v); saveFilter('lookingFor', v); };
+  const handleEthnicity = v => { setEthnicityFilter(v); saveFilter('ethnicity', v); };
   const handleAgeMin = v => { setAgeMin(v); saveFilter('ageMin', v); };
   const handleAgeMax = v => { setAgeMax(v); saveFilter('ageMax', v); };
   const handleShowFilters = v => {
@@ -99,6 +102,7 @@ export default function Browse() {
       // Closing filters — reset all filter values
       setGenderFilter('all'); saveFilter('gender', 'all');
       setLookingForFilter('all'); saveFilter('lookingFor', 'all');
+      setEthnicityFilter('all'); saveFilter('ethnicity', 'all');
       setAgeMin(''); saveFilter('ageMin', '');
       setAgeMax(''); saveFilter('ageMax', '');
       setCountryFilter(''); saveFilter('country', '');
@@ -213,6 +217,7 @@ export default function Browse() {
 
     if (genderFilter !== 'all' && p.gender !== genderFilter) return false;
     if (lookingForFilter !== 'all' && p.looking_for !== lookingForFilter) return false;
+    if (ethnicityFilter !== 'all' && p.ethnicity !== ethnicityFilter) return false;
     if (ageMin !== '' && (p.age == null || p.age < parseInt(ageMin))) return false;
     if (ageMax !== '' && (p.age == null || p.age > parseInt(ageMax))) return false;
     if (countryFilter && p.location_country !== countryFilter) return false;
@@ -332,6 +337,15 @@ export default function Browse() {
                 <SelectItem value="friendship">{t('browse_friendship')}</SelectItem>
                 <SelectItem value="casual">{t('browse_casual')}</SelectItem>
                 <SelectItem value="marriage">{t('browse_marriage')}</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={ethnicityFilter} onValueChange={handleEthnicity}>
+              <SelectTrigger className="w-44"><SelectValue placeholder="Ethnicity" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Ethnicities</SelectItem>
+                {ETHNICITY_VALUES.map(v => (
+                  <SelectItem key={v} value={v}>{ETHNICITY_LABELS[v]}</SelectItem>
+                ))}
               </SelectContent>
             </Select>
             <CountryCitySelector
