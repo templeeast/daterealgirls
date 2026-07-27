@@ -19,7 +19,6 @@ export default function MobileBottomNav() {
   const isAdmin = user?.role === 'admin';
   const profileComplete = profile?.profile_complete && (
     profile?.selfie_url ||
-    profile?.didit_verification_status === 'Approved' ||
     profile?.verification_status === 'verified'
   );
 

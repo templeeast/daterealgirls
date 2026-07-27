@@ -52,7 +52,7 @@ export default function Browse() {
 
   // A member is considered verified if either the platform verification_status is set
   // OR Didit returned an Approved result (these can diverge when gender review is pending)
-  const isVerified = profile?.verification_status === 'verified' || profile?.didit_verification_status === 'Approved';
+  const isVerified = profile?.verification_status === 'verified';
   const isUnverifiedGate = !isVerified;
 
   // Browse-all unlock: user paid browseCost tokens for 7 days of unlimited browsing.
