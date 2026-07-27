@@ -42,6 +42,23 @@ const ACCOUNT_GROUPS = [
         browseAll: 'not active',
         suspended: false,
       },
+      {
+        gender: 'Female',
+        displayName: 'Cassie',
+        email: 'cassiebunny@clevo.testinator.com',
+        userId: '6a67e146eeeedafe32d629ab',
+        profileId: '(none — onboarding not started)',
+        tagId: '(none — onboarding not started)',
+        age: '(unknown)',
+        location: '(unknown)',
+        profileComplete: false,
+        verification: 'unverified',
+        reviewStatus: 'unapproved (pending)',
+        tokens: 0,
+        browseAll: 'not active',
+        suspended: false,
+        note: 'User created via invite but onboarding not yet started. Log in as cassiebunny@clevo.testinator.com and complete onboarding to populate profile data.',
+      },
     ],
   },
   {
@@ -167,6 +184,7 @@ const ACCOUNT_GROUPS = [
 const SUMMARY_ROWS = [
   { state: 'Incomplete-Profile', gender: 'Male', name: 'Charlie Frog', email: 'charliefrog@clevo.testinator.com' },
   { state: 'Incomplete-Profile', gender: 'Female', name: 'Leena Bunny', email: 'leenabunny@clevo.testinator.com' },
+  { state: 'Incomplete-Profile', gender: 'Female', name: 'Cassie', email: 'cassiebunny@clevo.testinator.com' },
   { state: 'Unverified', gender: 'Male', name: 'Sam', email: 'samhain@clevo.testinator.com' },
   { state: 'Unverified', gender: 'Female', name: 'Bambi Bunny Test', email: 'bambibunny@clevo.testinator.com' },
   { state: 'Unverified', gender: 'Female', name: 'Tigra', email: 'tigrabunny@clevo.testinator.com' },
@@ -176,7 +194,7 @@ const SUMMARY_ROWS = [
 ];
 
 const DB_COUNTS = [
-  { state: 'Incomplete-Profile', counts: '1 male, 1 female (2 total)' },
+  { state: 'Incomplete-Profile', counts: '1 male, 2 females (3 total)' },
   { state: 'Unverified (clean)', counts: '1 male, 5 females (6 total)' },
   { state: 'Verified (no browse)', counts: '3 males, 38 females (41 total)' },
 ];
