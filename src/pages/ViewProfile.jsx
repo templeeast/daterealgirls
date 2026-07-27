@@ -42,7 +42,7 @@ export default function ViewProfile() {
   const isMale = myProfile?.gender === 'male';
   const browseEnabled = isMale ? (config?.tokens_browse_men_enabled !== false) : (config?.tokens_browse_women_enabled || false);
   const browseCost = isMale ? (config?.tokens_browse_cost_men ?? 100) : (config?.tokens_browse_cost_women ?? 0);
-  const isVerified = myProfile?.verification_status === 'verified' || myProfile?.didit_verification_status === 'Approved';
+  const isVerified = myProfile?.verification_status === 'verified';
   const browseUnlockedUntil = myProfile?.browse_unlocked_until ? new Date(myProfile.browse_unlocked_until) : null;
   const isBrowseUnlocked = browseCost === 0 || !browseEnabled || (browseUnlockedUntil && browseUnlockedUntil > new Date());
   const canInteract = isVerified && !!isBrowseUnlocked;

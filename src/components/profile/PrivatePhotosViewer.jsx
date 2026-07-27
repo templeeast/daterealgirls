@@ -12,7 +12,7 @@ import VerificationRequiredModal from '@/components/shared/VerificationRequiredM
 import useSiteConfig from '@/hooks/useSiteConfig';
 import { useTranslation } from 'react-i18next';
 
-const requiresIdVerification = (p) => p?.verification_status === 'verified' || p?.didit_verification_status === 'Approved';
+const requiresIdVerification = (p) => p?.verification_status === 'verified';
 
 export default function PrivatePhotosViewer({ ownerProfileId, myProfile }) {
   const { toast } = useToast();

@@ -10,7 +10,7 @@ import VerificationRequiredModal from '@/components/shared/VerificationRequiredM
 import useSiteConfig from '@/hooks/useSiteConfig';
 import { useNavigate } from 'react-router-dom';
 
-const requiresIdVerification = (p) => p?.verification_status === 'verified' || p?.didit_verification_status === 'Approved';
+const requiresIdVerification = (p) => p?.verification_status === 'verified';
 
 export default function PrivatePhotosSection({ profile, onRefetch, maxPrivatePhotos = 10 }) {
   const { t } = useTranslation();

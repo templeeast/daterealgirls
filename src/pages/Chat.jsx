@@ -14,7 +14,7 @@ import VerificationRequiredModal from '@/components/shared/VerificationRequiredM
 import { useToast } from '@/components/ui/use-toast';
 
 const requiresIdVerification = (memberProfile) =>
-  memberProfile?.verification_status === 'verified' || memberProfile?.didit_verification_status === 'Approved';
+  memberProfile?.verification_status === 'verified';
 
 function PrivatePhotoRequestCard({ msg, isMe, onRespond }) {
   const { data: accessRecords = [] } = useQuery({

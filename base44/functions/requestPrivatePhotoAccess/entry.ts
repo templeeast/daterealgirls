@@ -17,7 +17,7 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Cannot request your own photos' });
     }
 
-    if (myProfile.verification_status !== 'verified' && myProfile.didit_verification_status !== 'Approved') {
+    if (myProfile.verification_status !== 'verified') {
       return Response.json({ error: 'You must verify your identity before requesting private photo access.' });
     }
 
