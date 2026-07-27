@@ -298,16 +298,16 @@ export default function Chat() {
       e.target.value = '';
       return;
     }
+    if (tokens < videoTokenCost) {
+      alert(t('chat_video_insufficient_tokens', { n: videoTokenCost }));
+      e.target.value = '';
+      return;
+    }
     const videoEl = document.createElement('video');
     videoEl.preload = 'metadata';
     videoEl.onloadedmetadata = async () => {
       if (videoEl.duration > maxVideoDuration) {
         alert(t('chat_video_too_long', { n: maxVideoDuration }));
-        e.target.value = '';
-        return;
-      }
-      if (tokens < videoTokenCost) {
-        alert(t('chat_video_insufficient_tokens', { n: videoTokenCost }));
         e.target.value = '';
         return;
       }
