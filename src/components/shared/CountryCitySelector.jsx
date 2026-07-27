@@ -5,6 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { COUNTRIES, getCitiesForCountry } from '@/lib/countryCityData';
 import { base44 } from '@/api/base44Client';
 import { PlusCircle } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const ADD_NEW_VALUE = '__add_new__';
 
@@ -26,6 +27,7 @@ export default function CountryCitySelector({
   showLabels = true,
   layout = 'grid',
 }) {
+  const { t } = useTranslation();
   const [citySearch, setCitySearch] = useState('');
   const [customCityMode, setCustomCityMode] = useState(false);
   const [customCityInput, setCustomCityInput] = useState('');
@@ -89,10 +91,10 @@ export default function CountryCitySelector({
     <div className={containerClass}>
       {/* Country */}
       <div className="space-y-2">
-        {showLabels && <Label>Country</Label>}
+        {showLabels && <Label>{t('country_label')}</Label>}
         <Select value={country || ''} onValueChange={handleCountryChange}>
           <SelectTrigger>
-            <SelectValue placeholder="Select country" />
+            <SelectValue placeholder={t('select_country')} />
           </SelectTrigger>
           <SelectContent className="max-h-64">
             {[
@@ -107,12 +109,12 @@ export default function CountryCitySelector({
 
       {/* City */}
       <div className="space-y-2">
-        {showLabels && <Label>City</Label>}
+        {showLabels && <Label>{t('city_label')}</Label>}
 
         {/* No country selected or no cities in DB — plain text input */}
         {!country ? (
           <Input
-            placeholder="Enter city"
+            placeholder={t('enter_city')}
             value={city || ''}
             onChange={e => onCityChange(e.target.value)}
           />
@@ -120,7 +122,7 @@ export default function CountryCitySelector({
           /* Custom city entry mode */
           <div className="flex gap-2">
             <Input
-              placeholder="Type your city..."
+              placeholder={t('type_city')}
               value={customCityInput}
               onChange={e => setCustomCityInput(e.target.value)}
               onKeyDown={e => {
@@ -134,7 +136,7 @@ export default function CountryCitySelector({
               onClick={handleCustomCityConfirm}
               className="px-3 py-1 bg-primary text-primary-foreground rounded-md text-sm whitespace-nowrap"
             >
-              Add
+              {t('add_btn')}
             </button>
           </div>
         ) : cities.length > 0 ? (
@@ -145,12 +147,12 @@ export default function CountryCitySelector({
             disabled={!country}
           >
             <SelectTrigger>
-              <SelectValue placeholder={country ? (city || 'Select city') : 'Select country first'} />
+              <SelectValue placeholder={country ? (city || t('select_city')) : t('select_country_first')} />
             </SelectTrigger>
             <SelectContent className="max-h-64">
               <div className="px-2 pb-1 sticky top-0 bg-popover z-10">
                 <Input
-                  placeholder="Search city..."
+                  placeholder={t('search_city')}
                   value={citySearch}
                   onChange={e => setCitySearch(e.target.value)}
                   className="h-7 text-xs"
@@ -162,11 +164,11 @@ export default function CountryCitySelector({
                 <SelectItem key={c} value={c}>{c}</SelectItem>
               ))}
               {filteredCities.length === 0 && (
-                <div className="px-2 py-1 text-xs text-muted-foreground">No cities found</div>
+                <div className="px-2 py-1 text-xs text-muted-foreground">{t('no_cities_found')}</div>
               )}
               <SelectItem value={ADD_NEW_VALUE}>
                 <span className="flex items-center gap-1 text-primary">
-                  <PlusCircle className="w-3.5 h-3.5" /> Enter a different city
+                  <PlusCircle className="w-3.5 h-3.5" /> {t('enter_different_city')}
                 </span>
               </SelectItem>
             </SelectContent>
@@ -175,7 +177,7 @@ export default function CountryCitySelector({
           /* Country has no city list — plain text with "submit new" behavior */
           <div className="flex gap-2">
             <Input
-              placeholder="Enter city"
+              placeholder={t('enter_city')}
               value={customCityInput || city || ''}
               onChange={e => {
                 setCustomCityInput(e.target.value);
@@ -206,9 +208,9 @@ export default function CountryCitySelector({
         {/* Show confirmed custom city as a note */}
         {!customCityMode && city && !cities.includes(city) && country && (
           <p className="text-xs text-muted-foreground">
-            "{city}" will be reviewed by our team.{' '}
+            {t('city_review_notice', { city })}{' '}
             <button type="button" className="underline" onClick={() => { setCustomCityMode(true); setCustomCityInput(city); }}>
-              Change
+              {t('change_btn')}
             </button>
           </p>
         )}

@@ -19,7 +19,7 @@ import HilltopAdBar from '@/components/shared/HilltopAdBar';
 import AdFreeBanner from '@/components/shared/AdFreeBanner';
 import useAdsActive from '@/hooks/useAdsActive';
 import { getCountryCode, haversineDistance } from '@/lib/geoUtils';
-import { ETHNICITY_VALUES, ETHNICITY_LABELS } from '@/lib/ethnicityOptions';
+import { ETHNICITY_VALUES } from '@/lib/ethnicityOptions';
 
 export default function Browse() {
   const navigate = useNavigate();
@@ -340,11 +340,11 @@ export default function Browse() {
               </SelectContent>
             </Select>
             <Select value={ethnicityFilter} onValueChange={handleEthnicity}>
-              <SelectTrigger className="w-44"><SelectValue placeholder="Ethnicity" /></SelectTrigger>
+              <SelectTrigger className="w-44"><SelectValue placeholder={t('ethnicity_label')} /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Ethnicities</SelectItem>
+                <SelectItem value="all">{t('all_ethnicities')}</SelectItem>
                 {ETHNICITY_VALUES.map(v => (
-                  <SelectItem key={v} value={v}>{ETHNICITY_LABELS[v]}</SelectItem>
+                  <SelectItem key={v} value={v}>{t(`ethnicity_${v}`)}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
