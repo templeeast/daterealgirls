@@ -675,14 +675,14 @@ export default function Chat() {
             ) : null;
           })()}
           <div className="flex gap-2 items-center max-w-3xl mx-auto">
-            <label>
+            <label onClick={(e) => { if (!requiresIdVerification(profile)) { e.preventDefault(); setShowVerifModal(true); } }}>
               <Button variant="ghost" size="icon" className="shrink-0" asChild>
                 <span><ImageIcon className="w-5 h-5" /></span>
               </Button>
               <input type="file" accept="image/*" className="hidden" onChange={handleImageSend} />
             </label>
             {videosChatEnabled && (
-              <label>
+              <label onClick={(e) => { if (!requiresIdVerification(profile)) { e.preventDefault(); setShowVerifModal(true); } }}>
                 <Button variant="ghost" size="icon" className="shrink-0" asChild>
                   <span><VideoIcon className="w-5 h-5" /></span>
                 </Button>
