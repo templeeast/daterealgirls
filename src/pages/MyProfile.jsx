@@ -197,7 +197,7 @@ export default function MyProfile() {
         location_zip: profile.location_zip || '',
         looking_for: profile.looking_for || '',
         marital_status: profile.marital_status || '',
-        ethnicity: profile.ethnicity || '',
+        ethnicity: ETHNICITY_VALUES.includes(profile.ethnicity) ? profile.ethnicity : (profile.ethnicity ? 'rather_not_say' : ''),
         interests: profile.interests || [],
         ...Object.fromEntries(
           Array.from({ length: 15 }, (_, i) => i + 1).flatMap(n => [

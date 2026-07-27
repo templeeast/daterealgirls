@@ -77,6 +77,8 @@ export default function Chat() {
   const [showVerifModal, setShowVerifModal] = useState(false);
   const messageTimes = useRef([]);
   const messagesEndRef = useRef(null);
+  const imageInputRef = useRef(null);
+  const videoInputRef = useRef(null);
 
   const rateLimitCount = config?.msg_rate_limit_count ?? 5;
   const rateLimitSeconds = config?.msg_rate_limit_seconds ?? 10;
@@ -313,7 +315,7 @@ export default function Chat() {
       if (metadataHandled) return;
       metadataHandled = true;
       URL.revokeObjectURL(objectUrl);
-      toast({ title: t('chat_video_metadata_error', { defaultValue: 'Could not read video. Please try a different file.' }), variant: 'destructive' });
+      toast({ title: t('chat_video_metadata_error'), variant: 'destructive' });
       e.target.value = '';
     }, 10000);
     videoEl.onloadedmetadata = async () => {
@@ -338,7 +340,7 @@ export default function Chat() {
         const videoUrl = res.data?.url;
         const thumbnailUrl = res.data?.thumbnail_url;
         if (!videoUrl) {
-          toast({ title: t('chat_video_upload_failed', { defaultValue: 'Video upload failed. Please try again.' }), variant: 'destructive' });
+          toast({ title: t('chat_video_upload_failed'), variant: 'destructive' });
           e.target.value = '';
           return;
         }
@@ -377,7 +379,7 @@ export default function Chat() {
       metadataHandled = true;
       clearTimeout(metadataTimeout);
       URL.revokeObjectURL(objectUrl);
-      toast({ title: t('chat_video_metadata_error', { defaultValue: 'Could not read video. Please try a different file.' }), variant: 'destructive' });
+      toast({ title: t('chat_video_metadata_error'), variant: 'destructive' });
       e.target.value = '';
     };
     videoEl.src = objectUrl;
@@ -675,19 +677,27 @@ export default function Chat() {
             ) : null;
           })()}
           <div className="flex gap-2 items-center max-w-3xl mx-auto">
-            <label onClick={(e) => { if (!requiresIdVerification(profile)) { e.preventDefault(); setShowVerifModal(true); } }}>
-              <Button variant="ghost" size="icon" className="shrink-0" asChild>
-                <span><ImageIcon className="w-5 h-5" /></span>
-              </Button>
-              <input type="file" accept="image/*" className="hidden" onChange={handleImageSend} />
-            </label>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="shrink-0"
+              onClick={(e) => { if (!requiresIdVerification(profile)) { e.preventDefault(); setShowVerifModal(true); return; } imageInputRef.current?.click(); }}
+            >
+              <ImageIcon className="w-5 h-5" />
+            </Button>
+            <input ref={imageInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageSend} />
             {videosChatEnabled && (
-              <label onClick={(e) => { if (!requiresIdVerification(profile)) { e.preventDefault(); setShowVerifModal(true); } }}>
-                <Button variant="ghost" size="icon" className="shrink-0" asChild>
-                  <span><VideoIcon className="w-5 h-5" /></span>
+              <>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="shrink-0"
+                  onClick={(e) => { if (!requiresIdVerification(profile)) { e.preventDefault(); setShowVerifModal(true); return; } videoInputRef.current?.click(); }}
+                >
+                  <VideoIcon className="w-5 h-5" />
                 </Button>
-                <input type="file" accept="video/*" className="hidden" onChange={handleVideoSend} />
-              </label>
+                <input ref={videoInputRef} type="file" accept="video/*" className="hidden" onChange={handleVideoSend} />
+              </>
             )}
             {/* Payment link embed button */}
             {(() => {

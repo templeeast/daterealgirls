@@ -8,10 +8,11 @@ import { useToast } from '@/components/ui/use-toast';
 import { useNavigate } from 'react-router-dom';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import PhotoZoomModal from '@/components/profile/PhotoZoomModal';
+import VerificationRequiredModal from '@/components/shared/VerificationRequiredModal';
 import useSiteConfig from '@/hooks/useSiteConfig';
 import { useTranslation } from 'react-i18next';
 
-const requiresIdVerification = (p) => p?.didit_verification_status === 'Approved';
+const requiresIdVerification = (p) => p?.verification_status === 'verified' || p?.didit_verification_status === 'Approved';
 
 export default function PrivatePhotosViewer({ ownerProfileId, myProfile }) {
   const { toast } = useToast();
@@ -22,6 +23,7 @@ export default function PrivatePhotosViewer({ ownerProfileId, myProfile }) {
   const [unlocking, setUnlocking] = useState(false);
   const [unlockedIds, setUnlockedIds] = useState(new Set());
   const [zoomIndex, setZoomIndex] = useState(null);
+  const [showVerifModal, setShowVerifModal] = useState(false);
   const { config } = useSiteConfig();
   const { t } = useTranslation();
 
@@ -49,10 +51,9 @@ export default function PrivatePhotosViewer({ ownerProfileId, myProfile }) {
   const approvedPhotos = photos.filter(p => p.status !== 'rejected');
   const privatePhotoCount = approvedPhotos.filter(p => p.media_type !== 'video').length;
   const privateVideoCount = approvedPhotos.filter(p => p.media_type === 'video').length;
-  const privateMediaCountText = [
-    privatePhotoCount > 0 ? `${privatePhotoCount} private photo${privatePhotoCount !== 1 ? 's' : ''}` : null,
-    privateVideoCount > 0 ? `${privateVideoCount} private video${privateVideoCount !== 1 ? 's' : ''}` : null,
-  ].filter(Boolean).join(' and ');
+  const photoPart = privatePhotoCount > 0 ? t('private_photos_access_photo_count', { n: privatePhotoCount }) : null;
+  const videoPart = privateVideoCount > 0 ? t('private_photos_access_video_count', { n: privateVideoCount }) : null;
+  const privateMediaCountText = [photoPart, videoPart].filter(Boolean).join(` ${t('private_photos_access_and')} `);
   const accessRecord = accessRecords[0];
   const isViewerMale = myProfile?.gender === 'male';
   const paidViewSet = new Set(myViews.map(v => v.private_photo_id));
@@ -65,30 +66,51 @@ export default function PrivatePhotosViewer({ ownerProfileId, myProfile }) {
 
   if (!requiresIdVerification(myProfile)) {
     return (
-      <Card className="mt-6">
-        <CardHeader><CardTitle className="font-heading text-lg">{t('private_photos_and_videos_title')}</CardTitle></CardHeader>
-        <CardContent className="text-center py-6">
-          <Lock className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
-          <p className="text-sm text-muted-foreground mb-3">Verify your identity to request access to private photos.</p>
-          <Button onClick={() => navigate('/onboarding')}>Verify Now</Button>
-        </CardContent>
-      </Card>
+      <>
+        <VerificationRequiredModal
+          open={showVerifModal}
+          onClose={() => setShowVerifModal(false)}
+          onVerify={async () => {
+            if (!myProfile?.id) throw new Error('Profile not found');
+            const res = await base44.functions.invoke('createDiditSession', { memberId: myProfile.id });
+            const result = res.data ?? res;
+            if (!result?.url) throw new Error('Could not start verification. Please try again.');
+            await base44.entities.MemberProfile.update(myProfile.id, {
+              didit_session_id: result.session_id,
+              didit_verification_status: 'pending',
+            });
+            window.location.href = result.url;
+          }}
+        />
+        <Card className="mt-6">
+          <CardHeader><CardTitle className="font-heading text-lg">{t('private_photos_and_videos_title')}</CardTitle></CardHeader>
+          <CardContent className="text-center py-6">
+            <Lock className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
+            <p className="text-sm text-muted-foreground mb-3">{t('private_photos_verify_to_request')}</p>
+            <Button onClick={() => setShowVerifModal(true)}>{t('private_photos_verify_now')}</Button>
+          </CardContent>
+        </Card>
+      </>
     );
   }
 
   const handleRequestAccess = async () => {
+    if (!requiresIdVerification(myProfile)) {
+      setShowVerifModal(true);
+      return;
+    }
     setRequesting(true);
     const res = await base44.functions.invoke('requestPrivatePhotoAccess', { ownerMemberId: ownerProfileId });
     const data = res.data ?? res;
     setRequesting(false);
     if (data.alreadyGranted) {
-      toast({ title: 'You already have access.' });
+      toast({ title: t('private_photos_already_have_access') });
     } else if (data.alreadyPending) {
-      toast({ title: 'Your request is already pending.' });
+      toast({ title: t('private_photos_request_already_pending') });
     } else if (data.success) {
-      toast({ title: "Access request sent! You'll be notified when they respond." });
+      toast({ title: t('private_photos_access_request_sent') });
     } else {
-      toast({ title: data.error || 'Could not send request.', variant: 'destructive' });
+      toast({ title: data.error || t('private_photos_could_not_send'), variant: 'destructive' });
     }
     refetchAccess();
     queryClient.invalidateQueries({ queryKey: ['privatePhotoAccess'] });
@@ -170,7 +192,7 @@ export default function PrivatePhotosViewer({ ownerProfileId, myProfile }) {
 
     if (status === 'granted') {
       if (approvedPhotos.length === 0) {
-        return <p className="text-sm text-muted-foreground">No approved private photos yet.</p>;
+        return <p className="text-sm text-muted-foreground">{t('private_photos_no_approved')}</p>;
       }
       return (
         <div className="grid grid-cols-3 gap-3">
@@ -209,10 +231,10 @@ export default function PrivatePhotosViewer({ ownerProfileId, myProfile }) {
           </div>
           {privateMediaCountText && (
             <p className="text-sm text-muted-foreground">
-              This member has {privateMediaCountText}.
+              {t('private_photos_access_count', { items: privateMediaCountText })}
             </p>
           )}
-          <p className="text-sm text-amber-600 font-medium">Your access request is pending their approval.</p>
+          <p className="text-sm text-amber-600 font-medium">{t('private_photos_access_pending')}</p>
         </div>
       );
     }
@@ -220,8 +242,8 @@ export default function PrivatePhotosViewer({ ownerProfileId, myProfile }) {
     if (status === 'denied') {
       return (
         <div className="text-center py-4 space-y-3">
-          <p className="text-sm text-muted-foreground">Your access request was declined.</p>
-          <Button size="sm" variant="outline" onClick={() => navigate(-1)}>Send Message</Button>
+          <p className="text-sm text-muted-foreground">{t('private_photos_access_declined')}</p>
+          <Button size="sm" variant="outline" onClick={() => navigate(-1)}>{t('private_photos_send_message')}</Button>
         </div>
       );
     }
@@ -239,15 +261,15 @@ export default function PrivatePhotosViewer({ ownerProfileId, myProfile }) {
           </div>
         {privateMediaCountText && (
           <p className="text-sm text-muted-foreground">
-            This member has {privateMediaCountText}.
+            {t('private_photos_access_count', { items: privateMediaCountText })}
           </p>
         )}
         {status === 'revoked' && (
-          <p className="text-xs text-muted-foreground">Your previous access was revoked. You may request again.</p>
+          <p className="text-xs text-muted-foreground">{t('private_photos_access_revoked')}</p>
         )}
         <Button onClick={handleRequestAccess} disabled={requesting} className="gap-2">
           {requesting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Lock className="w-4 h-4" />}
-          Request Access
+          {t('private_photos_request_access')}
         </Button>
       </div>
     );
@@ -255,6 +277,21 @@ export default function PrivatePhotosViewer({ ownerProfileId, myProfile }) {
 
   return (
     <>
+      <VerificationRequiredModal
+        open={showVerifModal}
+        onClose={() => setShowVerifModal(false)}
+        onVerify={async () => {
+          if (!myProfile?.id) throw new Error('Profile not found');
+          const res = await base44.functions.invoke('createDiditSession', { memberId: myProfile.id });
+          const result = res.data ?? res;
+          if (!result?.url) throw new Error('Could not start verification. Please try again.');
+          await base44.entities.MemberProfile.update(myProfile.id, {
+            didit_session_id: result.session_id,
+            didit_verification_status: 'pending',
+          });
+          window.location.href = result.url;
+        }}
+      />
       <Dialog open={!!confirmPhoto} onOpenChange={(v) => { if (!v) setConfirmPhoto(null); }}>
         <DialogContent className="max-w-sm">
           <DialogHeader>

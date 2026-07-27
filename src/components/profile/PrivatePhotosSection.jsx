@@ -10,7 +10,7 @@ import VerificationRequiredModal from '@/components/shared/VerificationRequiredM
 import useSiteConfig from '@/hooks/useSiteConfig';
 import { useNavigate } from 'react-router-dom';
 
-const requiresIdVerification = (p) => p?.didit_verification_status === 'Approved';
+const requiresIdVerification = (p) => p?.verification_status === 'verified' || p?.didit_verification_status === 'Approved';
 
 export default function PrivatePhotosSection({ profile, onRefetch, maxPrivatePhotos = 10 }) {
   const { t } = useTranslation();
@@ -115,7 +115,7 @@ export default function PrivatePhotosSection({ profile, onRefetch, maxPrivatePho
           return;
         }
       } catch (err) {
-        setUploadError('Could not validate video. Please try a different file.');
+        setUploadError(t('chat_video_metadata_error'));
         return;
       }
     }
@@ -193,7 +193,7 @@ export default function PrivatePhotosSection({ profile, onRefetch, maxPrivatePho
       }} />
       <Card className="mb-6">
         <CardHeader>
-          <CardTitle className="font-heading text-lg flex items-center gap-2">🔒 Private Photos</CardTitle>
+          <CardTitle className="font-heading text-lg flex items-center gap-2">🔒 {t('private_photos_and_videos_title')}</CardTitle>
           <CardDescription>{videosPrivateEnabled ? t(isMale ? 'private_photos_videos_desc_men' : 'private_photos_videos_desc_women', { n: maxPrivatePhotos, photoCost: config?.tokens_private_photo_cost ?? 5, videoCost: config?.tokens_private_video_cost ?? 10 }) : t('private_photos_desc', { n: maxPrivatePhotos, photoCost: config?.tokens_private_photo_cost ?? 5 })}</CardDescription>
           <p className="text-xs text-primary font-medium mt-2">{t('private_photos_creator_earnings_desc', { percentage: config?.private_media_creator_share_percentage ?? 80 })}</p>
         </CardHeader>
@@ -211,12 +211,12 @@ export default function PrivatePhotosSection({ profile, onRefetch, maxPrivatePho
             <>
               <Button variant="outline" className="gap-2" onClick={handleUploadClick} disabled={uploading}>
                 {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
-                {uploading ? 'Uploading...' : `Upload Private ${videosPrivateEnabled && photosPrivateEnabled ? 'Photo/Video' : videosPrivateEnabled ? 'Video' : 'Photo'}${isMale ? ' (10 tokens)' : ''}`}
+                {uploading ? t('private_photos_uploading') : `${t(videosPrivateEnabled && photosPrivateEnabled ? 'private_photos_upload_photo_video' : videosPrivateEnabled ? 'private_photos_upload_video' : 'private_photos_upload_photo')}${isMale ? ` (10 ${t('tokens_label')})` : ''}`}
               </Button>
               <input ref={fileRef} type="file" accept={videosPrivateEnabled && photosPrivateEnabled ? "image/*,video/*" : videosPrivateEnabled ? "video/*" : "image/*"} className="hidden" onChange={handleFileChange} />
             </>
           ) : (
-            <p className="text-sm text-muted-foreground bg-muted rounded-lg px-3 py-2">Private photo and video uploads are currently disabled.</p>
+            <p className="text-sm text-muted-foreground bg-muted rounded-lg px-3 py-2">{t('private_photos_uploads_disabled')}</p>
           )}
 
           {displayPhotos.length > 0 && (

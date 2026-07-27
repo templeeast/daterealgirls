@@ -5,8 +5,10 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import WinkButton from '@/components/profile/WinkButton';
+import { useTranslation } from 'react-i18next';
 
 export default function ProfileCard({ profile, onFavorite, isFavorited, myProfile, hasWinked, canInteract, onLockedInteract }) {
+  const { t } = useTranslation();
   const lookingForLabels = {
     relationship: 'Relationship',
     friendship: 'Friendship',
@@ -45,22 +47,22 @@ export default function ProfileCard({ profile, onFavorite, isFavorited, myProfil
           {profile.verification_status === 'verified' && profile.profile_review_status === 'approved' ? (
             <div className="absolute top-3 left-3 bg-green-500/90 backdrop-blur-sm text-white px-2 py-1 rounded-full flex items-center gap-1 text-xs font-medium">
               <Shield className="w-3 h-3" />
-              Verified
+              {t('vp_verified')}
             </div>
           ) : profile.profile_review_status === 'approved' ? (
             <div className="absolute top-3 left-3 bg-slate-500/90 backdrop-blur-sm text-white px-2 py-1 rounded-full flex items-center gap-1 text-xs font-medium">
               <AlertCircle className="w-3 h-3" />
-              Un-Verified
+              {t('vp_unverified')}
             </div>
           ) : profile.verification_status === 'rejected' || profile.profile_review_status === 'rejected' ? (
             <div className="absolute top-3 left-3 bg-red-500/90 backdrop-blur-sm text-white px-2 py-1 rounded-full flex items-center gap-1 text-xs font-medium">
               <AlertCircle className="w-3 h-3" />
-              Rejected
+              {t('browse_badge_rejected')}
             </div>
           ) : (
             <div className="absolute top-3 left-3 bg-amber-500/90 backdrop-blur-sm text-white px-2 py-1 rounded-full flex items-center gap-1 text-xs font-medium">
               <Clock className="w-3 h-3" />
-              Pending
+              {t('vp_pending')}
             </div>
           )}
 
