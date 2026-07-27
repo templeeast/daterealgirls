@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Shield, Loader2 } from 'lucide-react';
 
 export default function VerificationRequiredModal({ open, onClose, onVerify }) {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -14,7 +16,7 @@ export default function VerificationRequiredModal({ open, onClose, onVerify }) {
       await onVerify();
       onClose();
     } catch (e) {
-      setError(e?.message || 'Could not start verification. Please try again.');
+      setError(e?.message || t('verif_required_error'));
     } finally {
       setLoading(false);
     }
@@ -29,19 +31,19 @@ export default function VerificationRequiredModal({ open, onClose, onVerify }) {
               <Shield className="w-6 h-6 text-primary" />
             </div>
           </div>
-          <DialogTitle className="text-center font-heading">Identity Verification Required</DialogTitle>
+          <DialogTitle className="text-center font-heading">{t('verif_required_title')}</DialogTitle>
           <DialogDescription className="text-center">
-            This action requires you to verify your identity. It only takes a minute.
+            {t('verif_required_desc')}
           </DialogDescription>
         </DialogHeader>
         {error && <p className="text-sm text-destructive text-center px-4">{error}</p>}
         <DialogFooter className="flex-col gap-2 sm:flex-col">
           <Button className="w-full gap-2" onClick={handleVerifyClick} disabled={loading}>
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Shield className="w-4 h-4" />}
-            {loading ? 'Launching verification...' : 'Verify My Identity'}
+            {loading ? t('verif_required_launching') : t('verif_required_button')}
           </Button>
           <Button variant="outline" className="w-full" onClick={onClose} disabled={loading}>
-            Not Now
+            {t('verif_required_not_now')}
           </Button>
         </DialogFooter>
       </DialogContent>
