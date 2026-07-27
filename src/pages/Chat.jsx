@@ -11,6 +11,7 @@ import useSiteConfig from '@/hooks/useSiteConfig';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import VerificationRequiredModal from '@/components/shared/VerificationRequiredModal';
+import { useToast } from '@/components/ui/use-toast';
 
 const requiresIdVerification = (memberProfile) =>
   memberProfile?.verification_status === 'verified' || memberProfile?.didit_verification_status === 'Approved';
@@ -70,6 +71,7 @@ export default function Chat() {
   const { config } = useSiteConfig();
   const { t } = useTranslation();
   const queryClient = useQueryClient();
+  const { toast } = useToast();
   const [text, setText] = useState('');
   const [rateLimited, setRateLimited] = useState(false);
   const [showVerifModal, setShowVerifModal] = useState(false);
@@ -238,7 +240,7 @@ export default function Chat() {
     // Check if user can afford the photo token cost
     const canAffordPhoto = !isMale || tokens >= photoTokenCost;
     if (!canAffordPhoto) {
-      alert(t('chat_photo_insufficient_tokens', { n: photoTokenCost }));
+      toast({ title: t('chat_photo_insufficient_tokens', { n: photoTokenCost }), variant: 'destructive' });
       e.target.value = '';
       return;
     }
@@ -294,12 +296,12 @@ export default function Chat() {
       return;
     }
     if (file.size > maxVideoFileSizeMB * 1024 * 1024) {
-      alert(t('chat_video_too_large', { n: maxVideoFileSizeMB }));
+      toast({ title: t('chat_video_too_large', { n: maxVideoFileSizeMB }), variant: 'destructive' });
       e.target.value = '';
       return;
     }
     if (tokens < videoTokenCost) {
-      alert(t('chat_video_insufficient_tokens', { n: videoTokenCost }));
+      toast({ title: t('chat_video_insufficient_tokens', { n: videoTokenCost }), variant: 'destructive' });
       e.target.value = '';
       return;
     }
@@ -307,7 +309,7 @@ export default function Chat() {
     videoEl.preload = 'metadata';
     videoEl.onloadedmetadata = async () => {
       if (videoEl.duration > maxVideoDuration) {
-        alert(t('chat_video_too_long', { n: maxVideoDuration }));
+        toast({ title: t('chat_video_too_long', { n: maxVideoDuration }), variant: 'destructive' });
         e.target.value = '';
         return;
       }
