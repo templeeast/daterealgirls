@@ -307,8 +307,21 @@ export default function Chat() {
     }
     const videoEl = document.createElement('video');
     videoEl.preload = 'metadata';
+    const objectUrl = URL.createObjectURL(file);
+    let metadataHandled = false;
+    const metadataTimeout = setTimeout(() => {
+      if (metadataHandled) return;
+      metadataHandled = true;
+      URL.revokeObjectURL(objectUrl);
+      toast({ title: t('chat_video_metadata_error', { defaultValue: 'Could not read video. Please try a different file.' }), variant: 'destructive' });
+      e.target.value = '';
+    }, 10000);
     videoEl.onloadedmetadata = async () => {
-      if (videoEl.duration > maxVideoDuration) {
+      if (metadataHandled) return;
+      metadataHandled = true;
+      clearTimeout(metadataTimeout);
+      URL.revokeObjectURL(objectUrl);
+      if (!videoEl.duration || !isFinite(videoEl.duration) || videoEl.duration > maxVideoDuration) {
         toast({ title: t('chat_video_too_long', { n: maxVideoDuration }), variant: 'destructive' });
         e.target.value = '';
         return;
@@ -324,7 +337,11 @@ export default function Chat() {
         });
         const videoUrl = res.data?.url;
         const thumbnailUrl = res.data?.thumbnail_url;
-        if (!videoUrl) return;
+        if (!videoUrl) {
+          toast({ title: t('chat_video_upload_failed', { defaultValue: 'Video upload failed. Please try again.' }), variant: 'destructive' });
+          e.target.value = '';
+          return;
+        }
         const myProfile = (await base44.entities.MemberProfile.filter({ user_id: user.id }))[0];
         if (videoTokenCost > 0) {
           await base44.entities.MemberProfile.update(myProfile.id, {
@@ -355,7 +372,15 @@ export default function Chat() {
       };
       reader.readAsDataURL(file);
     };
-    videoEl.src = URL.createObjectURL(file);
+    videoEl.onerror = () => {
+      if (metadataHandled) return;
+      metadataHandled = true;
+      clearTimeout(metadataTimeout);
+      URL.revokeObjectURL(objectUrl);
+      toast({ title: t('chat_video_metadata_error', { defaultValue: 'Could not read video. Please try a different file.' }), variant: 'destructive' });
+      e.target.value = '';
+    };
+    videoEl.src = objectUrl;
   };
 
   if (!conversation) return null;
