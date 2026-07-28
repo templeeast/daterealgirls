@@ -97,6 +97,13 @@ Deno.serve(async (req) => {
       favoritesDeleted++;
     }
 
+    // 3b. Delete all favorites pointing at this user's profile
+    const favoritedAt = await base44.asServiceRole.entities.Favorite.filter({ favorited_profile_id: userId });
+    for (const fav of favoritedAt) {
+      await base44.asServiceRole.entities.Favorite.delete(fav.id);
+      favoritesDeleted++;
+    }
+
     // 4. Delete all winks sent by this user
     const sentWinks = await base44.asServiceRole.entities.Wink.filter({ sender_id: userId });
     for (const wink of sentWinks) {
@@ -105,7 +112,7 @@ Deno.serve(async (req) => {
     }
 
     // 5. Delete all winks received by this user's profile
-    const receivedWinks = await base44.asServiceRole.entities.Wink.filter({ recipient_profile_id: deletedProfile.id });
+    const receivedWinks = await base44.asServiceRole.entities.Wink.filter({ recipient_profile_id: userId });
     for (const wink of receivedWinks) {
       await base44.asServiceRole.entities.Wink.delete(wink.id);
       winksDeleted++;
