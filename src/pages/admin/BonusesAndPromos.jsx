@@ -10,10 +10,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { ArrowLeft, Plus, Pencil, Trash2, Tag, Gift, CheckCircle2, XCircle, Loader2 } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
+import { ETHNICITY_LABELS } from '@/lib/ethnicityOptions';
 import { useToast } from '@/components/ui/use-toast';
 
 const emptyPromoForm = { code: '', description: '', tokens: '', type: 'purchase', gender: 'all', is_active: true, visible: true, auto_award: false, max_uses: '', expires_at: '' };
-const emptyBonusForm = { user_id: '', tokens: '', reason: '', gender: 'all' };
+const emptyBonusForm = { user_id: '', tokens: '', reason: '', ethnicity: 'all' };
 
 export default function BonusesAndPromos() {
   const navigate = useNavigate();
@@ -26,7 +27,7 @@ export default function BonusesAndPromos() {
   const [promoForm, setPromoForm] = useState(emptyPromoForm);
   const [bonusForm, setBonusForm] = useState(emptyBonusForm);
   const [awardingBonus, setAwardingBonus] = useState(false);
-  const [awardToAll, setAwardToAll] = useState(false);
+  const [awardTarget, setAwardTarget] = useState('single');
 
   const { data: codes = [], isLoading: codesLoading } = useQuery({
     queryKey: ['promo-codes'],
@@ -84,25 +85,30 @@ export default function BonusesAndPromos() {
         throw new Error('Tokens and reason required');
       }
 
-      if (awardToAll) {
-        const targetProfiles = data.gender && data.gender !== 'all'
-          ? (profiles || []).filter(p => p.gender === data.gender)
-          : (profiles || []);
-        if (targetProfiles.length === 0) throw new Error('No members to award');
-        await Promise.all(
-          targetProfiles.map(async (profile) => {
-            const currentTokens = profile.tokens || 0;
-            await base44.entities.MemberProfile.update(profile.id, {
-              tokens: currentTokens + tokensToAdd,
-            });
-            await base44.entities.TokenTransaction.create({
-              user_id: profile.user_id,
-              type: 'bonus',
-              tokens: tokensToAdd,
-              description: reason,
-            });
-          })
-        );
+      if (awardTarget !== 'single') {
+        let targetProfiles = profiles || [];
+        if (awardTarget === 'male') {
+          targetProfiles = targetProfiles.filter(p => p.gender === 'male');
+        } else if (awardTarget === 'female') {
+          targetProfiles = targetProfiles.filter(p => p.gender === 'female');
+        }
+        if (data.ethnicity && data.ethnicity !== 'all') {
+          targetProfiles = targetProfiles.filter(p => p.ethnicity === data.ethnicity);
+        }
+        if (targetProfiles.length === 0) throw new Error('No members match the selected criteria');
+
+        const updates = targetProfiles.map(p => ({ id: p.id, tokens: (p.tokens || 0) + tokensToAdd }));
+        await base44.entities.MemberProfile.bulkUpdate(updates);
+
+        const transactions = targetProfiles.map(p => ({
+          user_id: p.user_id,
+          type: 'bonus',
+          tokens: tokensToAdd,
+          description: reason,
+        }));
+        await base44.entities.TokenTransaction.bulkCreate(transactions);
+
+        return { count: targetProfiles.length };
       } else {
         const profileId = data.user_id;
         if (!profileId) throw new Error('Member selection required');
@@ -110,9 +116,8 @@ export default function BonusesAndPromos() {
         const profile = profiles.find(p => p.id === profileId);
         if (!profile) throw new Error('Profile not found');
 
-        const currentTokens = profile.tokens || 0;
         await base44.entities.MemberProfile.update(profileId, {
-          tokens: currentTokens + tokensToAdd,
+          tokens: (profile.tokens || 0) + tokensToAdd,
         });
 
         await base44.entities.TokenTransaction.create({
@@ -121,16 +126,26 @@ export default function BonusesAndPromos() {
           tokens: tokensToAdd,
           description: reason,
         });
-      }
 
-      return { success: true };
+        return { count: 1 };
+      }
     },
-    onSuccess: () => {
+    onSuccess: (result) => {
       qc.invalidateQueries({ queryKey: ['member-profiles'] });
+      const targetLabel = awardTarget === 'male'
+        ? 'all male members'
+        : awardTarget === 'female'
+          ? 'all female members'
+          : awardTarget === 'all'
+            ? 'all members'
+            : 'member';
+      const ethnicLabel = bonusForm.ethnicity && bonusForm.ethnicity !== 'all'
+        ? ` (${ETHNICITY_LABELS[bonusForm.ethnicity]})`
+        : '';
       setBonusForm(emptyBonusForm);
-      setAwardToAll(false);
+      setAwardTarget('single');
       setAwardingBonus(false);
-      toast({ title: `Bonus awarded to ${awardToAll ? (bonusForm.gender && bonusForm.gender !== 'all' ? `all ${bonusForm.gender} members` : 'all members') : 'member'} successfully!` });
+      toast({ title: `Bonus awarded to ${targetLabel}${ethnicLabel} — ${result.count} member(s) updated!` });
     },
     onError: (err) => {
       toast({ title: err.message || 'Failed to award bonus', variant: 'destructive' });
@@ -413,39 +428,48 @@ export default function BonusesAndPromos() {
                 <Gift className="w-5 h-5" />
                 Award Bonus Tokens
               </CardTitle>
-              <CardDescription>Manually award bonus tokens to a member</CardDescription>
+              <CardDescription>Award bonus tokens to a single member or a filtered group</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex items-center gap-3 p-3 bg-muted rounded-lg">
-                <input
-                  type="checkbox"
-                  id="award_all"
-                  checked={awardToAll}
-                  onChange={e => {
-                    setAwardToAll(e.target.checked);
-                    if (e.target.checked) setBonusForm(f => ({ ...f, user_id: '' }));
-                  }}
-                  className="w-4 h-4 accent-primary"
-                />
-                <label htmlFor="award_all" className="text-sm font-medium cursor-pointer flex-1">Award to all members</label>
+              <div>
+                <label className="text-sm font-medium mb-2 block">Award Target</label>
+                <Select value={awardTarget} onValueChange={v => { setAwardTarget(v); if (v !== 'single') setBonusForm(f => ({ ...f, user_id: '' })); }}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="single">Single member</SelectItem>
+                    <SelectItem value="all">All members</SelectItem>
+                    <SelectItem value="male">All men</SelectItem>
+                    <SelectItem value="female">All women</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
-              {awardToAll && (
+              {awardTarget !== 'single' && (
                 <div>
-                  <label className="text-sm font-medium mb-2 block">Gender</label>
-                  <Select value={bonusForm.gender} onValueChange={v => setBonusForm(f => ({ ...f, gender: v }))}>
+                  <label className="text-sm font-medium mb-2 block">Ethnicity Filter (optional)</label>
+                  <Select value={bonusForm.ethnicity} onValueChange={v => setBonusForm(f => ({ ...f, ethnicity: v }))}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">All members</SelectItem>
-                      <SelectItem value="male">Male members only</SelectItem>
-                      <SelectItem value="female">Female members only</SelectItem>
+                      <SelectItem value="all">All ethnicities</SelectItem>
+                      {Object.entries(ETHNICITY_LABELS).map(([value, label]) => (
+                        <SelectItem key={value} value={value}>{label}</SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
+                  <p className="text-xs text-muted-foreground mt-1.5">
+                    {(() => {
+                      let count = profiles || [];
+                      if (awardTarget === 'male') count = count.filter(p => p.gender === 'male');
+                      else if (awardTarget === 'female') count = count.filter(p => p.gender === 'female');
+                      if (bonusForm.ethnicity && bonusForm.ethnicity !== 'all') count = count.filter(p => p.ethnicity === bonusForm.ethnicity);
+                      return `${count.length} member(s) will receive the bonus`;
+                    })()}
+                  </p>
                 </div>
               )}
               <div>
-                <label className="text-sm font-medium mb-2 block">Select Member {!awardToAll && '*'}</label>
-                <Select value={bonusForm.user_id} onValueChange={v => setBonusForm(f => ({ ...f, user_id: v }))} disabled={awardToAll}>
-                  <SelectTrigger><SelectValue placeholder={profilesLoading ? 'Loading members...' : awardToAll ? 'Awarding to all' : 'Select a member...'} /></SelectTrigger>
+                <label className="text-sm font-medium mb-2 block">Select Member {awardTarget === 'single' && '*'}</label>
+                <Select value={bonusForm.user_id} onValueChange={v => setBonusForm(f => ({ ...f, user_id: v }))} disabled={awardTarget !== 'single'}>
+                  <SelectTrigger><SelectValue placeholder={profilesLoading ? 'Loading members...' : awardTarget !== 'single' ? 'Disabled — awarding to a group' : 'Select a member...'} /></SelectTrigger>
                   <SelectContent>
                     {profiles.map(p => (
                       <SelectItem key={p.id} value={p.id}>
@@ -475,13 +499,13 @@ export default function BonusesAndPromos() {
               </div>
               <Button
                 onClick={() => awardBonusMutation.mutate(bonusForm)}
-                disabled={awardBonusMutation.isPending || (!awardToAll && !bonusForm.user_id) || !bonusForm.tokens || !bonusForm.reason.trim()}
+                disabled={awardBonusMutation.isPending || (awardTarget === 'single' && !bonusForm.user_id) || !bonusForm.tokens || !bonusForm.reason.trim()}
                 className="w-full gap-2"
               >
                 {awardBonusMutation.isPending ? (
                   <><Loader2 className="w-4 h-4 animate-spin" /> Awarding...</>
                 ) : (
-                  <><Gift className="w-4 h-4" /> Award Bonus {awardToAll && `to ${bonusForm.gender && bonusForm.gender !== 'all' ? `${bonusForm.gender === 'male' ? 'Male' : 'Female'} (${(profiles || []).filter(p => p.gender === bonusForm.gender).length})` : `All (${profiles?.length || 0})`}`}</>
+                  <><Gift className="w-4 h-4" /> Award Bonus</>
                 )}
               </Button>
             </CardContent>

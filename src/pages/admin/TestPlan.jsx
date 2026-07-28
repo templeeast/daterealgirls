@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { CheckSquare, Square, ChevronDown, ChevronRight, Shield, Users, CreditCard, MessageSquare, Heart, Settings, Bug, Globe, Trash2, RefreshCw, Tag, Camera, Lock, Image, Key, Link, Monitor, Video, MapPin, EyeOff, Coffee } from 'lucide-react';
+import { CheckSquare, Square, ChevronDown, ChevronRight, Shield, Users, CreditCard, MessageSquare, Heart, Settings, Bug, Globe, Trash2, RefreshCw, Tag, Camera, Lock, Image, Key, Link, Monitor, Video, MapPin, EyeOff, Coffee, Gift } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import useMyProfile from '@/hooks/useMyProfile';
 import { base44 } from '@/api/base44Client';
@@ -1107,6 +1107,49 @@ const sections = [
       { id: 'eth-10', label: 'Ethnicity field does not affect verification status or flow' },
       { id: 'eth-11', label: 'Admin Member Management: Ethnicity is visible in the admin member detail view' },
       { id: 'eth-12', label: 'Database: ethnicity field accepts only valid enum values — invalid values are rejected' },
+    ],
+  },
+  {
+    id: 'award_bonuses',
+    icon: Gift,
+    title: 'Award Bonuses — Bulk Token Awards',
+    color: 'text-amber-500',
+    items: [
+      // --- Single Member Award ---
+      { id: 'ab-1', label: 'Award Bonuses tab loads with "Award Target" selector defaulting to "Single member"' },
+      { id: 'ab-2', label: 'SINGLE: Selecting a member from the dropdown populates the member selector' },
+      { id: 'ab-3', label: 'SINGLE: Awarding tokens to a single member adds tokens to their balance and creates a TokenTransaction (type: bonus)' },
+      { id: 'ab-4', label: 'SINGLE: Member selector is disabled when Award Target is changed from "Single member"' },
+      // --- All Members Award ---
+      { id: 'ab-5', label: 'ALL: Selecting "All members" as Award Target disables the member selector and shows a live count of total members' },
+      { id: 'ab-6', label: 'ALL: Awarding tokens to all members updates every member\'s token balance and creates a TokenTransaction for each' },
+      // --- Gender-Targeted Awards ---
+      { id: 'ab-7', label: 'MALE: Selecting "All men" as Award Target filters to only male members and shows the live male count' },
+      { id: 'ab-8', label: 'MALE: Awarding tokens to all men only updates male members\' balances (female members are unchanged)' },
+      { id: 'ab-9', label: 'MALE: A TokenTransaction (type: bonus) is created for each male member' },
+      { id: 'ab-10', label: 'FEMALE: Selecting "All women" as Award Target filters to only female members and shows the live female count' },
+      { id: 'ab-11', label: 'FEMALE: Awarding tokens to all women only updates female members\' balances (male members are unchanged)' },
+      { id: 'ab-12', label: 'FEMALE: A TokenTransaction (type: bonus) is created for each female member' },
+      // --- Ethnicity Filter ---
+      { id: 'ab-13', label: 'ETHNICITY: Ethnicity selector appears only when Award Target is not "Single member"' },
+      { id: 'ab-14', label: 'ETHNICITY: Ethnicity selector defaults to "All ethnicities" (no filter)' },
+      { id: 'ab-15', label: 'ETHNICITY: Selecting an ethnicity narrows the live count to members matching both the gender target and the selected ethnicity' },
+      { id: 'ab-16', label: 'ETHNICITY: Awarding with "All men" + "Asian" selected only updates male members with ethnicity=asian' },
+      { id: 'ab-17', label: 'ETHNICITY: Awarding with "All women" + "Caucasian/White" selected only updates female members with ethnicity=caucasian' },
+      { id: 'ab-18', label: 'ETHNICITY: Awarding with "All members" + "Hispanic/Latino" selected only updates members with ethnicity=hispanic (regardless of gender)' },
+      { id: 'ab-19', label: 'ETHNICITY: Selecting "All ethnicities" (default) with any gender target awards to all members of that gender regardless of ethnicity' },
+      { id: 'ab-20', label: 'ETHNICITY: Live count updates correctly when switching ethnicity filter while keeping the same gender target' },
+      // --- Edge Cases ---
+      { id: 'ab-21', label: 'EDGE: Awarding to a group with zero matching members shows an error toast "No members match the selected criteria"' },
+      { id: 'ab-22', label: 'EDGE: Awarding to a gender+ethnicity combo with zero matches shows an error toast (no tokens are awarded)' },
+      { id: 'ab-23', label: 'EDGE: Tokens and Reason fields are required — awarding with empty fields is blocked' },
+      { id: 'ab-24', label: 'EDGE: Success toast displays the correct target label (Single member / All members / All men / All women) and count' },
+      { id: 'ab-25', label: 'EDGE: Success toast includes the ethnicity label when an ethnicity filter was applied (e.g. "all female members (Asian)")' },
+      { id: 'ab-26', label: 'EDGE: After a successful award, the form resets to "Single member" target with empty fields' },
+      // --- Bulk Efficiency ---
+      { id: 'ab-27', label: 'BULK: Awarding to a large group (10+ members) completes without errors using bulkUpdate and bulkCreate' },
+      { id: 'ab-28', label: 'BULK: All matching members receive the exact same token amount specified in the form' },
+      { id: 'ab-29', label: 'BULK: All TokenTransaction records have the correct reason text from the form' },
     ],
   },
 ];
