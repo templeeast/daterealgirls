@@ -209,6 +209,47 @@ export function generateTikTokAd(siteName, tagline, includeTagline = true, width
   return svg;
 }
 
+export function generateSocialImage(siteName, tagline, includeTagline = true, width = 1200, height = 630) {
+  const name = getDisplayName(siteName);
+  const domain = getDomain(siteName);
+  const initials = getInitials(siteName);
+  const isLandscape = width > height * 1.3;
+  const iconSize = Math.min(width * 0.16, height * 0.32, 200);
+  const nameFS = Math.min(width, height) * 0.06;
+  const tagFS = Math.min(width, height) * 0.032;
+  const urlFS = Math.min(width, height) * 0.024;
+
+  let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+<defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="${PRIMARY}"/><stop offset="100%" stop-color="${PRIMARY_DARK}"/></linearGradient></defs>
+<rect width="${width}" height="${height}" fill="${DARK}"/>`;
+
+  if (isLandscape) {
+    const iconX = width * 0.06;
+    const iconY = height / 2 - iconSize / 2;
+    const textX = iconX + iconSize + 40;
+    svg += `<rect x="${iconX}" y="${iconY}" width="${iconSize}" height="${iconSize}" rx="${iconSize * 0.22}" fill="url(#g)"/>`;
+    svg += `<text x="${iconX + iconSize / 2}" y="${iconY + iconSize / 2}" text-anchor="middle" dominant-baseline="central" font-family="Arial, sans-serif" font-size="${iconSize * 0.36}" font-weight="bold" fill="${WHITE}">${initials}</text>`;
+    svg += `<text x="${textX}" y="${height / 2 - 40}" dominant-baseline="central" font-family="Arial, sans-serif" font-size="${nameFS}" font-weight="bold" fill="${WHITE}">${name}</text>`;
+    if (includeTagline && tagline) {
+      svg += `<text x="${textX}" y="${height / 2 + 5}" dominant-baseline="central" font-family="Arial, sans-serif" font-size="${tagFS}" fill="${GREY}">${tagline}</text>`;
+    }
+    svg += `<text x="${textX}" y="${height / 2 + 50}" dominant-baseline="central" font-family="Arial, sans-serif" font-size="${urlFS}" fill="${PRIMARY}">${domain}</text>`;
+    svg += `<text x="${textX}" y="${height / 2 + 85}" dominant-baseline="central" font-family="Arial, sans-serif" font-size="${tagFS * 0.8}" fill="${WHITE}" opacity="0.7">ID-Verified Dating • Real Connections</text>`;
+  } else {
+    const iconY = height * 0.12;
+    svg += `<rect x="${width / 2 - iconSize / 2}" y="${iconY}" width="${iconSize}" height="${iconSize}" rx="${iconSize * 0.22}" fill="url(#g)"/>`;
+    svg += `<text x="${width / 2}" y="${iconY + iconSize / 2}" text-anchor="middle" dominant-baseline="central" font-family="Arial, sans-serif" font-size="${iconSize * 0.36}" font-weight="bold" fill="${WHITE}">${initials}</text>`;
+    svg += `<text x="${width / 2}" y="${iconY + iconSize + 55}" text-anchor="middle" dominant-baseline="central" font-family="Arial, sans-serif" font-size="${nameFS}" font-weight="bold" fill="${WHITE}">${name}</text>`;
+    if (includeTagline && tagline) {
+      svg += `<text x="${width / 2}" y="${iconY + iconSize + 95}" text-anchor="middle" dominant-baseline="central" font-family="Arial, sans-serif" font-size="${tagFS}" fill="${GREY}">${tagline}</text>`;
+    }
+    svg += `<text x="${width / 2}" y="${iconY + iconSize + 135}" text-anchor="middle" dominant-baseline="central" font-family="Arial, sans-serif" font-size="${urlFS}" fill="${PRIMARY}">${domain}</text>`;
+    svg += `<text x="${width / 2}" y="${iconY + iconSize + 170}" text-anchor="middle" dominant-baseline="central" font-family="Arial, sans-serif" font-size="${tagFS * 0.8}" fill="${WHITE}" opacity="0.7">ID-Verified Dating • Real Connections</text>`;
+  }
+  svg += `</svg>`;
+  return svg;
+}
+
 export function downloadSvg(svgString, filename) {
   const blob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
   const url = URL.createObjectURL(blob);

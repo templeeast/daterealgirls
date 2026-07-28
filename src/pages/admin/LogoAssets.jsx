@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Shield, AppWindow, StretchHorizontal, StretchVertical, Megaphone, Save, Loader2, Image as ImageIcon, Share2, Smartphone } from 'lucide-react';
+import { Shield, AppWindow, StretchHorizontal, StretchVertical, Megaphone, Save, Loader2, Image as ImageIcon, Share2, Smartphone, Globe } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
@@ -16,6 +16,7 @@ import {
   generateAppLogo,
   generateFacebookAd,
   generateTikTokAd,
+  generateSocialImage,
   downloadSvg,
   downloadPng,
   downloadFromUrl,
@@ -49,6 +50,12 @@ const TIKTOK_AD_RESOLUTIONS = [
   { label: '1080 × 1920 (In-Feed 9:16)', width: 1080, height: 1920 },
   { label: '640 × 640 (Square)', width: 640, height: 640 },
   { label: '540 × 960 (Vertical)', width: 540, height: 960 },
+];
+
+const SOCIAL_IMAGE_RESOLUTIONS = [
+  { label: '1200 × 630 (OpenGraph / Recommended)', width: 1200, height: 630 },
+  { label: '1200 × 628 (Facebook Feed)', width: 1200, height: 628 },
+  { label: '800 × 418 (Twitter Summary)', width: 800, height: 418 },
 ];
 
 export default function LogoAssets() {
@@ -143,7 +150,7 @@ export default function LogoAssets() {
     setRegeneratingKey(key);
     try {
       if (description?.trim()) {
-        const assetLabels = { appIcon: 'square app icon', appLogo: 'full app logo with brand name and tagline', horizontal: 'horizontal logo', vertical: 'vertical logo', billboard: 'billboard advertisement', facebookAd: 'Facebook advertisement', tiktokAd: 'TikTok advertisement' };
+        const assetLabels = { appIcon: 'square app icon', appLogo: 'full app logo with brand name and tagline', horizontal: 'horizontal logo', vertical: 'vertical logo', billboard: 'billboard advertisement', facebookAd: 'Facebook advertisement', tiktokAd: 'TikTok advertisement', socialImage: 'social sharing preview image for OpenGraph and social media' };
         const basePrompt = `for ${siteName}, a dating platform. ${description.trim()}. Use pink/red primary color (#e32652) with dark navy (#1a1a2e) and white. High quality, clean, modern design.`;
 
         if (key === 'billboard') {
@@ -288,6 +295,7 @@ export default function LogoAssets() {
   const appLogoSvg = generateAppLogo(siteName, tagline, includeTagline);
   const facebookAdSvg = generateFacebookAd(siteName, tagline, includeTagline);
   const tiktokAdSvg = generateTikTokAd(siteName, tagline, includeTagline);
+  const socialImageSvg = generateSocialImage(siteName, tagline, includeTagline);
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
@@ -545,6 +553,41 @@ export default function LogoAssets() {
           onSave={() => handleSave('tiktokAd')}
           hasUnsavedChanges={hasUnsavedChanges('tiktokAd')}
           saving={savingKey === 'tiktokAd'}
+        />
+
+        <LogoAssetCard
+          icon={Globe}
+          title="Social Image (OpenGraph)"
+          description="Social sharing preview image (1200×630) for OpenGraph, Facebook, Twitter, and other social platforms. Upload this to the Base44 Dashboard for your app's social preview."
+          previewUrl={svgToDataUrl(socialImageSvg)}
+          customUrl={customAssets.socialImage}
+          previewClassName="min-h-[100px]"
+          resolutions={SOCIAL_IMAGE_RESOLUTIONS}
+          onDownloadPng={async (w, h) => {
+            const customUrl = customAssets.socialImage;
+            if (customUrl) {
+              try {
+                await downloadResizedImage(customUrl, `${slug}-social-${w}x${h}.png`, w, h);
+              } catch {
+                toast.error('Failed to generate PNG at target size');
+              }
+            } else {
+              const svg = generateSocialImage(siteName, tagline, includeTagline, w, h);
+              await handlePng(svg, `${slug}-social-${w}x${h}.png`, w, h);
+            }
+          }}
+          onDownloadSvg={() => downloadSvg(socialImageSvg, `${slug}-social-image.svg`)}
+          onRegenerate={() => handleRegenerate('socialImage', regenerateDescriptions.socialImage, applyToExisting.socialImage)}
+          onUpload={(file) => handleUpload('socialImage', file)}
+          uploading={uploadingKey === 'socialImage'}
+          regenerating={regeneratingKey === 'socialImage'}
+          regenerateDescription={regenerateDescriptions.socialImage || ''}
+          onRegenerateDescriptionChange={(val) => updateDescription('socialImage', val)}
+          applyToExisting={applyToExisting.socialImage || false}
+          onApplyToExistingChange={(checked) => setApplyToExisting(prev => ({ ...prev, socialImage: checked }))}
+          onSave={() => handleSave('socialImage')}
+          hasUnsavedChanges={hasUnsavedChanges('socialImage')}
+          saving={savingKey === 'socialImage'}
         />
       </div>
     </div>
