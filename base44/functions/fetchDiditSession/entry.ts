@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
+import { getActiveDiditCredentials } from '../../shared/diditCredentials.ts';
 
 Deno.serve(async (req) => {
   try {
@@ -9,13 +10,7 @@ Deno.serve(async (req) => {
     const { sessionId } = await req.json();
     if (!sessionId) return Response.json({ error: 'sessionId is required' }, { status: 400 });
 
-    // Get credentials by reading config directly (same logic as getActiveDiditCredentials)
-    const configs = await base44.asServiceRole.entities.SiteConfig.list();
-    const config = configs[0] || {};
-    const isDevMode = config.dev_mode === true;
-    const credentials = {
-      apiKey: isDevMode ? Deno.env.get('DIDIT_API_KEY_DEV') : Deno.env.get('DIDIT_API_KEY_PROD'),
-    };
+    const credentials = await getActiveDiditCredentials(base44);
 
     const response = await fetch(
       `https://verification.didit.me/v3/session/${sessionId}/decision/`,

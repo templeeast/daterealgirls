@@ -118,6 +118,50 @@ Deno.serve(async (req) => {
       winksDeleted++;
     }
 
+    // 6. Delete private photos, access grants, and view records for this member's profile
+    let privatePhotosDeleted = 0;
+    let privatePhotoAccessDeleted = 0;
+    let privatePhotoViewsDeleted = 0;
+    const profileId = deletedProfile.id;
+    if (profileId) {
+      // Delete PrivatePhoto records owned by this member (and their Cloudinary assets)
+      const privatePhotos = await base44.asServiceRole.entities.PrivatePhoto.filter({ member_id: profileId });
+      for (const pp of privatePhotos) {
+        if (cloudName && apiKey && apiSecret) {
+          for (const url of [pp.photo_url, pp.thumbnail_url]) {
+            if (url) {
+              const publicId = extractPublicId(url);
+              if (publicId) {
+                const result = await deleteCloudinaryImage(cloudName, apiKey, apiSecret, publicId);
+                if (result.result === 'ok') cloudinaryDeleted++;
+              }
+            }
+          }
+        }
+        await base44.asServiceRole.entities.PrivatePhoto.delete(pp.id);
+        privatePhotosDeleted++;
+      }
+
+      // Delete PrivatePhotoAccess records where this member is owner or viewer
+      const accessAsOwner = await base44.asServiceRole.entities.PrivatePhotoAccess.filter({ owner_member_id: profileId });
+      for (const acc of accessAsOwner) {
+        await base44.asServiceRole.entities.PrivatePhotoAccess.delete(acc.id);
+        privatePhotoAccessDeleted++;
+      }
+      const accessAsViewer = await base44.asServiceRole.entities.PrivatePhotoAccess.filter({ viewer_member_id: profileId });
+      for (const acc of accessAsViewer) {
+        await base44.asServiceRole.entities.PrivatePhotoAccess.delete(acc.id);
+        privatePhotoAccessDeleted++;
+      }
+
+      // Delete PrivatePhotoView records where this member is the viewer
+      const photoViews = await base44.asServiceRole.entities.PrivatePhotoView.filter({ viewer_member_id: profileId });
+      for (const pv of photoViews) {
+        await base44.asServiceRole.entities.PrivatePhotoView.delete(pv.id);
+        privatePhotoViewsDeleted++;
+      }
+    }
+
     return Response.json({
       success: true,
       user_id: userId,
@@ -126,6 +170,9 @@ Deno.serve(async (req) => {
       conversations_deleted: conversationsDeleted,
       favorites_deleted: favoritesDeleted,
       winks_deleted: winksDeleted,
+      private_photos_deleted: privatePhotosDeleted,
+      private_photo_access_deleted: privatePhotoAccessDeleted,
+      private_photo_views_deleted: privatePhotoViewsDeleted,
     });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
