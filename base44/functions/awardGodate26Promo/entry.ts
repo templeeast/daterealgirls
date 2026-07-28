@@ -16,6 +16,11 @@ Deno.serve(async (req) => {
     const profile = profiles[0];
     if (!profile) return Response.json({ awarded: false, reason: "Profile not found" });
 
+    // 1b. Verify ownership — caller must own the profile being awarded
+    if (profile.user_id !== user.id) {
+      return Response.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
     // 2. Idempotency — no-op if already redeemed
     const usedCodes = profile.used_promo_codes || [];
     if (usedCodes.includes(PROMO_CODE)) {

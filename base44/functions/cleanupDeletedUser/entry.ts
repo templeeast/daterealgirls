@@ -35,8 +35,24 @@ Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
 
-    // This function should only run via automation (service role)
     const payload = await req.json();
+
+    // Allow calls from the entity automation system (MemberProfile delete events)
+    // or authenticated admin users — prevents unauthenticated data destruction
+    const isAutomationCall = payload.event && payload.event.type === 'delete' && payload.event.entity_name === 'MemberProfile';
+
+    if (!isAutomationCall) {
+      let user;
+      try {
+        user = await base44.auth.me();
+      } catch {
+        return Response.json({ error: 'Unauthorized' }, { status: 401 });
+      }
+      if (!user || user.role !== 'admin') {
+        return Response.json({ error: 'Unauthorized' }, { status: 401 });
+      }
+    }
+
     const deletedProfile = payload.data;
     if (!deletedProfile || !deletedProfile.user_id) {
       return Response.json({ error: 'Missing profile data' }, { status: 400 });
