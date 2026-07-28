@@ -197,6 +197,19 @@ export default function LogoAssets() {
           } else {
             toast.error('Failed to generate image');
           }
+        } else if (key === 'socialImage') {
+          const socialPrompt = `A social sharing preview image (OpenGraph) — FLAT 2D design only, no mockup, no browser frame, no device frame, just the image itself. Landscape widescreen 1200×630 aspect ratio (approximately 1.9:1). Include the brand name prominently, a tagline, the website domain, and "ID-Verified Dating • Real Connections" as a subheading. The design should look like a professional social media preview card when the website URL is shared on Facebook, Twitter, LinkedIn, or other platforms. Spread all content across the full wide landscape format with good visual balance. Do NOT include any "Join Now" or "Sign Up" buttons — this is a brand preview image, not an advertisement. ${basePrompt}`;
+          const existingUrl = useExisting ? customAssets.socialImage : null;
+          const res = await base44.integrations.Core.GenerateImage({
+            prompt: socialPrompt,
+            ...(existingUrl ? { existing_image_urls: [existingUrl] } : {}),
+          });
+          if (res.url) {
+            setCustomAssets(prev => ({ ...prev, socialImage: res.url }));
+            toast.success('Social image regenerated with AI');
+          } else {
+            toast.error('Failed to generate image');
+          }
         } else {
           const prompt = `A professional ${assetLabels[key] || 'branding asset'} ${basePrompt}`;
           const existingUrl = useExisting ? customAssets[key] : null;
