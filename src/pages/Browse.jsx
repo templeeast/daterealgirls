@@ -89,6 +89,17 @@ export default function Browse() {
   const [zipSearching, setZipSearching] = useState(false);
   const [zipError, setZipError] = useState('');
 
+  // Default gender filter to opposite of user's gender when no filter has been explicitly saved
+  useEffect(() => {
+    if (!profile?.gender) return;
+    const hasSavedGender = sessionStorage.getItem('browse_gender') !== null;
+    if (!hasSavedGender) {
+      const defaultGender = profile.gender === 'male' ? 'female' : 'male';
+      setGenderFilter(defaultGender);
+      saveFilter('gender', defaultGender);
+    }
+  }, [profile?.gender]);
+
   const handleSearch = v => { setSearch(v); saveFilter('search', v); };
   const handleGender = v => { setGenderFilter(v); saveFilter('gender', v); };
   const handleLookingFor = v => { setLookingForFilter(v); saveFilter('lookingFor', v); };

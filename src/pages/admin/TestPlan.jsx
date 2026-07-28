@@ -82,6 +82,16 @@ const sections = [
       { id: 'browse-44', label: 'AUTO-UNLOCK (0 COST): Unverified user with 0-cost browse still sees the unverified gate (verification is still required)' },
       { id: 'browse-45', label: 'AUTO-UNLOCK (0 COST): No TokenTransaction is created and no tokens are deducted when browse cost is 0' },
       { id: 'browse-46', label: 'AUTO-UNLOCK (0 COST): Setting browse cost back to a positive number re-enables the Unlock All banner and purchase flow' },
+      // --- Default Gender Filter ---
+      { id: 'browse-47', label: 'DEFAULT GENDER: On first visit to Browse (no saved filters in sessionStorage), gender filter defaults to the opposite of the user\'s profile gender' },
+      { id: 'browse-48', label: 'DEFAULT GENDER: Male user sees gender filter default to "Women" (female) on first visit' },
+      { id: 'browse-49', label: 'DEFAULT GENDER: Female user sees gender filter default to "Men" (male) on first visit' },
+      { id: 'browse-50', label: 'DEFAULT GENDER: User\'s manual gender filter selection persists across page navigations via sessionStorage' },
+      { id: 'browse-51', label: 'DEFAULT GENDER: Closing and reopening the filter panel resets gender filter to "all" (not the opposite gender default)' },
+      { id: 'browse-52', label: 'DEFAULT GENDER: After closing filters and navigating away, reopening Browse page shows "all" (user explicitly reset takes precedence over opposite gender default)' },
+      { id: 'browse-53', label: 'DEFAULT GENDER: Clearing sessionStorage and reloading Browse page re-applies the opposite gender default' },
+      { id: 'browse-54', label: 'DEFAULT GENDER: When profile is not yet loaded, gender filter shows "all" temporarily, then updates to opposite gender once profile data arrives' },
+      { id: 'browse-55', label: 'DEFAULT GENDER: The opposite gender default only applies when no gender filter has been explicitly saved in sessionStorage' },
     ],
   },
   {
