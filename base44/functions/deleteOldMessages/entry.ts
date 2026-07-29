@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
+import { verifyAutomationOrAdmin } from '../../shared/automationAuth.ts';
 
 function extractPublicId(url) {
   if (!url) return null;
@@ -35,6 +36,10 @@ async function deleteCloudinaryImage(cloudName, apiKey, apiSecret, publicId) {
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
+
+    if (!await verifyAutomationOrAdmin(req, base44)) {
+      return Response.json({ error: 'Unauthorized' }, { status: 401 });
+    }
 
     // Fetch site config for retention days
     const configs = await base44.asServiceRole.entities.SiteConfig.list();

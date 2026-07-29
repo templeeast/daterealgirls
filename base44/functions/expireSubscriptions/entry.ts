@@ -1,8 +1,13 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
+import { verifyAutomationOrAdmin } from '../../shared/automationAuth.ts';
 
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
+
+    if (!await verifyAutomationOrAdmin(req, base44)) {
+      return Response.json({ error: 'Unauthorized' }, { status: 401 });
+    }
 
     const today = new Date().toISOString().split('T')[0];
 

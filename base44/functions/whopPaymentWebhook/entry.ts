@@ -33,6 +33,10 @@ Deno.serve(async (req) => {
       }
     }
 
+    if (!verified) {
+      return Response.json({ error: 'Webhook signature required' }, { status: 401 });
+    }
+
     const event = JSON.parse(rawBody);
     const eventType = event.type;
     const data = event.data;

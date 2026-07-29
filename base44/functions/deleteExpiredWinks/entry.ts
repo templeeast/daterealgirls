@@ -1,8 +1,13 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.38';
+import { verifyAutomationOrAdmin } from '../../shared/automationAuth.ts';
 
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
+
+    if (!await verifyAutomationOrAdmin(req, base44)) {
+      return Response.json({ error: 'Unauthorized' }, { status: 401 });
+    }
 
     // Fetch site config for wink expiry hours
     const configs = await base44.asServiceRole.entities.SiteConfig.list();

@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
+import { verifyAutomationOrAdmin } from '../../shared/automationAuth.ts';
 
 /**
  * Scheduled function: checks ARB subscription statuses and syncs them to MemberProfile.
@@ -9,6 +10,10 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
+
+    if (!await verifyAutomationOrAdmin(req, base44)) {
+      return Response.json({ error: 'Unauthorized' }, { status: 401 });
+    }
 
     const apiLoginId = Deno.env.get('AUTHORIZENET_API_LOGIN_ID');
     const transactionKey = Deno.env.get('AUTHORIZENET_TRANSACTION_KEY');
