@@ -539,7 +539,7 @@ export default function Chat() {
                       </div>
                     )}
                     {msg.content && msg.content !== '📷 Photo' && msg.content !== '🎥 Video' && (
-                      (msg.content.startsWith('https://buy.stripe.com/') || msg.content.includes('buymeacoffee.com')) ? (
+                      (/^https:\/\/buy\.stripe\.com\//i.test(msg.content) || /^https:\/\/(www\.)?buymeacoffee\.com\//i.test(msg.content)) ? (
                         <a
                           href={msg.content}
                           target="_blank"

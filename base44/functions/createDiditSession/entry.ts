@@ -9,6 +9,14 @@ Deno.serve(async (req) => {
     const { memberId } = await req.json();
     if (!memberId) return Response.json({ error: 'memberId required' }, { status: 400 });
 
+    // Verify the caller owns this MemberProfile (prevent IDOR — creating verification
+    // sessions for other members)
+    const callerProfiles = await base44.asServiceRole.entities.MemberProfile.filter({ user_id: user.id });
+    const callerProfile = callerProfiles[0];
+    if (!callerProfile || callerProfile.id !== memberId) {
+      return Response.json({ error: 'You can only create a verification session for your own profile.' }, { status: 403 });
+    }
+
     // Get active Didit credentials via dev_mode (mirrors WHOP pattern)
     const configs = await base44.asServiceRole.entities.SiteConfig.list();
     const config = configs[0] || {};
