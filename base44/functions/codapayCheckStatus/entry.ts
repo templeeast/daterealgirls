@@ -41,6 +41,21 @@ Deno.serve(async (req) => {
 
     // If payment successful, activate subscription on member profile
     if (status === 'success' && resultCode === 0) {
+      // Verify transaction ownership: the user_id in the payment result must match the caller
+      const userIdEntry = profileEntries.find(e => e.key === 'user_id');
+      if (!userIdEntry || userIdEntry.value !== user.id) {
+        return Response.json({ error: 'Transaction does not belong to this user.' }, { status: 403 });
+      }
+
+      // Verify the paid amount matches the server-side subscription price
+      const configs = await base44.asServiceRole.entities.SiteConfig.list();
+      const config = configs[0] || {};
+      const expectedPrice = Number(config.subscription_price ?? 5);
+      const actualPrice = Number(data.paymentResult?.totalPrice);
+      if (!actualPrice || actualPrice < expectedPrice) {
+        return Response.json({ error: 'Payment amount does not match the required subscription price.' }, { status: 400 });
+      }
+
       const profiles = await base44.asServiceRole.entities.MemberProfile.filter({ user_id: user.id });
       if (profiles.length > 0) {
         const profile = profiles[0];
