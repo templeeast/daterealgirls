@@ -63,6 +63,11 @@ export default function VerificationDetail({ profile: p, onBack, onVerify }) {
 
   const isUnderage = p.age_review_needed && p.didit_age != null && p.didit_age < 18;
 
+  const getReasonLabel = (reason) => {
+    const opt = REASON_OPTIONS.find(o => o.value === reason);
+    return opt ? t(opt.labelKey) : reason?.replace(/_/g, ' ') || reason;
+  };
+
   useEffect(() => {
     if (!p.didit_session_id) return;
     let stale = false;
@@ -149,6 +154,26 @@ export default function VerificationDetail({ profile: p, onBack, onVerify }) {
                     ? 'Didit could not extract an age or date of birth from the ID document. Please review the ID images and approve or reject manually.'
                     : 'Didit approved the ID, but the age/date of birth on the document does not match the age the member entered on their profile. Please review the ID images and approve or reject manually.'}
               </p>
+            </div>
+          )}
+
+          {/* Rejection Reason (read-only, shown when already rejected) */}
+          {p.verification_status === 'rejected' && (
+            <div className="rounded-xl bg-red-50 border border-red-300 p-4 space-y-1">
+              <div className="flex items-center gap-2">
+                <XCircle className="w-4 h-4 text-red-600" />
+                <p className="text-sm font-semibold text-red-800">Profile Rejected</p>
+              </div>
+              {p.verification_rejection_reason && (
+                <p className="text-xs text-red-700">
+                  Reason: <span className="font-medium">{getReasonLabel(p.verification_rejection_reason)}</span>
+                </p>
+              )}
+              {p.verification_rejection_details && (
+                <p className="text-xs text-red-700 whitespace-pre-wrap">
+                  Details: {p.verification_rejection_details}
+                </p>
+              )}
             </div>
           )}
 

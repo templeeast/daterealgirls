@@ -46,7 +46,7 @@ export default function VerifyComplete() {
         const updated = await base44.entities.MemberProfile.filter({ id: p.id });
         const updatedProfile = updated[0];
 
-        if (updatedProfile?.gender_review_needed) {
+        if (updatedProfile?.gender_review_needed || updatedProfile?.age_review_needed) {
           setProfile(updatedProfile);
           setPageStatus('gender_review');
         } else if (updatedProfile?.verification_status === 'verified') {

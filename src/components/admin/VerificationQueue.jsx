@@ -12,7 +12,10 @@ export default function VerificationQueue({ profileId }) {
 
   const { data: pending, isLoading } = useQuery({
     queryKey: ['pendingVerifications'],
-    queryFn: () => base44.entities.MemberProfile.filter({ profile_review_status: 'pending' }),
+    queryFn: async () => {
+      const pending = await base44.entities.MemberProfile.filter({ profile_review_status: 'pending' });
+      return pending.filter(p => p.verification_status !== 'rejected');
+    },
   });
 
   const verifyMutation = useMutation({
