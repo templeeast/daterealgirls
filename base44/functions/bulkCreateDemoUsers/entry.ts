@@ -1,0 +1,214 @@
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.41';
+
+const FEMALE_NAMES = [
+  'Aria', 'Bella', 'Camila', 'Daisy', 'Elena', 'Fiona', 'Grace', 'Hazel', 'Ivy', 'Jade',
+  'Kira', 'Luna', 'Maya', 'Nina', 'Olive', 'Piper', 'Quinn', 'Ruby', 'Sasha', 'Tara',
+  'Uma', 'Vera', 'Willow', 'Xena', 'Yara', 'Zara', 'Amber', 'Bree', 'Cora', 'Demi',
+  'Esme', 'Flora', 'Gwen', 'Holly', 'Iris', 'Joy', 'Kira', 'Lily', 'Mila', 'Nova',
+  'Odette', 'Penny', 'Rosa', 'Stella', 'Tessa', 'Uma', 'Violet', 'Wren', 'Yumi', 'Zoe',
+  'Adele', 'Bianca', 'Carla', 'Delia', 'Eve', 'Freya', 'Gia', 'Hope', 'Ines', 'Juno',
+  'Kelsey', 'Lara', 'Mira', 'Nadia', 'Opal', 'Pearl', 'Rhea', 'Sage', 'Talia', 'Vela'
+];
+
+const CITIES = [
+  { city: 'New York', country: 'United States' },
+  { city: 'Los Angeles', country: 'United States' },
+  { city: 'Chicago', country: 'United States' },
+  { city: 'Houston', country: 'United States' },
+  { city: 'Phoenix', country: 'United States' },
+  { city: 'Miami', country: 'United States' },
+  { city: 'Seattle', country: 'United States' },
+  { city: 'Denver', country: 'United States' },
+  { city: 'Atlanta', country: 'United States' },
+  { city: 'Boston', country: 'United States' },
+  { city: 'Las Vegas', country: 'United States' },
+  { city: 'Portland', country: 'United States' },
+  { city: 'Nashville', country: 'United States' },
+  { city: 'Austin', country: 'United States' },
+  { city: 'San Diego', country: 'United States' },
+  { city: 'Dallas', country: 'United States' },
+  { city: 'Toronto', country: 'Canada' },
+  { city: 'Vancouver', country: 'Canada' },
+  { city: 'Montreal', country: 'Canada' },
+  { city: 'London', country: 'United Kingdom' },
+  { city: 'Manchester', country: 'United Kingdom' },
+  { city: 'Sydney', country: 'Australia' },
+  { city: 'Melbourne', country: 'Australia' },
+  { city: 'Berlin', country: 'Germany' },
+  { city: 'Munich', country: 'Germany' },
+  { city: 'Paris', country: 'France' },
+  { city: 'Madrid', country: 'Spain' },
+  { city: 'Barcelona', country: 'Spain' },
+  { city: 'Rome', country: 'Italy' },
+  { city: 'Milan', country: 'Italy' },
+  { city: 'Amsterdam', country: 'Netherlands' },
+  { city: 'Stockholm', country: 'Sweden' },
+  { city: 'Copenhagen', country: 'Denmark' },
+  { city: 'Dublin', country: 'Ireland' },
+  { city: 'Lisbon', country: 'Portugal' },
+  { city: 'Vienna', country: 'Austria' },
+  { city: 'Prague', country: 'Czech Republic' },
+  { city: 'Warsaw', country: 'Poland' },
+  { city: 'Budapest', country: 'Hungary' },
+  { city: 'Athens', country: 'Greece' },
+  { city: 'Istanbul', country: 'Turkey' },
+  { city: 'Tokyo', country: 'Japan' },
+  { city: 'Osaka', country: 'Japan' },
+  { city: 'Seoul', country: 'South Korea' },
+  { city: 'Bangkok', country: 'Thailand' },
+  { city: 'Singapore', country: 'Singapore' },
+  { city: 'Manila', country: 'Philippines' },
+  { city: 'Jakarta', country: 'Indonesia' },
+  { city: 'Mumbai', country: 'India' },
+  { city: 'Delhi', country: 'India' },
+];
+
+const BIOS = [
+  'Adventurer at heart. Coffee enthusiast and world traveler.',
+  'Yoga lover seekingSomeone to share sunsets with.',
+  'Foodie exploring the city one restaurant at a time.',
+  'Artist and dreamer. Looking for my muse.',
+  'Bookworm who loves rainy days and good conversations.',
+  'Fitness enthusiast. Gym rat by morning, dancer by night.',
+  'Music is my life. Concert junkie and vinyl collector.',
+  'Outdoor explorer. Hiking trails and mountain peaks calling my name.',
+  'Ambitious career woman with a soft spot for romantic dinners.',
+  'Photographer capturing lifes beautiful moments. Join my journey?',
+  'Dog mom looking for someone who loves furry friends.',
+  'Wine enthusiast and amateur chef. Lets cook together?',
+  'Beach lover and sunset chaser. Saltwater runs in my veins.',
+  'Creative soul working in design. I see beauty in everything.',
+  'Travel addict with a bucket list a mile long. Want to join?',
+  'Night owl who loves deep conversations under the stars.',
+  'Teacher by day, adventurer by weekend. Seeking a partner in crime.',
+  'Minimalist living with maximum joy. Less is more.',
+  'Coffee snob and podcast junkie. Lets debate over lattes.',
+  'Fitness coach helping others glow. Looking for my own glow up.',
+  'Urban explorer finding hidden gems in the city.',
+  'Cat lady with a wild side. Meow.',
+  'Sushi connoisseur and anime fan. Yes, both.',
+  'Plant parent with an ever-growing jungle. Seeking fellow green thumb.',
+  'Sunrise chaser and morning person. Early bird gets the worm.',
+];
+
+const INTERESTS = [
+  'Travel', 'Dancing', 'Photography', 'Fitness', 'Cooking', 'Reading', 'Music', 'Movies',
+  'Hiking', 'Beach', 'Gaming', 'Animals', 'Art', 'Yoga', 'Coffee', 'Wine', 'Food',
+  'Sports', 'Fashion', 'Beauty', 'Nature', 'Camping', 'Swimming', 'Cycling', 'Running',
+  'Meditation', 'Spirituality', 'Volunteering', 'Movies', 'Theater', 'Concerts', 'Festivals'
+];
+
+const LOOKING_FOR = ['relationship', 'casual', 'friendship', 'marriage'];
+
+const PHOTOS = [
+  'https://images.unsplash.com/photo-1517365830460-955ce3ccd263?w=600&q=80',
+  'https://images.unsplash.com/photo-1524502397800-2eeaad7c3fe5?w=600&q=80',
+  'https://images.unsplash.com/photo-1499557354967-2b2d8910bcca?w=600&q=80',
+  'https://images.unsplash.com/photo-1611042553365-9b101441c135?w=600&q=80',
+  'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=600&q=80',
+  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&q=80',
+  'https://images.unsplash.com/photo-1502823403499-6ccfcf4fb453?w=600&q=80',
+  'https://images.unsplash.com/photo-1521577352947-9bb58764b69a?w=600&q=80',
+  'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=600&q=80',
+  'https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=600&q=80',
+  'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&q=80',
+  'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=600&q=80',
+  'https://images.unsplash.com/photo-1500917293891-ef795e70e1f6?w=600&q=80',
+  'https://images.unsplash.com/photo-1530268729831-4b0b9e170218?w=600&q=80',
+  'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=600&q=80',
+  'https://images.unsplash.com/photo-1463453091185-61582044d556?w=600&q=80',
+  'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=600&q=80',
+  'https://images.unsplash.com/photo-1488161628813-04466f872be2?w=600&q=80',
+  'https://images.unsplash.com/photo-1554151228-14d9def656e4?w=600&q=80',
+  'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=600&q=80',
+];
+
+function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function pickSubset(arr, min, max) {
+  const count = min + Math.floor(Math.random() * (max - min + 1));
+  const shuffled = [...arr].sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, count);
+}
+
+export default async function(req) {
+  try {
+    const base44 = createClientFromRequest(req);
+    const user = await base44.auth.me();
+    if (!user || user.role !== 'admin') {
+      return Response.json({ error: 'Forbidden: Admin access required' }, { status: 403 });
+    }
+
+    const body = await req.json().catch(() => ({}));
+    const count = Math.min(body.count || 1000, 5000);
+    const startSeq = body.startSeq || null;
+
+    // Find the highest existing demo_f sequence number
+    const existingDemo = await base44.asServiceRole.entities.MemberProfile.filter(
+      { user_id: { $regex: '^demo_' } },
+      null,
+      1000
+    );
+
+    let maxSeq = 0;
+    for (const p of existingDemo) {
+      const match = (p.user_id || '').match(/^demo_[a-zA-Z]?(\d+)$/);
+      if (match) {
+        const num = parseInt(match[1], 10);
+        if (num > maxSeq) maxSeq = num;
+      }
+    }
+
+    const startNumber = startSeq !== null ? startSeq : maxSeq + 1;
+
+    // Generate profiles in batches of 100
+    let created = 0;
+    const batchSize = 100;
+    for (let batchStart = 0; batchStart < count; batchStart += batchSize) {
+      const batch = [];
+      const batchCount = Math.min(batchSize, count - batchStart);
+      for (let i = 0; i < batchCount; i++) {
+        const seqNum = startNumber + batchStart + i;
+        const city = pick(CITIES);
+        const name = pick(FEMALE_NAMES);
+        const photo = pick(PHOTOS);
+        const age = 20 + Math.floor(Math.random() * 25); // 20-44
+
+        batch.push({
+          user_id: `demo_f${seqNum}`,
+          display_name: `${name} ${seqNum}`,
+          gender: 'female',
+          age: age,
+          date_of_birth: `${2026 - age}-${String(1 + Math.floor(Math.random() * 12)).padStart(2, '0')}-${String(1 + Math.floor(Math.random() * 28)).padStart(2, '0')}`,
+          location_city: city.city,
+          location_country: city.country,
+          bio: pick(BIOS),
+          photo_1: photo,
+          verification_status: 'verified',
+          profile_review_status: 'approved',
+          profile_complete: true,
+          is_active: true,
+          is_private: false,
+          looking_for: pick(LOOKING_FOR),
+          interests: pickSubset(INTERESTS, 2, 6),
+          tokens: Math.floor(Math.random() * 50),
+          has_purchased_tokens: false,
+          browse_count_this_week: 0,
+          show_tag_id: false,
+        });
+      }
+
+      await base44.asServiceRole.entities.MemberProfile.bulkCreate(batch);
+      created += batchCount;
+    }
+
+    return Response.json({
+      success: true,
+      created: created,
+      starting_sequence: startNumber,
+      ending_sequence: startNumber + count - 1,
+      prefix: 'demo_f',
+    });
+  } catch (error) {
+    return Response.json({ error: error.message }, { status: 500 });
+  }
+}

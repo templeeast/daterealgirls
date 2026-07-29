@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Users, Shield, Flag, HelpCircle, Settings, MapPin, ClipboardList, ImageIcon, ListTodo, Tag, Gift, FileText, Palette } from 'lucide-react';
+import { Users, Shield, Flag, HelpCircle, Settings, MapPin, ClipboardList, ImageIcon, ListTodo, Tag, Gift, FileText, Palette, TestTube } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import MemberManagement from '@/components/admin/MemberManagement';
 import VerificationQueue from '@/components/admin/VerificationQueue';
@@ -13,6 +13,7 @@ import SiteSettings from '@/components/admin/SiteSettings';
 import AdminStats from '@/components/admin/AdminStats';
 import SignupsChart from '@/components/admin/SignupsChart';
 import CityReviewPanel from '@/components/admin/CityReviewPanel';
+import DemoUserManagement from '@/components/admin/DemoUserManagement';
 import useMyProfile from '@/hooks/useMyProfile';
 
 export default function AdminDashboard() {
@@ -79,6 +80,7 @@ export default function AdminDashboard() {
           <TabsTrigger value="tickets" className="gap-2"><HelpCircle className="w-4 h-4" /> Tickets</TabsTrigger>
           <TabsTrigger value="settings" className="gap-2"><Settings className="w-4 h-4" /> Settings</TabsTrigger>
           <TabsTrigger value="cities" className="gap-2"><MapPin className="w-4 h-4" /> Cities</TabsTrigger>
+          <TabsTrigger value="demo" className="gap-2"><TestTube className="w-4 h-4" /> Demo Users</TabsTrigger>
         </TabsList>
 
         <TabsContent value="members"><MemberManagement /></TabsContent>
@@ -87,6 +89,7 @@ export default function AdminDashboard() {
         <TabsContent value="tickets"><TicketsPanel /></TabsContent>
         <TabsContent value="settings"><SiteSettings /></TabsContent>
         <TabsContent value="cities"><CityReviewPanel /></TabsContent>
+        <TabsContent value="demo"><DemoUserManagement /></TabsContent>
       </Tabs>
     </div>
   );
