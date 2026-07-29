@@ -423,6 +423,10 @@ export default function MyProfile() {
     rejected: 'bg-destructive/10 text-destructive',
   };
 
+  const privateMediaEnabled = profile.gender === 'male'
+    ? (config?.photos_private_men_enabled ?? true) || (config?.videos_private_men_enabled ?? false)
+    : (config?.photos_private_women_enabled ?? true) || (config?.videos_private_women_enabled ?? false);
+
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
       <h1 className="font-heading text-3xl font-bold mb-6">{t('my_profile_title')}</h1>
@@ -630,8 +634,10 @@ export default function MyProfile() {
         </CardContent>
       </Card>
 
-      {/* Private Photos — always rendered; component shows disabled message when uploads are off */}
-      <PrivatePhotosSection profile={profile} onRefetch={refetch} maxPrivatePhotos={config.max_private_photos ?? 10} />
+      {/* Private Photos — hidden when both photo and video uploads are disabled for the user's gender */}
+      {privateMediaEnabled && (
+        <PrivatePhotosSection profile={profile} onRefetch={refetch} maxPrivatePhotos={config.max_private_photos ?? 10} />
+      )}
 
       {/* Profile Info */}
       <Card className="mb-6">
