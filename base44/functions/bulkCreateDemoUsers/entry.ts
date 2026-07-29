@@ -10,6 +10,15 @@ const FEMALE_NAMES = [
   'Kelsey', 'Lara', 'Mira', 'Nadia', 'Opal', 'Pearl', 'Rhea', 'Sage', 'Talia', 'Vela'
 ];
 
+const MALE_NAMES = [
+  'Aaron', 'Blake', 'Caleb', 'Damon', 'Ethan', 'Felix', 'Gavin', 'Henry', 'Ian', 'Jack',
+  'Kai', 'Leo', 'Mason', 'Noah', 'Owen', 'Parker', 'Quinn', 'Ryan', 'Sean', 'Tyler',
+  'Victor', 'Wade', 'Xavier', 'Yusuf', 'Zane', 'Anderson', 'Bennett', 'Cole', 'Dylan', 'Ellis',
+  'Frank', 'Grant', 'Hugo', 'Isaac', 'Jagger', 'Knox', 'Logan', 'Miles', 'Nash', 'Orion',
+  'Preston', 'Rhett', 'Silas', 'Theo', 'Ulric', 'Vance', 'Wells', 'Yale', 'Zion', 'Asher',
+  'Beck', 'Callum', 'Dane', 'Eli', 'Fisher', 'Gunnar', 'Hayes', 'Ivo', 'Jude', 'Kellan'
+];
+
 const CITIES = [
   { city: 'New York', country: 'United States' },
   { city: 'Los Angeles', country: 'United States' },
@@ -100,7 +109,7 @@ const INTERESTS = [
 
 const LOOKING_FOR = ['relationship', 'casual', 'friendship', 'marriage'];
 
-const PHOTOS = [
+const FEMALE_PHOTOS = [
   'https://images.unsplash.com/photo-1517365830460-955ce3ccd263?w=600&q=80',
   'https://images.unsplash.com/photo-1524502397800-2eeaad7c3fe5?w=600&q=80',
   'https://images.unsplash.com/photo-1499557354967-2b2d8910bcca?w=600&q=80',
@@ -123,6 +132,29 @@ const PHOTOS = [
   'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=600&q=80',
 ];
 
+const MALE_PHOTOS = [
+  'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=600&q=80',
+  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80',
+  'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=600&q=80',
+  'https://images.unsplash.com/photo-1519345182560-3f2917c472ef?w=600&q=80',
+  'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=600&q=80',
+  'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=600&q=80',
+  'https://images.unsplash.com/photo-1499996860823-5214fcc65f8f?w=600&q=80',
+  'https://images.unsplash.com/photo-1463453091185-61582044d556?w=600&q=80',
+  'https://images.unsplash.com/photo-1492447166138-50c3889fccb1?w=600&q=80',
+  'https://images.unsplash.com/photo-1507591064344-4c6ce005b128?w=600&q=80',
+  'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=600&q=80',
+  'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=600&q=80',
+  'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=600&q=80',
+  'https://images.unsplash.com/photo-1488161628813-04466f872be2?w=600&q=80',
+  'https://images.unsplash.com/photo-1535464986678-9491a664b0f7?w=600&q=80',
+  'https://images.unsplash.com/photo-1492447166138-50c3889fccb1?w=600&q=80',
+  'https://images.unsplash.com/photo-1441786485319-5af0f85408f4?w=600&q=80',
+  'https://images.unsplash.com/photo-1463453091185-61582044d556?w=600&q=80',
+  'https://images.unsplash.com/photo-1480455624313-e29b44bbfde1?w=600&q=80',
+  'https://images.unsplash.com/photo-1502823403499-6ccfcf4fb453?w=600&q=80',
+];
+
 function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 function pickSubset(arr, min, max) {
   const count = min + Math.floor(Math.random() * (max - min + 1));
@@ -140,43 +172,64 @@ export default async function(req) {
 
     const body = await req.json().catch(() => ({}));
     const count = Math.min(body.count || 1000, 5000);
-    const startSeq = body.startSeq || null;
+    const genderParam = (body.gender || 'female').toLowerCase(); // 'female', 'male', or 'both'
 
-    // Find the highest existing demo_f sequence number
+    if (!['female', 'male', 'both'].includes(genderParam)) {
+      return Response.json({ error: 'Invalid gender. Use "female", "male", or "both".' }, { status: 400 });
+    }
+
+    // Find the highest existing demo sequence number for each prefix
     const existingDemo = await base44.asServiceRole.entities.MemberProfile.filter(
       { user_id: { $regex: '^demo_' } },
       null,
       1000
     );
 
-    let maxSeq = 0;
+    let maxFemaleSeq = 0;
+    let maxMaleSeq = 0;
     for (const p of existingDemo) {
-      const match = (p.user_id || '').match(/^demo_[a-zA-Z]?(\d+)$/);
-      if (match) {
-        const num = parseInt(match[1], 10);
-        if (num > maxSeq) maxSeq = num;
+      const fMatch = (p.user_id || '').match(/^demo_f(\d+)$/);
+      if (fMatch) {
+        const num = parseInt(fMatch[1], 10);
+        if (num > maxFemaleSeq) maxFemaleSeq = num;
+      }
+      const mMatch = (p.user_id || '').match(/^demo_m(\d+)$/);
+      if (mMatch) {
+        const num = parseInt(mMatch[1], 10);
+        if (num > maxMaleSeq) maxMaleSeq = num;
       }
     }
 
-    const startNumber = startSeq !== null ? startSeq : maxSeq + 1;
+    // Determine how many of each gender to create
+    let femaleCount = 0;
+    let maleCount = 0;
+    if (genderParam === 'female') {
+      femaleCount = count;
+    } else if (genderParam === 'male') {
+      maleCount = count;
+    } else {
+      // 'both' — alternate roughly 50/50
+      femaleCount = Math.ceil(count / 2);
+      maleCount = count - femaleCount;
+    }
 
-    // Generate profiles in batches of 100
-    let created = 0;
-    const batchSize = 100;
-    for (let batchStart = 0; batchStart < count; batchStart += batchSize) {
+    let femaleSeq = maxFemaleSeq + 1;
+    let maleSeq = maxMaleSeq + 1;
+
+    const createBatch = (gender, startNumber, batchSize, photoList, nameList) => {
       const batch = [];
-      const batchCount = Math.min(batchSize, count - batchStart);
-      for (let i = 0; i < batchCount; i++) {
-        const seqNum = startNumber + batchStart + i;
+      const prefix = gender === 'female' ? 'f' : 'm';
+      for (let i = 0; i < batchSize; i++) {
+        const seqNum = startNumber + i;
         const city = pick(CITIES);
-        const name = pick(FEMALE_NAMES);
-        const photo = pick(PHOTOS);
+        const name = pick(nameList);
+        const photo = pick(photoList);
         const age = 20 + Math.floor(Math.random() * 25); // 20-44
 
         batch.push({
-          user_id: `demo_f${seqNum}`,
+          user_id: `demo_${prefix}${seqNum}`,
           display_name: `${name} ${seqNum}`,
-          gender: 'female',
+          gender: gender,
           age: age,
           date_of_birth: `${2026 - age}-${String(1 + Math.floor(Math.random() * 12)).padStart(2, '0')}-${String(1 + Math.floor(Math.random() * 28)).padStart(2, '0')}`,
           location_city: city.city,
@@ -196,17 +249,54 @@ export default async function(req) {
           show_tag_id: false,
         });
       }
+      return batch;
+    };
 
-      await base44.asServiceRole.entities.MemberProfile.bulkCreate(batch);
-      created += batchCount;
+    // Generate profiles in batches of 100
+    let created = 0;
+    const batchSize = 100;
+
+    let femaleRemaining = femaleCount;
+    let maleRemaining = maleCount;
+
+    while (femaleRemaining > 0 || maleRemaining > 0) {
+      const batchLists = [];
+
+      if (femaleRemaining > 0) {
+        const thisBatch = Math.min(batchSize, femaleRemaining);
+        batchLists.push({ gender: 'female', count: thisBatch, startSeq: femaleSeq, photos: FEMALE_PHOTOS, names: FEMALE_NAMES });
+        femaleSeq += thisBatch;
+        femaleRemaining -= thisBatch;
+      }
+
+      if (maleRemaining > 0) {
+        const thisBatch = Math.min(batchSize, maleRemaining);
+        batchLists.push({ gender: 'male', count: thisBatch, startSeq: maleSeq, photos: MALE_PHOTOS, names: MALE_NAMES });
+        maleSeq += thisBatch;
+        maleRemaining -= thisBatch;
+      }
+
+      // Create all gender batches together in one bulkCreate call
+      const combinedBatch = [];
+      for (const bl of batchLists) {
+        combinedBatch.push(...createBatch(bl.gender, bl.startSeq, bl.count, bl.photos, bl.names));
+      }
+      if (combinedBatch.length > 0) {
+        await base44.asServiceRole.entities.MemberProfile.bulkCreate(combinedBatch);
+        created += combinedBatch.length;
+      }
     }
 
     return Response.json({
       success: true,
       created: created,
-      starting_sequence: startNumber,
-      ending_sequence: startNumber + count - 1,
-      prefix: 'demo_f',
+      female_created: femaleCount,
+      male_created: maleCount,
+      female_starting_sequence: maxFemaleSeq + 1,
+      female_ending_sequence: maxFemaleSeq + femaleCount,
+      male_starting_sequence: maxMaleSeq + 1,
+      male_ending_sequence: maxMaleSeq + maleCount,
+      gender: genderParam,
     });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });

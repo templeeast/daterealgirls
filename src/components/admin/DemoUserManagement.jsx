@@ -7,9 +7,17 @@ import { Label } from '@/components/ui/label';
 import { Loader2, Users, Trash2, AlertTriangle, TestTube } from 'lucide-react';
 import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+
+const GENDER_OPTIONS = [
+  { value: 'female', label: 'Women' },
+  { value: 'male', label: 'Men' },
+  { value: 'both', label: 'Both (50/50)' },
+];
 
 export default function DemoUserManagement() {
   const [count, setCount] = useState(1000);
+  const [gender, setGender] = useState('female');
   const [isGenerating, setIsGenerating] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteDialog, setDeleteDialog] = useState(false);
@@ -19,10 +27,13 @@ export default function DemoUserManagement() {
     setIsGenerating(true);
     setResult(null);
     try {
-      const response = await base44.functions.invoke('bulkCreateDemoUsers', { count: parseInt(count, 10) });
+      const response = await base44.functions.invoke('bulkCreateDemoUsers', { count: parseInt(count, 10), gender });
       const data = response.data || response;
       setResult(data);
-      toast.success(`Created ${data.created} demo users (demo_f${data.starting_sequence} - demo_f${data.ending_sequence})`);
+      const parts = [];
+      if (data.female_created > 0) parts.push(`${data.female_created} women (demo_f${data.female_starting_sequence}–demo_f${data.female_ending_sequence})`);
+      if (data.male_created > 0) parts.push(`${data.male_created} men (demo_m${data.male_starting_sequence}–demo_m${data.male_ending_sequence})`);
+      toast.success(`Created ${data.created} demo users: ${parts.join(', ')}`);
     } catch (error) {
       toast.error('Failed to generate demo users: ' + (error.message || 'Unknown error'));
     } finally {
@@ -55,7 +66,7 @@ export default function DemoUserManagement() {
             Demo User Management
           </CardTitle>
           <CardDescription>
-            Generate bulk demo users (demo_f prefix) for performance testing, or delete them with full cleanup of all associated data.
+            Generate bulk demo users for performance testing, or delete them with full cleanup of all associated data.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -66,9 +77,9 @@ export default function DemoUserManagement() {
               Generate Demo Users
             </div>
             <p className="text-sm text-muted-foreground">
-              Creates demo MemberProfile records with realistic data (verified female profiles). The function automatically continues from the highest existing demo_f sequence number.
+              Creates demo MemberProfile records with realistic data. Women use the <code className="text-xs bg-muted px-1 py-0.5 rounded">demo_f</code> prefix, men use <code className="text-xs bg-muted px-1 py-0.5 rounded">demo_m</code>. Each gender continues from its own highest existing sequence number.
             </p>
-            <div className="flex items-end gap-3">
+            <div className="flex items-end gap-3 flex-wrap">
               <div className="space-y-1.5">
                 <Label htmlFor="count">Number of users</Label>
                 <Input
@@ -81,6 +92,19 @@ export default function DemoUserManagement() {
                   className="w-40"
                   disabled={isGenerating}
                 />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="gender">Gender</Label>
+                <Select value={gender} onValueChange={setGender} disabled={isGenerating}>
+                  <SelectTrigger className="w-[160px]">
+                    <SelectValue placeholder="Select gender" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {GENDER_OPTIONS.map((opt) => (
+                      <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               <Button onClick={handleGenerate} disabled={isGenerating || isDeleting}>
                 {isGenerating ? (
