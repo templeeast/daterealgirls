@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
+import { verifyAutomationOrAdmin } from '../../shared/automationAuth.ts';
 
 function extractPublicId(url) {
   if (!url) return null;
@@ -35,36 +36,14 @@ Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
 
-    const payload = await req.json();
-
-    // Verify the call is from the Base44 platform automation (via Base44-Service-Authorization
-    // header, injected by the platform for entity automations) or from an authenticated admin.
-    // Do NOT trust client-supplied JSON body fields to identify automation triggers.
-    const hasServiceAuth = req.headers.get('Base44-Service-Authorization') !== null;
-    const hasUserAuth = req.headers.get('Authorization') !== null;
-
-    if (hasServiceAuth && !hasUserAuth) {
-      // Platform automation call — verify the service token is valid with a lightweight read
-      try {
-        await base44.asServiceRole.entities.SiteConfig.list();
-      } catch {
-        return Response.json({ error: 'Unauthorized' }, { status: 401 });
-      }
-    } else if (hasUserAuth) {
-      // Direct user call — require admin authentication
-      let user;
-      try {
-        user = await base44.auth.me();
-      } catch {
-        return Response.json({ error: 'Unauthorized' }, { status: 401 });
-      }
-      if (!user || user.role !== 'admin') {
-        return Response.json({ error: 'Unauthorized' }, { status: 401 });
-      }
-    } else {
-      // No authentication — reject
+    // Verify the call is from an authenticated automation (via shared secret in
+    // function_args) or from an authenticated admin. Replaces the previous
+    // asServiceRole/Header-based check which was vulnerable to spoofing.
+    if (!await verifyAutomationOrAdmin(req, base44)) {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
+
+    const payload = await req.json();
 
     const deletedProfile = payload.data;
     if (!deletedProfile || !deletedProfile.user_id) {
