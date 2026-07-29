@@ -37,11 +37,21 @@ Deno.serve(async (req) => {
 
     const payload = await req.json();
 
-    // Allow calls from the entity automation system (MemberProfile delete events)
-    // or authenticated admin users — prevents unauthenticated data destruction
-    const isAutomationCall = payload.event && payload.event.type === 'delete' && payload.event.entity_name === 'MemberProfile';
+    // Verify the call is from the Base44 platform automation (via Base44-Service-Authorization
+    // header, injected by the platform for entity automations) or from an authenticated admin.
+    // Do NOT trust client-supplied JSON body fields to identify automation triggers.
+    const hasServiceAuth = req.headers.get('Base44-Service-Authorization') !== null;
+    const hasUserAuth = req.headers.get('Authorization') !== null;
 
-    if (!isAutomationCall) {
+    if (hasServiceAuth && !hasUserAuth) {
+      // Platform automation call — verify the service token is valid with a lightweight read
+      try {
+        await base44.asServiceRole.entities.SiteConfig.list();
+      } catch {
+        return Response.json({ error: 'Unauthorized' }, { status: 401 });
+      }
+    } else if (hasUserAuth) {
+      // Direct user call — require admin authentication
       let user;
       try {
         user = await base44.auth.me();
@@ -51,6 +61,9 @@ Deno.serve(async (req) => {
       if (!user || user.role !== 'admin') {
         return Response.json({ error: 'Unauthorized' }, { status: 401 });
       }
+    } else {
+      // No authentication — reject
+      return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const deletedProfile = payload.data;

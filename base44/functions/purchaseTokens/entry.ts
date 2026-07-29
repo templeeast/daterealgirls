@@ -6,11 +6,32 @@ Deno.serve(async (req) => {
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const { cardNumber, cardExpiry, cardCvv, amount, packName, tokensToAdd, promoCode } = await req.json();
+    const { cardNumber, cardExpiry, cardCvv, packName, promoCode } = await req.json();
 
-    if (!cardNumber || !cardExpiry || !cardCvv || !amount) {
+    if (!cardNumber || !cardExpiry || !cardCvv || !packName) {
       return Response.json({ error: 'Missing required payment fields.' }, { status: 400 });
     }
+
+    // Validate packName against allowed values
+    const validPacks = ['starter', 'popular', 'value', 'best'];
+    if (!validPacks.includes(packName)) {
+      return Response.json({ error: 'Invalid token pack.' }, { status: 400 });
+    }
+
+    // Load SiteConfig and look up the pack's price and token count on the server side
+    // (never trust client-supplied amount or token quantities)
+    const configs = await base44.asServiceRole.entities.SiteConfig.list();
+    const config = configs[0] || {};
+
+    const packConfig = {
+      starter: { tokens: config.token_pack_starter_tokens ?? 500, price: config.token_pack_starter_price ?? 5.99 },
+      popular: { tokens: config.token_pack_popular_tokens ?? 1500, price: config.token_pack_popular_price ?? 14.99 },
+      value: { tokens: config.token_pack_value_tokens ?? 3500, price: config.token_pack_value_price ?? 29.99 },
+      best: { tokens: config.token_pack_best_tokens ?? 8000, price: config.token_pack_best_price ?? 59.99 },
+    };
+
+    const serverTokens = packConfig[packName].tokens;
+    const serverPrice = packConfig[packName].price;
 
     const apiLoginId = Deno.env.get('AUTHORIZENET_API_LOGIN_ID');
     const transactionKey = Deno.env.get('AUTHORIZENET_TRANSACTION_KEY');
@@ -29,7 +50,7 @@ Deno.serve(async (req) => {
         refId: `tokens_${user.id}_${Date.now()}`,
         transactionRequest: {
           transactionType: 'authCaptureTransaction',
-          amount: String(Number(amount).toFixed(2)),
+          amount: String(serverPrice.toFixed(2)),
           payment: {
             creditCard: {
               cardNumber: cardNumber.replace(/\s/g, ''),
@@ -38,7 +59,7 @@ Deno.serve(async (req) => {
             },
           },
           order: {
-            description: `Token Purchase — ${packName} (${tokensToAdd} tokens)`,
+            description: `Token Purchase — ${packName} (${serverTokens} tokens)`,
           },
           customer: {
             email: user.email,
@@ -72,9 +93,7 @@ Deno.serve(async (req) => {
     if (profiles.length > 0) {
       const profile = profiles[0];
 
-      // Load SiteConfig for first purchase bonus settings
-      const configs = await base44.asServiceRole.entities.SiteConfig.list();
-      const config = configs[0] || {};
+      // SiteConfig already loaded above for pack price/token lookup
 
       const wasFirstPurchase = !profile.has_purchased_tokens;
 
@@ -123,7 +142,7 @@ Deno.serve(async (req) => {
         }
       }
 
-       const totalTokens = (profile.tokens || 0) + tokensToAdd + promoBonus + firstPurchaseBonus;
+       const totalTokens = (profile.tokens || 0) + serverTokens + promoBonus + firstPurchaseBonus;
 
       const updates = {
         tokens: totalTokens,
@@ -141,9 +160,9 @@ Deno.serve(async (req) => {
       await base44.asServiceRole.entities.TokenTransaction.create({
         user_id: user.id,
         type: 'purchase',
-        tokens: tokensToAdd,
-        description: `Purchased ${packName} (${tokensToAdd} tokens)`,
-        amount_paid: Number(amount),
+        tokens: serverTokens,
+        description: `Purchased ${packName} (${serverTokens} tokens)`,
+        amount_paid: serverPrice,
         transaction_id: txResponse.transId,
       });
 
@@ -171,7 +190,7 @@ Deno.serve(async (req) => {
       return Response.json({
         success: true,
         transactionId: txResponse.transId,
-        tokensAdded: tokensToAdd,
+        tokensAdded: serverTokens,
         bonusTokens: promoBonus + firstPurchaseBonus,
         promoApplied,
         isFirstPurchase: wasFirstPurchase,
@@ -181,7 +200,7 @@ Deno.serve(async (req) => {
     return Response.json({
       success: true,
       transactionId: txResponse.transId,
-      tokensAdded: tokensToAdd,
+      tokensAdded: serverTokens,
       bonusTokens: 0,
     });
   } catch (error) {
