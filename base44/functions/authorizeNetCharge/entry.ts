@@ -6,11 +6,16 @@ Deno.serve(async (req) => {
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const { cardNumber, cardExpiry, cardCvv, amount, useSandbox } = await req.json();
+    const { cardNumber, cardExpiry, cardCvv, useSandbox } = await req.json();
 
-    if (!cardNumber || !cardExpiry || !cardCvv || !amount) {
+    if (!cardNumber || !cardExpiry || !cardCvv) {
       return Response.json({ error: 'Missing required payment fields.' }, { status: 400 });
     }
+
+    // Read subscription price from SiteConfig — never trust client-supplied amount
+    const configs = await base44.asServiceRole.entities.SiteConfig.list();
+    const config = configs[0] || {};
+    const subscriptionPrice = Number(config.subscription_price ?? 5);
 
     const apiLoginId = Deno.env.get('AUTHORIZENET_API_LOGIN_ID');
     const transactionKey = Deno.env.get('AUTHORIZENET_TRANSACTION_KEY');
@@ -32,7 +37,7 @@ Deno.serve(async (req) => {
         refId: `sub_${user.id}_${Date.now()}`,
         transactionRequest: {
           transactionType: 'authCaptureTransaction',
-          amount: String(Number(amount).toFixed(2)),
+          amount: String(Number(subscriptionPrice).toFixed(2)),
           payment: {
             creditCard: {
               cardNumber: cardNumber.replace(/\s/g, ''),

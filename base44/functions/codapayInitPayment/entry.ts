@@ -6,7 +6,12 @@ Deno.serve(async (req) => {
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const { country, currency, price, itemName, useSandbox } = await req.json();
+    const { country, currency, itemName, useSandbox } = await req.json();
+
+    // Read subscription price from SiteConfig — never trust client-supplied price
+    const configs = await base44.asServiceRole.entities.SiteConfig.list();
+    const config = configs[0] || {};
+    const subscriptionPrice = Number(config.subscription_price ?? 5);
 
     const apiKey = useSandbox
       ? Deno.env.get('CODAPAY_SANDBOX_API_KEY')
@@ -29,7 +34,7 @@ Deno.serve(async (req) => {
         currency: currency,
         items: [
           {
-            price: price,
+            price: subscriptionPrice,
             name: itemName || 'Premium Subscription',
           }
         ],

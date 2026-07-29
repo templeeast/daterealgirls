@@ -56,6 +56,11 @@
       ],
       "default": "whop"
     },
+    "subscription_price": {
+      "type": "number",
+      "default": 5,
+      "description": "Monthly subscription price (USD) for Authorize.net and CodaPay payment processors"
+    },
     "authorizenet_use_hosted_page": {
       "type": "boolean",
       "default": false

@@ -57,6 +57,9 @@ export default function AuthorizeNetHostedButton({ price, onSuccess, devMode = f
   // Listen for messages from the iframe (Authorize.net communicator)
   useEffect(() => {
     const handleMessage = (event) => {
+      // Validate origin — only accept messages from Authorize.net
+      const ALLOWED_ORIGINS = ['https://accept.authorize.net', 'https://test.authorize.net'];
+      if (!ALLOWED_ORIGINS.includes(event.origin)) return;
       try {
         // Authorize.net communicator sends query-string format: "action=...&..."
         let data;
@@ -70,26 +73,25 @@ export default function AuthorizeNetHostedButton({ price, onSuccess, devMode = f
         if (data?.action === 'transactResponse') {
           const response = typeof data.response === 'string' ? JSON.parse(data.response) : data.response;
           if (response?.responseCode === '1') {
-            // Approved — update subscription in DB
+            // Approved — verify transaction server-side and activate subscription
             setShowIframe(false);
             setToken(null);
             (async () => {
               try {
-                const user = await base44.auth.me();
-                const profiles = await base44.entities.MemberProfile.filter({ user_id: user.id });
-                if (profiles?.[0]) {
-                  const today = new Date();
-                  await base44.entities.MemberProfile.update(profiles[0].id, {
-                    subscription_status: 'active',
-                    subscription_start_date: format(today, 'yyyy-MM-dd'),
-                    subscription_end_date: format(addMonths(today, 1), 'yyyy-MM-dd'),
-                  });
+                const res = await base44.functions.invoke('authorizeNetActivateHostedSubscription', {
+                  transId: response?.transId,
+                  useSandbox: devMode,
+                });
+                if (res.data?.error) {
+                  toast({ title: res.data.error, variant: 'destructive' });
+                  return;
                 }
+                toast({ title: '✓ Payment successful! Your subscription is now active.' });
+                onSuccess?.();
               } catch (e) {
-                console.error('Failed to update subscription:', e);
+                console.error('Failed to activate subscription:', e);
+                toast({ title: 'Payment received but activation failed. Please contact support.', variant: 'destructive' });
               }
-              toast({ title: '✓ Payment successful! Your subscription is now active.' });
-              onSuccess?.();
             })();
           } else {
             const msg = response?.errors?.[0]?.errorText || 'Payment was not completed.';
