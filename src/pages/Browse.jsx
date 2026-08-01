@@ -137,13 +137,7 @@ export default function Browse() {
       setZipSearching(false);
       return;
     }
-    const countryCode = getCountryCode(countryFilter || profile?.location_country);
-    if (!countryCode) {
-      setZipError(t('browse_zip_country_required'));
-      setZipCoords(null);
-      setZipSearching(false);
-      return;
-    }
+    const countryCode = getCountryCode(countryFilter || profile?.location_country) || 'US';
     setZipSearching(true);
     setZipError('');
     const timer = setTimeout(async () => {

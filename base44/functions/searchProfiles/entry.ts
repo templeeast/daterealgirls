@@ -55,7 +55,7 @@ export default async function(req) {
     }
 
     if (country) query.location_country = country;
-    if (city) query.location_city = city;
+    if (city) query.location_city = { $regex: escapeRegex(city.trim()), $options: 'i' };
 
     // Zip radius bounding box (coarse filter — frontend applies exact Haversine)
     if (zipLat != null && zipLng != null && zipRadius) {
