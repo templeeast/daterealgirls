@@ -29,6 +29,7 @@ export default function ProfileCard({ profile, onFavorite, isFavorited, myProfil
             <img
               src={profile.photo_1}
               alt={profile.display_name}
+              loading="lazy"
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             />
           ) : (

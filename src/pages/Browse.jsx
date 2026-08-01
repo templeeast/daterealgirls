@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -166,12 +166,53 @@ export default function Browse() {
     return () => clearTimeout(timer);
   }, [zipSearch, countryFilter, profile?.location_country, t]);
 
-  const { data: profiles, isLoading } = useQuery({
-    queryKey: ['profiles'],
-    queryFn: () => base44.entities.MemberProfile.filter({ is_active: true, is_suspended: false, profile_complete: true }),
-    initialData: [],
+  // Gate visible count — number of profiles a gated user can see
+  const gateVisibleCount = isUnverifiedGate
+    ? browseLimit
+    : Math.max(0, browseLimit - effectiveBrowseCount);
+
+  // Page size for pagination — gated users see a limited number, ungated users get 30 per page
+  const pageSize = shouldGateBrowsing ? Math.max(gateVisibleCount, 1) : 30;
+
+  // Debounced search to avoid refetching on every keystroke
+  const [debouncedSearch, setDebouncedSearch] = useState(search);
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(search), 300);
+    return () => clearTimeout(timer);
+  }, [search]);
+
+  // Backend paginated search with skip-based pagination
+  const searchQuery = useInfiniteQuery({
+    queryKey: ['searchProfiles', debouncedSearch, genderFilter, lookingForFilter, ethnicityFilter, ageMin, ageMax, countryFilter, cityFilter, zipCoords, radiusSearch, pageSize, shouldGateBrowsing, user?.id],
+    queryFn: ({ pageParam }) => base44.functions.invoke('searchProfiles', {
+      gender: genderFilter,
+      lookingFor: lookingForFilter,
+      ethnicity: ethnicityFilter,
+      ageMin,
+      ageMax,
+      country: countryFilter,
+      city: cityFilter,
+      search: debouncedSearch,
+      tagSearch: debouncedSearch,
+      zipLat: zipCoords?.lat,
+      zipLng: zipCoords?.lng,
+      zipRadius: radiusSearch,
+      excludeUserId: user?.id,
+      page: pageParam,
+      limit: pageSize,
+    }),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      if (shouldGateBrowsing) return undefined;
+      return lastPage.data?.hasMore ? lastPage.data.page + 1 : undefined;
+    },
+    placeholderData: (previousData) => previousData,
     enabled: isAuthenticated,
   });
+
+  const searchProfiles = searchQuery.data?.pages?.flatMap(p => p.data?.profiles ?? []) ?? [];
+  const tagMatch = searchQuery.data?.pages?.[0]?.data?.tagMatch ?? null;
+  const isLoading = searchQuery.isLoading;
 
   const { data: myFavorites } = useQuery({
     queryKey: ['myFavorites', user?.id],
@@ -207,55 +248,19 @@ export default function Browse() {
 
   const favoritedIds = new Set(myFavorites.map(f => f.favorited_profile_id));
 
-  const filtered = profiles.filter(p => {
-    if (user && p.user_id === user.id) return false;
-    if (p.verification_status === 'rejected' || p.profile_review_status === 'rejected') return false;
+  // Apply Haversine distance filter (exact) on the bounding-box-filtered results from the backend
+  const haversineFiltered = zipCoords
+    ? searchProfiles.filter(p => {
+        if (p.latitude == null || p.longitude == null) return false;
+        const dist = haversineDistance(zipCoords.lat, zipCoords.lng, p.latitude, p.longitude);
+        return dist <= radiusSearch;
+      })
+    : searchProfiles;
 
-    // Private profiles: excluded from browse/search unless exact Member Tag ID match.
-    // Exact match = query with/without @ prefix, with/without DRG- prefix equals tag suffix.
-    if (p.is_private) {
-      if (!search) return false;
-      const normalizeTag = (s) => {
-        let r = s.trim().toUpperCase();
-        if (r.startsWith('@')) r = r.slice(1);
-        if (r.startsWith('DRG-')) r = r.slice(4);
-        return r;
-      };
-      const queryNorm = normalizeTag(search);
-      const tagNorm = normalizeTag(p.tag_id || '');
-      return tagNorm.length > 0 && queryNorm === tagNorm;
-    }
-
-    if (genderFilter !== 'all' && p.gender !== genderFilter) return false;
-    if (lookingForFilter !== 'all' && p.looking_for !== lookingForFilter) return false;
-    if (ethnicityFilter !== 'all' && p.ethnicity !== ethnicityFilter) return false;
-    if (ageMin !== '' && (p.age == null || p.age < parseInt(ageMin))) return false;
-    if (ageMax !== '' && (p.age == null || p.age > parseInt(ageMax))) return false;
-    if (countryFilter && p.location_country !== countryFilter) return false;
-    if (cityFilter && p.location_city !== cityFilter) return false;
-    if (zipCoords) {
-      if (p.latitude == null || p.longitude == null) return false;
-      const dist = haversineDistance(zipCoords.lat, zipCoords.lng, p.latitude, p.longitude);
-      if (dist > radiusSearch) return false;
-    }
-    if (search) {
-      const s = search.toLowerCase();
-      return (
-        p.display_name?.toLowerCase().includes(s) ||
-        p.location_city?.toLowerCase().includes(s) ||
-        p.location_country?.toLowerCase().includes(s) ||
-        p.bio?.toLowerCase().includes(s) ||
-        p.tag_id?.toLowerCase().includes(s)
-      );
-    }
-    return true;
-  });
-
-  const gateVisibleCount = isUnverifiedGate
-    ? browseLimit
-    : Math.max(0, browseLimit - effectiveBrowseCount);
-  const visibleProfiles = shouldGateBrowsing ? filtered.slice(0, gateVisibleCount) : filtered;
-  const hasLockedProfiles = shouldGateBrowsing && filtered.length > gateVisibleCount;
+  const visibleProfiles = shouldGateBrowsing
+    ? haversineFiltered.slice(0, Math.max(gateVisibleCount, 0))
+    : haversineFiltered;
+  const hasLockedProfiles = shouldGateBrowsing && (searchQuery.data?.pages?.[0]?.data?.hasMore ?? false);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -425,13 +430,24 @@ export default function Browse() {
             </div>
           ))}
         </div>
-      ) : filtered.length === 0 ? (
+      ) : (visibleProfiles.length === 0 && !tagMatch) ? (
         <div className="text-center py-20">
           <p className="text-muted-foreground text-lg">{t('browse_no_results')}</p>
         </div>
       ) : (
         <>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+            {tagMatch && (
+              <ProfileCard
+                profile={tagMatch}
+                isFavorited={favoritedIds.has(tagMatch.id)}
+                onFavorite={() => favMutation.mutate(tagMatch)}
+                myProfile={profile}
+                hasWinked={winkedIds.has(tagMatch.id)}
+                canInteract={canInteract}
+                onLockedInteract={() => isUnverifiedGate ? navigate('/my-profile') : setBrowseAllDialogOpen(true)}
+              />
+            )}
             {visibleProfiles.map((p, i) => (
               <React.Fragment key={p.id}>
                 <ProfileCard
@@ -443,11 +459,10 @@ export default function Browse() {
                   canInteract={canInteract}
                   onLockedInteract={() => isUnverifiedGate ? navigate('/my-profile') : setBrowseAllDialogOpen(true)}
                 />
-
               </React.Fragment>
             ))}
             {/* Blurred locked cards for token-gated or unverified browsing */}
-            {shouldGateBrowsing && filtered.slice(gateVisibleCount).map((p, i) => (
+            {shouldGateBrowsing && hasLockedProfiles && Array(4).fill(0).map((_, i) => (
               <div key={`locked-${i}`} className="relative rounded-2xl overflow-hidden border">
                 <div className="aspect-[3/4] bg-gradient-to-br from-primary/10 to-accent blur-sm scale-105" />
                 <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/40">
@@ -468,6 +483,29 @@ export default function Browse() {
               </div>
             ))}
           </div>
+
+          {/* Load More button (only for non-gated, paginated browsing) */}
+          {!shouldGateBrowsing && searchQuery.hasNextPage && (
+            <div className="mt-8 text-center">
+              <Button
+                variant="outline"
+                size="lg"
+                className="gap-2"
+                onClick={() => searchQuery.fetchNextPage()}
+                disabled={searchQuery.isFetchingNextPage}
+              >
+                {searchQuery.isFetchingNextPage ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                    Loading...
+                  </>
+                ) : (
+                  'Load More'
+                )}
+              </Button>
+            </div>
+          )}
+
           {hasLockedProfiles && isUnverifiedGate && (
             <div className="mt-10 max-w-md mx-auto text-center">
               <Shield className="w-10 h-10 text-primary mx-auto mb-3" />
