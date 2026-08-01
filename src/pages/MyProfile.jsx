@@ -25,7 +25,7 @@ import DiditVerificationCard from '@/components/profile/DiditVerificationCard';
 import EligiblePromosCard from '@/components/profile/EligiblePromosCard';
 import PromoSuggestionsBanner from '@/components/profile/PromoSuggestionsBanner';
 import CountryCitySelector from '@/components/shared/CountryCitySelector';
-import { getCountryCode } from '@/lib/geoUtils';
+import { resolveGeoCoordinates } from '@/lib/geoLocate';
 import PrivatePhotosSection from '@/components/profile/PrivatePhotosSection';
 import AdFreeCard from '@/components/profile/AdFreeCard';
 import TokenCostsList from '@/components/profile/TokenCostsList';
@@ -374,33 +374,13 @@ export default function MyProfile() {
   const handleSave = async () => {
     setSaving(true);
     try {
-      let geoData = {};
-      let zipInvalid = false;
-      if (form.location_zip) {
-        const countryCode = getCountryCode(form.location_country);
-        if (countryCode) {
-          try {
-            const geoRes = await base44.functions.invoke('geocodeZip', { zip: form.location_zip, country_code: countryCode });
-            const data = geoRes.data ?? geoRes;
-            if (data?.latitude != null) {
-              geoData = { latitude: data.latitude, longitude: data.longitude };
-            } else {
-              zipInvalid = true;
-            }
-          } catch (e) {
-            zipInvalid = true;
-          }
-        }
-      }
+      // Geocode location — tries zip code first, falls back to city name
+      const geoData = await resolveGeoCoordinates(form.location_country, form.location_city, form.location_zip);
       const updateData = { ...form, ...geoData };
       updateData.ethnicity = ETHNICITY_VALUES.includes(form.ethnicity) ? form.ethnicity : null;
       await base44.entities.MemberProfile.update(profile.id, updateData);
       queryClient.invalidateQueries({ queryKey: ['myProfile'] });
-      if (zipInvalid) {
-        toast({ title: 'Profile saved', description: `Zip code "${form.location_zip}" was not recognized — location was not updated.`, variant: 'destructive' });
-      } else {
-        toast({ title: t('profile_updated') });
-      }
+      toast({ title: t('profile_updated') });
     } finally {
       setSaving(false);
     }

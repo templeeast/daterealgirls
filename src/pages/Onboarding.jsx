@@ -14,7 +14,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 
 import CountryCitySelector from '@/components/shared/CountryCitySelector';
-import { getCountryCode } from '@/lib/geoUtils';
+import { resolveGeoCoordinates } from '@/lib/geoLocate';
 import DiditVerificationStep from '@/components/onboarding/DiditVerificationStep';
 import { ETHNICITY_VALUES } from '@/lib/ethnicityOptions';
 
@@ -152,21 +152,8 @@ export default function Onboarding() {
     setSaving(true);
     const me = await base44.auth.me();
 
-    // Geocode zip code to lat/lng for radius search
-    let geoData = {};
-    if (form.location_zip) {
-      const countryCode = getCountryCode(form.location_country);
-      if (countryCode) {
-        try {
-          const geoRes = await base44.functions.invoke('geocodeZip', { zip: form.location_zip, country_code: countryCode });
-          if (geoRes.data?.latitude != null) {
-            geoData = { latitude: geoRes.data.latitude, longitude: geoRes.data.longitude };
-          }
-        } catch (e) {
-          console.warn('Zip geocoding failed:', e.message);
-        }
-      }
-    }
+    // Geocode location to lat/lng — tries zip code first, falls back to city name
+    const geoData = await resolveGeoCoordinates(form.location_country, form.location_city, form.location_zip);
 
     // Generate a unique member tag ID (e.g. @DRG-A1B2C3)
     const generateTagId = () => {
