@@ -45,7 +45,7 @@ export default function StockProfilesBanner() {
           setProfiles([]);
           return null;
         }
-        const filterQuery = { gender: 'female', is_active: true, profile_complete: true, is_suspended: false };
+        const filterQuery = { gender: 'female', is_active: true, profile_complete: true, is_suspended: false, is_private: false };
         return base44.entities.MemberProfile.filter(filterQuery, '-created_date', 20);
       })
       .then(data => {
