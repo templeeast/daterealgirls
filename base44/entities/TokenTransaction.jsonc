@@ -35,6 +35,10 @@
     "promo_code": {
       "type": "string",
       "description": "Promo code used (if applicable)"
+    },
+    "source_id": {
+      "type": "string",
+      "description": "Original ID from source app \u2014 used for cross-app migration FK remapping"
     }
   },
   "required": [

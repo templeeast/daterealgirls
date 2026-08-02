@@ -44,6 +44,10 @@
       "type": "number",
       "default": 0,
       "description": "Unread count for participant 2"
+    },
+    "source_id": {
+      "type": "string",
+      "description": "Original ID from source app \u2014 used for cross-app migration FK remapping"
     }
   },
   "required": [

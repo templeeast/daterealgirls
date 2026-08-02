@@ -52,6 +52,10 @@
     "private_photo_access_id": {
       "type": "string",
       "description": "PrivatePhotoAccess.id \u2014 set for private photo request/response messages"
+    },
+    "source_id": {
+      "type": "string",
+      "description": "Original ID from source app \u2014 used for cross-app migration FK remapping"
     }
   },
   "required": [

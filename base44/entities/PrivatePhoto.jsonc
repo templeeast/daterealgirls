@@ -41,6 +41,10 @@
     "token_cost_to_view": {
       "type": "number",
       "description": "Tokens required to view \u2014 5 for photos, 10 for videos (male viewers); 0 for female"
+    },
+    "source_id": {
+      "type": "string",
+      "description": "Original ID from source app \u2014 used for cross-app migration FK remapping"
     }
   },
   "required": [

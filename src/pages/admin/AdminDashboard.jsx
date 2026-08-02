@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Users, Shield, Flag, HelpCircle, Settings, MapPin, ClipboardList, ImageIcon, ListTodo, Tag, Gift, FileText, Palette, TestTube } from 'lucide-react';
+import { Users, Shield, Flag, HelpCircle, Settings, MapPin, ClipboardList, ImageIcon, ListTodo, Tag, Gift, FileText, Palette, TestTube, Database } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import MemberManagement from '@/components/admin/MemberManagement';
 import VerificationQueue from '@/components/admin/VerificationQueue';
@@ -63,6 +63,11 @@ export default function AdminDashboard() {
           <Link to="/admin/logo-assets">
             <button className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground border rounded-lg px-3 py-2 transition-colors">
               <Palette className="w-4 h-4" /> Logo Assets
+            </button>
+          </Link>
+          <Link to="/admin/data-migration">
+            <button className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground border rounded-lg px-3 py-2 transition-colors">
+              <Database className="w-4 h-4" /> Data Migration
             </button>
           </Link>
         </div>

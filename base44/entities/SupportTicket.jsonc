@@ -59,6 +59,10 @@
     "attachment_url": {
       "type": "string",
       "description": "Optional attachment"
+    },
+    "source_id": {
+      "type": "string",
+      "description": "Original ID from source app \u2014 used for cross-app migration FK remapping"
     }
   },
   "required": [

@@ -264,7 +264,7 @@
     },
     "didit_session_id": {
       "type": "string",
-      "description": "Didit verification session UUID \u2014 set at session creation"
+      "description": "Didit verification session UUID"
     },
     "didit_verification_status": {
       "type": "string",
@@ -282,12 +282,12 @@
     "gender_review_needed": {
       "type": "boolean",
       "default": false,
-      "description": "Flag set when Didit-extracted gender doesn't match profile gender or is unknown \u2014 requires admin review"
+      "description": "Flag set when Didit-extracted gender doesn't match profile gender or is unknown"
     },
     "didit_date_of_birth": {
       "type": "string",
       "format": "date",
-      "description": "Date of birth extracted from the ID document by Didit (YYYY-MM-DD)"
+      "description": "Date of birth extracted from the ID document by Didit"
     },
     "didit_age": {
       "type": "number",
@@ -296,7 +296,7 @@
     "age_review_needed": {
       "type": "boolean",
       "default": false,
-      "description": "Flag set when Didit-extracted age is under 18, doesn't match the profile age, or couldn't be extracted \u2014 requires admin review"
+      "description": "Flag set when Didit-extracted age is under 18, doesn't match the profile age, or couldn't be extracted"
     },
     "is_active": {
       "type": "boolean",
@@ -336,7 +336,7 @@
     "has_purchased_tokens": {
       "type": "boolean",
       "default": false,
-      "description": "Whether the user has ever completed a token purchase (used for first-purchase bonus)"
+      "description": "Whether the user has ever completed a token purchase"
     },
     "used_promo_codes": {
       "type": "array",
@@ -358,7 +358,7 @@
     "browse_unlocked_until": {
       "type": "string",
       "format": "date-time",
-      "description": "Timestamp until which the user has unlimited browsing (paid browse-all). null/expired = not unlocked."
+      "description": "Timestamp until which the user has unlimited browsing (paid browse-all)"
     },
     "whop_member_id": {
       "type": "string",
@@ -401,6 +401,10 @@
       "type": "boolean",
       "default": false,
       "description": "When true, this profile is excluded from browse/search and only reachable by exact Member Tag ID lookup"
+    },
+    "source_id": {
+      "type": "string",
+      "description": "Original ID from source app \u2014 used for cross-app migration FK remapping"
     }
   },
   "required": [
