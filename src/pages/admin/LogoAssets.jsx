@@ -210,9 +210,22 @@ export default function LogoAssets() {
             toast.success('Social image regenerated with AI');
           } else {
             toast.error('Failed to generate image');
-          }
-        } else {
-          const prompt = `A professional ${assetLabels[key] || 'branding asset'} ${basePrompt}`;
+            }
+            } else if (key === 'favicon') {
+            const favPrompt = `A favicon icon — a simple, bold square app icon designed to be recognizable at very small sizes (16×16 to 32×32 pixels). Keep the design minimal: a single strong symbol or monogram, NO tiny text, NO fine details. Rounded square background with the brand's primary color. ${basePrompt}`;
+            const favExistingUrl = useExisting ? customAssets.favicon : null;
+            const favRes = await base44.integrations.Core.GenerateImage({
+            prompt: favPrompt,
+            ...(favExistingUrl ? { existing_image_urls: [favExistingUrl] } : {}),
+            });
+            if (favRes.url) {
+            setCustomAssets(prev => ({ ...prev, favicon: favRes.url }));
+            toast.success('Favicon regenerated with AI');
+            } else {
+            toast.error('Failed to generate image');
+            }
+            } else {
+            const prompt = `A professional ${assetLabels[key] || 'branding asset'} ${basePrompt}`;
           const existingUrl = useExisting ? customAssets[key] : null;
           const res = await base44.integrations.Core.GenerateImage({
             prompt,
@@ -604,7 +617,21 @@ export default function LogoAssets() {
           saving={savingKey === 'socialImage'}
         />
 
-        <FaviconGenerator siteName={siteName} customAppIconUrl={customAssets.appIcon} />
+        <FaviconGenerator
+          siteName={siteName}
+          customUrl={customAssets.favicon}
+          onRegenerate={() => handleRegenerate('favicon', regenerateDescriptions.favicon, applyToExisting.favicon)}
+          onUpload={(file) => handleUpload('favicon', file)}
+          uploading={uploadingKey === 'favicon'}
+          regenerating={regeneratingKey === 'favicon'}
+          regenerateDescription={regenerateDescriptions.favicon || ''}
+          onRegenerateDescriptionChange={(val) => updateDescription('favicon', val)}
+          applyToExisting={applyToExisting.favicon || false}
+          onApplyToExistingChange={(checked) => setApplyToExisting(prev => ({ ...prev, favicon: checked }))}
+          onSave={() => handleSave('favicon')}
+          hasUnsavedChanges={hasUnsavedChanges('favicon')}
+          saving={savingKey === 'favicon'}
+        />
       </div>
     </div>
   );
