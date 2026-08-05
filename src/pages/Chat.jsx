@@ -676,7 +676,16 @@ export default function Chat() {
               </div>
             ) : null;
           })()}
-          <div className="flex gap-2 items-center max-w-3xl mx-auto">
+          <div className="flex flex-col gap-2 max-w-3xl mx-auto">
+            <Input
+              placeholder={rateLimited ? `Slow down — too many messages` : t('type_message')}
+              value={text}
+              onChange={e => setText(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && handleSend()}
+              className={`rounded-full ${rateLimited ? 'border-destructive text-destructive' : ''}`}
+              disabled={rateLimited}
+            />
+            <div className="flex gap-1 items-center">
             <Button
               variant="ghost"
               size="icon"
@@ -805,17 +814,11 @@ export default function Chat() {
                 </Button>
               );
             })()}
-            <Input
-              placeholder={rateLimited ? `Slow down — too many messages` : t('type_message')}
-              value={text}
-              onChange={e => setText(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && handleSend()}
-              className={`rounded-full ${rateLimited ? 'border-destructive text-destructive' : ''}`}
-              disabled={rateLimited}
-            />
+            <div className="ml-auto" />
             <Button size="icon" className="rounded-full shrink-0" onClick={handleSend} disabled={!text.trim() || rateLimited}>
               <Send className="w-4 h-4" />
             </Button>
+            </div>
           </div>
         </div>
       )}
