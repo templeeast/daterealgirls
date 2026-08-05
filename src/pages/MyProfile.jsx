@@ -22,6 +22,7 @@ import useSiteConfig from '@/hooks/useSiteConfig';
 import { useTranslation } from 'react-i18next';
 import i18n from '@/lib/i18n';
 import DiditVerificationCard from '@/components/profile/DiditVerificationCard';
+import ProfileIncompleteBanner from '@/components/profile/ProfileIncompleteBanner';
 import EligiblePromosCard from '@/components/profile/EligiblePromosCard';
 import PromoSuggestionsBanner from '@/components/profile/PromoSuggestionsBanner';
 import CountryCitySelector from '@/components/shared/CountryCitySelector';
@@ -437,15 +438,7 @@ export default function MyProfile() {
       </Card>
 
       {/* Incomplete profile banner */}
-      {(!profile.profile_complete || profile.didit_verification_status !== 'Approved') && (
-        <div className="mb-6 flex items-start gap-3 bg-amber-50 border border-amber-200 text-amber-800 rounded-xl p-4">
-          <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5 text-amber-500" />
-          <div>
-            <p className="font-semibold text-sm">{t('profile_incomplete_title')}</p>
-            <p className="text-sm mt-0.5">{t('profile_incomplete_desc')}</p>
-          </div>
-        </div>
-      )}
+      <ProfileIncompleteBanner profile={profile} />
 
       {/* Verification Status */}
       <DiditVerificationCard profile={profile} onRefetch={refetch} />
