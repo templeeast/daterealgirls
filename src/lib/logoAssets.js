@@ -317,6 +317,101 @@ export async function downloadFromUrl(url, filename) {
   }
 }
 
+export async function svgToPngBlob(svgString, width, height) {
+  return new Promise((resolve, reject) => {
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+    const img = new Image();
+    img.onload = () => {
+      ctx.drawImage(img, 0, 0, width, height);
+      canvas.toBlob((blob) => {
+        if (!blob) { reject(new Error('Failed to create PNG')); return; }
+        resolve(blob);
+      }, 'image/png');
+    };
+    img.onerror = () => reject(new Error('Failed to render SVG'));
+    const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+    img.src = URL.createObjectURL(svgBlob);
+  });
+}
+
+async function downloadBlob(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+export async function downloadIco(svgString, sizes = [16, 32, 48]) {
+  const pngBlobs = await Promise.all(sizes.map(s => svgToPngBlob(svgString, s, s)));
+  const pngBuffers = await Promise.all(pngBlobs.map(b => b.arrayBuffer()));
+  const headerSize = 6;
+  const entrySize = 16;
+  const dirSize = entrySize * pngBuffers.length;
+  let offset = headerSize + dirSize;
+  const entries = [];
+  let totalSize = offset;
+  for (let i = 0; i < pngBuffers.length; i++) {
+    const size = sizes[i];
+    const data = pngBuffers[i];
+    entries.push({
+      width: size >= 256 ? 0 : size,
+      height: size >= 256 ? 0 : size,
+      size: data.byteLength,
+      offset,
+    });
+    offset += data.byteLength;
+  }
+  totalSize = offset;
+  const buffer = new ArrayBuffer(totalSize);
+  const view = new DataView(buffer);
+  const u8 = new Uint8Array(buffer);
+  view.setUint16(0, 0, true); // reserved
+  view.setUint16(2, 1, true); // type (icon)
+  view.setUint16(4, pngBuffers.length, true); // count
+  let pos = 6;
+  for (let i = 0; i < entries.length; i++) {
+    const e = entries[i];
+    view.setUint8(pos, e.width);
+    view.setUint8(pos + 1, e.height);
+    view.setUint8(pos + 2, 0); // colors
+    view.setUint8(pos + 3, 0); // reserved
+    view.setUint16(pos + 4, 1, true); // planes
+    view.setUint16(pos + 6, 32, true); // bpp
+    view.setUint32(pos + 8, e.size, true);
+    view.setUint32(pos + 12, e.offset, true);
+    pos += 16;
+  }
+  for (let i = 0; i < pngBuffers.length; i++) {
+    u8.set(new Uint8Array(pngBuffers[i]), entries[i].offset);
+  }
+  await downloadBlob(new Blob([buffer], { type: 'image/x-icon' }), 'favicon.ico');
+}
+
+export function generateWebManifest(siteName) {
+  const domain = getDomain(siteName);
+  return JSON.stringify({
+    name: siteName,
+    short_name: getDisplayName(siteName),
+    description: 'ID-Verified Dating • Real Connections',
+    start_url: '/',
+    display: 'standalone',
+    background_color: '#ffffff',
+    theme_color: PRIMARY,
+    icons: [
+      { src: '/favicon-192.png', sizes: '192x192', type: 'image/png' },
+      { src: '/favicon-512.png', sizes: '512x512', type: 'image/png' },
+      { src: '/favicon.ico', sizes: '48x48', type: 'image/x-icon' },
+    ],
+  }, null, 2);
+}
+
 export async function downloadResizedImage(imageUrl, filename, width, height) {
   const response = await fetch(imageUrl);
   const blob = await response.blob();

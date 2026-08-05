@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Shield, AppWindow, StretchHorizontal, StretchVertical, Megaphone, Save, Loader2, Image as ImageIcon, Share2, Smartphone, Globe } from 'lucide-react';
+import { Shield, AppWindow, StretchHorizontal, StretchVertical, Megaphone, Save, Loader2, Image as ImageIcon, Share2, Smartphone, Globe, Star } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import useSiteConfig from '@/hooks/useSiteConfig';
 import useMyProfile from '@/hooks/useMyProfile';
 import LogoAssetCard from '@/components/admin/LogoAssetCard';
+import FaviconGenerator from '@/components/admin/FaviconGenerator';
 import {
   generateAppIcon,
   generateHorizontalLogo,
@@ -602,6 +603,8 @@ export default function LogoAssets() {
           hasUnsavedChanges={hasUnsavedChanges('socialImage')}
           saving={savingKey === 'socialImage'}
         />
+
+        <FaviconGenerator siteName={siteName} customAppIconUrl={customAssets.appIcon} />
       </div>
     </div>
   );
