@@ -379,6 +379,29 @@ export default function MyProfile() {
       const geoData = await resolveGeoCoordinates(form.location_country, form.location_city, form.location_zip);
       const updateData = { ...form, ...geoData };
       updateData.ethnicity = ETHNICITY_VALUES.includes(form.ethnicity) ? form.ethnicity : null;
+
+      // Mark the profile complete when the saved data satisfies the same
+      // criteria the onboarding wizard enforces before its final submit, so
+      // members who finish their profile from this page get Browse unlocked
+      // exactly as if they'd clicked "Complete" in onboarding. Upgrade-only:
+      // never un-complete a profile that was already marked complete.
+      const merged = { ...profile, ...updateData };
+      const nowComplete = !!(
+        merged.display_name &&
+        merged.gender &&
+        (merged.date_of_birth || merged.didit_date_of_birth) &&
+        merged.location_country &&
+        merged.location_city &&
+        merged.location_zip &&
+        typeof merged.bio === 'string' && merged.bio.trim().length > 0 &&
+        merged.looking_for &&
+        Array.isArray(merged.interests) && merged.interests.length > 0 &&
+        merged.photo_1
+      );
+      if (nowComplete) {
+        updateData.profile_complete = true;
+      }
+
       await base44.entities.MemberProfile.update(profile.id, updateData);
       queryClient.invalidateQueries({ queryKey: ['myProfile'] });
       toast({ title: t('profile_updated') });
