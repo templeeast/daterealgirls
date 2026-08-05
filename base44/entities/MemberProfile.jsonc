@@ -217,7 +217,7 @@
     },
     "tiktok": {
       "type": "string",
-      "description": "TikTok username"
+      "description": "Tiktok username"
     },
     "show_social_media": {
       "type": "boolean",
@@ -337,6 +337,11 @@
       "type": "boolean",
       "default": false,
       "description": "Whether the user has ever completed a token purchase"
+    },
+    "verification_fee_owed": {
+      "type": "number",
+      "default": 0,
+      "description": "Remaining ID verification fee that could not be collected at verification time (user had no balance); settled from future token grants"
     },
     "used_promo_codes": {
       "type": "array",

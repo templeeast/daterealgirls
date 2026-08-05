@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
+import { settleVerificationFee } from '../../shared/verificationFee.ts';
 
 Deno.serve(async (req) => {
   try {
@@ -93,10 +94,13 @@ Deno.serve(async (req) => {
       promo_code: normalizedPromo,
     });
 
+    // Settle any owed ID verification fee from the granted promo tokens
+    const { settled } = await settleVerificationFee(base44, profile);
+
     return Response.json({
       success: true,
       bonusTokens: promoRecord.tokens,
-      newBalance: newTokens,
+      newBalance: newTokens - settled,
     });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });

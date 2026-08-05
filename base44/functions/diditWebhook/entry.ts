@@ -1,5 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
 import { createHmac, timingSafeEqual } from "node:crypto";
+import { chargeVerificationFee } from '../../shared/verificationFee.ts';
 
 function sortKeys(obj) {
   if (Array.isArray(obj)) return obj.map(sortKeys);
@@ -186,6 +187,13 @@ Deno.serve(async (req) => {
             gender_review_needed:      false,
             age_review_needed:         false,
           });
+
+          // Charge the ID verification fee — deducts from the current balance;
+          // any remainder is recorded as verification_fee_owed and collected from
+          // future token grants (purchases, bonuses, promos).
+          if (profile.verification_status !== 'verified') {
+            await chargeVerificationFee(base44, profile, config);
+          }
         }
       } else if (status === "Declined") {
         await base44.asServiceRole.entities.MemberProfile.update(profile.id, {

@@ -168,33 +168,17 @@ export default function Onboarding() {
     const validEthnicity = ETHNICITY_VALUES.includes(form.ethnicity) ? form.ethnicity : null;
     let newProfile;
     if (existing[0]) {
-      let tokenBalance = config.welcome_tokens ?? 5000;
-
-      // If verification was completed during onboarding (before tokens were awarded),
-      // deduct the verification fee now from the welcome tokens.
-      if (existing[0].verification_status === 'verified') {
-        const isMale = form.gender === 'male';
-        const verifyEnabled = isMale ? config.tokens_verify_men_enabled : config.tokens_verify_women_enabled;
-        const verifyCost = isMale ? (config.tokens_verify_cost_men ?? 300) : (config.tokens_verify_cost_women ?? 300);
-        if (verifyEnabled && verifyCost > 0) {
-          tokenBalance = Math.max(0, tokenBalance - verifyCost);
-          // Log the verification token spend
-          await base44.entities.TokenTransaction.create({
-            user_id: me.id,
-            type: 'spend',
-            tokens: -verifyCost,
-            description: 'ID verification fee',
-          });
-        }
-      }
-
+      // The profile already exists (created during the verification step with
+      // welcome_tokens). The ID verification fee is charged by the Didit webhook
+      // at verification time — any uncollectable remainder is recorded as
+      // verification_fee_owed and settled when tokens are next granted. So we
+      // don't touch the token balance here.
       const updateData = {
         ...form,
         ...geoData,
         age,
         ethnicity: validEthnicity,
         profile_complete: true,
-        tokens: tokenBalance,
       };
       // Assign tag ID if missing
       if (!existing[0].tag_id) {

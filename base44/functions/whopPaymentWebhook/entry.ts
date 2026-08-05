@@ -1,5 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
 import { Webhook } from 'npm:standardwebhooks@1.0.0';
+import { settleVerificationFee } from '../../shared/verificationFee.ts';
 
 Deno.serve(async (req) => {
   try {
@@ -190,6 +191,9 @@ Deno.serve(async (req) => {
           console.log(`Granted ${bonusTokens} first-purchase bonus tokens to user ${userId}`);
         }
       }
+
+      // Settle any owed ID verification fee from the granted tokens
+      await settleVerificationFee(base44, memberProfile, config);
 
     } else if (eventType === 'payment.failed') {
       const whopPaymentId = data.id;

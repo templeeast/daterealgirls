@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
+import { settleVerificationFee } from '../../shared/verificationFee.ts';
 
 Deno.serve(async (req) => {
   try {
@@ -187,6 +188,9 @@ Deno.serve(async (req) => {
         });
       }
 
+      // Settle any owed ID verification fee from the granted tokens
+      const { settled } = await settleVerificationFee(base44, profile, config);
+
       return Response.json({
         success: true,
         transactionId: txResponse.transId,
@@ -194,6 +198,7 @@ Deno.serve(async (req) => {
         bonusTokens: promoBonus + firstPurchaseBonus,
         promoApplied,
         isFirstPurchase: wasFirstPurchase,
+        verificationFeeSettled: settled,
       });
     }
 
