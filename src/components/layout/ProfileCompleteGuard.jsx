@@ -2,6 +2,7 @@ import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import useMyProfile from '@/hooks/useMyProfile';
 import { useAuth } from '@/lib/AuthContext';
+import { isProfileFullyComplete } from '@/lib/profileCompletion';
 
 // Routes that are accessible even with an incomplete profile
 const EXEMPT_PATHS = ['/my-profile', '/onboarding', '/support'];
@@ -25,8 +26,14 @@ export default function ProfileCompleteGuard({ children }) {
     return <Navigate to="/onboarding" replace />;
   }
 
-  // Profile exists but missing required fields → send to my-profile to finish
+  // Profile exists but missing core fields → send to onboarding to finish basics
   if (!isExempt && profile && (!profile.display_name || !profile.gender)) {
+    return <Navigate to="/onboarding" replace />;
+  }
+
+  // Profile exists but not fully complete (ID verified, ≥1 photo, profile
+  // details) → send to my-profile to finish before browsing/messaging
+  if (!isExempt && profile && !isProfileFullyComplete(profile)) {
     return <Navigate to="/my-profile" replace />;
   }
 

@@ -2,15 +2,15 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { CheckCircle2, Circle, AlertTriangle, Camera, ShieldCheck, UserCog } from 'lucide-react';
 
-const PHOTO_FIELDS = Array.from({ length: 15 }, (_, i) => `photo_${i + 1}`);
+import { isIdentityVerified, hasProfilePhoto } from '@/lib/profileCompletion';
 
 export default function ProfileIncompleteBanner({ profile }) {
   const { t } = useTranslation();
 
   if (!profile) return null;
 
-  const verifyDone = profile.didit_verification_status === 'Approved';
-  const photoDone = PHOTO_FIELDS.some((f) => profile[f]);
+  const verifyDone = isIdentityVerified(profile);
+  const photoDone = hasProfilePhoto(profile);
 
   // Compute profile-details completeness from actual fields (the stored
   // profile_complete flag is only set during onboarding and goes stale).
