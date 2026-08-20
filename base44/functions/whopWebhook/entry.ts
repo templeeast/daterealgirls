@@ -192,60 +192,6 @@ Deno.serve(async (req) => {
         });
       }
 
-    // ─── MEMBERSHIP EVENTS ────────────────────────────────────────────────────
-
-    } else if (eventType === 'membership.activated') {
-      console.log('membership.activated — token grant handled by payment.succeeded');
-
-    } else if (
-      eventType === 'membership.went_valid' ||
-      eventType === 'membership.renewal' ||
-      eventType === 'membership_activated'
-    ) {
-      // Resolve profile from metadata
-      const membership = data?.membership || data;
-      const metadata = data?.metadata || membership?.metadata || {};
-      const userId = metadata.internal_member_id;
-      if (!userId) { console.log('No user_id in membership event'); return Response.json({ received: true }); }
-      const profiles = await base44.asServiceRole.entities.MemberProfile.filter({ user_id: userId });
-      const profile = profiles[0];
-      if (!profile) { console.log('Profile not found for userId:', userId); return Response.json({ received: true }); }
-
-      const parseEndDate = (expiresAt, renewalPeriodEnd) => {
-        if (expiresAt) {
-          const d = typeof expiresAt === 'number' ? new Date(expiresAt * 1000) : new Date(expiresAt);
-          return d.toISOString().split('T')[0];
-        }
-        if (renewalPeriodEnd) return new Date(renewalPeriodEnd * 1000).toISOString().split('T')[0];
-        return new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
-      };
-      const today = new Date().toISOString().split('T')[0];
-      const endDate = parseEndDate(membership.expires_at, membership.renewal_period_end);
-      await base44.asServiceRole.entities.MemberProfile.update(profile.id, {
-        subscription_status: 'active',
-        subscription_start_date: today,
-        subscription_end_date: endDate,
-      });
-      console.log(`Activated/renewed subscription for profile ${profile.id}, ends ${endDate}`);
-
-    } else if (
-      eventType === 'membership.went_invalid' ||
-      eventType === 'membership_deactivated'
-    ) {
-      const metadata = data?.metadata || {};
-      const userId = metadata.internal_member_id;
-      if (!userId) { console.log('No user_id in membership event'); return Response.json({ received: true }); }
-      const profiles = await base44.asServiceRole.entities.MemberProfile.filter({ user_id: userId });
-      const profile = profiles[0];
-      if (profile) {
-        const today = new Date().toISOString().split('T')[0];
-        await base44.asServiceRole.entities.MemberProfile.update(profile.id, {
-          subscription_status: 'expired',
-          subscription_end_date: today,
-        });
-        console.log(`Deactivated subscription for profile ${profile.id}`);
-      }
-
     } else {
       console.log('Unhandled Whop event:', eventType);
     }

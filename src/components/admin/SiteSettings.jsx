@@ -44,8 +44,6 @@ export default function SiteSettings() {
     authorizenet_hosted_page_url: '',
     demo_mode: true,
     dev_mode: true,
-    whop_men_plan_id: '',
-    whop_women_plan_id: '',
     whop_checkout_email: 'drgpayments@clevo.testinator.com',
     whop_plan_starter: '',
     whop_plan_popular: '',
@@ -158,8 +156,6 @@ export default function SiteSettings() {
         authorizenet_hosted_page_url: existingConfig.authorizenet_hosted_page_url || '',
         demo_mode: existingConfig.demo_mode !== false,
         dev_mode: existingConfig.dev_mode !== false,
-        whop_men_plan_id: existingConfig.whop_men_plan_id || '',
-        whop_women_plan_id: existingConfig.whop_women_plan_id || '',
         whop_checkout_email: existingConfig.whop_checkout_email || 'drgpayments@clevo.testinator.com',
         whop_plan_starter: existingConfig.whop_plan_starter || '',
         whop_plan_popular: existingConfig.whop_plan_popular || '',
@@ -612,14 +608,6 @@ export default function SiteSettings() {
               API keys: <code className="bg-muted px-1 rounded">WHOP_DEV_API_KEY</code> / <code className="bg-muted px-1 rounded">WHOP_PROD_API_KEY</code>.
             </p>
             <div className="grid grid-cols-1 gap-3">
-              <div className="space-y-1">
-                <Label className="text-xs">Men's Plan ID (Subscription)</Label>
-                <Input value={form.whop_men_plan_id} onChange={e => updateField('whop_men_plan_id', e.target.value)} placeholder="plan_xxxxxxxxxxxx" />
-              </div>
-              <div className="space-y-1">
-                <Label className="text-xs">Women's Plan ID (Subscription)</Label>
-                <Input value={form.whop_women_plan_id} onChange={e => updateField('whop_women_plan_id', e.target.value)} placeholder="plan_xxxxxxxxxxxx" />
-              </div>
               <div className="space-y-1 border-t pt-3">
                 <Label className="text-xs font-semibold">Token Pack Plan IDs</Label>
               </div>

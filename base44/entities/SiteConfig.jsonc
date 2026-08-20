@@ -76,12 +76,6 @@
       "type": "boolean",
       "default": true
     },
-    "whop_men_plan_id": {
-      "type": "string"
-    },
-    "whop_women_plan_id": {
-      "type": "string"
-    },
     "whop_checkout_email": {
       "type": "string",
       "default": "drgpayments@clevo.testinator.com"
