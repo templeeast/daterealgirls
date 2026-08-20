@@ -256,7 +256,7 @@ export default function Terms() {
               <p>Legal / Arbitration: <a href="mailto:legal@daterealgirls.com" className="text-primary underline underline-offset-4">legal@daterealgirls.com</a></p>
               <p>Website: <a href="https://www.daterealgirls.com" className="text-primary underline underline-offset-4">www.daterealgirls.com</a></p>
             </div>
-            <p className="text-xs text-muted-foreground mt-6">© 2025 Temple East LLC. All Rights Reserved.</p>
+            <p className="text-xs text-muted-foreground mt-6">© 2027 Temple East LLC. All Rights Reserved.</p>
           </section>
 
         </div>
