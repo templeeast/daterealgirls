@@ -183,13 +183,17 @@ Deno.serve(async (req) => {
         });
       }
 
-    } else if (eventType === 'payment.refunded') {
-      const existing = await base44.asServiceRole.entities.Payment.filter({ whop_payment_id: data.id });
+    } else if (eventType === 'refund.created' || eventType === 'refund.updated') {
+      const paymentId = data.payment_id || data.id;
+      const existing = await base44.asServiceRole.entities.Payment.filter({ whop_payment_id: paymentId });
       if (existing.length > 0) {
         await base44.asServiceRole.entities.Payment.update(existing[0].id, {
           payment_status: 'refunded',
           raw_event_type: eventType,
         });
+        console.log(`Marked payment ${paymentId} as refunded (${eventType})`);
+      } else {
+        console.log(`Refund event for unknown payment ${paymentId}`);
       }
 
     } else {
