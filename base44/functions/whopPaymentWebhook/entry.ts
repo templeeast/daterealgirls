@@ -207,7 +207,7 @@ Deno.serve(async (req) => {
       }
 
     } else if (eventType === 'refund.created' || eventType === 'refund.updated') {
-      const paymentId = data.payment_id || data.id;
+      const paymentId = data.payment?.id || data.payment_id || data.id;
       const existing = await base44.asServiceRole.entities.Payment.filter({ whop_payment_id: paymentId });
       if (existing.length > 0) {
         await base44.asServiceRole.entities.Payment.update(existing[0].id, {
