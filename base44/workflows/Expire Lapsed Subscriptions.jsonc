@@ -1,0 +1,46 @@
+{
+  "name": "Expire Lapsed Subscriptions",
+  "description": "Daily job that sets subscription_status to expired for any active member whose subscription_end_date has passed.",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 7 * * *",
+      "one_time_date": null,
+      "timezone": "UTC",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "expire_lapsed_subscriptions",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "run_function": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "expireSubscriptions",
+            "args": {
+              "automation_secret": "c0e120ac2c338664a35db5f92179195c5d9ea04367f58b0a1c9d612948aacfb1"
+            }
+          },
+          "then": "end"
+        }
+      }
+    ]
+  },
+  "x-base44-migrated-from-automation": {
+    "legacy_payload_function": "expireSubscriptions"
+  }
+}

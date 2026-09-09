@@ -1,0 +1,39 @@
+{
+  "name": "Cleanup on Profile Deletion",
+  "description": "",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "entity",
+      "events": [
+        "delete"
+      ],
+      "entity_name": "MemberProfile"
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "cleanup_on_profile_deletion",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "run_function": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "cleanupDeletedUser",
+            "args": {
+              "automation_secret": "c0e120ac2c338664a35db5f92179195c5d9ea04367f58b0a1c9d612948aacfb1"
+            }
+          },
+          "then": "end"
+        }
+      }
+    ]
+  },
+  "x-base44-migrated-from-automation": {
+    "legacy_payload_function": "cleanupDeletedUser"
+  }
+}
