@@ -19,9 +19,7 @@ Deno.serve(async (req) => {
     const config = configs[0] || {};
 
     const isDevMode = config.dev_mode === true;
-    // Use the buyer's own email so Whop accepts it; the webhook links the
-    // payment back to the member via metadata.internal_member_id, not email.
-    const checkoutEmail = user.email || config.whop_checkout_email || '';
+    const checkoutEmail = config.whop_checkout_email || '';
 
     // Get pack-specific plan ID and token count
     const planIdMap = {
