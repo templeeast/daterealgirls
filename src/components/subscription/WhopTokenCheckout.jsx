@@ -4,7 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { X, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-export default function WhopTokenCheckout({ packName, devMode, userEmail, onClose, onComplete }) {
+export default function WhopTokenCheckout({ packName, devMode, onClose, onComplete }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [checkoutData, setCheckoutData] = useState(null);
@@ -74,7 +74,9 @@ export default function WhopTokenCheckout({ packName, devMode, userEmail, onClos
             {...(checkoutData.sessionId ? { sessionId: checkoutData.sessionId } : { planId: checkoutData.planId })}
             environment={environment}
             returnUrl={returnUrl}
-            prefill={(userEmail || checkoutData.checkoutEmail) ? { email: userEmail || checkoutData.checkoutEmail } : undefined}
+            prefill={checkoutData.checkoutEmail ? { email: checkoutData.checkoutEmail } : undefined}
+            hideEmail={true}
+            disableEmail={true}
             onComplete={(planId, receiptId) => onComplete()}
             fallback={
               <div className="flex items-center justify-center h-64 text-muted-foreground text-sm">

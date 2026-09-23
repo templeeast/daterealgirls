@@ -930,7 +930,6 @@ export default function MyProfile() {
         <WhopTokenCheckout
           packName={whopPackName}
           devMode={config.dev_mode === true}
-          userEmail={user?.email}
           onClose={() => setShowWhopCheckout(false)}
           onComplete={handleWhopComplete}
         />
